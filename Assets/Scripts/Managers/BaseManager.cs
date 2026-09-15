@@ -1,3 +1,12 @@
+/*
+* Author: Tyler
+* Contributors:
+* Last Modified: 09/15/2026
+* Summary: Base class for all the managers to inherit from
+* To Do:   N/A
+*/
+
+
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;

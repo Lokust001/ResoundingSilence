@@ -1,3 +1,12 @@
+/*
+* Author: Tyler
+* Contributors:
+* Last Modified: 09/15/2026
+* Summary: Starts the app and ensures all managers are initialized properly.
+* To Do:   N/A
+*/
+
+
 using UnityEngine;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -97,31 +106,50 @@ public class AppManager : MonoBehaviour
         InputPublicEvents.InteractReleased -= TestInteractCancelled;
     }
 
+    /// <summary>
+    /// logs when move is pressed
+    /// </summary>
+    /// <param name="dir"></param>
     private void TestMovePressed(Vector2 dir)
     {
         Debug.Log(dir);
     }
 
+    /// <summary>
+    /// logs when move is cancelled
+    /// </summary>
     private void TestMoveCancelled()
     {
         Debug.Log("Move Cancelled");
     }
 
+    /// <summary>
+    /// logs when shoot is cancelled
+    /// </summary>
     private void TestShootCancelled()
     {
         Debug.Log("Shoot Cancelled");
     }
 
+    /// <summary>
+    /// logs when shoot is pressed
+    /// </summary>
     private void TestShootPressed()
     {
         Debug.Log("Shoot Pressed");
     }
 
+    /// <summary>
+    /// logs when interact is cancelled
+    /// </summary>
     private void TestInteractCancelled()
     {
         Debug.Log("Interact Cancelled");
     }
 
+    /// <summary>
+    /// logs when interact is pressed
+    /// </summary>
     private void TestInteractPressed()
     {
         Debug.Log("Interact Pressed");

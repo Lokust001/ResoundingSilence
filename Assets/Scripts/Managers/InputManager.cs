@@ -1,3 +1,12 @@
+/*
+* Author: Tyler
+* Contributors:
+* Last Modified: 09/15/2026
+* Summary: Reads in all the player's inputs and throws them through public events
+* To Do:   Add more player inputs as needed.
+*/
+
+
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;

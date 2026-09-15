@@ -1,4 +1,13 @@
 using System.Threading.Tasks;
+/*
+* Author: Tyler
+* Contributors:
+* Last Modified: 09/15/2026
+* Summary: Base class for all services to inherit from
+* To Do:   N/A
+*/
+
+
 using UnityEngine;
 
 public class BaseService : MonoBehaviour
