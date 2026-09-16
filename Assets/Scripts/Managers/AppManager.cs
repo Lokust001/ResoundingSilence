@@ -7,15 +7,20 @@
 */
 
 
-using UnityEngine;
+using NaughtyAttributes;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using UnityEngine;
 
 public class AppManager : MonoBehaviour
 {
     [SerializeField]
     private List<BaseManager> managers = new List<BaseManager>();
     private List<BaseManager> initializedManagers = new List<BaseManager>();
+
+    //DELETE LATER
+    [Expandable]
+    public BaseWeaponScriptable weaponS;
 
     public static AppManager Instance;
 
@@ -27,6 +32,7 @@ public class AppManager : MonoBehaviour
     {
         //can be removed once input testing is not needed.
         GenericPublicEvents.AllManagersInitialized += EnableInputTesting;
+        GenericPublicEvents.AllManagersInitialized += TestWeaponScriptable;
 
         if (Instance == null)
         {
@@ -75,6 +81,26 @@ public class AppManager : MonoBehaviour
     }
 
     #region TEMPORARY
+
+    #region Scriptable Testing
+
+    /// <summary>
+    /// tests to ensure the scriptable object copy works.
+    /// </summary>
+    public void TestWeaponScriptable()
+    {
+        BaseWeaponScriptable w = weaponS.CreateNonRefCopy<BaseWeaponScriptable>();
+
+        w.AttacksPerSecond = 5;
+
+        Debug.Log(weaponS.AttacksPerSecond);
+        Debug.Log(w.AttacksPerSecond);
+        
+    }
+
+    #endregion
+
+    #region Inputs
 
     /// <summary>
     /// WILL BE REMOVED
@@ -154,6 +180,8 @@ public class AppManager : MonoBehaviour
     {
         Debug.Log("Interact Pressed");
     }
+
+    #endregion
 
     #endregion
 }
