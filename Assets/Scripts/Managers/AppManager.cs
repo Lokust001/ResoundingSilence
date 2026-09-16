@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors:
-* Last Modified: 09/15/2026
+* Last Modified: 09/16/2026
 * Summary: Starts the app and ensures all managers are initialized properly.
 * To Do:   N/A
 */
