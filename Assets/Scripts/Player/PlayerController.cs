@@ -12,6 +12,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     float moveSpeed;
 
+    [SerializeField]
+    float playerHealth;
+
     #region Private Variables
     Rigidbody rigidbody;
     Vector3 playerVelocity;
