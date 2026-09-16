@@ -93,20 +93,20 @@ public class AppManager : MonoBehaviour
 
         w.AttacksPerSecond = 5;
 
-        Debug.Log(weaponS.AttacksPerSecond);
-        Debug.Log(w.AttacksPerSecond);
+        Debug.Log($"{weaponS.AttacksPerSecond}, {w.AttacksPerSecond} ------ " + 
+                    $"{weaponS.WeaponName}, {w.WeaponName}");
         
     }
 
     #endregion
 
-    #region Inputs
+        #region Inputs
 
-    /// <summary>
-    /// WILL BE REMOVED
-    /// 
-    /// only temporary to test the input system.
-    /// </summary>
+        /// <summary>
+        /// WILL BE REMOVED
+        /// 
+        /// only temporary to test the input system.
+        /// </summary>
     private void EnableInputTesting()
     {
         InputPublicEvents.MovePressed += TestMovePressed;
