@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors:
-* Last Modified: 09/16/2026
+* Last Modified: 09/17/2026
 * Summary: Starts the app and ensures all managers are initialized properly.
 * To Do:   N/A
 */
@@ -18,10 +18,6 @@ public class AppManager : MonoBehaviour
     private List<BaseManager> managers = new List<BaseManager>();
     private List<BaseManager> initializedManagers = new List<BaseManager>();
 
-    //DELETE LATER
-    [Expandable]
-    public BaseWeaponScriptable weaponS;
-
     public static AppManager Instance;
 
     /// <summary>
@@ -32,7 +28,6 @@ public class AppManager : MonoBehaviour
     {
         //can be removed once input testing is not needed.
         GenericPublicEvents.AllManagersInitialized += EnableInputTesting;
-        GenericPublicEvents.AllManagersInitialized += TestWeaponScriptable;
 
         if (Instance == null)
         {
@@ -47,14 +42,14 @@ public class AppManager : MonoBehaviour
         {
             //spawns in all managers
             await SpawnManagers();
-
-            //lets everything know that everything is spawned in
-            GenericPublicEvents.AllManagersInitialized?.Invoke();
         }
         catch
         {
             throw new System.Exception("Failed to initialize");
         }
+
+        //lets everything know that everything is spawned in
+        GenericPublicEvents.AllManagersInitialized?.Invoke();
     }
 
     /// <summary>
@@ -81,24 +76,6 @@ public class AppManager : MonoBehaviour
     }
 
     #region TEMPORARY
-
-    #region Scriptable Testing
-
-    /// <summary>
-    /// tests to ensure the scriptable object copy works.
-    /// </summary>
-    public void TestWeaponScriptable()
-    {
-        BaseWeaponScriptable w = weaponS.CreateNonRefCopy<BaseWeaponScriptable>();
-
-        w.AttacksPerSecond = 5;
-
-        Debug.Log($"{weaponS.AttacksPerSecond}, {w.AttacksPerSecond} ------ " + 
-                    $"{weaponS.WeaponName}, {w.WeaponName}");
-        
-    }
-
-    #endregion
 
         #region Inputs
 
