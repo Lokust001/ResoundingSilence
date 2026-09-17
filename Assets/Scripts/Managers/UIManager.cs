@@ -128,6 +128,9 @@ public class UIManager : BaseManager
 
     #region Wrappers
 
+    /// <summary>
+    /// opens the main menu once all managers are initialized
+    /// </summary>
     private void GameStarted()
     {
         UpdateUiManagerStack(UiMenuType.MainMenu);
