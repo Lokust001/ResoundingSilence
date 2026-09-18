@@ -12,9 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccbfc7cacdf5fad469822296124c7adb, type: 3}
   m_Name: CrossbowData
   m_EditorClassIdentifier: Assembly-CSharp::BaseWeaponScriptable
-  weaponType: 0
-  shownSettings: 0
+  weaponType: 1
+  shownSettings: 2
   WeaponName: 
-  WeaponDamage: []
-  AttackCooldown: []
-  ProjectileSpeed: []
+  WeaponDamage: 0a000000
+  AttackCooldown:
+  - 0.2
+  ProjectileSpeed:
+  - 5
+  ProjectileLifetime:
+  - 2
+  HasPierce: 1
+  PierceDamageFalloff:
+  - 20
+  PierceLifetimeFalloff:
+  - 0
+  PierceAmount: 
+  MinPierceDamage: 0
+  HasLifesteal: 0
+  LifestealAmount: 0

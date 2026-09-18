@@ -55,7 +55,7 @@ public class BaseWeaponScriptable : BaseScriptableObject
 
     [ShowIf(nameof(shownSettings), ShownSettings.CombatData)]
     [Tooltip("How much damage the weapon does. Is a list in case the weapon has multiple hits in a combo.")]
-    public List<float> WeaponDamage = new List<float>();
+    public List<int> WeaponDamage = new List<int>();
 
     [ShowIf(nameof(shownSettings), ShownSettings.CombatData)]
     [Tooltip("How much damage the weapon does. Is a list in case the weapon has multiple hits in a combo.")]
@@ -80,6 +80,15 @@ public class BaseWeaponScriptable : BaseScriptableObject
     [ShowIf(EConditionOperator.And, nameof(RangedWeaponSettings), nameof(HasPierce))]
     [Tooltip("How much lifetime is lost after piercing a target. Is a list in case you want pierce lifetime fall off to not be linear.")]
     public List<float> PierceLifetimeFalloff = new List<float>();
+
+    [ShowIf(EConditionOperator.And, nameof(RangedWeaponSettings), nameof(HasPierce))]
+    [Tooltip("Set if you want to cap how many enemies the projectile can pierce through. Set to -1 if infinite. " +
+        "Made as a list in case you want combo attacks to pierce a different amount of enemies.")]
+    public List<int> PierceAmount = new List<int>();
+
+    [ShowIf(EConditionOperator.And, nameof(RangedWeaponSettings), nameof(HasPierce))]
+    [Tooltip("The minimum amount of damage the weapon can be decreased to from piercing. If <= 0, will just destroy when damage is 0.")]
+    public int MinPierceDamage;
 
     [ShowIf(nameof(shownSettings), ShownSettings.CombatData)]
     [Tooltip("Whether or not a weapon has lifesteal.")]
