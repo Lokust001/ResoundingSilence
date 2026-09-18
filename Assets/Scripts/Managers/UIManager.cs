@@ -252,7 +252,13 @@ public class UIManager : BaseManager
     /// <returns></returns>
     public bool CurrentlyInFullscreenMenu()
     {
-        return (currentlyOpenedMenus.Peek() == UiMenuType.MainMenu);
+        if (currentlyOpenedMenus.Count <= 0)
+        {
+            throw new System.Exception("Tried to check if in full screen - currently opened menus has no items in it");
+        }
+
+        return (currentlyOpenedMenus.Peek() == UiMenuType.MainMenu ||
+                currentlyOpenedMenus.Peek() == UiMenuType.UpgradeMenu);
     }
 
     #endregion
@@ -261,5 +267,6 @@ public class UIManager : BaseManager
 public enum UiMenuType
 {
     None,
-    MainMenu
+    MainMenu,
+    UpgradeMenu
 }
