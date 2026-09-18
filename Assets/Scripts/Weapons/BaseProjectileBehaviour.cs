@@ -69,13 +69,15 @@ public class BaseProjectileBehaviour : MonoBehaviour
         //Replace dummy check with enemy collision check
         if(other.GetComponent<DummyBehaviour>())
         {
+            //TODO Replace with damage enemy
             Debug.Log("Did " + myDamage + " damage!");
 
             if(hasLifesteal)
             {
                 int healValue = Mathf.CeilToInt(myDamage * ConvertToPercentage(weaponRef.LifestealAmount));
+
+                //TODO Replace with heal player
                 Debug.Log("Healed for " + healValue + "!");
-                //TODO heal player
             }
 
             //Don't want to destroy projectile if it pierces
@@ -87,7 +89,7 @@ public class BaseProjectileBehaviour : MonoBehaviour
                     >= weaponRef.MinPierceDamage ? myDamage - Mathf.CeilToInt(baseDamage * ConvertToPercentage(weaponRef.PierceDamageFalloff[pierceDamageIndex]))
                     : weaponRef.MinPierceDamage;
 
-                myLifetime -= weaponRef.PierceLifetimeFalloff[pierceLifetimeIndex];
+                myLifetime -= (baseLifetime * ConvertToPercentage(weaponRef.PierceLifetimeFalloff[pierceLifetimeIndex]));
 
                 //Destroy when pierce projectile stops doing damage
                 if(myDamage <= 0)
