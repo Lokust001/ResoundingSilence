@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb529eb0eaafc66418e136a89e011d83, type: 3}
+  m_Name: Test Enemy
+  m_EditorClassIdentifier: Assembly-CSharp::BaseEnemyScriptable
+  enemyType: 1
+  enemyName: Test
+  enemyHealth: 3
+  timeBetweenAttacks: 3
+  bulletTravelSpeed: 4
+  bulletLife: 5
+  bulletPrefab: {fileID: 4365726781555918685, guid: 3e66196bf5b5c1840850f414ea65867e, type: 3}
+  bulletsToFire: 3
+  bulletSpreadRadiusDegrees: 30
