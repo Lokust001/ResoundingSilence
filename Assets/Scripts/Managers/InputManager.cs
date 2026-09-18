@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
-* Contributors:
-* Last Modified: 09/15/2026
+* Contributors: Brad Dixon
+* Last Modified: 09/18/2026
 * Summary: Reads in all the player's inputs and throws them through public events
 * To Do:   Add more player inputs as needed.
 */
@@ -23,6 +23,7 @@ public class InputManager : BaseManager
     private InputAction move;
 
     private InputAction shoot;
+    private InputAction aim;
 
     private InputAction interact;
 
@@ -64,6 +65,7 @@ public class InputManager : BaseManager
         move = pInput.currentActionMap.FindAction("Move");
         shoot = pInput.currentActionMap.FindAction("Shoot");
         interact = pInput.currentActionMap.FindAction("Interact");
+        aim = pInput.currentActionMap.FindAction("Aim");
 
         //sets up the individual input actions
         move.performed += Move_performed;
@@ -75,8 +77,11 @@ public class InputManager : BaseManager
         interact.started += Interact_started;
         interact.canceled += Interact_canceled;
 
+        aim.performed += Aim_performed;
+
         await Task.CompletedTask;
     }
+
     #endregion
 
     #region InputHandling Functions
@@ -133,6 +138,15 @@ public class InputManager : BaseManager
     private void Interact_canceled(InputAction.CallbackContext obj)
     {
         InputPublicEvents.InteractReleased?.Invoke();
+    }
+
+    /// <summary>
+    /// Calls the public event that returns the mouse's position
+    /// </summary>
+    /// <param name="obj"></param>
+    private void Aim_performed(InputAction.CallbackContext obj)
+    {
+        InputPublicEvents.MouseMoved?.Invoke(obj.ReadValue<Vector2>());
     }
 
     #endregion
