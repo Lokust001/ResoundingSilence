@@ -13,6 +13,7 @@ public class UpgradeTileBehavior : MonoBehaviour
 {
     public bool isActive;
     public Vector2Int coords;
+    [SerializeField]
     private UpgradeTileBehavior[] adjacentTiles;
     private UpgradeMenuController controller;
 
