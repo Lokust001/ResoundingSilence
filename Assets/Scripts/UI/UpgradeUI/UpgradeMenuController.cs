@@ -8,37 +8,100 @@
 
 using NaughtyAttributes;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UpgradeMenuController : MenuBase
 {
-    [SerializeField]
-    private UpgradeTileGrid testGrid;
+    #region vars
+
+    #region Setup
+    private enum ShownSettings
+    {
+        None,
+        References,
+        Testing
+    }
 
     [SerializeField]
+    private ShownSettings settings;
+
+    #endregion
+
+    #region refs
+
+    [SerializeField]
+    [HorizontalLine(4, EColor.Green)]
+    [ShowIf(nameof(settings), ShownSettings.References)]
     private Transform gridContainer;
 
     [SerializeField]
+    [ShowIf(nameof(settings), ShownSettings.References)]
     private UpgradeTileBehavior tilePrefab;
 
-    
-    private List<UpgradeTileBehavior> tilesInGrid = new List<UpgradeTileBehavior>();
-
     [SerializeField]
+    [ShowIf(nameof(settings), ShownSettings.References)]
     private GameObject inventory;
 
+    #endregion
+
+    #region testing
+
+    [SerializeField]
+    [HorizontalLine(4, EColor.Red)]
+    [ShowIf(nameof(settings), ShownSettings.Testing)]
+    private bool enableTestMode;
+
+    [SerializeField]
+    [ShowIf(nameof(settings), ShownSettings.Testing)]
+    private UpgradeTileGrid testGrid;
+
+    [SerializeField]
+    [ShowIf(nameof(settings), ShownSettings.Testing)]
+    private UpgradeTileGrid testGrid2;
+
+    [SerializeField]
+    [ShowIf(nameof(settings), ShownSettings.Testing)]
+    private List<PinScriptable> testInventory;
+
+    [SerializeField]
+    [ShowIf(nameof(settings), ShownSettings.Testing)]
+    private List<GlyphScriptable> testListOfPossibleGlyphs;
+    #endregion
+
+    #region private
+    private List<UpgradeTileBehavior> tilesInGrid = new List<UpgradeTileBehavior>();
+    List<UpgradeTileBehavior> enabledTilesInGrid = new();
     private int gridHeight;
     private int gridWidth;
+
+    private UpgradeTileGrid currentlyEnabledGrid;
+
+    #endregion
+
+    #endregion
+
+    #region Setup
 
     /// <summary>
     /// Initializes the grid
     /// </summary>
-    [Button("InitMenu")]
     public override void InitMenu()
     {
         base.InitMenu();
         InitGrid();
+    }
+
+    /// <summary>
+    /// Turns on the testing grid if test mode is on
+    /// </summary>
+    private void Start()
+    {
+        if (enableTestMode)
+        {
+            InitGrid(testGrid);
+        }
     }
 
     /// <summary>
@@ -63,15 +126,11 @@ public class UpgradeMenuController : MenuBase
     /// Initializes the grid for the first time. TODO: replace testGrid with the grid of the actual weapon.
     /// </summary>
     /// <exception cref="System.Exception"></exception>
-    private void InitGrid()
-    {
-        if (tilesInGrid.Count > 0)
-        {
-            return;
-        }
+    private void InitGrid(UpgradeTileGrid gridToInit = null)
+    { 
 
-        gridHeight = testGrid.height;
-        gridWidth = testGrid.width;
+        gridHeight = gridToInit.height;
+        gridWidth = gridToInit.width;
 
         GridLayoutGroup layoutG = gridContainer.GetComponent<GridLayoutGroup>();
 
@@ -82,19 +141,28 @@ public class UpgradeMenuController : MenuBase
 
         //sets the number of columns
         layoutG.constraintCount = gridWidth;
+        gridToInit.InitGrid();
 
-        for (int h =  0; h < gridHeight; h++)
+        for (int i = 0; i < gridToInit.grid.Count; i++)
         {
-            for (int w = 0;  w < gridWidth; w++)
+            if (tilesInGrid.Count > i)
+            {
+                //use the tile i have
+                tilesInGrid[i].SetTileData(gridToInit.grid[i]);
+            }
+            else
             {
                 UpgradeTileBehavior tempTile = Instantiate(tilePrefab, gridContainer);
-                tempTile.InitTile(testGrid.rows[h].rowTiles[w], new Vector2Int(w, h));
                 tilesInGrid.Add(tempTile);
+                tempTile.SetTileData(gridToInit.grid[i]);
             }
         }
 
+        currentlyEnabledGrid = gridToInit;
         UIPublicEvents.UpgradeGridInitialized?.Invoke();
     }
+
+    #endregion
 
     #region Getters
 
@@ -167,5 +235,27 @@ public class UpgradeMenuController : MenuBase
 
         return GetTile(coords.x + (coords.y * gridWidth));
     }
+    #endregion
+
+    #region ButtonFuncs
+
+    /// <summary>
+    /// Changes which grid is active. 
+    /// </summary>
+    public void SwapGrid()
+    {
+        if (enableTestMode)
+        {
+            if (currentlyEnabledGrid == testGrid)
+            {
+                InitGrid(testGrid2);
+            }
+            else
+            {
+                InitGrid(testGrid);
+            }
+        }
+    }
+
     #endregion
 }
