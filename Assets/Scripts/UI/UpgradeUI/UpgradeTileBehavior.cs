@@ -57,6 +57,8 @@ public class UpgradeTileBehavior : MonoBehaviour
         {
             isActive = false;
 
+            coords = new Vector2Int(-1, -1);
+
             //temporary
             GetComponent<Image>().enabled = false;
 

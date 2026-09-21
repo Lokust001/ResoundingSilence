@@ -148,13 +148,23 @@ public class UpgradeMenuController : MenuBase
             if (tilesInGrid.Count > i)
             {
                 //use the tile i have
+                tilesInGrid[i].gameObject.SetActive(true);
                 tilesInGrid[i].SetTileData(gridToInit.grid[i]);
+                
             }
             else
             {
                 UpgradeTileBehavior tempTile = Instantiate(tilePrefab, gridContainer);
                 tilesInGrid.Add(tempTile);
                 tempTile.SetTileData(gridToInit.grid[i]);
+            }
+        }
+
+        if (gridToInit.grid.Count < tilesInGrid.Count)
+        {
+            for (int i = gridToInit.grid.Count; i < tilesInGrid.Count; i++)
+            {
+                tilesInGrid[i].gameObject.SetActive(false);
             }
         }
 

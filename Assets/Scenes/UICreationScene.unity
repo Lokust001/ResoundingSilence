@@ -778,12 +778,24 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7146239793647941094, guid: 4ef7d14c87a0ae74ab613ad7c9abeab3, type: 3}
+      propertyPath: testGrid.width
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7146239793647941094, guid: 4ef7d14c87a0ae74ab613ad7c9abeab3, type: 3}
+      propertyPath: testGrid.height
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7146239793647941094, guid: 4ef7d14c87a0ae74ab613ad7c9abeab3, type: 3}
       propertyPath: testGrid2.width
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7146239793647941094, guid: 4ef7d14c87a0ae74ab613ad7c9abeab3, type: 3}
       propertyPath: testGrid2.height
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7146239793647941094, guid: 4ef7d14c87a0ae74ab613ad7c9abeab3, type: 3}
+      propertyPath: testGrid.rows.Array.size
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7146239793647941094, guid: 4ef7d14c87a0ae74ab613ad7c9abeab3, type: 3}
       propertyPath: testGrid2.rows.Array.size
@@ -796,6 +808,34 @@ PrefabInstance:
     - target: {fileID: 7146239793647941094, guid: 4ef7d14c87a0ae74ab613ad7c9abeab3, type: 3}
       propertyPath: testGrid.NumberOfGlyphRange.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7146239793647941094, guid: 4ef7d14c87a0ae74ab613ad7c9abeab3, type: 3}
+      propertyPath: testGrid.rows.Array.data[0].rowTiles.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7146239793647941094, guid: 4ef7d14c87a0ae74ab613ad7c9abeab3, type: 3}
+      propertyPath: testGrid.rows.Array.data[1].rowTiles.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7146239793647941094, guid: 4ef7d14c87a0ae74ab613ad7c9abeab3, type: 3}
+      propertyPath: testGrid.rows.Array.data[2].rowTiles.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7146239793647941094, guid: 4ef7d14c87a0ae74ab613ad7c9abeab3, type: 3}
+      propertyPath: testGrid.rows.Array.data[3].rowTiles.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7146239793647941094, guid: 4ef7d14c87a0ae74ab613ad7c9abeab3, type: 3}
+      propertyPath: testGrid.rows.Array.data[4].rowTiles.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7146239793647941094, guid: 4ef7d14c87a0ae74ab613ad7c9abeab3, type: 3}
+      propertyPath: testGrid.rows.Array.data[5].rowTiles.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7146239793647941094, guid: 4ef7d14c87a0ae74ab613ad7c9abeab3, type: 3}
+      propertyPath: testGrid.rows.Array.data[6].rowTiles.Array.size
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7146239793647941094, guid: 4ef7d14c87a0ae74ab613ad7c9abeab3, type: 3}
       propertyPath: testGrid2.rows.Array.data[0].rowTiles.Array.size
@@ -822,6 +862,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7146239793647941094, guid: 4ef7d14c87a0ae74ab613ad7c9abeab3, type: 3}
+      propertyPath: 'testGrid.rows.Array.data[0].rowTiles.Array.data[4]'
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7146239793647941094, guid: 4ef7d14c87a0ae74ab613ad7c9abeab3, type: 3}
       propertyPath: 'testGrid.rows.Array.data[1].rowTiles.Array.data[0]'
       value: 1
       objectReference: {fileID: 0}
@@ -835,6 +879,38 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7146239793647941094, guid: 4ef7d14c87a0ae74ab613ad7c9abeab3, type: 3}
       propertyPath: 'testGrid.rows.Array.data[2].rowTiles.Array.data[0]'
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7146239793647941094, guid: 4ef7d14c87a0ae74ab613ad7c9abeab3, type: 3}
+      propertyPath: 'testGrid.rows.Array.data[2].rowTiles.Array.data[2]'
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7146239793647941094, guid: 4ef7d14c87a0ae74ab613ad7c9abeab3, type: 3}
+      propertyPath: 'testGrid.rows.Array.data[2].rowTiles.Array.data[3]'
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7146239793647941094, guid: 4ef7d14c87a0ae74ab613ad7c9abeab3, type: 3}
+      propertyPath: 'testGrid.rows.Array.data[3].rowTiles.Array.data[1]'
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7146239793647941094, guid: 4ef7d14c87a0ae74ab613ad7c9abeab3, type: 3}
+      propertyPath: 'testGrid.rows.Array.data[3].rowTiles.Array.data[2]'
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7146239793647941094, guid: 4ef7d14c87a0ae74ab613ad7c9abeab3, type: 3}
+      propertyPath: 'testGrid.rows.Array.data[3].rowTiles.Array.data[3]'
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7146239793647941094, guid: 4ef7d14c87a0ae74ab613ad7c9abeab3, type: 3}
+      propertyPath: 'testGrid.rows.Array.data[4].rowTiles.Array.data[1]'
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7146239793647941094, guid: 4ef7d14c87a0ae74ab613ad7c9abeab3, type: 3}
+      propertyPath: 'testGrid.rows.Array.data[4].rowTiles.Array.data[3]'
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7146239793647941094, guid: 4ef7d14c87a0ae74ab613ad7c9abeab3, type: 3}
+      propertyPath: 'testGrid.rows.Array.data[5].rowTiles.Array.data[2]'
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7146239793647941094, guid: 4ef7d14c87a0ae74ab613ad7c9abeab3, type: 3}
