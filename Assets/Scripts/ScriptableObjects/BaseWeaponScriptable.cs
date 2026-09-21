@@ -1,10 +1,10 @@
 /*
 * Author: Tyler
 * Contributors: Brad Dixon
-* Last Modified: 09/18/2026
+* Last Modified: 09/21/2026
 * Summary: This is the base scriptable object for all weapon scriptable objects.
 *          Handles the data for the weapons.
-* To Do:   Add more variables as needed.
+* To Do:   Add more variables as needed. Change status effects as needed.
 */
 
 using NaughtyAttributes;
@@ -22,11 +22,21 @@ public class BaseWeaponScriptable : BaseScriptableObject
         Ranged
     }
 
+    private enum EffectType
+    {
+        Decay,
+        Slow,
+        Weak,
+        Shock,
+        Burn
+    }
+
     private enum ShownSettings
     {
         None,
         Lore,
-        CombatData
+        CombatData,
+        StatusEffects
     }
 
     [SerializeField]
@@ -39,11 +49,17 @@ public class BaseWeaponScriptable : BaseScriptableObject
         "Changing between the options changes what variables are shown in the inspector.")]
     private ShownSettings shownSettings;
 
+    [ShowIf(nameof(shownSettings), ShownSettings.StatusEffects)]
+    [SerializeField]
+    [Tooltip("Changing this variable has no impact on gameplay.\n\nIt is purely a navigational tool." +
+        "Use to select what type of status effects this weapon will inflict.")]
+    private EffectType effectType;
+
     #endregion
 
     #region Lore
 
-    
+
     [ShowIf(nameof(shownSettings), ShownSettings.Lore)]
     [HorizontalLine(4, EColor.Green)]
     [Tooltip("This is the name that will appear on all of the UI")]
@@ -100,6 +116,98 @@ public class BaseWeaponScriptable : BaseScriptableObject
 
     #endregion
 
+    #region StatusEffects
+
+    [ShowIf(nameof(ViewingDecayEffect))]
+    [Tooltip("How much damage the decay does each time it ticks.")]
+    public int DecayDamage;
+
+    [ShowIf(nameof(ViewingDecayEffect))]
+    [Tooltip("The max amount of decay stacks an enemy can have.")]
+    public int MaxDecayStacks;
+
+    [ShowIf(nameof(ViewingDecayEffect))]
+    [Tooltip("How much time must pass before the next tick of decay damage occurs.")]
+    public float DecayDelay;
+
+    [ShowIf(nameof(ViewingDecayEffect))]
+    [Tooltip("How long the effect lasts for.")]
+    public float DecayDuration;
+
+    [ShowIf(nameof(ViewingSlowEffect))]
+    [Tooltip("How much the enemy is slowed by.")]
+    public float SlowStrength;
+
+    [ShowIf(nameof(ViewingSlowEffect))]
+    [Tooltip("How long the effect lasts for.")]
+    public float SlowDuration;
+
+    [ShowIf(nameof(ViewingWeakEffect))]
+    [Tooltip("How much the enemy's attack is reduced by.")]
+    public float WeakStrength;
+
+    [ShowIf(nameof(ViewingWeakEffect))]
+    [Tooltip("How long the effect lasts for.")]
+    public float WeakDuration;
+
+    [ShowIf(nameof(ViewingShockEffect))]
+    [Tooltip("How much damage the shock does each time it ticks.")]
+    public int ShockDamage;
+
+    [ShowIf(nameof(ViewingShockEffect))]
+    [Tooltip("The max amount of shock stacks an enemy can have.")]
+    public int MaxShockStacks;
+
+    [ShowIf(nameof(ViewingShockEffect))]
+    [Tooltip("How much time must pass before the next tick of shock damage occurs.")]
+    public float ShockDelay;
+
+    [ShowIf(nameof(ViewingShockEffect))]
+    [Tooltip("How long the effect lasts for.")]
+    public float ShockDuration;
+
+    [ShowIf(nameof(ViewingShockEffect))]
+    [Tooltip("How much time must pass before the effect chains damage to nearby enemies.")]
+    public float ChainDelay;
+
+    [ShowIf(nameof(ViewingShockEffect))]
+    [Tooltip("How close enemies have to be to each other for the chain to connect.")]
+    public float ChainRange;
+
+    [ShowIf(nameof(ViewingShockEffect))]
+    [Tooltip("The max amount of enemies that can be hit by one chain.")]
+    public int MaxChainCount;
+
+    [ShowIf(nameof(ViewingBurnEffect))]
+    [Tooltip("How much damage the shock does each time it ticks.")]
+    public int BurnDamage;
+
+    [ShowIf(nameof(ViewingBurnEffect))]
+    [Tooltip("The max amount of shock stacks an enemy can have.")]
+    public int MaxBurnStacks;
+
+    [ShowIf(nameof(ViewingBurnEffect))]
+    [Tooltip("How much time must pass before the next tick of shock damage occurs.")]
+    public float BurnDelay;
+
+    [ShowIf(nameof(ViewingBurnEffect))]
+    [Tooltip("How long the effect lasts for.")]
+    public float BurnDuration;
+
+    [ShowIf(nameof(ViewingBurnEffect))]
+    [Tooltip("How much time must pass before the effect tries to ignite the ground.")]
+    public float IgniteDelay;
+
+    [ShowIf(nameof(ViewingBurnEffect))]
+    [Tooltip("How big the AOE of the burning ground is.")]
+    public float IgniteSize;
+
+    [ShowIf(nameof(ViewingBurnEffect))]
+    [Tooltip("How much the ignite chance increase by per stack.")]
+    public int IgniteChancePerStack;
+
+    #endregion
+
     /// <summary>
     /// Custom bool for multiple enum values
     /// </summary>
@@ -116,5 +224,50 @@ public class BaseWeaponScriptable : BaseScriptableObject
     private bool WeaponLifeSteal()
     {
         return shownSettings == ShownSettings.CombatData && HasLifesteal;
+    }
+
+    /// <summary>
+    /// Custom bool for show if
+    /// </summary>
+    /// <returns></returns>
+    private bool ViewingDecayEffect()
+    {
+        return shownSettings == ShownSettings.StatusEffects && effectType == EffectType.Decay;
+    }
+
+    /// <summary>
+    /// Custom bool for show if
+    /// </summary>
+    /// <returns></returns>
+    private bool ViewingSlowEffect()
+    {
+        return shownSettings == ShownSettings.StatusEffects && effectType == EffectType.Slow;
+    }
+
+    /// <summary>
+    /// Custom bool for show if
+    /// </summary>
+    /// <returns></returns>
+    private bool ViewingWeakEffect()
+    {
+        return shownSettings == ShownSettings.StatusEffects && effectType == EffectType.Weak;
+    }
+
+    /// <summary>
+    /// Custom bool for show if
+    /// </summary>
+    /// <returns></returns>
+    private bool ViewingShockEffect()
+    {
+        return shownSettings == ShownSettings.StatusEffects && effectType == EffectType.Shock;
+    }
+
+    /// <summary>
+    /// Custom bool for show if
+    /// </summary>
+    /// <returns></returns>
+    private bool ViewingBurnEffect()
+    {
+        return shownSettings == ShownSettings.StatusEffects && effectType == EffectType.Burn;
     }
 }
