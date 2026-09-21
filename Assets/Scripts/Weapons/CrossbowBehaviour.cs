@@ -10,15 +10,7 @@ using NaughtyAttributes;
 
 public class CrossbowBehaviour : BaseAimedWeaponBehaviour
 {
-    enum AbilityOne
-    {
-        SplinterShot,
-        BombBlast,
-        ScatterShot,
-        StakeShot
-    }
-
-    enum AbilityTwo
+    enum Abilities
     {
         SplinterShot,
         BombBlast,
@@ -27,9 +19,9 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
     }
 
     [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityOne)]
-    [SerializeField] AbilityOne abilityOne;
+    [SerializeField] Abilities abilityOne;
     [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityTwo)]
-    [SerializeField] AbilityTwo abilityTwo;
+    [SerializeField] Abilities abilityTwo;
 
     /// <summary>
     /// The crossbow's basic attack
@@ -44,6 +36,54 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
     /// </summary>
     protected override void CastingAbility()
     {
+        switch(aimingAbilityOne == true ? abilityOne : abilityTwo)
+        {
+            case Abilities.SplinterShot:
+                CastSplinterShot();
+                break;
+            case Abilities.BombBlast:
+                CastBombBlast();
+                break;
+            case Abilities.ScatterShot:
+                CastScatterShot();
+                break;
+            case Abilities.StakeShot:
+                CastStakeShot();
+                break;
+        }
+
         base.CastingAbility();
+    }
+
+    /// <summary>
+    /// Functinality for Splinter Shot ability
+    /// </summary>
+    private void CastSplinterShot()
+    {
+        Debug.Log("Casting Splinter Shot");
+    }
+
+    /// <summary>
+    /// Functinality for Bomb Blast ability
+    /// </summary>
+    private void CastBombBlast()
+    {
+        Debug.Log("Casting Bomb Blast");
+    }
+
+    /// <summary>
+    /// Functinality for Scatter Shot ability
+    /// </summary>
+    private void CastScatterShot()
+    {
+        Debug.Log("Casting Scatter Shot");
+    }
+
+    /// <summary>
+    /// Functinality for Stake Shot ability
+    /// </summary>
+    private void CastStakeShot()
+    {
+        Debug.Log("Casting Stake Shot");
     }
 }

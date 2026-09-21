@@ -146,7 +146,6 @@ public class BaseWeaponBehaviour : MonoBehaviour
         {
             aimingAbilityOne = !aimingAbilityOne;
             aimingAbilityTwo = false;
-            Debug.Log("Aiming ability one = " + aimingAbilityOne);
         }
     }
 
@@ -159,7 +158,6 @@ public class BaseWeaponBehaviour : MonoBehaviour
         {
             aimingAbilityTwo = !aimingAbilityTwo;
             aimingAbilityOne = false;
-            Debug.Log("Aiming ability two = " + aimingAbilityTwo);
         }
     }
 
@@ -171,14 +169,12 @@ public class BaseWeaponBehaviour : MonoBehaviour
         attackReady = false;
         if(aimingAbilityOne)
         {
-            Debug.Log("I cast ability one!");
             aimingAbilityOne = false;
             StartCoroutine(AbilityEndLag(abilityOneEndLag));
             StartCoroutine(AbilityDelay(true, abilityOneCooldown));
         }
         else if(aimingAbilityTwo)
         {
-            Debug.Log("I cast ability two.");
             aimingAbilityTwo = false;
             StartCoroutine(AbilityEndLag(abilityTwoEndLag));
             StartCoroutine(AbilityDelay(false, abilityTwoCooldown));

@@ -164,11 +164,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f623ee31e6121349ac8494b6d6cb84d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CrossbowBehaviour
+  abilitySettings: 1
   ThisWeaponData: {fileID: 0}
   weaponDataID: 0
+  abilityOneReady: 1
+  abilityOneCooldown: 3
+  abilityOneEndLag: 0.5
+  abilityOneDamage: 2
+  abilityTwoReady: 0
+  abilityTwoCooldown: 2
+  abilityTwoEndLag: 0.5
+  abilityTwoDamage: 20
   weaponProjectile: {fileID: 8805286060830696359, guid: f4083c9721c5aa04280c3f4b179ddf88, type: 3}
   abilityOne: 0
-  abilityTwo: 0
+  abilityTwo: 1
 --- !u!1 &507712400
 GameObject:
   m_ObjectHideFlags: 0
