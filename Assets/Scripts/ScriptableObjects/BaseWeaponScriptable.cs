@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors: Brad Dixon
-* Last Modified: 09/17/2026
+* Last Modified: 09/18/2026
 * Summary: This is the base scriptable object for all weapon scriptable objects.
 *          Handles the data for the weapons.
 * To Do:   Add more variables as needed.

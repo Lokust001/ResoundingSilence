@@ -22,4 +22,10 @@ public static class InputPublicEvents
 
     public static Action InteractPressed;
     public static Action InteractReleased;
+
+    public static Action AbilityOnePressed;
+    public static Action AbilityOneReleased;
+
+    public static Action AbilityTwoPressed;
+    public static Action AbilityTwoReleased;
 }

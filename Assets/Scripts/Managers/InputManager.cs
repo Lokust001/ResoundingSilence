@@ -25,6 +25,9 @@ public class InputManager : BaseManager
     private InputAction shoot;
     private InputAction aim;
 
+    private InputAction abilityOne;
+    private InputAction abilityTwo;
+
     private InputAction interact;
 
     #endregion
@@ -78,6 +81,12 @@ public class InputManager : BaseManager
         interact.canceled += Interact_canceled;
 
         aim.performed += Aim_performed;
+
+        abilityOne.started += AbilityOne_started;
+        abilityOne.canceled += AbilityOne_canceled;
+
+        abilityTwo.started += AbilityTwo_started;
+        abilityTwo.canceled += AbilityTwo_canceled;
 
         await Task.CompletedTask;
     }
@@ -147,6 +156,42 @@ public class InputManager : BaseManager
     private void Aim_performed(InputAction.CallbackContext obj)
     {
         InputPublicEvents.MouseMoved?.Invoke(obj.ReadValue<Vector2>());
+    }
+
+    /// <summary>
+    /// Calls the public event for pressing the ability one button
+    /// </summary>
+    /// <param name="obj"></param>
+    private void AbilityOne_started(InputAction.CallbackContext obj)
+    {
+        InputPublicEvents.AbilityOnePressed?.Invoke();
+    }
+
+    /// <summary>
+    /// Calls the public event for releasing the ability one button
+    /// </summary>
+    /// <param name="obj"></param>
+    private void AbilityOne_canceled(InputAction.CallbackContext obj)
+    {
+        InputPublicEvents.AbilityOneReleased?.Invoke();
+    }
+
+    /// <summary>
+    /// Calls the public event for pressing the ability two button
+    /// </summary>
+    /// <param name="obj"></param>
+    private void AbilityTwo_started(InputAction.CallbackContext obj)
+    {
+        InputPublicEvents.AbilityTwoPressed?.Invoke();
+    }
+
+    /// <summary>
+    /// Calls the public event for releasing the ability two button
+    /// </summary>
+    /// <param name="obj"></param>
+    private void AbilityTwo_canceled(InputAction.CallbackContext obj)
+    {
+        InputPublicEvents.AbilityTwoReleased?.Invoke();
     }
 
     #endregion
