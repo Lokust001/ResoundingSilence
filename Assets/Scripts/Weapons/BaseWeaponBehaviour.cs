@@ -1,7 +1,7 @@
 /******************************************************************************
  * Author: Brad Dixon
  * Contributors:
- * Last Modified: 9/18/2026
+ * Last Modified: 9/21/2026
  * Brief: Weapon architecture that all weapons inherit
  * TODO:
  * ***************************************************************************/
@@ -47,6 +47,10 @@ public class BaseWeaponBehaviour : MonoBehaviour
     [Tooltip("How much damage the ability does.")]
     [SerializeField] protected int abilityOneDamage;
 
+    [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityOne)]
+    [Tooltip("How far from the player the ability can be cast.")]
+    [SerializeField] protected float abilityOneRange;
+
     [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityTwo)]
     [Tooltip("Set true if you want ability two to be ready to use on spawn.")]
     [SerializeField] protected bool abilityTwoReady;
@@ -62,6 +66,10 @@ public class BaseWeaponBehaviour : MonoBehaviour
     [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityTwo)]
     [Tooltip("How much damage the ability does.")]
     [SerializeField] protected int abilityTwoDamage;
+
+    [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityTwo)]
+    [Tooltip("How far from the player the ability can be cast.")]
+    [SerializeField] protected float abilityTwoRange;
 
     /// <summary>
     /// Gets a reference to the copy of the weapon's data
