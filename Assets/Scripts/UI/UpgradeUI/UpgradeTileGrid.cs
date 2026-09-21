@@ -8,12 +8,16 @@
 
 using NaughtyAttributes;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 [System.Serializable]
 public class UpgradeTileGrid
 {
+    [Tooltip("X is the minimum number of glyphs this can have (inclusive), Y is the maximum number of glyphs (inclusive)")]
+    //will be hidden until my next pr.
+    [HideInInspector]
+    public Vector2Int NumberOfGlyphRange;
+
     [OnValueChanged(nameof(UpdateGridHeightCount)), AllowNesting, Range(0, 10)]
     public int height;
 
@@ -22,6 +26,8 @@ public class UpgradeTileGrid
 
     [Header("Grid tiles"), Tooltip("This is the upgrade grid - 0, 0 is the top left element and it goes to the right.")]
     public List<GridRow> rows;
+
+    public List<UpgradeTileData> grid { get; private set; } = new();
 
     [System.Serializable]
     public class GridRow
@@ -73,6 +79,8 @@ public class UpgradeTileGrid
         }
     }
 
+    private bool HasBeenInitialized;
+
     /// <summary>
     /// updates each grid element when the width changes
     /// </summary>
@@ -111,5 +119,55 @@ public class UpgradeTileGrid
             }
             rows.RemoveRange(temp, rows.Count - height);
         }
+    }
+
+    /// <summary>
+    /// Initializes the tiledatas in the grid. 
+    /// </summary>
+    public void InitGrid()
+    {
+        //prevents multiple initializations
+        if (HasBeenInitialized)
+        {
+            return;
+        }
+        else
+        {
+            HasBeenInitialized = true;
+        }
+
+        List<UpgradeTileData> enabledUnGlyphedTiles = new();
+
+        //initialize each tile
+        for (int h = 0; h < height; h++)
+        {
+            for (int w = 0; w < width; w++)
+            {
+                UpgradeTileData tempData = new(new Vector2Int(w, h), rows[h].rowTiles[w]);
+
+                grid.Add(tempData);
+
+                //if the tile is enabled, it can have a glyph on it
+                if (rows[h].rowTiles[w])
+                {
+                    enabledUnGlyphedTiles.Add(tempData);
+                }
+            }
+        }
+
+        //place glyphs randomly
+        int glyphsToPlace = Random.Range(minInclusive: NumberOfGlyphRange.x, maxExclusive:NumberOfGlyphRange.y + 1);
+
+        if (glyphsToPlace <= 0)
+        {
+            return;
+        }
+
+        for (int i =  0; i < glyphsToPlace; i++)
+        {
+            enabledUnGlyphedTiles[Random.Range(0, enabledUnGlyphedTiles.Count)].glyph = StaticDataManager.Instance.GetRandomGlyph();
+        }
+
+        
     }
 }
