@@ -1,3 +1,11 @@
+/*
+* Author: Tyler
+* Contributors:
+* Last Modified: 09/21/2026
+* Summary: stores the data for the tile grid
+* To Do:   N/A
+*/
+
 using NaughtyAttributes;
 using System.Collections.Generic;
 using Unity.VisualScripting;
