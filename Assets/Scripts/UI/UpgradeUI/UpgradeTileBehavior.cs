@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors:
-* Last Modified: 09/18/2026
+* Last Modified: 09/21/2026
 * Summary: Controls an individual tile on the upgrade grid.
 * To Do:   N/A
 */
@@ -17,30 +17,18 @@ public class UpgradeTileBehavior : MonoBehaviour
     private UpgradeTileBehavior[] adjacentTiles;
     private UpgradeMenuController controller;
 
+    public UpgradeTileData tileData;
+
     /// <summary>
     /// Initializes the tile - called when this tile initializes
     /// </summary>
     /// <param name="active">if the tile is on or off</param>
     /// <param name="coords">the tiles xy positiion in the grid</param>
-    public void InitTile(bool active = false, Vector2Int coords = new())
+    public void InitTile()
     {
-        isActive = active;
-
-        this.coords = coords;
-        gameObject.name = $"Upgrade Tile: {coords.x}, {coords.y}";
-
-        adjacentTiles = new UpgradeTileBehavior[8];
-
         controller = GetComponentInParent<UpgradeMenuController>();
 
         UIPublicEvents.UpgradeGridInitialized += GridInitialized;
-
-        //temp
-        if (isActive)
-        {
-            GetComponent<Image>().color = Color.green;
-        }
-        
     }
 
     /// <summary>
@@ -57,5 +45,33 @@ public class UpgradeTileBehavior : MonoBehaviour
     private void GridInitialized()
     {
         adjacentTiles = controller.getAdjacentTiles(coords);
+    }
+
+    /// <summary>
+    /// Sets the tile data that this tilebehavior has
+    /// </summary>
+    /// <param name="data"></param>
+    public void SetTileData(UpgradeTileData data = null)
+    {
+        if (data == null)
+        {
+            isActive = false;
+
+            coords = new Vector2Int(-1, -1);
+
+            //temporary
+            GetComponent<Image>().enabled = false;
+
+            return;
+        }
+
+        isActive = data.isActive;
+
+        this.coords = data.coords;
+        gameObject.name = $"Upgrade Tile: {coords.x}, {coords.y}";
+
+        adjacentTiles = new UpgradeTileBehavior[8];
+
+        GetComponent<Image>().enabled = isActive;
     }
 }
