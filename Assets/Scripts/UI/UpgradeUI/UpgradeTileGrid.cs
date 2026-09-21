@@ -14,6 +14,8 @@ using UnityEngine;
 public class UpgradeTileGrid
 {
     [Tooltip("X is the minimum number of glyphs this can have (inclusive), Y is the maximum number of glyphs (inclusive)")]
+    //will be hidden until my next pr.
+    [HideInInspector]
     public Vector2Int NumberOfGlyphRange;
 
     [OnValueChanged(nameof(UpdateGridHeightCount)), AllowNesting, Range(0, 10)]
