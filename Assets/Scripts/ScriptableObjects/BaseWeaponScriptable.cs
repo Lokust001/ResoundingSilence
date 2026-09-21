@@ -86,6 +86,11 @@ public class BaseWeaponScriptable : BaseScriptableObject
     public List<float> ProjectileLifetime = new List<float>();
 
     [ShowIf(nameof(RangedWeaponSettings))]
+    [Tooltip("How much shooting should slow the player by. " +
+        "Is a list in case the weapon's combo attacks should slow down the player by a different amount.")]
+    public List<float> MovementSlowdown = new List<float>();
+
+    [ShowIf(nameof(RangedWeaponSettings))]
     [Tooltip("Whether or not the weapon's attacks have pierce.")]
     public bool HasPierce;
 
