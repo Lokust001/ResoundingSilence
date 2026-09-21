@@ -7,9 +7,18 @@
  * ***************************************************************************/
 using UnityEngine;
 using System.Collections;
+using NaughtyAttributes;
 
 public class BaseWeaponBehaviour : MonoBehaviour
 {
+    protected enum AbilitySettings
+    {
+        AbilityOne,
+        AbilityTwo
+    }
+
+    [SerializeField] protected AbilitySettings abilitySettings;
+
     //Public so the upgrade manager can find the reference
     [HideInInspector] public BaseWeaponScriptable ThisWeaponData;
     [SerializeField] protected int weaponDataID;
@@ -18,6 +27,41 @@ public class BaseWeaponBehaviour : MonoBehaviour
 
     protected bool isAttacking;
     protected bool attackReady;
+
+    protected bool aimingAbilityOne;
+    protected bool aimingAbilityTwo;
+
+    [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityOne)]
+    [Tooltip("Set true if you want ability one to be ready to use on spawn.")]
+    [SerializeField] protected bool abilityOneReady;
+
+    [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityOne)]
+    [Tooltip("How long the ability is on cooldown for.")]
+    [SerializeField] protected float abilityOneCooldown;
+
+    [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityOne)]
+    [Tooltip("How long the ability puts the player in end lag for.")]
+    [SerializeField] protected float abilityOneEndLag;
+
+    [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityOne)]
+    [Tooltip("How much damage the ability does.")]
+    [SerializeField] protected int abilityOneDamage;
+
+    [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityTwo)]
+    [Tooltip("Set true if you want ability two to be ready to use on spawn.")]
+    [SerializeField] protected bool abilityTwoReady;
+
+    [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityTwo)]
+    [Tooltip("How long the ability is on cooldown for.")]
+    [SerializeField] protected float abilityTwoCooldown;
+
+    [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityTwo)]
+    [Tooltip("How long the ability puts the player in end lag for.")]
+    [SerializeField] protected float abilityTwoEndLag;
+
+    [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityTwo)]
+    [Tooltip("How much damage the ability does.")]
+    [SerializeField] protected int abilityTwoDamage;
 
     /// <summary>
     /// Gets a reference to the copy of the weapon's data
@@ -37,9 +81,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
         InputPublicEvents.ShootReleased += PlayerStoppedAttacking;
         InputPublicEvents.MouseMoved += GetMousPos;
         InputPublicEvents.AbilityOnePressed += AimingAbilityOne;
-        InputPublicEvents.AbilityOneReleased += CastingAbilityOne;
         InputPublicEvents.AbilityTwoPressed += AimingAbilityTwo;
-        InputPublicEvents.AbilityTwoReleased += CastingAbilityTwo;
     }
 
     /// <summary>
@@ -51,9 +93,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
         InputPublicEvents.ShootReleased -= PlayerStoppedAttacking;
         InputPublicEvents.MouseMoved -= GetMousPos;
         InputPublicEvents.AbilityOnePressed -= AimingAbilityOne;
-        InputPublicEvents.AbilityOneReleased -= CastingAbilityOne;
         InputPublicEvents.AbilityTwoPressed -= AimingAbilityTwo;
-        InputPublicEvents.AbilityTwoReleased -= CastingAbilityTwo;
     }
 
     /// <summary>
@@ -61,7 +101,14 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// </summary>
     protected void PlayerAttacking()
     {
-        isAttacking = true;
+        if (aimingAbilityOne || aimingAbilityTwo)
+        {
+            CastingAbility();
+        }
+        else
+        {
+            isAttacking = true;
+        }
     }
 
     /// <summary>
@@ -81,35 +128,35 @@ public class BaseWeaponBehaviour : MonoBehaviour
     }
 
     /// <summary>
-    /// How the player aims ability one
+    /// How the player aims ability one. Also sets whether or not the player is aiming the ability
     /// </summary>
     virtual protected void AimingAbilityOne()
     {
-        throw new System.Exception("Functionality not coded!");
+        aimingAbilityOne = !aimingAbilityOne;
+        aimingAbilityTwo = false;
     }
 
     /// <summary>
-    /// How the player aims ability two
+    /// How the player aims ability two. Also sets whether or not the player is aiming the ability
     /// </summary>
     virtual protected void AimingAbilityTwo()
     {
-        throw new System.Exception("Functionality not coded!");
+        aimingAbilityTwo = !aimingAbilityTwo;
+        aimingAbilityOne = false;
     }
 
     /// <summary>
-    /// What ability one does
+    /// The base inheritance for using weapon abilities
     /// </summary>
-    virtual protected void CastingAbilityOne()
+    virtual protected void CastingAbility()
     {
-        throw new System.Exception("Functionality not coded!");
-    }
+        attackReady = false;
+        if(aimingAbilityOne)
+        {
+            StartCoroutine(AbilityEndLag(abilityOneEndLag));
+        }
 
-    /// <summary>
-    /// What ability two does
-    /// </summary>
-    virtual protected void CastingAbilityTwo()
-    {
-        throw new System.Exception("Functionality not coded!");
+        //Add the ability functionality in the actual weapon script
     }
 
     /// <summary>
@@ -141,5 +188,31 @@ public class BaseWeaponBehaviour : MonoBehaviour
     {
         yield return new WaitForSeconds(ThisWeaponData.AttackCooldown[0]);
         attackReady = true;
+    }
+
+    /// <summary>
+    /// How long the player gets put in end lag after using an ability
+    /// </summary>
+    /// <param name="t"></param>
+    /// <returns></returns>
+    virtual protected IEnumerator AbilityEndLag(float time)
+    {
+        yield return new WaitForSeconds(time);
+        attackReady = true;
+    }
+
+    /// <summary>
+    /// After casting an ability, the player has to wait for it's cooldown before they can cast it again.
+    /// </summary>
+    /// <param name="abilityReady"></param>
+    /// <param name="time"></param>
+    /// <returns></returns>
+    virtual protected IEnumerator AbilityDelay(bool abilityReady, float time)
+    {
+        abilityReady = false;
+
+        yield return new WaitForSeconds(time);
+
+        abilityReady = true;
     }
 }

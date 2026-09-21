@@ -167,6 +167,8 @@ MonoBehaviour:
   ThisWeaponData: {fileID: 0}
   weaponDataID: 0
   weaponProjectile: {fileID: 8805286060830696359, guid: f4083c9721c5aa04280c3f4b179ddf88, type: 3}
+  abilityOne: 0
+  abilityTwo: 0
 --- !u!1 &507712400
 GameObject:
   m_ObjectHideFlags: 0
@@ -199,6 +201,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26deb5780a2dfbb4f8a0135e5c9057c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DummyBehaviour
+  pathPoints: []
+  moveSpeed: 0
+  movingDummy: 0
 --- !u!65 &507712402
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -324,6 +329,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26deb5780a2dfbb4f8a0135e5c9057c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DummyBehaviour
+  pathPoints: []
+  moveSpeed: 0
+  movingDummy: 0
 --- !u!65 &642361637
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -430,6 +438,7 @@ GameObject:
   - component: {fileID: 711003099}
   - component: {fileID: 711003098}
   - component: {fileID: 711003097}
+  - component: {fileID: 711003102}
   m_Layer: 0
   m_Name: Dummy
   m_TagString: Untagged
@@ -449,6 +458,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26deb5780a2dfbb4f8a0135e5c9057c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DummyBehaviour
+  pathPoints:
+  - {x: -5, y: 0, z: 3}
+  - {x: 5, y: 0, z: 3}
+  moveSpeed: 2
+  movingDummy: 1
 --- !u!65 &711003098
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -536,12 +550,39 @@ Transform:
   m_GameObject: {fileID: 711003096}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.61, y: 0, z: 2.93}
+  m_LocalPosition: {x: 5, y: 0, z: 3}
   m_LocalScale: {x: 0.5, y: 1, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &711003102
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 711003096}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &851390764
 GameObject:
   m_ObjectHideFlags: 0
@@ -701,6 +742,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26deb5780a2dfbb4f8a0135e5c9057c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DummyBehaviour
+  pathPoints: []
+  moveSpeed: 0
+  movingDummy: 0
 --- !u!65 &1191040248
 BoxCollider:
   m_ObjectHideFlags: 0

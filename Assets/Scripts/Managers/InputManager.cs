@@ -69,6 +69,8 @@ public class InputManager : BaseManager
         shoot = pInput.currentActionMap.FindAction("Shoot");
         interact = pInput.currentActionMap.FindAction("Interact");
         aim = pInput.currentActionMap.FindAction("Aim");
+        abilityOne = pInput.currentActionMap.FindAction("AbilityOne");
+        abilityTwo = pInput.currentActionMap.FindAction("AbilityTwo");
 
         //sets up the individual input actions
         move.performed += Move_performed;
@@ -83,10 +85,8 @@ public class InputManager : BaseManager
         aim.performed += Aim_performed;
 
         abilityOne.started += AbilityOne_started;
-        abilityOne.canceled += AbilityOne_canceled;
 
         abilityTwo.started += AbilityTwo_started;
-        abilityTwo.canceled += AbilityTwo_canceled;
 
         await Task.CompletedTask;
     }
@@ -168,30 +168,12 @@ public class InputManager : BaseManager
     }
 
     /// <summary>
-    /// Calls the public event for releasing the ability one button
-    /// </summary>
-    /// <param name="obj"></param>
-    private void AbilityOne_canceled(InputAction.CallbackContext obj)
-    {
-        InputPublicEvents.AbilityOneReleased?.Invoke();
-    }
-
-    /// <summary>
     /// Calls the public event for pressing the ability two button
     /// </summary>
     /// <param name="obj"></param>
     private void AbilityTwo_started(InputAction.CallbackContext obj)
     {
         InputPublicEvents.AbilityTwoPressed?.Invoke();
-    }
-
-    /// <summary>
-    /// Calls the public event for releasing the ability two button
-    /// </summary>
-    /// <param name="obj"></param>
-    private void AbilityTwo_canceled(InputAction.CallbackContext obj)
-    {
-        InputPublicEvents.AbilityTwoReleased?.Invoke();
     }
 
     #endregion
