@@ -14,7 +14,7 @@ public class MenuBase : MonoBehaviour
     protected UiMenuType menuType;
 
     /// <summary>
-    /// Initializes the menu
+    /// Initializes the menu. Can go anywhere in the overridden function.
     /// </summary>
     public virtual void InitMenu()
     {
@@ -22,8 +22,7 @@ public class MenuBase : MonoBehaviour
     }
 
     /// <summary>
-    /// Mostly empty function that exists to be overwritten with actual functionality dependant on the menu
-    /// 
+    /// Mostly empty function that exists to be overwritten with actual functionality dependant on the menu.
     /// Contains error checks. Designed to be at the top of the overridden function, not the bottom.
     /// </summary>
     protected virtual void OpenMenu()
