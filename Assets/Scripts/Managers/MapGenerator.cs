@@ -15,7 +15,7 @@ public class MapGenerator : MonoBehaviour
     private List<GameObject> POISpots = new List<GameObject>();
 
     /// <summary>
-    /// Start is called once before the first execution of Update after the MonoBehaviour is created
+    /// Temp call for spawnMap until I merege this system into the whole manager spawner
     /// </summary>
     void Start()
     {
