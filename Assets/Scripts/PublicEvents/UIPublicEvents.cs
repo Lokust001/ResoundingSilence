@@ -14,4 +14,6 @@ public static class UIPublicEvents
     public static Action HideOpenMenus;
 
     public static Action NewMenuOpened;
+
+    public static Action UpgradeGridInitialized;
 }
