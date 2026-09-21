@@ -70,6 +70,16 @@ public class BaseWeaponBehaviour : MonoBehaviour
     {
         ThisWeaponData = StaticDataManager.Instance.GetWeaponAtID(weaponDataID);
         attackReady = true;
+
+        if(!abilityOneReady)
+        {
+            StartCoroutine(AbilityDelay(abilityOneReady, abilityOneCooldown));
+        }
+
+        if(!abilityTwoReady)
+        {
+            StartCoroutine(AbilityDelay(abilityTwoReady, abilityTwoCooldown));
+        }
     }
 
     /// <summary>
@@ -132,8 +142,12 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// </summary>
     virtual protected void AimingAbilityOne()
     {
-        aimingAbilityOne = !aimingAbilityOne;
-        aimingAbilityTwo = false;
+        if (abilityOneReady)
+        {
+            aimingAbilityOne = !aimingAbilityOne;
+            aimingAbilityTwo = false;
+            Debug.Log("Aiming ability one = " + aimingAbilityOne);
+        }
     }
 
     /// <summary>
@@ -141,8 +155,12 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// </summary>
     virtual protected void AimingAbilityTwo()
     {
-        aimingAbilityTwo = !aimingAbilityTwo;
-        aimingAbilityOne = false;
+        if (abilityTwoReady)
+        {
+            aimingAbilityTwo = !aimingAbilityTwo;
+            aimingAbilityOne = false;
+            Debug.Log("Aiming ability two = " + aimingAbilityTwo);
+        }
     }
 
     /// <summary>
@@ -153,7 +171,17 @@ public class BaseWeaponBehaviour : MonoBehaviour
         attackReady = false;
         if(aimingAbilityOne)
         {
+            Debug.Log("I cast ability one!");
+            aimingAbilityOne = false;
             StartCoroutine(AbilityEndLag(abilityOneEndLag));
+            StartCoroutine(AbilityDelay(true, abilityOneCooldown));
+        }
+        else if(aimingAbilityTwo)
+        {
+            Debug.Log("I cast ability two.");
+            aimingAbilityTwo = false;
+            StartCoroutine(AbilityEndLag(abilityTwoEndLag));
+            StartCoroutine(AbilityDelay(false, abilityTwoCooldown));
         }
 
         //Add the ability functionality in the actual weapon script
@@ -207,12 +235,26 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// <param name="abilityReady"></param>
     /// <param name="time"></param>
     /// <returns></returns>
-    virtual protected IEnumerator AbilityDelay(bool abilityReady, float time)
+    virtual protected IEnumerator AbilityDelay(bool isAbilityOne, float time)
     {
-        abilityReady = false;
+        if(isAbilityOne)
+        {
+            abilityOneReady = false;
+        }
+        else
+        {
+            abilityTwoReady = false;
+        }
 
         yield return new WaitForSeconds(time);
 
-        abilityReady = true;
+        if (isAbilityOne)
+        {
+            abilityOneReady = true;
+        }
+        else
+        {
+            abilityTwoReady = true;
+        }
     }
 }

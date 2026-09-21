@@ -6,6 +6,7 @@
  * TODO:
  * ***************************************************************************/
 using UnityEngine;
+using NaughtyAttributes;
 
 public class CrossbowBehaviour : BaseAimedWeaponBehaviour
 {
@@ -25,7 +26,9 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
         StakeShot
     }
 
+    [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityOne)]
     [SerializeField] AbilityOne abilityOne;
+    [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityTwo)]
     [SerializeField] AbilityTwo abilityTwo;
 
     /// <summary>
