@@ -3,7 +3,7 @@
 * Contributors:
 * Last Modified: 09/21/2026
 * Summary: Holds and stores the data of each island
-* To Do:   N/A
+* To Do:   Make the fast travel points mean something
 */
 using System.Collections.Generic;
 using NUnit.Framework;
@@ -15,6 +15,9 @@ public class IslandData : MonoBehaviour
     public List<GameObject> FastTravelPoints;
     public GameObject realFastTravel;
 
+    /// <summary>
+    /// This is for later use when get get fast travel in
+    /// </summary>
     public void ChooseFastTravel()
     {
         realFastTravel = FastTravelPoints[Random.Range(0, FastTravelPoints.Count)];

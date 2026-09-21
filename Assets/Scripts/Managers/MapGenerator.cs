@@ -14,7 +14,9 @@ public class MapGenerator : MonoBehaviour
     private List<GameObject> islands = new List<GameObject>();
     private List<GameObject> POISpots = new List<GameObject>();
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    /// <summary>
+    /// Start is called once before the first execution of Update after the MonoBehaviour is created
+    /// </summary>
     void Start()
     {
         spawnMap();
