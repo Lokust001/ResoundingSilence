@@ -44,4 +44,14 @@ public class UpgradeTileData
         glyph = setGlyph;
         pin = null;
     }
+
+    public void SetGlyph(GlyphScriptable glyph)
+    {
+        this.glyph = glyph;
+    }
+
+    public void SetPin(PinScriptable pin)
+    {
+        this.pin = pin;
+    }
 }

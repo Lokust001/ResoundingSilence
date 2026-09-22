@@ -8,6 +8,7 @@
 
 using NaughtyAttributes;
 using UnityEngine;
+[CreateAssetMenu(fileName = "NewPin", menuName = "Scriptables/New Pin")]
 public class PinScriptable : BaseScriptableObject
 {
     public enum PinType

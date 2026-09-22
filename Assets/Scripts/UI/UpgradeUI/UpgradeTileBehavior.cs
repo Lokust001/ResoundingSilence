@@ -7,17 +7,23 @@
 */
 
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UpgradeTileBehavior : MonoBehaviour
+public class UpgradeTileBehavior : MonoBehaviour, IPointerClickHandler
 {
     public bool isActive;
     public Vector2Int coords;
+
     [SerializeField]
     private UpgradeTileBehavior[] adjacentTiles;
     private UpgradeMenuController controller;
 
     public UpgradeTileData tileData;
+
+    
+
+    #region Tile Generation
 
     /// <summary>
     /// Initializes the tile - called when this tile initializes
@@ -74,4 +80,28 @@ public class UpgradeTileBehavior : MonoBehaviour
 
         GetComponent<Image>().enabled = isActive;
     }
+
+    #endregion
+
+    #region PinStuff
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData.button == PointerEventData.InputButton.Left)
+        {
+            controller.PlacePinInTile(this);
+        }
+    }
+
+    public void SetNewPinInTile(PinItemBehavior pin)
+    {
+        tileData.SetPin(pin.pinData);
+    }
+
+    public void UnequipPin()
+    {
+
+    }
+
+    #endregion
 }

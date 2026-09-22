@@ -10,6 +10,11 @@ using UnityEngine;
 
 public class MainMenuController : MenuBase
 {
+    [SerializeField]
+    private GameObject testingMenuContainer;
+
+    #region main menu buttons
+
     /// <summary>
     /// starts the game
     /// </summary>
@@ -47,4 +52,20 @@ public class MainMenuController : MenuBase
     {
         Debug.Log("Toggling Credits");
     }
+
+    public void ToggleTestMenu()
+    {
+        testingMenuContainer.SetActive(!testingMenuContainer.activeInHierarchy);
+    }
+
+    #endregion
+
+    #region testing menu buttons
+
+    public void EnableUpgradeMenu()
+    {
+        UIPublicEvents.UpdateUIManagerStack?.Invoke(UiMenuType.UpgradeMenu);
+    }
+
+    #endregion
 }

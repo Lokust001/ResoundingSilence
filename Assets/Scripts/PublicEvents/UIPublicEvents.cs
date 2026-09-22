@@ -15,5 +15,13 @@ public static class UIPublicEvents
 
     public static Action NewMenuOpened;
 
+    public static Action<UiMenuType> UpdateUIManagerStack;
+
+
+    #region UpgradeMenu
     public static Action UpgradeGridInitialized;
+
+    public static Action<PinItemBehavior> PinPickedUp;
+
+    #endregion
 }

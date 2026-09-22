@@ -112,6 +112,7 @@ public class UIManager : BaseManager
     private async Awaitable SetupPublicEvents()
     {
         GenericPublicEvents.AllManagersInitialized += GameStarted;
+        UIPublicEvents.UpdateUIManagerStack += UpdateUiManagerStack;
 
         await Task.CompletedTask;
     }
@@ -122,6 +123,7 @@ public class UIManager : BaseManager
     private void OnDestroy()
     {
         GenericPublicEvents.AllManagersInitialized -= GameStarted;
+        UIPublicEvents.UpdateUIManagerStack -= UpdateUiManagerStack;
     }
 
     #endregion
