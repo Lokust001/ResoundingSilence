@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: CrossbowData
   m_EditorClassIdentifier: Assembly-CSharp::BaseWeaponScriptable
   weaponType: 1
-  shownSettings: 2
+  shownSettings: 3
+  effectType: 0
   WeaponName: 
   WeaponDamage: 0a000000
   AttackCooldown:
@@ -22,12 +23,35 @@ MonoBehaviour:
   - 5
   ProjectileLifetime:
   - 2
-  HasPierce: 1
+  MovementSlowdown: []
+  HasPierce: 0
   PierceDamageFalloff:
   - 20
   PierceLifetimeFalloff:
   - 0
   PierceAmount: 00000000
   MinPierceDamage: 0
-  HasLifesteal: 1
+  HasLifesteal: 0
   LifestealAmount: 5
+  DecayDamage: 0
+  MaxDecayStacks: 0
+  DecayDelay: 0
+  DecayDuration: 0
+  SlowStrength: 0
+  SlowDuration: 0
+  WeakStrength: 0
+  WeakDuration: 0
+  ShockDamage: 0
+  MaxShockStacks: 0
+  ShockDelay: 0
+  ShockDuration: 0
+  ChainDelay: 0
+  ChainRange: 0
+  MaxChainCount: 0
+  BurnDamage: 0
+  MaxBurnStacks: 0
+  BurnDelay: 0
+  BurnDuration: 0
+  IgniteDelay: 0
+  IgniteSize: 0
+  IgniteChancePerStack: 0

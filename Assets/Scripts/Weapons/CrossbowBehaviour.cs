@@ -1,7 +1,7 @@
 /******************************************************************************
  * Author: Brad Dixon
  * Contributors:
- * Last Modified: 9/21/2026
+ * Last Modified: 9/22/2026
  * Brief: Handles the crossbow's basic attacks and abilities.
  * TODO:
  * ***************************************************************************/
@@ -18,10 +18,124 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
         StakeShot
     }
 
+    [Header("Unique Ability One Variables"), HorizontalLine(height: 4, EColor.Green)]
     [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityOne)]
     [SerializeField] Abilities abilityOne;
+    [Header("Unique Ability Two Variables"), HorizontalLine(height: 4, EColor.Green)]
     [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityTwo)]
     [SerializeField] Abilities abilityTwo;
+
+    #region Ability Variables
+
+    #region Splinter Shot Variables
+
+    [ShowIf(nameof(ViewingSplinterShot))]
+    [Tooltip("How big the ability AOE is.")]
+    [SerializeField] float splinterShotAOE;
+
+    [ShowIf(nameof(ViewingSplinterShot))]
+    [Tooltip("How much time must elapse between ticks of damage.")]
+    [SerializeField] float splinterShotDOTTickDelay;
+
+    [ShowIf(nameof(ViewingSplinterShot))]
+    [Tooltip("How long the DOT effects lasts.")]
+    [SerializeField] float splinterShotDOTDuration;
+
+    #endregion
+
+    #region Bomb Blast Variables
+
+    [ShowIf(nameof(ViewingBombBlast))]
+    [Tooltip("How big the ability AOE is.")]
+    [SerializeField] float bombBlastAOE;
+
+    [ShowIf(nameof(ViewingBombBlast))]
+    [Tooltip("How far the player gets launched.")]
+    [SerializeField] float playerLaunchDistance;
+
+    [ShowIf(nameof(ViewingBombBlast))]
+    [Tooltip("How far the player gets launched.")]
+    [SerializeField] float enemyLaunchDistance;
+
+    #endregion
+
+    #region Scatter Shot Variables
+
+    [ShowIf(nameof(ViewingScatterShot))]
+    [Tooltip("The angle at which the scatter shot will spread.")]
+    [SerializeField] float scatterShotCone;
+
+    [ShowIf(nameof(ViewingScatterShot))]
+    [Tooltip("How much scatter shot should life steal for.")]
+    [SerializeField] float scatterShotLifeSteal;
+
+    #endregion
+
+    #region Stake Shot Variables
+
+    [ShowIf(nameof(ViewingStakeShot))]
+    [Tooltip("How much percent damage the stake shot does per tick.")]
+    [SerializeField] float stakeShotDOTPercentage;
+
+    [ShowIf(nameof(ViewingStakeShot))]
+    [Tooltip("How much the stake shot DOT life steals for.")]
+    [SerializeField] float stakeShotLifeStealAmount;
+
+    [ShowIf(nameof(ViewingStakeShot))]
+    [Tooltip("How much time must elapse between ticks of damage.")]
+    [SerializeField] float stakeShotDOTTickDelay;
+
+    [ShowIf(nameof(ViewingStakeShot))]
+    [Tooltip("How long the DOT effects lasts.")]
+    [SerializeField] float stakeShotDOTDuration;
+
+    #region Custom ShowIf Bools
+
+    /// <summary>
+    /// Custom bool to see if the inspector is actively viewing the SplinterShot ability
+    /// </summary>
+    /// <returns></returns>
+    private bool ViewingSplinterShot()
+    {
+        return ((abilitySettings == AbilitySettings.AbilityOne && abilityOne == Abilities.SplinterShot) ||
+            (abilitySettings == AbilitySettings.AbilityTwo && abilityTwo == Abilities.SplinterShot));
+    }
+
+    /// <summary>
+    /// Custom bool to see if the inspector is actively viewing the SplinterShot ability
+    /// </summary>
+    /// <returns></returns>
+    private bool ViewingBombBlast()
+    {
+        return ((abilitySettings == AbilitySettings.AbilityOne && abilityOne == Abilities.BombBlast) ||
+            (abilitySettings == AbilitySettings.AbilityTwo && abilityTwo == Abilities.BombBlast));
+    }
+
+    /// <summary>
+    /// Custom bool to see if the inspector is actively viewing the SplinterShot ability
+    /// </summary>
+    /// <returns></returns>
+    private bool ViewingScatterShot()
+    {
+        return ((abilitySettings == AbilitySettings.AbilityOne && abilityOne == Abilities.ScatterShot) ||
+            (abilitySettings == AbilitySettings.AbilityTwo && abilityTwo == Abilities.ScatterShot));
+    }
+
+    /// <summary>
+    /// Custom bool to see if the inspector is actively viewing the SplinterShot ability
+    /// </summary>
+    /// <returns></returns>
+    private bool ViewingStakeShot()
+    {
+        return ((abilitySettings == AbilitySettings.AbilityOne && abilityOne == Abilities.StakeShot) ||
+            (abilitySettings == AbilitySettings.AbilityTwo && abilityTwo == Abilities.StakeShot));
+    }
+
+    #endregion
+
+    #endregion
+
+    #endregion
 
     /// <summary>
     /// The crossbow's basic attack

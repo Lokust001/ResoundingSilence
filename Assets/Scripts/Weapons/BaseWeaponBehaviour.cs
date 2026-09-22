@@ -1,7 +1,7 @@
 /******************************************************************************
  * Author: Brad Dixon
  * Contributors:
- * Last Modified: 9/21/2026
+ * Last Modified: 9/22/2026
  * Brief: Weapon architecture that all weapons inherit
  * TODO:
  * ***************************************************************************/
@@ -17,11 +17,12 @@ public class BaseWeaponBehaviour : MonoBehaviour
         AbilityTwo
     }
 
-    [SerializeField] protected AbilitySettings abilitySettings;
-
     //Public so the upgrade manager can find the reference
     [HideInInspector] public BaseWeaponScriptable ThisWeaponData;
     [SerializeField] protected int weaponDataID;
+
+    [Header("Base Ability Variables"), HorizontalLine(height: 4, EColor.Red)]
+    [SerializeField] protected AbilitySettings abilitySettings;
 
     protected Vector3 mousePos;
 
