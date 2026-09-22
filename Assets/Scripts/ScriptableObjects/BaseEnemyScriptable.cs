@@ -7,13 +7,15 @@
 */
 using UnityEngine;
 using NaughtyAttributes;
-[CreateAssetMenu(fileName = "BaseEnemyScriptable", menuName = "Scriptable Objects/BaseEnemyScriptable")]
+[CreateAssetMenu(fileName = "BaseEnemyScriptable", menuName = "Scriptables/BaseEnemyScriptable")]
 public class BaseEnemyScriptable : BaseScriptableObject
 {
     public enum EnemyType
     {
         SingleShooter,
-        ConeShooter
+        ConeShooter,
+        ChargingMelee,
+        Melee
     }
     [SerializeField]
     public EnemyType enemyType;
@@ -30,7 +32,7 @@ public class BaseEnemyScriptable : BaseScriptableObject
     public float timeBetweenAttacks;
 
     [ShowIf(nameof(isShooter))]
-    [Header("All Shooter Attributes")]
+    [Header("All Enemy Attributes")]
     public float bulletTravelSpeed;
     [ShowIf(nameof(isShooter))]
     [SerializeField]
@@ -44,5 +46,19 @@ public class BaseEnemyScriptable : BaseScriptableObject
 
     [ShowIf(nameof(enemyType), EnemyType.ConeShooter)]
     public float bulletSpreadRadiusDegrees;
-    
+
+    [Header("Charging Melee Attributes")]
+    [ShowIf(nameof(enemyType), EnemyType.ChargingMelee)]
+    public float chargingDirectionTime;
+
+    [ShowIf(nameof(enemyType), EnemyType.ChargingMelee)]
+    public float chargedMovementSpeed;
+    [ShowIf(nameof(enemyType), EnemyType.ChargingMelee)]
+    public float chargedAccelerationSpeed;
+
+    [ShowIf(nameof(enemyType), EnemyType.ChargingMelee)]
+    [Tooltip("The materials/colors that will be used for the charge-up attack. " +
+        "The attack indicator will linearly interlpolate (transition) between the two colors")]
+    public Material earlyChargeMaterial, endChargeMaterial;
+
 }

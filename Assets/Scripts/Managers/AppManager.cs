@@ -138,7 +138,7 @@ public class AppManager : MonoBehaviour
     /// <param name="dir"></param>
     private void TestMovePressed(Vector2 dir)
     {
-        Debug.Log(dir);
+        //Debug.Log(dir);
     }
 
     /// <summary>
@@ -146,7 +146,7 @@ public class AppManager : MonoBehaviour
     /// </summary>
     private void TestMoveCancelled()
     {
-        Debug.Log("Move Cancelled");
+        //Debug.Log("Move Cancelled");
     }
 
     /// <summary>
@@ -154,7 +154,7 @@ public class AppManager : MonoBehaviour
     /// </summary>
     private void TestShootCancelled()
     {
-        Debug.Log("Shoot Cancelled");
+        //Debug.Log("Shoot Cancelled");
     }
 
     /// <summary>
@@ -162,7 +162,7 @@ public class AppManager : MonoBehaviour
     /// </summary>
     private void TestShootPressed()
     {
-        Debug.Log("Shoot Pressed");
+        //Debug.Log("Shoot Pressed");
     }
 
     /// <summary>
@@ -170,7 +170,7 @@ public class AppManager : MonoBehaviour
     /// </summary>
     private void TestInteractCancelled()
     {
-        Debug.Log("Interact Cancelled");
+       // Debug.Log("Interact Cancelled");
     }
 
     /// <summary>
@@ -178,7 +178,7 @@ public class AppManager : MonoBehaviour
     /// </summary>
     private void TestInteractPressed()
     {
-        Debug.Log("Interact Pressed");
+        //Debug.Log("Interact Pressed");
     }
 
     #endregion

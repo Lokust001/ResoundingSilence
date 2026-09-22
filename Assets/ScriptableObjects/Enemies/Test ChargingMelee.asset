@@ -10,14 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cb529eb0eaafc66418e136a89e011d83, type: 3}
-  m_Name: Test Enemy
+  m_Name: Test ChargingMelee
   m_EditorClassIdentifier: Assembly-CSharp::BaseEnemyScriptable
-  enemyType: 1
-  enemyName: Test
+  enemyType: 2
+  enemyName: Test Charge
   enemyHealth: 3
   timeBetweenAttacks: 3
-  bulletTravelSpeed: 4
-  bulletLife: 5
-  bulletPrefab: {fileID: 4365726781555918685, guid: 3e66196bf5b5c1840850f414ea65867e, type: 3}
-  bulletsToFire: 3
-  bulletSpreadRadiusDegrees: 30
+  bulletTravelSpeed: 0
+  bulletLife: 0
+  bulletPrefab: {fileID: 0}
+  bulletsToFire: 0
+  bulletSpreadRadiusDegrees: 0
+  chargingDirectionTime: 3
+  chargedMovementSpeed: 100
+  chargedAccelerationSpeed: 60
+  earlyChargeMaterial: {fileID: 2100000, guid: c160c7aea25a6e043b4eb127b5bec42c, type: 2}
+  endChargeMaterial: {fileID: 2100000, guid: f6d5b7e222f01374bb41a79eea5671b5, type: 2}
