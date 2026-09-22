@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors:
-* Last Modified: 09/17/2026
+* Last Modified: 09/22/2026
 * Summary: Manages which UI menus are open at any given time. 
 *          If there's anything that pertains to the UI as a whole, it's here.
 * To Do:   N/A

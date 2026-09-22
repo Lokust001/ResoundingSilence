@@ -1,3 +1,11 @@
+/*
+* Author: Tyler
+* Contributors:
+* Last Modified: 09/22/2026
+* Summary: The behavior for the picking up and putting down of pins
+* To Do:   N/A
+*/
+
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -14,12 +22,21 @@ public class PinItemBehavior : MonoBehaviour, IPointerClickHandler
 
     private Coroutine moveCo;
 
+    /// <summary>
+    /// setsa references
+    /// </summary>
     private void Awake()
     {
         raycastBlocker = GetComponent<CanvasGroup>();
         pinSprite = GetComponent<Image>();
     }
 
+    /// <summary>
+    /// initializes the pin
+    /// </summary>
+    /// <param name="pin">the data for the pin</param>
+    /// <param name="parent">if the pin is attached to a tile</param>
+    /// <exception cref="System.Exception">Tried to make a pin that has no pindata</exception>
     public void InitPin(PinScriptable pin, UpgradeTileBehavior parent)
     {
         if (pin == null)
@@ -36,15 +53,22 @@ public class PinItemBehavior : MonoBehaviour, IPointerClickHandler
         pinSprite.color = pinData.pinColor;
     }
 
+    /// <summary>
+    /// Triggers when the eventsystem registers a click on the pin item. Will be replaced once we get in controller support.
+    /// </summary>
+    /// <param name="eventData"></param>
     public void OnPointerClick(PointerEventData eventData)
     {
+        //ensures theyre actually clicking on it
         if (eventData.button == PointerEventData.InputButton.Left)
         {
-            Debug.Log("Pin Clicked");
             UIPublicEvents.PinPickedUp?.Invoke(this);
         } 
     }
 
+    /// <summary>
+    /// runs through all of the logic needed when the pin gets grabbed
+    /// </summary>
     public void PinPickedUp()
     {
         raycastBlocker.blocksRaycasts = false; 
@@ -52,6 +76,9 @@ public class PinItemBehavior : MonoBehaviour, IPointerClickHandler
         moveCo = StartCoroutine(StartMoveCoroutine());
     }
 
+    /// <summary>
+    /// reenables all of the raycasting and turns off the movement
+    /// </summary>
     public void PinPlaced()
     {
         raycastBlocker.blocksRaycasts = true;
@@ -59,6 +86,10 @@ public class PinItemBehavior : MonoBehaviour, IPointerClickHandler
         StopCoroutine(moveCo);
     }
 
+    /// <summary>
+    /// moves the pin, ideally with the mouse
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator StartMoveCoroutine()
     {
         while (true)

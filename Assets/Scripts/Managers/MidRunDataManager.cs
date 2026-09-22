@@ -1,3 +1,11 @@
+/*
+* Author: Tyler
+* Contributors:
+* Last Modified: 09/22/2026
+* Summary: This is a database that will hold all of the data needed mid run.
+* To Do:   N/A
+*/
+
 using NaughtyAttributes;
 using System.Collections.Generic;
 using System.Threading.Tasks;

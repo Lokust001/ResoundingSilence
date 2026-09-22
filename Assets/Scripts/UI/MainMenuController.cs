@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors:
-* Last Modified: 09/17/2026
+* Last Modified: 09/22/2026
 * Summary: Contains all of the button functions for the main menu.
 * To Do:   N/A
 */
@@ -53,6 +53,9 @@ public class MainMenuController : MenuBase
         Debug.Log("Toggling Credits");
     }
 
+    /// <summary>
+    /// enables and disables the testing menu
+    /// </summary>
     public void ToggleTestMenu()
     {
         testingMenuContainer.SetActive(!testingMenuContainer.activeInHierarchy);
@@ -62,6 +65,9 @@ public class MainMenuController : MenuBase
 
     #region testing menu buttons
 
+    /// <summary>
+    /// swaps over to the upgrade menu
+    /// </summary>
     public void EnableUpgradeMenu()
     {
         UIPublicEvents.UpdateUIManagerStack?.Invoke(UiMenuType.UpgradeMenu);

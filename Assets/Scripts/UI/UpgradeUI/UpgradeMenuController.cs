@@ -108,6 +108,9 @@ public class UpgradeMenuController : MenuBase
         
     }
 
+    /// <summary>
+    /// Populates everything once the menu is opened.
+    /// </summary>
     protected override void OpenMenu()
     {
         base.OpenMenu();
@@ -115,12 +118,18 @@ public class UpgradeMenuController : MenuBase
         PopulateInventory();
     }
 
+    /// <summary>
+    /// subscribes to all public events
+    /// </summary>
     protected override void SetUpPublicEvents()
     {
         base.SetUpPublicEvents();
         UIPublicEvents.PinPickedUp += SetCarriedPin;
     }
 
+    /// <summary>
+    /// unsubscribes from all public events
+    /// </summary>
     protected override void OnDestroy()
     {
         base.OnDestroy();
@@ -336,14 +345,10 @@ public class UpgradeMenuController : MenuBase
         //turn on/off a canvas group over the inventory that trashes the held item
     }
 
-    public void TrashHeldItem()
-    {
-        if (CarriedPin == null)
-        {
-            return;
-        }
-    }
-
+    /// <summary>
+    /// Sets the tile to have a pin
+    /// </summary>
+    /// <param name="tile"></param>
     public void PlacePinInTile(UpgradeTileBehavior tile)
     {
         if (CarriedPin == null)

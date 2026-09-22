@@ -85,6 +85,10 @@ public class UpgradeTileBehavior : MonoBehaviour, IPointerClickHandler
 
     #region PinStuff
 
+    /// <summary>
+    /// places the tile on this pin.
+    /// </summary>
+    /// <param name="eventData"></param>
     public void OnPointerClick(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Left)
@@ -93,11 +97,18 @@ public class UpgradeTileBehavior : MonoBehaviour, IPointerClickHandler
         }
     }
 
+    /// <summary>
+    /// runs when a pin gets placed on this tile. TODO: add modifier to pin
+    /// </summary>
+    /// <param name="pin"></param>
     public void SetNewPinInTile(PinItemBehavior pin)
     {
         tileData.SetPin(pin.pinData);
     }
 
+    /// <summary>
+    /// runs when a pin leaves the slot. TODO: remove modifier from pin.
+    /// </summary>
     public void UnequipPin()
     {
 
