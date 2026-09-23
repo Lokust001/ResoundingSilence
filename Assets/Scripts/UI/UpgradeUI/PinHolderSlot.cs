@@ -33,6 +33,7 @@ public class PinHolderSlot : MonoBehaviour, IPointerClickHandler
     /// <param name="pin"></param>
     public virtual void SetNewPinInTile(PinItemBehavior pin)
     {
+        pin.Parent = this;
         pin.transform.SetParent(transform);
     }
 

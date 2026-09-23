@@ -381,8 +381,6 @@ public class UpgradeMenuController : MenuBase
 
         CarriedPin.PinPlaced();
         tile.SetNewPinInTile(CarriedPin);
-        CarriedPin.Parent = tile;
-        CarriedPin.transform.SetParent(tile.transform);
 
         CarriedPin = null;
     }
