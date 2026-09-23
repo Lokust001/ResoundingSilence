@@ -56,6 +56,10 @@ public class UpgradeMenuController : MenuBase
     [ShowIf(nameof(settings), ShownSettings.References)]
     private Transform draggingParent;
 
+    [SerializeField]
+    [ShowIf(nameof(settings), ShownSettings.References)]
+    private Transform pinsOnOtherGridsParent;
+
     #endregion
 
     #region testing
@@ -187,6 +191,7 @@ public class UpgradeMenuController : MenuBase
                     throw new System.Exception("Tried to find a pin thats not in the players inventory");
                 }
 
+                pinItem.transform.SetParent(pinsOnOtherGridsParent);
                 pinsOnNonEnabledGrids.Add(pinItem);
                 pinItem.gameObject.SetActive(false);
             }
@@ -327,6 +332,7 @@ public class UpgradeMenuController : MenuBase
     {
         if (CarriedPin != null)
         {
+            CarriedPin.PinPlaced();
             PlacePinInTile(CarriedPin.Owner);
         }
 
@@ -389,6 +395,12 @@ public class UpgradeMenuController : MenuBase
     /// <param name="item"></param>
     public void GrabPlacedPin(PinItemBehavior item)
     {
+        //unmodifies the pin if it modifies it at all.
+        if (item.Parent != null)
+        {
+            item.Parent.UnequipPin();
+        }
+
         if (CarriedPin != null)
         {
             CarriedPin.PinPlaced();
@@ -406,12 +418,9 @@ public class UpgradeMenuController : MenuBase
                 throw new System.Exception("PinsNotOnEnabledGrids has some issues with resetting");
             }
 
-            Debug.Log($"tile: {tilePinIsEquippedTo.coords}");
-
             //replace with the proper way to remove a pin given the tile data eventually
             tilePinIsEquippedTo.SetPin(null);
-
-            Debug.Log("Turning on pin");
+            pinsOnNonEnabledGrids.Remove(item);
             item.gameObject.SetActive(true);
         }
 
