@@ -22,7 +22,7 @@ public class BaseProjectileBehaviour : MonoBehaviour
     bool hasLifesteal;
 
     /// <summary>
-    /// Sets it's own variables to the 
+    /// Sets it's own variables to the scriptable object copy ref
     /// </summary>
     /// <param name="dataRef"></param> Ref to the SO with the up to date weapon stats
     /// <param name="combo"></param> Defaults to 0 if there is no combo

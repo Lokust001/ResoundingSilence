@@ -113,7 +113,7 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
     #region Custom ShowIf Bools
 
     /// <summary>
-    /// Custom bool to see if the inspector is actively viewing the SplinterShot ability
+    /// Custom bool to see if the inspector is actively viewing the Splinter Shot ability
     /// </summary>
     /// <returns></returns>
     private bool ViewingSplinterShot()
@@ -123,7 +123,7 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
     }
 
     /// <summary>
-    /// Custom bool to see if the inspector is actively viewing the SplinterShot ability
+    /// Custom bool to see if the inspector is actively viewing the Bomb Blast ability
     /// </summary>
     /// <returns></returns>
     private bool ViewingBombBlast()
@@ -133,7 +133,7 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
     }
 
     /// <summary>
-    /// Custom bool to see if the inspector is actively viewing the SplinterShot ability
+    /// Custom bool to see if the inspector is actively viewing the Scatter Shot ability
     /// </summary>
     /// <returns></returns>
     private bool ViewingScatterShot()
@@ -143,7 +143,7 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
     }
 
     /// <summary>
-    /// Custom bool to see if the inspector is actively viewing the SplinterShot ability
+    /// Custom bool to see if the inspector is actively viewing the Stake Shot ability
     /// </summary>
     /// <returns></returns>
     private bool ViewingStakeShot()
