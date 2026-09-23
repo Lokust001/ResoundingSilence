@@ -355,6 +355,10 @@ public class UpgradeMenuController : MenuBase
         //turn on/off a canvas group over the inventory that trashes the held item
     }
 
+    /// <summary>
+    /// force grabs a pin
+    /// </summary>
+    /// <param name="item"></param>
     public void GrabPlacedPin(PinItemBehavior item)
     {
         if (CarriedPin != null)

@@ -69,6 +69,10 @@ public class PinItemBehavior : MonoBehaviour, IPointerClickHandler
         } 
     }
 
+
+    /// <summary>
+    /// picks up this pin
+    /// </summary>
     public void ForcePickUpPin()
     {
         UIPublicEvents.PinPickedUp?.Invoke(this);

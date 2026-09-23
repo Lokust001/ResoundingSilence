@@ -1,3 +1,11 @@
+/*
+* Author: Tyler
+* Contributors:
+* Last Modified: 09/23/2026
+* Summary: this is the behavior for the slots that hold pins
+* To Do:   N/A
+*/
+
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -22,6 +30,9 @@ public class PinHolderSlot : MonoBehaviour, IPointerClickHandler
         }
     }
 
+    /// <summary>
+    /// Triggers when this slot is clicked on
+    /// </summary>
     public virtual void ClickedOn()
     {
         controller.PlacePinInTile(this);

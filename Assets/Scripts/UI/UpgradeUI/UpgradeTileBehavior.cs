@@ -82,6 +82,10 @@ public class UpgradeTileBehavior : PinHolderSlot
 
     #region PinStuff
 
+    /// <summary>
+    /// sets the pin in this tile
+    /// </summary>
+    /// <param name="pin"></param>
     public override void SetNewPinInTile(PinItemBehavior pin)
     {
         base.SetNewPinInTile(pin);
