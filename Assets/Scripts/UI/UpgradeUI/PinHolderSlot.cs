@@ -1,16 +1,46 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class PinHolderSlot : MonoBehaviour
+public class PinHolderSlot : MonoBehaviour, IPointerClickHandler
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    protected UpgradeMenuController controller;
+
+    private void Awake()
     {
-        
+        controller = GetComponentInParent<UpgradeMenuController>();
     }
 
-    // Update is called once per frame
-    void Update()
+    /// <summary>
+    /// places the tile on this pin.
+    /// </summary>
+    /// <param name="eventData"></param>
+    public void OnPointerClick(PointerEventData eventData)
     {
-        
+        if (eventData.button == PointerEventData.InputButton.Left)
+        {
+            ClickedOn();
+        }
+    }
+
+    public virtual void ClickedOn()
+    {
+        controller.PlacePinInTile(this);
+    }
+
+    /// <summary>
+    /// runs when a pin gets placed on this tile. TODO: add modifier to pin
+    /// </summary>
+    /// <param name="pin"></param>
+    public virtual void SetNewPinInTile(PinItemBehavior pin)
+    {
+        pin.transform.SetParent(transform);
+    }
+
+    /// <summary>
+    /// runs when a pin leaves the slot. TODO: remove modifier from pin.
+    /// </summary>
+    public virtual void UnequipPin()
+    {
+
     }
 }

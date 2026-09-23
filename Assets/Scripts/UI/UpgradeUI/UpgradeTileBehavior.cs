@@ -10,18 +10,16 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UpgradeTileBehavior : MonoBehaviour, IPointerClickHandler
+public class UpgradeTileBehavior : PinHolderSlot
 {
     public bool isActive;
     public Vector2Int coords;
 
     [SerializeField]
     private UpgradeTileBehavior[] adjacentTiles;
-    private UpgradeMenuController controller;
 
     public UpgradeTileData tileData;
 
-    
 
     #region Tile Generation
 
@@ -32,7 +30,6 @@ public class UpgradeTileBehavior : MonoBehaviour, IPointerClickHandler
     /// <param name="coords">the tiles xy positiion in the grid</param>
     public void InitTile()
     {
-        controller = GetComponentInParent<UpgradeMenuController>();
 
         UIPublicEvents.UpgradeGridInitialized += GridInitialized;
     }
@@ -85,33 +82,10 @@ public class UpgradeTileBehavior : MonoBehaviour, IPointerClickHandler
 
     #region PinStuff
 
-    /// <summary>
-    /// places the tile on this pin.
-    /// </summary>
-    /// <param name="eventData"></param>
-    public void OnPointerClick(PointerEventData eventData)
+    public override void SetNewPinInTile(PinItemBehavior pin)
     {
-        if (eventData.button == PointerEventData.InputButton.Left)
-        {
-            controller.PlacePinInTile(this);
-        }
-    }
-
-    /// <summary>
-    /// runs when a pin gets placed on this tile. TODO: add modifier to pin
-    /// </summary>
-    /// <param name="pin"></param>
-    public void SetNewPinInTile(PinItemBehavior pin)
-    {
+        base.SetNewPinInTile(pin);
         tileData.SetPin(pin.pinData);
-    }
-
-    /// <summary>
-    /// runs when a pin leaves the slot. TODO: remove modifier from pin.
-    /// </summary>
-    public void UnequipPin()
-    {
-
     }
 
     #endregion

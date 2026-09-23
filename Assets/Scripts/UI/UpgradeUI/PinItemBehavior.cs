@@ -18,7 +18,9 @@ public class PinItemBehavior : MonoBehaviour, IPointerClickHandler
 
     public PinScriptable pinData;
 
-    public UpgradeTileBehavior Parent;
+    public PinHolderSlot Parent;
+
+    public InventoryPinHolder Owner;
 
     private Coroutine moveCo;
 
@@ -37,7 +39,7 @@ public class PinItemBehavior : MonoBehaviour, IPointerClickHandler
     /// <param name="pin">the data for the pin</param>
     /// <param name="parent">if the pin is attached to a tile</param>
     /// <exception cref="System.Exception">Tried to make a pin that has no pindata</exception>
-    public void InitPin(PinScriptable pin, UpgradeTileBehavior parent)
+    public void InitPin(PinScriptable pin, InventoryPinHolder owner)
     {
         if (pin == null)
         {
@@ -45,7 +47,8 @@ public class PinItemBehavior : MonoBehaviour, IPointerClickHandler
         }
 
         pinData = pin;
-        Parent = parent;
+        Parent = owner;
+        Owner = owner;
         raycastBlocker.blocksRaycasts = true;
         pinSprite.raycastTarget = true;
 
@@ -62,8 +65,13 @@ public class PinItemBehavior : MonoBehaviour, IPointerClickHandler
         //ensures theyre actually clicking on it
         if (eventData.button == PointerEventData.InputButton.Left)
         {
-            UIPublicEvents.PinPickedUp?.Invoke(this);
+            ForcePickUpPin();
         } 
+    }
+
+    public void ForcePickUpPin()
+    {
+        UIPublicEvents.PinPickedUp?.Invoke(this);
     }
 
     /// <summary>

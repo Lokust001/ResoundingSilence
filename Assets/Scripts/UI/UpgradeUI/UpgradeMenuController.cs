@@ -8,7 +8,6 @@
 
 using NaughtyAttributes;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -39,6 +38,10 @@ public class UpgradeMenuController : MenuBase
     [SerializeField]
     [ShowIf(nameof(settings), ShownSettings.References)]
     private UpgradeTileBehavior tilePrefab;
+
+    [SerializeField]
+    [ShowIf(nameof(settings), ShownSettings.References)]
+    private InventoryPinHolder inventoryPinSlot;
 
     [SerializeField]
     [ShowIf(nameof(settings), ShownSettings.References)]
@@ -82,6 +85,7 @@ public class UpgradeMenuController : MenuBase
     private List<UpgradeTileBehavior> tilesInGrid = new();
 
     private List<PinItemBehavior> inventoryPins = new();
+    private List<InventoryPinHolder> inventorySlots = new();
     List<UpgradeTileBehavior> enabledTilesInGrid = new();
     private int gridHeight;
     private int gridWidth;
@@ -105,7 +109,7 @@ public class UpgradeMenuController : MenuBase
     public override void InitMenu()
     {
         base.InitMenu();
-        
+
     }
 
     /// <summary>
@@ -141,10 +145,17 @@ public class UpgradeMenuController : MenuBase
     /// </summary>
     private void PopulateInventory()
     {
+        //replace with a system that checks if it sees any you already have soon
         foreach (PinScriptable pin in MidRunDataManager.Instance.pinInventory)
         {
-            PinItemBehavior temp = Instantiate(pinItemPrefab, inventory);
-            temp.InitPin(pin, null);
+            InventoryPinHolder tempSlot = Instantiate(inventoryPinSlot, inventory);
+
+            PinItemBehavior temp = Instantiate(pinItemPrefab, tempSlot.transform);
+
+            tempSlot.InitSlot(temp);
+            temp.InitPin(pin, tempSlot);
+            inventoryPins.Add(temp);
+            inventorySlots.Add(tempSlot);
         }
     }
 
@@ -163,7 +174,7 @@ public class UpgradeMenuController : MenuBase
     /// </summary>
     /// <exception cref="System.Exception"></exception>
     private void OpenGrid(UpgradeTileGrid gridToInit = null)
-    { 
+    {
 
         gridHeight = gridToInit.height;
         gridWidth = gridToInit.width;
@@ -186,7 +197,7 @@ public class UpgradeMenuController : MenuBase
                 //use the tile i have
                 tilesInGrid[i].gameObject.SetActive(true);
                 tilesInGrid[i].SetTileData(gridToInit.grid[i]);
-                
+
             }
             else
             {
@@ -312,7 +323,7 @@ public class UpgradeMenuController : MenuBase
     /// </summary>
     /// <param name="item"></param>
     private void SetCarriedPin(PinItemBehavior item)
-    { 
+    {
 
         //unmodifies the pin if it modifies it at all.
         if (item.Parent != null)
@@ -325,18 +336,16 @@ public class UpgradeMenuController : MenuBase
         {
             CarriedPin.PinPlaced();
 
-            //if item was on a tile
-            if (item.Parent != null)
+            //if the new item is in the inventory
+            if (item.Parent == item.Owner)
             {
-                
-                item.Parent.SetNewPinInTile(CarriedPin);
-                CarriedPin.transform.SetParent(item.Parent.transform);
+                //set the current item to its owner
+                CarriedPin.Owner.SetNewPinInTile(CarriedPin);
             }
             else
             {
-                //places it in the inventory if swapping with an item in the inventory
-                CarriedPin.Parent = null;
-                CarriedPin.transform.SetParent(inventory);
+                //set the current item to the tile of the new one
+                item.Parent.SetNewPinInTile(CarriedPin);
             }
         }
 
@@ -346,11 +355,24 @@ public class UpgradeMenuController : MenuBase
         //turn on/off a canvas group over the inventory that trashes the held item
     }
 
+    public void GrabPlacedPin(PinItemBehavior item)
+    {
+        if (CarriedPin != null)
+        {
+            CarriedPin.PinPlaced();
+            CarriedPin.Owner.SetNewPinInTile(CarriedPin);
+        }
+
+        CarriedPin = item;
+        CarriedPin.PinPickedUp();
+        CarriedPin.transform.SetParent(draggingParent);
+    }
+
     /// <summary>
     /// Sets the tile to have a pin
     /// </summary>
     /// <param name="tile"></param>
-    public void PlacePinInTile(UpgradeTileBehavior tile)
+    public void PlacePinInTile(PinHolderSlot tile)
     {
         if (CarriedPin == null)
         {
