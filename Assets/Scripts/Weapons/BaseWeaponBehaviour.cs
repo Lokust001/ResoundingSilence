@@ -1,7 +1,7 @@
 /******************************************************************************
  * Author: Brad Dixon
  * Contributors:
- * Last Modified: 9/22/2026
+ * Last Modified: 9/23/2026
  * Brief: Weapon architecture that all weapons inherit
  * TODO:
  * ***************************************************************************/
@@ -20,11 +20,12 @@ public class BaseWeaponBehaviour : MonoBehaviour
     //Public so the upgrade manager can find the reference
     [HideInInspector] public BaseWeaponScriptable ThisWeaponData;
     [SerializeField] protected int weaponDataID;
+    [SerializeField] protected LayerMask groundLayerMask;
 
     [Header("Base Ability Variables"), HorizontalLine(height: 4, EColor.Red)]
     [SerializeField] protected AbilitySettings abilitySettings;
 
-    protected Vector3 mousePos;
+    protected Vector3 mousePos = Vector3.zero;
 
     protected bool isAttacking;
     protected bool attackReady;
@@ -143,7 +144,13 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// </summary>
     protected void GetMousPos(Vector2 pos)
     {
-        mousePos = pos;
+        Plane p = new Plane(Vector3.forward, 0);
+        Ray ray = Camera.main.ScreenPointToRay(pos);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundLayerMask))
+        {
+            mousePos = hit.point;
+        }
     }
 
     /// <summary>
