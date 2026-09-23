@@ -8,7 +8,6 @@
 
 using NaughtyAttributes;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -42,7 +41,19 @@ public class UpgradeMenuController : MenuBase
 
     [SerializeField]
     [ShowIf(nameof(settings), ShownSettings.References)]
-    private GameObject inventory;
+    private InventoryPinHolder inventoryPinSlot;
+
+    [SerializeField]
+    [ShowIf(nameof(settings), ShownSettings.References)]
+    private PinItemBehavior pinItemPrefab;
+
+    [SerializeField]
+    [ShowIf(nameof(settings), ShownSettings.References)]
+    private Transform inventory;
+
+    [SerializeField]
+    [ShowIf(nameof(settings), ShownSettings.References)]
+    private Transform draggingParent;
 
     #endregion
 
@@ -71,12 +82,20 @@ public class UpgradeMenuController : MenuBase
     #endregion
 
     #region private
-    private List<UpgradeTileBehavior> tilesInGrid = new List<UpgradeTileBehavior>();
+    private List<UpgradeTileBehavior> tilesInGrid = new();
+
+    private List<PinItemBehavior> inventoryPins = new();
+    private List<InventoryPinHolder> inventorySlots = new();
     List<UpgradeTileBehavior> enabledTilesInGrid = new();
     private int gridHeight;
     private int gridWidth;
 
     private UpgradeTileGrid currentlyEnabledGrid;
+
+    [HideInInspector]
+    public PinItemBehavior CarriedPin;
+
+    private List<PinItemBehavior> newlyEquippedPins;
 
     #endregion
 
@@ -90,18 +109,35 @@ public class UpgradeMenuController : MenuBase
     public override void InitMenu()
     {
         base.InitMenu();
-        InitGrid();
+
     }
 
     /// <summary>
-    /// Turns on the testing grid if test mode is on
+    /// Populates everything once the menu is opened.
     /// </summary>
-    private void Start()
+    protected override void OpenMenu()
     {
-        if (enableTestMode)
-        {
-            InitGrid(testGrid);
-        }
+        base.OpenMenu();
+        OpenGrid(testGrid);
+        PopulateInventory();
+    }
+
+    /// <summary>
+    /// subscribes to all public events
+    /// </summary>
+    protected override void SetUpPublicEvents()
+    {
+        base.SetUpPublicEvents();
+        UIPublicEvents.PinPickedUp += SetCarriedPin;
+    }
+
+    /// <summary>
+    /// unsubscribes from all public events
+    /// </summary>
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+        UIPublicEvents.PinPickedUp -= SetCarriedPin;
     }
 
     /// <summary>
@@ -109,7 +145,18 @@ public class UpgradeMenuController : MenuBase
     /// </summary>
     private void PopulateInventory()
     {
-        //populate inventory with owned, unequipped pins
+        //replace with a system that checks if it sees any you already have soon
+        foreach (PinScriptable pin in MidRunDataManager.Instance.pinInventory)
+        {
+            InventoryPinHolder tempSlot = Instantiate(inventoryPinSlot, inventory);
+
+            PinItemBehavior temp = Instantiate(pinItemPrefab, tempSlot.transform);
+
+            tempSlot.InitSlot(temp);
+            temp.InitPin(pin, tempSlot);
+            inventoryPins.Add(temp);
+            inventorySlots.Add(tempSlot);
+        }
     }
 
     /// <summary>
@@ -126,8 +173,8 @@ public class UpgradeMenuController : MenuBase
     /// Initializes the grid for the first time. TODO: replace testGrid with the grid of the actual weapon.
     /// </summary>
     /// <exception cref="System.Exception"></exception>
-    private void InitGrid(UpgradeTileGrid gridToInit = null)
-    { 
+    private void OpenGrid(UpgradeTileGrid gridToInit = null)
+    {
 
         gridHeight = gridToInit.height;
         gridWidth = gridToInit.width;
@@ -150,11 +197,12 @@ public class UpgradeMenuController : MenuBase
                 //use the tile i have
                 tilesInGrid[i].gameObject.SetActive(true);
                 tilesInGrid[i].SetTileData(gridToInit.grid[i]);
-                
+
             }
             else
             {
                 UpgradeTileBehavior tempTile = Instantiate(tilePrefab, gridContainer);
+                tempTile.InitTile();
                 tilesInGrid.Add(tempTile);
                 tempTile.SetTileData(gridToInit.grid[i]);
             }
@@ -183,7 +231,6 @@ public class UpgradeMenuController : MenuBase
     /// <returns>0 - north, 1 - northeast, 2 - east, 3 - southeast, 4 - south, 5 - southwest, 6 - west, 7 - northwest </returns>
     public UpgradeTileBehavior[] getAdjacentTiles(Vector2Int coords)
     {
-        Debug.Log("Called");
         UpgradeTileBehavior[] temp = new UpgradeTileBehavior[8];
 
         //check north
@@ -258,13 +305,88 @@ public class UpgradeMenuController : MenuBase
         {
             if (currentlyEnabledGrid == testGrid)
             {
-                InitGrid(testGrid2);
+                OpenGrid(testGrid2);
             }
             else
             {
-                InitGrid(testGrid);
+                OpenGrid(testGrid);
             }
         }
+    }
+
+    #endregion
+
+    #region Misc
+
+    /// <summary>
+    /// called from trying to pick up an item - not called from an empty tile
+    /// </summary>
+    /// <param name="item"></param>
+    private void SetCarriedPin(PinItemBehavior item)
+    {
+
+        //unmodifies the pin if it modifies it at all.
+        if (item.Parent != null)
+        {
+            item.Parent.UnequipPin();
+        }
+
+        //places the currently held pin in the tile of the pin you want to pick up
+        if (CarriedPin != null)
+        {
+            CarriedPin.PinPlaced();
+
+            //if the new item is in the inventory
+            if (item.Parent == item.Owner)
+            {
+                //set the current item to its owner
+                CarriedPin.Owner.SetNewPinInTile(CarriedPin);
+            }
+            else
+            {
+                //set the current item to the tile of the new one
+                item.Parent.SetNewPinInTile(CarriedPin);
+            }
+        }
+
+        CarriedPin = item;
+        CarriedPin.PinPickedUp();
+        CarriedPin.transform.SetParent(draggingParent);
+        //turn on/off a canvas group over the inventory that trashes the held item
+    }
+
+    /// <summary>
+    /// force grabs a pin
+    /// </summary>
+    /// <param name="item"></param>
+    public void GrabPlacedPin(PinItemBehavior item)
+    {
+        if (CarriedPin != null)
+        {
+            CarriedPin.PinPlaced();
+            CarriedPin.Owner.SetNewPinInTile(CarriedPin);
+        }
+
+        CarriedPin = item;
+        CarriedPin.PinPickedUp();
+        CarriedPin.transform.SetParent(draggingParent);
+    }
+
+    /// <summary>
+    /// Sets the tile to have a pin
+    /// </summary>
+    /// <param name="tile"></param>
+    public void PlacePinInTile(PinHolderSlot tile)
+    {
+        if (CarriedPin == null)
+        {
+            return;
+        }
+
+        CarriedPin.PinPlaced();
+        tile.SetNewPinInTile(CarriedPin);
+
+        CarriedPin = null;
     }
 
     #endregion

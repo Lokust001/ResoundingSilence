@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors:
-* Last Modified: 09/17/2026
+* Last Modified: 09/22/2026
 * Summary: Contains all of the button functions for the main menu.
 * To Do:   N/A
 */
@@ -10,6 +10,11 @@ using UnityEngine;
 
 public class MainMenuController : MenuBase
 {
+    [SerializeField]
+    private GameObject testingMenuContainer;
+
+    #region main menu buttons
+
     /// <summary>
     /// starts the game
     /// </summary>
@@ -47,4 +52,26 @@ public class MainMenuController : MenuBase
     {
         Debug.Log("Toggling Credits");
     }
+
+    /// <summary>
+    /// enables and disables the testing menu
+    /// </summary>
+    public void ToggleTestMenu()
+    {
+        testingMenuContainer.SetActive(!testingMenuContainer.activeInHierarchy);
+    }
+
+    #endregion
+
+    #region testing menu buttons
+
+    /// <summary>
+    /// swaps over to the upgrade menu
+    /// </summary>
+    public void EnableUpgradeMenu()
+    {
+        UIPublicEvents.UpdateUIManagerStack?.Invoke(UiMenuType.UpgradeMenu);
+    }
+
+    #endregion
 }
