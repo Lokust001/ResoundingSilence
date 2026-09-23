@@ -1,7 +1,7 @@
 /******************************************************************************
  * Author: Brad Dixon
  * Contributors: 
- * Last Modified: 9/22/2026
+ * Last Modified: 9/23/2026
  * Brief: Handles the base functions that all aimed weapons will use
  * TODO:
  * ***************************************************************************/
@@ -19,6 +19,7 @@ public class BaseAimedWeaponBehaviour : BaseWeaponBehaviour
     override protected void Attack()
     {
         Vector3 bulletDir = mousePos - transform.position;
+        bulletDir.y = 0;
 
         GameObject spawnedProjectile = Instantiate(weaponProjectile, transform.position, Quaternion.LookRotation(bulletDir.normalized, Vector3.up));
         spawnedProjectile.GetComponent<BaseProjectileBehaviour>().SetData(ThisWeaponData);

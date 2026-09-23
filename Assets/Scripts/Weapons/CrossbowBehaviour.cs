@@ -281,6 +281,8 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
             Debug.Log("Hit " + e.gameObject.name);
         }
 
+        activePreview.SetActive(false);
+
         base.CastingAbility();
     }
 
@@ -316,11 +318,16 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
         Debug.Log("Casting Stake Shot");
     }
 
+    /// <summary>
+    /// Handles showing how the ability is being aimed
+    /// </summary>
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
 
         splinterShotPreview.transform.position = mousePos;
         bombBlastPreview.transform.position = mousePos;
+        scatterShotPreview.transform.position = mousePos;
+        stakeShotPreview.transform.position = mousePos;
     }
 }
