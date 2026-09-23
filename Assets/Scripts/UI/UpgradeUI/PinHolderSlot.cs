@@ -13,6 +13,9 @@ public class PinHolderSlot : MonoBehaviour, IPointerClickHandler
 {
     protected UpgradeMenuController controller;
 
+    /// <summary>
+    /// sets any refs
+    /// </summary>
     private void Awake()
     {
         controller = GetComponentInParent<UpgradeMenuController>();
