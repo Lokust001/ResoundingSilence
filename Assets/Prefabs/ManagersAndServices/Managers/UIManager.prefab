@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &448977284986621665
+--- !u!1 &9091097274607552556
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,22 +8,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 163487943792113728}
-  - component: {fileID: 8115366995451044989}
+  - component: {fileID: 8298919428656391331}
+  - component: {fileID: 1919719274878455250}
   m_Layer: 0
-  m_Name: AppManager
+  m_Name: UIManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &163487943792113728
+--- !u!4 &8298919428656391331
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 448977284986621665}
+  m_GameObject: {fileID: 9091097274607552556}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -32,20 +32,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8115366995451044989
+--- !u!114 &1919719274878455250
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 448977284986621665}
+  m_GameObject: {fileID: 9091097274607552556}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: afd3637243bd03445b19290815d9822b, type: 3}
+  m_Script: {fileID: 11500000, guid: 290547095452326438132c96b24d1066, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AppManager
-  managers:
-  - {fileID: 8934785699256380683, guid: 8293798979ada7c4cb4660a9d96b96a1, type: 3}
-  - {fileID: 1919719274878455250, guid: e1c21b9cb411dc644b6d466b9e8d791e, type: 3}
-  - {fileID: 2645781412011053375, guid: 3e27f688e4ef6674286b41984649a30e, type: 3}
-  - {fileID: 9198784876584551076, guid: b1bf8b70a1f95b24bb1dac797944174f, type: 3}
+  m_EditorClassIdentifier: Assembly-CSharp::UIManager
+  services: []
+  mainCanvasPrefab: {fileID: 1026929601811753844, guid: 21a076ab0f20f314f949e56267618bab, type: 3}
+  menuPrefabs:
+  - {fileID: 631485149142615837, guid: b14f1d9aaa95810469ba9c9b442d609c, type: 3}
+  - {fileID: 7146239793647941094, guid: 4ef7d14c87a0ae74ab613ad7c9abeab3, type: 3}
