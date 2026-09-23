@@ -28,8 +28,6 @@ public class MenuBase : MonoBehaviour
     protected virtual void OpenMenu()
     {
         if (UIManager.Instance.GetCurrentMenu() != menuType) {
-            Debug.Log($"Menu was active with the wrong type " +
-                $"open\nCurrentMenu: {UIManager.Instance.GetCurrentMenu()}, this menu type: {menuType}");
             gameObject.SetActive(false);
             return;
         }
@@ -41,7 +39,7 @@ public class MenuBase : MonoBehaviour
     /// Designed to be at the bottom of the overridden function, not the top
     /// </summary>
     protected virtual void CloseMenu()
-    { 
+    {
         gameObject.SetActive(false);
     }
 

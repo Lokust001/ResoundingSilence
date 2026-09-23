@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &4641096296254840834
+--- !u!1 &2674663708113927586
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,26 +8,26 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5463115027120960696}
-  - component: {fileID: 2102240418519694738}
-  - component: {fileID: 1033829509857710705}
-  - component: {fileID: 5580660156001477065}
-  - component: {fileID: 1463184779817834947}
-  - component: {fileID: 1008963450051803481}
+  - component: {fileID: 9193628267421989339}
+  - component: {fileID: 2374255683010745489}
+  - component: {fileID: 6998678242099596335}
+  - component: {fileID: -6181488051763034961}
+  - component: {fileID: 8254876004347527185}
+  - component: {fileID: 3898395522268744855}
   m_Layer: 5
-  m_Name: TestUpgradeGridTile
+  m_Name: PinItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &5463115027120960696
+--- !u!224 &9193628267421989339
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4641096296254840834}
+  m_GameObject: {fileID: 2674663708113927586}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -38,23 +38,23 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &2102240418519694738
+--- !u!222 &2374255683010745489
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4641096296254840834}
+  m_GameObject: {fileID: 2674663708113927586}
   m_CullTransparentMesh: 1
---- !u!114 &1033829509857710705
+--- !u!114 &6998678242099596335
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4641096296254840834}
+  m_GameObject: {fileID: 2674663708113927586}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
@@ -78,60 +78,42 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &5580660156001477065
+--- !u!114 &-6181488051763034961
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4641096296254840834}
+  m_GameObject: {fileID: 2674663708113927586}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b037a0bd8d0626846b1ecd220a41a541, type: 3}
+  m_Script: {fileID: 11500000, guid: 9472fd0e383b97c44820a57c4efdd03d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UpgradeTileBehavior
-  isActive: 0
-  coords: {x: 0, y: 0}
-  adjacentTiles: []
-  tileData:
-    isActive: 0
-    glyph: {fileID: 0}
-    pin: {fileID: 0}
-    coords: {x: -1, y: -1}
---- !u!210 &1463184779817834947
+  m_EditorClassIdentifier: Assembly-CSharp::PinItemBehavior
+  pinData: {fileID: 0}
+  Parent: {fileID: 0}
+--- !u!225 &8254876004347527185
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2674663708113927586}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!210 &3898395522268744855
 SortingGroup:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4641096296254840834}
+  m_GameObject: {fileID: 2674663708113927586}
   m_Enabled: 1
-  m_SortingLayerID: 270663549
-  m_SortingLayer: 1
+  m_SortingLayerID: 1157996309
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_SortAtRoot: 0
   m_Sort3DAs2D: 0
---- !u!114 &1008963450051803481
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4641096296254840834}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GridLayoutGroup
-  m_Padding:
-    m_Left: 0
-    m_Right: 0
-    m_Top: 0
-    m_Bottom: 0
-  m_ChildAlignment: 4
-  m_StartCorner: 0
-  m_StartAxis: 0
-  m_CellSize: {x: 100, y: 100}
-  m_Spacing: {x: 0, y: 0}
-  m_Constraint: 0
-  m_ConstraintCount: 2

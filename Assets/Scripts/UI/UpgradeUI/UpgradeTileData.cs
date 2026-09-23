@@ -44,4 +44,22 @@ public class UpgradeTileData
         glyph = setGlyph;
         pin = null;
     }
+
+    /// <summary>
+    /// sets the glyph in the tile
+    /// </summary>
+    /// <param name="glyph"></param>
+    public void SetGlyph(GlyphScriptable glyph)
+    {
+        this.glyph = glyph;
+    }
+
+    /// <summary>
+    /// sets the pin in the tile. TODO: make the glyph modify the pin if it has one.
+    /// </summary>
+    /// <param name="pin"></param>
+    public void SetPin(PinScriptable pin)
+    {
+        this.pin = pin;
+    }
 }
