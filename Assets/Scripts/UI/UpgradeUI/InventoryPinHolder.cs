@@ -11,6 +11,7 @@ using UnityEngine;
 public class InventoryPinHolder : PinHolderSlot
 {
     private PinItemBehavior pin;
+    public PinScriptable pinData { get; private set; }
 
     /// <summary>
     /// initializes the slot
@@ -19,6 +20,7 @@ public class InventoryPinHolder : PinHolderSlot
     public void InitSlot(PinItemBehavior pin)
     {
         this.pin = pin;
+        pinData = pin.pinData;
     }
 
     /// <summary>

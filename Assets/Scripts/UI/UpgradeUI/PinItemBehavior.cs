@@ -75,6 +75,13 @@ public class PinItemBehavior : MonoBehaviour, IPointerClickHandler
     /// </summary>
     public void ForcePickUpPin()
     {
+        /*if (Parent != null)
+        {
+            if (Parent is UpgradeTileBehavior tile)
+            {
+                tile.UnequipPin();
+            }
+        }*/
         UIPublicEvents.PinPickedUp?.Invoke(this);
     }
 
@@ -111,4 +118,6 @@ public class PinItemBehavior : MonoBehaviour, IPointerClickHandler
             yield return null;
         }
     }
+
+    
 }

@@ -393,7 +393,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeMenuController
   menuType: 2
-  settings: 1
+  settings: 2
   gridContainer: {fileID: 5918980167002557550}
   tilePrefab: {fileID: 5580660156001477065, guid: 15d4b25de97586f49a51dc0d72f260ee, type: 3}
   inventoryPinSlot: {fileID: 8940349369649909343, guid: 995ff726e0f402047ba88770f94b3029, type: 3}
@@ -401,23 +401,22 @@ MonoBehaviour:
   inventory: {fileID: 5509027781931708382}
   draggingParent: {fileID: 2998325558724428653}
   enableTestMode: 1
-  testGrid:
-    NumberOfGlyphRange: {x: 0, y: 0}
+  testingGrids:
+  - NumberOfGlyphRange: {x: 0, y: 0}
     height: 3
-    width: 3
-    rows:
-    - rowTiles: 010000
-    - rowTiles: 010101
-    - rowTiles: 010001
-  testGrid2:
-    NumberOfGlyphRange: {x: 0, y: 0}
-    height: 4
     width: 2
     rows:
     - rowTiles: 0100
     - rowTiles: 0101
     - rowTiles: 0001
-    - rowTiles: 0001
+  - NumberOfGlyphRange: {x: 0, y: 0}
+    height: 4
+    width: 4
+    rows:
+    - rowTiles: 01000001
+    - rowTiles: 01010101
+    - rowTiles: 00010100
+    - rowTiles: 01010101
   testInventory: []
   testListOfPossibleGlyphs: []
   CarriedPin: {fileID: 0}
