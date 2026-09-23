@@ -330,6 +330,7 @@ public class UpgradeMenuController : MenuBase
             {
                 
                 item.Parent.SetNewPinInTile(CarriedPin);
+                CarriedPin.transform.SetParent(item.Parent.transform);
             }
             else
             {

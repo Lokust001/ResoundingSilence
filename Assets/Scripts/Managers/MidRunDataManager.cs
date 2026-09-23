@@ -25,6 +25,10 @@ public class MidRunDataManager : BaseManager
     [SerializeField, ShowIf(nameof(EnableTestingMode))]
     private List<PinScriptable> testingPinInventory = new();
 
+    /// <summary>
+    /// initializes the manager
+    /// </summary>
+    /// <returns></returns>
     public override async Awaitable InitManager()
     {
         await base.InitManager();
@@ -48,6 +52,11 @@ public class MidRunDataManager : BaseManager
         }
     }
 
+    /// <summary>
+    /// removes a specific pin from the inventory at the provided id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns>the pin that got removed</returns>
     public PinScriptable RemovePinFromInventory(int id)
     {
         if (id < 0 || id >= pinInventory.Count)
@@ -62,6 +71,11 @@ public class MidRunDataManager : BaseManager
         return tempPin;
     }
 
+    /// <summary>
+    /// removes a pin from the inventory given the specific pin to remove
+    /// </summary>
+    /// <param name="pin"></param>
+    /// <returns>the pin that got removed</returns>
     public PinScriptable RemovePinFromInventory(PinScriptable pin)
     {
         if (!pinInventory.Contains(pin))
@@ -75,7 +89,7 @@ public class MidRunDataManager : BaseManager
     }
 
     /// <summary>
-    /// 
+    /// adds a pin to the inventory
     /// </summary>
     /// <param name="pin"></param>
     /// <returns>the id of the pin it just added</returns>
