@@ -15,9 +15,18 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     float playerHealth;
 
+    [SerializeField]
+    float invincibilityDuration;
+
+    [SerializeField]
+    float knockbackDestinationAccuracyThreshold;
+
     #region Private Variables
     Rigidbody rigidbody;
     Vector3 playerVelocity;
+
+    Coroutine dmgCoroutine;
+    Coroutine knockbackCoroutine;
 
     Coroutine playerMovementCoroutine;
     #endregion
@@ -86,7 +95,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     public void StopPlayerMovementAndInput() 
     {
-        StopCoroutine(MovePlayerCoroutine());
+        StopCoroutine(playerMovementCoroutine);
         PlayerInputEnded();
     }
 
@@ -96,5 +105,76 @@ public class PlayerController : MonoBehaviour
     public void RestartPlayerMovementAndInput() 
     {
         playerMovementCoroutine = StartCoroutine(MovePlayerCoroutine());
+    }
+
+    /// <summary>
+    /// Lets the player take damage, with optional/nullable knockbackInfo
+    /// </summary>
+    /// <param name="knockbackInfo"></param>
+    public void TakeDamage((Vector3 knockbackDistance, float knockbackSpeed)? knockbackInfo = null)
+    {
+        //If the player is already damaged/invicible at the moment
+        if (dmgCoroutine != null)
+            return;
+
+        //Start a damage/invincibility couroutine
+        dmgCoroutine ??= StartCoroutine(PlayerInvincibilityFrames());
+
+        //If there is knockback data and there is no knockback coroutine active 
+        if(knockbackInfo.HasValue)
+            knockbackCoroutine ??= StartCoroutine(TakePlayerKnockback(knockbackInfo.Value));
+    }
+
+    private IEnumerator PlayerInvincibilityFrames() 
+    {
+        Renderer playerRenderer = GetComponent<Renderer>();
+        Color original = playerRenderer.material.color;
+        playerRenderer.material.color = Color.red;
+        float timer = 0;
+        while (timer < invincibilityDuration) 
+        {
+            timer += Time.deltaTime;
+            
+            yield return null;
+        }
+
+        playerRenderer.material.color = original;
+        dmgCoroutine = null;
+    }
+
+    public IEnumerator TakePlayerKnockback((Vector3 knockbackDistance, float knockbackSpeed) knockbackInfo) 
+    {
+        //Stop player input
+        StopPlayerMovementAndInput();
+
+        //Disable gravity and the collider at once
+        rigidbody.useGravity = GetComponent<Collider>().enabled = false;
+
+        //Retrieve a local copy of the player's transform
+        Transform playerTransform = transform;
+
+        //Calculate the knockback destination, which is the player's current position plus its calculated offset after knockback
+        Vector3 knockbackDestination = playerTransform.position + knockbackInfo.knockbackDistance;
+        
+        //calculate the distance and how far the distance is bridged between frames
+        float distanceDeltaMultiplier = knockbackInfo.knockbackSpeed;
+        float distance = (knockbackDestination - playerTransform.position).sqrMagnitude;
+
+        Debug.Log("Starting Knockback");
+
+        //While the distance has more than the accuracy threshold,
+        //move the player towards the knockback position and then calculate the new distance
+        while (distance > knockbackDestinationAccuracyThreshold) 
+        {
+            Vector3 knockbackDelta = Vector3.MoveTowards(playerTransform.position, knockbackDestination, distanceDeltaMultiplier * Time.deltaTime);
+            rigidbody.MovePosition(knockbackDelta);
+            distance = (knockbackDelta - playerTransform.position).sqrMagnitude;
+            yield return null;
+        }
+
+        //Re-enable gravity and the collider
+        rigidbody.useGravity = GetComponent<Collider>().enabled = true;
+        RestartPlayerMovementAndInput();
+        knockbackCoroutine = null;
     }
 }

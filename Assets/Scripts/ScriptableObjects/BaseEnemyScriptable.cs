@@ -52,9 +52,15 @@ public class BaseEnemyScriptable : BaseScriptableObject
     public float chargingDirectionTime;
 
     [ShowIf(nameof(enemyType), EnemyType.ChargingMelee)]
-    public float chargedMovementSpeed;
+    public float chargeSpeedForce;
     [ShowIf(nameof(enemyType), EnemyType.ChargingMelee)]
-    public float chargedAccelerationSpeed;
+    public float chargePlayerKnockbackForce;
+    [ShowIf(nameof(enemyType), EnemyType.ChargingMelee)]
+    public float chargePlayerKnockbackDistanceMultiplier;
+    [ShowIf(nameof(enemyType), EnemyType.ChargingMelee)]
+    public float chargeDestinationAccuracyThreshold;
+
+
 
     [ShowIf(nameof(enemyType), EnemyType.ChargingMelee)]
     [Tooltip("The materials/colors that will be used for the charge-up attack. " +

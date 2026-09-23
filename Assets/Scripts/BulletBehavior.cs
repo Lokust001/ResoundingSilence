@@ -8,6 +8,8 @@ public class BulletBehavior : MonoBehaviour
 
 	public BulletBehavior Init(Vector3 bVelocity, float bulletSpeed, float bLifetime, Vector3 startPos) 
 	{
+		bVelocity.y = 0;
+
         GetComponent<Rigidbody>().linearVelocity = bVelocity * bulletSpeed;
 
 		var rot = Quaternion.LookRotation(bVelocity).eulerAngles;
@@ -25,5 +27,13 @@ public class BulletBehavior : MonoBehaviour
 		Destroy(gameObject);
 	}
 
+    private void OnCollisionEnter(Collision collision)
+    {
+		if (collision.gameObject.TryGetComponent<PlayerController>(out PlayerController playerController)) 
+		{
+			playerController.TakeDamage();
+			Destroy(gameObject);
+		}
+    }
 
 }

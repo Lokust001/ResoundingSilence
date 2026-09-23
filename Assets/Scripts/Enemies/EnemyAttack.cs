@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class EnemyAttack : MonoBehaviour
+public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
 {
 
     [SerializeField]
@@ -18,15 +18,11 @@ public class EnemyAttack : MonoBehaviour
 
     private bool inAttackRange;
 
-    
-
     public BaseEnemyScriptable enemyData;
     void Start()
     {
-        enemyData = enemyData.CreateNonRefCopy<BaseEnemyScriptable>();
         sphereTrigger = GetComponent<SphereCollider>();
         enemyMovement = GetComponentInParent<EnemyWalk>();
-
     }
 
     private void OnTriggerEnter(Collider other)
@@ -41,13 +37,13 @@ public class EnemyAttack : MonoBehaviour
         }
     }
 
-    //private void OnTriggerStay(Collider other)
-    //{
-    //    if (other.GetComponent<PlayerController>() != null)
-    //    {
-    //        InitiateAttack();
-    //    }
-    //}
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.GetComponent<PlayerController>() != null)
+        {
+            inAttackRange = true;
+        }
+    }
 
     private void OnTriggerExit(Collider other)
     {
@@ -56,6 +52,8 @@ public class EnemyAttack : MonoBehaviour
             inAttackRange = false;
         }
     }
+
+    
 
     /// <summary>
     /// Method to handle the different types of attacks that various enemies can do or different enemy types in general alongside priming cooldowns
@@ -66,20 +64,20 @@ public class EnemyAttack : MonoBehaviour
         switch (enemyData.enemyType)
         {
             case BaseEnemyScriptable.EnemyType.SingleShooter:
-                FireBullet(Quaternion.identity);
+                FireBullet(Quaternion.identity, true);
                 break;
             case BaseEnemyScriptable.EnemyType.ConeShooter:
                 FireBulletsCone();
                 break;
             case BaseEnemyScriptable.EnemyType.ChargingMelee:
-                activeATKorCooldown = StartCoroutine(WindupChargerAttack());
+                activeATKorCooldown ??= StartCoroutine(WindupChargerAttack());
                 break;
             case BaseEnemyScriptable.EnemyType.Melee:
                 break;
             default:
                 break;
         }
-        //If there is already a cooldown active/up, don't run this method
+        //If there is already a cooldown or ability active, don't start another one
         if (activeATKorCooldown != null) return;
         //However, if the action was near instantaneous or didn't need a coroutine, start a catch-all cooldown for them instead
         activeATKorCooldown = StartCoroutine(AttackCooldownCoroutine());
@@ -91,15 +89,18 @@ public class EnemyAttack : MonoBehaviour
     /// <returns></returns>
     private IEnumerator AttackCooldownCoroutine() 
     {
-        Debug.Log("Starting Cooldown");
+        //Wait for the time between attacks, then clear the active coroutine
         yield return new WaitForSeconds(enemyData.timeBetweenAttacks);
+        activeATKorCooldown = null;
 
-        Debug.Log("Cooldown Finished");
+        //If player is not in attack range, start searching for it
         if (!inAttackRange)
         {
             Debug.Log("Not in range, starting search");
             enemyMovement.StartPlayerSearch();
         }
+
+        //Otherwise, initiate another attack
         else 
         {
             Debug.Log("Still in range, initiating attack");
@@ -119,7 +120,7 @@ public class EnemyAttack : MonoBehaviour
         Vector3 bulletTravelDirection = bulletRotation * (isSingleShot ? CalculateBulletDirection() : fireBulletDirection);
 
         //Instantiate bullet with the direction, travelspeed, lifetime, and give it the enemy position (can be changed later)
-        Instantiate(bulletPrefab).GetComponent<BulletBehavior>().Init(bulletTravelDirection, enemyData.bulletTravelSpeed, enemyData.bulletLife, transform.position);
+        Instantiate(bulletPrefab).GetComponentInChildren<BulletBehavior>().Init(bulletTravelDirection, enemyData.bulletTravelSpeed, enemyData.bulletLife, transform.position);
     }
     /// <summary>
     /// Helper method to provide the Vector3 direction that the player is at
@@ -209,16 +210,18 @@ public class EnemyAttack : MonoBehaviour
         //Setting the z scale to 0 makes the indicator invisible, and increasing the z scale
         //over time makes the actual indicator "grow" over time.
         chargingATKParent.transform.localScale = new(1, 1, 0);
-        
+
         //Pass the Charging behavior towards enemyMovement to handle the sudden burst of movement
-        yield return StartCoroutine(enemyMovement.ChargeTowardsLocation(enemyData.chargedMovementSpeed, enemyData.chargedAccelerationSpeed, chargeIndicatorZlength));
-        
+        yield return StartCoroutine(enemyMovement.ChargeTowardsLocation(chargeIndicatorZlength));
+
+        inAttackRange = false;
+
         //Start a Cooldown Coroutine
         activeATKorCooldown = StartCoroutine(AttackCooldownCoroutine());
     }
 
-
-        
-
-
+    public void SetEntityData(BaseScriptableObject baseScriptable)
+    {
+        enemyData = (BaseEnemyScriptable)baseScriptable;
+    }
 }
