@@ -8,9 +8,10 @@
 
 using NaughtyAttributes;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
 using System.Linq;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class UpgradeMenuController : MenuBase
 {
@@ -54,6 +55,10 @@ public class UpgradeMenuController : MenuBase
 
     [SerializeField]
     [ShowIf(nameof(settings), ShownSettings.References)]
+    private ScrollRect inventoryScrollRect;
+
+    [SerializeField]
+    [ShowIf(nameof(settings), ShownSettings.References)]
     private Transform draggingParent;
 
     [SerializeField]
@@ -87,7 +92,6 @@ public class UpgradeMenuController : MenuBase
 
     private List<PinItemBehavior> inventoryPins = new();
     private List<InventoryPinHolder> inventorySlots = new();
-    List<UpgradeTileBehavior> enabledTilesInGrid = new();
     private int gridHeight;
     private int gridWidth;
 
@@ -97,11 +101,6 @@ public class UpgradeMenuController : MenuBase
     public PinItemBehavior CarriedPin;
 
     private List<PinItemBehavior> pinsOnNonEnabledGrids = new();
-
-    private List<PinItemBehavior> newlyEquippedPins;
-
-    public List<UpgradeTileData> testing;
-    public List<UpgradeTileData> testing2;
 
     #endregion
 
@@ -136,15 +135,17 @@ public class UpgradeMenuController : MenuBase
     {
         base.SetUpPublicEvents();
         UIPublicEvents.PinPickedUp += SetCarriedPin;
+        InputPublicEvents.ShootReleased += DropHeldPin;
     }
 
     /// <summary>
     /// unsubscribes from all public events
     /// </summary>
-    protected override void OnDestroy()
+    protected override void TearDownPublicEvents()
     {
-        base.OnDestroy();
+        base.TearDownPublicEvents();
         UIPublicEvents.PinPickedUp -= SetCarriedPin;
+        InputPublicEvents.ShootReleased -= DropHeldPin;
     }
 
     /// <summary>
@@ -341,7 +342,7 @@ public class UpgradeMenuController : MenuBase
         if (CarriedPin != null)
         {
             CarriedPin.PinPlaced();
-            PlacePinInTile(CarriedPin.Owner);
+            PlaceCarriedPinInTile(CarriedPin.Owner);
         }
 
         if (enableTestMode)
@@ -384,12 +385,14 @@ public class UpgradeMenuController : MenuBase
             if (item.Parent == item.Owner)
             {
                 //set the current item to its owner
-                CarriedPin.Owner.SetNewPinInTile(CarriedPin);
+                PlaceCarriedPinInTile(CarriedPin.Owner);
+                //CarriedPin.Owner.SetNewPinInTile(CarriedPin);
             }
             else
             {
                 //set the current item to the tile of the new one
-                item.Parent.SetNewPinInTile(CarriedPin);
+                PlaceCarriedPinInTile(item.Parent);
+                //item.Parent.SetNewPinInTile(CarriedPin);
             }
         }
         PickUpPin(item);
@@ -407,8 +410,7 @@ public class UpgradeMenuController : MenuBase
 
         if (CarriedPin != null)
         {
-            CarriedPin.PinPlaced();
-            CarriedPin.Owner.SetNewPinInTile(CarriedPin);
+            PlaceCarriedPinInTile(CarriedPin.Owner);
         }
 
         //unequip pins properly
@@ -443,20 +445,24 @@ public class UpgradeMenuController : MenuBase
         PickUpPin(item);
     }
 
+    /// <summary>
+    /// sets the item as the new carried pin
+    /// </summary>
+    /// <param name="item"></param>
     private void PickUpPin(PinItemBehavior item)
     {
         CarriedPin = item;
         CarriedPin.gameObject.SetActive(true);
         CarriedPin.transform.SetParent(draggingParent);
         CarriedPin.PinPickedUp();
-        
+        ToggleInventoryScrollability(false);
     }
 
     /// <summary>
     /// Sets the tile to have a pin
     /// </summary>
     /// <param name="tile"></param>
-    public void PlacePinInTile(PinHolderSlot tile)
+    public void PlaceCarriedPinInTile(PinHolderSlot tile)
     {
         if (CarriedPin == null)
         {
@@ -467,7 +473,98 @@ public class UpgradeMenuController : MenuBase
         tile.SetNewPinInTile(CarriedPin);
 
         CarriedPin = null;
+        ToggleInventoryScrollability(true);
+    }
+    
+    /// <summary>
+    /// returns the parameter pin to the inventory
+    /// </summary>
+    /// <param name="item"></param>
+    public void ReturnPinToInventory(PinItemBehavior item)
+    {
+        if (item.Parent != null && item.Parent != item.Owner)
+        {
+            item.Parent.UnequipPin();
+        }
+
+        item.Owner.SetNewPinInTile(item);
+        ToggleInventoryScrollability(true);
     }
 
+    /// <summary>
+    /// drops the pin that the player is holding
+    /// </summary>
+    private void DropHeldPin()
+    {
+        //quit out if youre not holding anything
+        if (CarriedPin == null)
+        {
+            return;
+        }
+
+        //check to see if the pin is over a tile
+        PointerEventData tempEventData = new(EventSystem.current);
+        tempEventData.position = CarriedPin.transform.position;
+
+        List<RaycastResult> raycastResults = new();
+
+        EventSystem.current.RaycastAll(tempEventData, raycastResults);
+
+        if (raycastResults.Count > 0)
+        {
+            if (raycastResults[0].gameObject.GetComponent<UpgradeTileBehavior>() != null)
+            {
+                PlaceCarriedPinInTile(raycastResults[0].gameObject.GetComponent<UpgradeTileBehavior>());
+                return;
+            }
+            else if (raycastResults[0].gameObject.GetComponent<PinItemBehavior>() != null)
+            {
+                PinItemBehavior pinInSlot = raycastResults[0].gameObject.GetComponent<PinItemBehavior>();
+                PinHolderSlot tile = pinInSlot.Parent;
+                //send that pin to inventory
+                ReturnPinToInventory(pinInSlot);
+
+                if (tile != null)
+                {
+                    if (tile is UpgradeTileBehavior)
+                    {
+                        PlaceCarriedPinInTile(tile);
+                        return;
+                    }
+                    else
+                    {
+                        PlaceCarriedPinInTile(CarriedPin.Owner);
+                        return;
+                    }
+                }
+                //place carried pin here
+                
+            }
+            else if (raycastResults[0].gameObject.GetComponent<InventoryPinHolder>() != null)
+            {
+                PlaceCarriedPinInTile(CarriedPin.Owner);
+                return;
+            }
+        }
+
+        if (CarriedPin.Parent == null)
+        {
+            PlaceCarriedPinInTile(CarriedPin.Owner);
+        }
+        else
+        {
+            PlaceCarriedPinInTile(CarriedPin.Parent);
+        }
+    }
+
+    /// <summary>
+    /// enables and disables the inventory scrollability
+    /// </summary>
+    /// <param name="canScroll"></param>
+    private void ToggleInventoryScrollability(bool canScroll = true)
+    {
+        inventoryScrollRect.StopMovement();
+        inventoryScrollRect.enabled = canScroll;
+    }
     #endregion
 }
