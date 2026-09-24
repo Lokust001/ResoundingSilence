@@ -406,8 +406,6 @@ public class UpgradeMenuController : MenuBase
     /// <param name="item"></param>
     public void GrabPlacedPin(PinItemBehavior item)
     {
-        
-
         if (CarriedPin != null)
         {
             PlaceCarriedPinInTile(CarriedPin.Owner);
@@ -440,6 +438,7 @@ public class UpgradeMenuController : MenuBase
         if (item.Parent != null)
         {
             item.Parent.UnequipPin();
+            item.Parent = null;
         }
 
         PickUpPin(item);
