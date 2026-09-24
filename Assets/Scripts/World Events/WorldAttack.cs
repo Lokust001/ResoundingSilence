@@ -1,3 +1,10 @@
+/*
+* Author: Brenden
+* Contributors:
+* Last Modified: 09/23/2026
+* Summary: warns the player how long they have until they are gonna get hit
+* To Do:   add hitboxes once I can get those working
+*/
 using System.Collections;
 using UnityEngine;
 
