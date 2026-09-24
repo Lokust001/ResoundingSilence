@@ -191,12 +191,12 @@ public class UpgradeMenuController : MenuBase
                 //turns on the pins on the current grid and turns off the pins on the other grid(s)
                 if (GridImLookingAt == currentlyEnabledGrid)
                 {
-                    pinItem.transform.SetParent(pinItem.Parent.transform);
+                    //pinItem.transform.SetParent(pinItem.Parent.transform);
                     pinItem.gameObject.SetActive(true);
                 }
                 else
                 {
-                    pinItem.transform.SetParent(pinsOnOtherGridsParent);
+                   // pinItem.transform.SetParent(pinsOnOtherGridsParent);
                     pinsOnNonEnabledGrids.Add(pinItem);
                     pinItem.gameObject.SetActive(false);
                 }
