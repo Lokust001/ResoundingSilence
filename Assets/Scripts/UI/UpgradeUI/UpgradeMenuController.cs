@@ -10,6 +10,7 @@ using NaughtyAttributes;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class UpgradeMenuController : MenuBase
 {
@@ -55,6 +56,10 @@ public class UpgradeMenuController : MenuBase
     [ShowIf(nameof(settings), ShownSettings.References)]
     private Transform draggingParent;
 
+    [SerializeField]
+    [ShowIf(nameof(settings), ShownSettings.References)]
+    private Transform pinsOnOtherGridsParent;
+
     #endregion
 
     #region testing
@@ -66,11 +71,7 @@ public class UpgradeMenuController : MenuBase
 
     [SerializeField]
     [ShowIf(nameof(settings), ShownSettings.Testing)]
-    private UpgradeTileGrid testGrid;
-
-    [SerializeField]
-    [ShowIf(nameof(settings), ShownSettings.Testing)]
-    private UpgradeTileGrid testGrid2;
+    private List<UpgradeTileGrid> testingGrids;
 
     [SerializeField]
     [ShowIf(nameof(settings), ShownSettings.Testing)]
@@ -95,7 +96,12 @@ public class UpgradeMenuController : MenuBase
     [HideInInspector]
     public PinItemBehavior CarriedPin;
 
+    private List<PinItemBehavior> pinsOnNonEnabledGrids = new();
+
     private List<PinItemBehavior> newlyEquippedPins;
+
+    public List<UpgradeTileData> testing;
+    public List<UpgradeTileData> testing2;
 
     #endregion
 
@@ -118,8 +124,9 @@ public class UpgradeMenuController : MenuBase
     protected override void OpenMenu()
     {
         base.OpenMenu();
-        OpenGrid(testGrid);
         PopulateInventory();
+        OpenGrid(testingGrids[0]);
+        
     }
 
     /// <summary>
@@ -160,13 +167,43 @@ public class UpgradeMenuController : MenuBase
     }
 
     /// <summary>
-    /// placeholder for future. TODO: make the thing
+    /// Turns on and off the pins on the other grid
     /// </summary>
-    private void PopulateGrid()
+    /// <exception cref="System.Exception"></exception>
+    private void UpdatePinVisibility()
     {
-        //turn on/off tiles as needed.
-        //populate grid tiles with glyphs
-        //populate grid with already equipped pins
+        pinsOnNonEnabledGrids.Clear();
+
+        //replace testingGrids with the list of equipped weapons
+        foreach (UpgradeTileGrid GridImLookingAt in testingGrids)
+        {
+            //grabs all of the tiledatas that have a pin.
+            List<UpgradeTileData> tilesWithPins = GridImLookingAt.grid.Where<UpgradeTileData>(x => x.pin != null).ToList();
+            foreach (UpgradeTileData tileData in tilesWithPins)
+            {
+                PinItemBehavior pinItem = inventoryPins.Find(x => x.pinData == tileData.pin);
+
+                if (pinItem == null)
+                {
+                    throw new System.Exception("Tried to find a pin thats not in the players inventory");
+                }
+
+                //turns on the pins on the current grid and turns off the pins on the other grid(s)
+                if (GridImLookingAt == currentlyEnabledGrid)
+                {
+                    //pinItem.transform.SetParent(pinItem.Parent.transform);
+                    pinItem.gameObject.SetActive(true);
+                }
+                else
+                {
+                    //pinItem.transform.SetParent(pinsOnOtherGridsParent);
+                    pinsOnNonEnabledGrids.Add(pinItem);
+                    pinItem.gameObject.SetActive(false);
+                }
+
+                
+            }
+        }
     }
 
     /// <summary>
@@ -175,7 +212,6 @@ public class UpgradeMenuController : MenuBase
     /// <exception cref="System.Exception"></exception>
     private void OpenGrid(UpgradeTileGrid gridToInit = null)
     {
-
         gridHeight = gridToInit.height;
         gridWidth = gridToInit.width;
 
@@ -218,6 +254,7 @@ public class UpgradeMenuController : MenuBase
 
         currentlyEnabledGrid = gridToInit;
         UIPublicEvents.UpgradeGridInitialized?.Invoke();
+        UpdatePinVisibility();
     }
 
     #endregion
@@ -301,15 +338,22 @@ public class UpgradeMenuController : MenuBase
     /// </summary>
     public void SwapGrid()
     {
+        if (CarriedPin != null)
+        {
+            CarriedPin.PinPlaced();
+            PlacePinInTile(CarriedPin.Owner);
+        }
+
         if (enableTestMode)
         {
-            if (currentlyEnabledGrid == testGrid)
+            int enabledGrid = testingGrids.IndexOf(currentlyEnabledGrid);
+            if (enabledGrid == testingGrids.Count - 1)
             {
-                OpenGrid(testGrid2);
+                OpenGrid(testingGrids[0]);
             }
             else
             {
-                OpenGrid(testGrid);
+                OpenGrid(testingGrids[enabledGrid + 1]);
             }
         }
     }
@@ -348,10 +392,8 @@ public class UpgradeMenuController : MenuBase
                 item.Parent.SetNewPinInTile(CarriedPin);
             }
         }
+        PickUpPin(item);
 
-        CarriedPin = item;
-        CarriedPin.PinPickedUp();
-        CarriedPin.transform.SetParent(draggingParent);
         //turn on/off a canvas group over the inventory that trashes the held item
     }
 
@@ -361,15 +403,53 @@ public class UpgradeMenuController : MenuBase
     /// <param name="item"></param>
     public void GrabPlacedPin(PinItemBehavior item)
     {
+        
+
         if (CarriedPin != null)
         {
             CarriedPin.PinPlaced();
             CarriedPin.Owner.SetNewPinInTile(CarriedPin);
         }
 
+        //unequip pins properly
+        if (pinsOnNonEnabledGrids.Contains(item))
+        {
+            //I LOVE LINQ
+            //grabs the tile that the item is attached to 
+
+            //grabs all the tiles in all the grids that are disabled
+            List<UpgradeTileData> nonEnabledGrids = testingGrids.Where(x => x != currentlyEnabledGrid).SelectMany(x => x.grid).ToList();
+
+            //grabs all the tiles that have pins on them, then grabs the specific tile that has the pin.
+            UpgradeTileData tilePinIsEquippedTo = nonEnabledGrids.Where(x => x.pin != null).FirstOrDefault(x => x.pin == item.pinData);
+
+            if (tilePinIsEquippedTo == null)
+            {
+                throw new System.Exception("PinsNotOnEnabledGrids has some issues with resetting");
+            }
+
+            //replace with the proper way to remove a pin given the tile data eventually
+            tilePinIsEquippedTo.SetPin(null);
+            pinsOnNonEnabledGrids.Remove(item);
+            
+        }
+
+        //unmodifies the pin if it modifies it at all.
+        if (item.Parent != null)
+        {
+            item.Parent.UnequipPin();
+        }
+
+        PickUpPin(item);
+    }
+
+    private void PickUpPin(PinItemBehavior item)
+    {
         CarriedPin = item;
-        CarriedPin.PinPickedUp();
+        CarriedPin.gameObject.SetActive(true);
         CarriedPin.transform.SetParent(draggingParent);
+        CarriedPin.PinPickedUp();
+        
     }
 
     /// <summary>

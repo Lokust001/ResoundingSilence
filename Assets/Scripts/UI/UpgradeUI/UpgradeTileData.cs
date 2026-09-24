@@ -14,9 +14,9 @@ public class UpgradeTileData
 
     public bool isActive;
 
-    public GlyphScriptable glyph;
+    public GlyphScriptable glyph {  get; private set; }
 
-    public PinScriptable pin;
+    public PinScriptable pin {  get; private set; }
 
     public Vector2Int coords;
 

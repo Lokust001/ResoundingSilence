@@ -68,6 +68,8 @@ public class UpgradeTileBehavior : PinHolderSlot
             return;
         }
 
+        tileData = data;
+
         isActive = data.isActive;
 
         this.coords = data.coords;
@@ -90,6 +92,16 @@ public class UpgradeTileBehavior : PinHolderSlot
     {
         base.SetNewPinInTile(pin);
         tileData.SetPin(pin.pinData);
+    }
+
+    /// <summary>
+    /// function gets called whenever a pin becomes unequipped from a tile
+    /// </summary>
+    public override void UnequipPin()
+    {
+        base.UnequipPin();
+
+        tileData.SetPin(null);
     }
 
     #endregion

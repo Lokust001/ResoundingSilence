@@ -229,6 +229,41 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!1 &2107312229448312556
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4247941652432194231}
+  m_Layer: 5
+  m_Name: PinsOnOtherGrid
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &4247941652432194231
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2107312229448312556}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7996208998293756781}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2514812120261676582
 GameObject:
   m_ObjectHideFlags: 0
@@ -373,6 +408,7 @@ RectTransform:
   - {fileID: 8171145772514272918}
   - {fileID: 5918980167002557550}
   - {fileID: 2998325558724428653}
+  - {fileID: 4247941652432194231}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -400,24 +436,24 @@ MonoBehaviour:
   pinItemPrefab: {fileID: -6181488051763034961, guid: 5fb0d3faa654fca46a741ae778496bfd, type: 3}
   inventory: {fileID: 5509027781931708382}
   draggingParent: {fileID: 2998325558724428653}
+  pinsOnOtherGridsParent: {fileID: 4247941652432194231}
   enableTestMode: 1
-  testGrid:
-    NumberOfGlyphRange: {x: 0, y: 0}
+  testingGrids:
+  - NumberOfGlyphRange: {x: 0, y: 0}
     height: 3
-    width: 3
-    rows:
-    - rowTiles: 010000
-    - rowTiles: 010101
-    - rowTiles: 010001
-  testGrid2:
-    NumberOfGlyphRange: {x: 0, y: 0}
-    height: 4
     width: 2
     rows:
     - rowTiles: 0100
     - rowTiles: 0101
     - rowTiles: 0001
-    - rowTiles: 0001
+  - NumberOfGlyphRange: {x: 0, y: 0}
+    height: 4
+    width: 4
+    rows:
+    - rowTiles: 01000001
+    - rowTiles: 01010101
+    - rowTiles: 00010100
+    - rowTiles: 01010101
   testInventory: []
   testListOfPossibleGlyphs: []
   CarriedPin: {fileID: 0}
