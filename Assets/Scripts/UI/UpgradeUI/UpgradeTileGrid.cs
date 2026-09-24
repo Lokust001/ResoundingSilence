@@ -8,6 +8,7 @@
 
 using NaughtyAttributes;
 using System.Collections.Generic;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 [System.Serializable]
@@ -17,6 +18,8 @@ public class UpgradeTileGrid
     //will be hidden until my next pr.
     [HideInInspector]
     public Vector2Int NumberOfGlyphRange;
+
+    public BaseWeaponScriptable attachedWeapon;
 
     [OnValueChanged(nameof(UpdateGridHeightCount)), AllowNesting, Range(0, 10)]
     public int height;
@@ -28,6 +31,8 @@ public class UpgradeTileGrid
     public List<GridRow> rows;
 
     public List<UpgradeTileData> grid { get; private set; } = new();
+
+    public List<PinScriptable> pins { get; private set; } = new();
 
     [System.Serializable]
     public class GridRow
@@ -169,5 +174,39 @@ public class UpgradeTileGrid
         }
 
         
+    }
+
+    /// <summary>
+    /// gathers all the pins into a list
+    /// </summary>
+    public void GetPins()
+    {
+        pins.Clear();
+        foreach(var grid in grid)
+        {
+            if(grid.pin != null)
+            {
+                pins.Add(grid.pin);
+            }
+        }
+    }
+
+    public void SendDatatoWeapon()
+    {
+        float damagebuff = 1.0f;
+        float AttackSpeedBuff = 1.0f;
+        foreach(var pin in pins)
+        {
+            if(pin.StatToChange == PinScriptable.WeaponStatToChange.bulletDamage)
+            {
+                damagebuff += pin.ModifierNumber;
+            }
+            else if(pin.StatToChange == PinScriptable.WeaponStatToChange.attackSpeed)
+            {
+                AttackSpeedBuff /= pin.ModifierNumber;
+            }
+        }
+        attachedWeapon.updateWeaponSpeed(AttackSpeedBuff);
+        attachedWeapon.updateWeaponDamage(damagebuff);
     }
 }

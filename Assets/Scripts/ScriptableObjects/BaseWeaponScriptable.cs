@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
-* Contributors: Brad Dixon
-* Last Modified: 09/21/2026
+* Contributors: Brad Dixon, Brenden
+* Last Modified: 09/24/2026
 * Summary: This is the base scriptable object for all weapon scriptable objects.
 *          Handles the data for the weapons.
 * To Do:   Add more variables as needed. Change status effects as needed.
@@ -55,6 +55,10 @@ public class BaseWeaponScriptable : BaseScriptableObject
         "Use to select what type of status effects this weapon will inflict.")]
     private EffectType effectType;
 
+    [SerializeField]
+    [Tooltip("This is the grid that will be attached to this kind of weapon when it is made")]
+    private UpgradeTileGrid upgradeGrid;
+
     #endregion
 
     #region Lore
@@ -69,13 +73,19 @@ public class BaseWeaponScriptable : BaseScriptableObject
 
     #region Weapon
 
-    [ShowIf(nameof(shownSettings), ShownSettings.CombatData)]
-    [Tooltip("How much damage the weapon does. Is a list in case the weapon has multiple hits in a combo.")]
+    [HideInInspector]
     public List<int> WeaponDamage = new List<int>();
 
     [ShowIf(nameof(shownSettings), ShownSettings.CombatData)]
     [Tooltip("How much damage the weapon does. Is a list in case the weapon has multiple hits in a combo.")]
+    public List<int> BaseWeaponDamage = new List<int>();
+
+    [HideInInspector]
     public List<float> AttackCooldown = new List<float>();
+
+    [ShowIf(nameof(shownSettings), ShownSettings.CombatData)]
+    [Tooltip("How much damage the weapon does. Is a list in case the weapon has multiple hits in a combo.")]
+    public List<float> BaseAttackCooldown = new List<float>();
 
     [ShowIf(nameof(RangedWeaponSettings))]
     [Tooltip("How fast a projectile flies. Is a list in case the weapon has multiple projectile speeds in a combo.")]
@@ -274,5 +284,38 @@ public class BaseWeaponScriptable : BaseScriptableObject
     private bool ViewingBurnEffect()
     {
         return shownSettings == ShownSettings.StatusEffects && effectType == EffectType.Burn;
+    }
+
+    /// <summary>
+    /// When the weapon is initialised make sure weapon damage is set to numbers
+    /// </summary>
+    public void Awake()
+    {
+        WeaponDamage = BaseWeaponDamage;
+        AttackCooldown = BaseAttackCooldown;
+    }
+
+    /// <summary>
+    /// changes weapon damage based on the amount of damage buffs given to the weapon on the grid
+    /// </summary>
+    /// <param name="DamageBuff">Greater than one multiplies the base damage numbers</param>
+    public void updateWeaponDamage(float DamageBuff)
+    {
+        for(int i = 0; i < WeaponDamage.Count; i++)
+        {
+            WeaponDamage[i] = (int)(Mathf.Round(BaseWeaponDamage[i] * DamageBuff));
+        }
+    }
+
+    /// <summary>
+    /// changes weapon attack speed based on the amount of dpeed buffs given to the weapon on the grid
+    /// </summary>
+    /// <param name="DamageBuff">Less than one, multiplies the base attack cooldown</param>
+    public void updateWeaponSpeed(float SpeedBoost)
+    {
+        for(int i = 0; i < AttackCooldown.Count; i++)
+        {
+            AttackCooldown[i] = (int)(Mathf.Round(BaseAttackCooldown[i] * SpeedBoost));
+        }
     }
 }
