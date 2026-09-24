@@ -166,13 +166,12 @@ public class UpgradeMenuController : MenuBase
         }
     }
 
+    /// <summary>
+    /// Turns on and off the pins on the other grid
+    /// </summary>
+    /// <exception cref="System.Exception"></exception>
     private void UpdatePinVisibility()
     {
-/*        foreach (PinItemBehavior pin in inventoryPins)
-        {
-            
-            pin.gameObject.SetActive(true);
-        }*/
         pinsOnNonEnabledGrids.Clear();
 
         //replace testingGrids with the list of equipped weapons
@@ -189,6 +188,7 @@ public class UpgradeMenuController : MenuBase
                     throw new System.Exception("Tried to find a pin thats not in the players inventory");
                 }
 
+                //turns on the pins on the current grid and turns off the pins on the other grid(s)
                 if (GridImLookingAt == currentlyEnabledGrid)
                 {
                     pinItem.transform.SetParent(pinItem.Parent.transform);
@@ -417,14 +417,11 @@ public class UpgradeMenuController : MenuBase
             //I LOVE LINQ
             //grabs the tile that the item is attached to 
 
-            List<UpgradeTileGrid> nonEnabledGrids = testingGrids.Where(x => x != currentlyEnabledGrid).ToList();
-            testing = nonEnabledGrids.SelectMany(x => x.grid).ToList();
+            //grabs all the tiles in all the grids that are disabled
+            List<UpgradeTileData> nonEnabledGrids = testingGrids.Where(x => x != currentlyEnabledGrid).SelectMany(x => x.grid).ToList();
 
-
-            testing2 = testing.Where(x => x.pin != null).ToList();
-            UpgradeTileData tilePinIsEquippedTo = testing2.FirstOrDefault(x => x.pin == item.pinData);
-
-            Debug.Log($"Item Data: {item.pinData.name}, {item.Owner}, {item.Parent}");
+            //grabs all the tiles that have pins on them, then grabs the specific tile that has the pin.
+            UpgradeTileData tilePinIsEquippedTo = nonEnabledGrids.Where(x => x.pin != null).FirstOrDefault(x => x.pin == item.pinData);
 
             if (tilePinIsEquippedTo == null)
             {

@@ -94,6 +94,9 @@ public class UpgradeTileBehavior : PinHolderSlot
         tileData.SetPin(pin.pinData);
     }
 
+    /// <summary>
+    /// function gets called whenever a pin becomes unequipped from a tile
+    /// </summary>
     public override void UnequipPin()
     {
         base.UnequipPin();
