@@ -191,12 +191,12 @@ public class UpgradeMenuController : MenuBase
                 //turns on the pins on the current grid and turns off the pins on the other grid(s)
                 if (GridImLookingAt == currentlyEnabledGrid)
                 {
-                    pinItem.transform.SetParent(pinItem.Parent.transform);
+                    //pinItem.transform.SetParent(pinItem.Parent.transform);
                     pinItem.gameObject.SetActive(true);
                 }
                 else
                 {
-                    pinItem.transform.SetParent(pinsOnOtherGridsParent);
+                    //pinItem.transform.SetParent(pinsOnOtherGridsParent);
                     pinsOnNonEnabledGrids.Add(pinItem);
                     pinItem.gameObject.SetActive(false);
                 }
@@ -431,7 +431,7 @@ public class UpgradeMenuController : MenuBase
             //replace with the proper way to remove a pin given the tile data eventually
             tilePinIsEquippedTo.SetPin(null);
             pinsOnNonEnabledGrids.Remove(item);
-            item.gameObject.SetActive(true);
+            
         }
 
         //unmodifies the pin if it modifies it at all.
@@ -446,8 +446,10 @@ public class UpgradeMenuController : MenuBase
     private void PickUpPin(PinItemBehavior item)
     {
         CarriedPin = item;
-        CarriedPin.PinPickedUp();
+        CarriedPin.gameObject.SetActive(true);
         CarriedPin.transform.SetParent(draggingParent);
+        CarriedPin.PinPickedUp();
+        
     }
 
     /// <summary>
