@@ -9,6 +9,7 @@
 using NaughtyAttributes;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -177,45 +178,7 @@ public class UpgradeMenuController : MenuBase
         }
     }
 
-    /// <summary>
-    /// Turns on and off the pins on the other grid
-    /// </summary>
-    /// <exception cref="System.Exception"></exception>
-    private void UpdatePinVisibility()
-    {
-        pinsOnNonEnabledGrids.Clear();
-
-        //replace testingGrids with the list of equipped weapons
-        foreach (UpgradeTileGrid GridImLookingAt in testingGrids)
-        {
-            //grabs all of the tiledatas that have a pin.
-            List<UpgradeTileData> tilesWithPins = GridImLookingAt.grid.Where(x => x.pin != null).ToList();
-            foreach (UpgradeTileData tileData in tilesWithPins)
-            {
-                PinItemBehavior pinItem = inventoryPins.Find(x => x.pinData == tileData.pin);
-
-                if (pinItem == null)
-                {
-                    throw new System.Exception("Tried to find a pin thats not in the players inventory");
-                }
-
-                //turns on the pins on the current grid and turns off the pins on the other grid(s)
-                if (GridImLookingAt == currentlyEnabledGrid)
-                {
-                    pinItem.transform.SetParent(pinItem.Parent.transform);
-                    pinItem.gameObject.SetActive(true);
-                }
-                else
-                {
-                    pinItem.transform.SetParent(pinsOnOtherGridsParent);
-                    pinsOnNonEnabledGrids.Add(pinItem);
-                    pinItem.gameObject.SetActive(false);
-                }
-
-                
-            }
-        }
-    }
+    
 
     /// <summary>
     /// Initializes the grid for the first time. TODO: replace testGrid with the grid of the actual weapon.
@@ -259,6 +222,7 @@ public class UpgradeMenuController : MenuBase
         {
             for (int i = gridToInit.grid.Count; i < tilesInGrid.Count; i++)
             {
+                tilesInGrid[i].SetTileData(null);
                 tilesInGrid[i].gameObject.SetActive(false);
             }
         }
@@ -351,8 +315,9 @@ public class UpgradeMenuController : MenuBase
     {
         if (CarriedPin != null)
         {
-            CarriedPin.PinPlaced();
-            PlaceCarriedPinInTile(CarriedPin.Owner);
+            CarriedPin.StopPinMoving();
+            ReturnCarriedPinToInventory();
+            //PlaceCarriedPinInTile(CarriedPin.Owner);
         }
 
         if (enableTestMode)
@@ -371,55 +336,54 @@ public class UpgradeMenuController : MenuBase
 
     #endregion
 
-    #region Misc
+    #region Input Handling
 
+    #region Picking up
     /// <summary>
     /// called from trying to pick up an item - not called from an empty tile
     /// </summary>
     /// <param name="item"></param>
     private void SetCarriedPin(PinItemBehavior item)
     {
-
         //unmodifies the pin if it modifies it at all.
         if (item.Parent != null)
         {
             item.Parent.UnequipPin();
-            
+
         }
 
         //places the currently held pin in the tile of the pin you want to pick up
         if (CarriedPin != null)
         {
-            CarriedPin.PinPlaced();
+            CarriedPin.StopPinMoving();
 
             //if the new item is in the inventory
             if (item.Parent == item.Owner)
             {
                 //set the current item to its owner
-                PlaceCarriedPinInTile(CarriedPin.Owner);
-                //CarriedPin.Owner.SetNewPinInTile(CarriedPin);
+                ReturnCarriedPinToInventory();
+                //PlaceCarriedPinInTile(CarriedPin.Owner);
             }
             else
             {
                 //set the current item to the tile of the new one
-                PlaceCarriedPinInTile(item.Parent);
-                //item.Parent.SetNewPinInTile(CarriedPin);
+                PlacePinInTile(CarriedPin, item.Parent);
+                //PlaceCarriedPinInTile(item.Parent);
             }
         }
-        PickUpPin(item);
 
-        //turn on/off a canvas group over the inventory that trashes the held item
+        PickUpPin(item);
     }
 
     /// <summary>
-    /// force grabs a pin
+    /// grabs a pin from the empty inventory button
     /// </summary>
     /// <param name="item"></param>
     public void GrabPlacedPin(PinItemBehavior item)
     {
         if (CarriedPin != null)
         {
-            PlaceCarriedPinInTile(CarriedPin.Owner);
+            ReturnCarriedPinToInventory();
         }
 
         //unequip pins properly
@@ -443,60 +407,15 @@ public class UpgradeMenuController : MenuBase
             tilePinIsEquippedTo.SetPin(null);
             item.Parent = null;
             pinsOnNonEnabledGrids.Remove(item);
-            
+
         }
 
         PickUpPin(item);
     }
 
-    /// <summary>
-    /// sets the item as the new carried pin
-    /// </summary>
-    /// <param name="item"></param>
-    private void PickUpPin(PinItemBehavior item)
-    {
-        CarriedPin = item;
-        CarriedPin.Parent = null;
-        CarriedPin.gameObject.SetActive(true);
-        CarriedPin.transform.SetParent(draggingParent);
-        CarriedPin.PinPickedUp();
-        ToggleInventoryScrollability(false);
-    }
+    #endregion
 
-    /// <summary>
-    /// Sets the tile to have a pin
-    /// </summary>
-    /// <param name="tile"></param>
-    public void PlaceCarriedPinInTile(PinHolderSlot tile)
-    {
-        if (CarriedPin == null)
-        {
-            return;
-        }
-
-        CarriedPin.Parent = tile;
-        CarriedPin.PinPlaced();
-        tile.SetNewPinInTile(CarriedPin);
-
-        CarriedPin = null;
-        ToggleInventoryScrollability(true);
-    }
-    
-    /// <summary>
-    /// returns the parameter pin to the inventory
-    /// </summary>
-    /// <param name="item"></param>
-    public void ReturnPinToInventory(PinItemBehavior item)
-    {
-        if (item.Parent != null && item.Parent != item.Owner)
-        {
-            item.Parent.UnequipPin();
-        }
-
-        item.Parent = null;
-        item.Owner.SetNewPinInTile(item);
-        ToggleInventoryScrollability(true);
-    }
+    #region Cancelling
 
     /// <summary>
     /// drops the pin that the player is holding
@@ -517,52 +436,132 @@ public class UpgradeMenuController : MenuBase
 
         EventSystem.current.RaycastAll(tempEventData, raycastResults);
 
+        //if we hit anything
         if (raycastResults.Count > 0)
         {
+            //if we hit a tile, place whatever we are carrying in that tile
             if (raycastResults[0].gameObject.GetComponent<UpgradeTileBehavior>() != null)
             {
-                PlaceCarriedPinInTile(raycastResults[0].gameObject.GetComponent<UpgradeTileBehavior>());
+                PlacePinInTile(CarriedPin, raycastResults[0].gameObject.GetComponent<UpgradeTileBehavior>());
                 return;
             }
+
+            //otherwise if we hit a pin
             else if (raycastResults[0].gameObject.GetComponent<PinItemBehavior>() != null)
             {
                 PinItemBehavior pinInSlot = raycastResults[0].gameObject.GetComponent<PinItemBehavior>();
                 PinHolderSlot tile = pinInSlot.Parent;
-                //send that pin to inventory
-                ReturnPinToInventory(pinInSlot);
 
+                //send that pin back to inventory
+                PlacePinInTile(pinInSlot, pinInSlot.Owner);
+
+                //try to place our carried pin where we found the new one
                 if (tile != null)
                 {
                     if (tile is UpgradeTileBehavior)
                     {
-                        PlaceCarriedPinInTile(tile);
+                        PlacePinInTile(CarriedPin, tile);
+                        //PlaceCarriedPinInTile(tile);
                         return;
                     }
                     else
                     {
-                        PlaceCarriedPinInTile(CarriedPin.Owner);
+                        ReturnCarriedPinToInventory();
+                        //PlaceCarriedPinInTile(CarriedPin.Owner);
                         return;
                     }
                 }
-                //place carried pin here
-                
             }
+
+            //lastly, if we hit an empty inventory slot, return the pin to the inventory
             else if (raycastResults[0].gameObject.GetComponent<InventoryPinHolder>() != null)
             {
-                PlaceCarriedPinInTile(CarriedPin.Owner);
+                ReturnCarriedPinToInventory();
+                //PlaceCarriedPinInTile(CarriedPin.Owner);
                 return;
             }
         }
-
+        //at this point in the func we know we hit nothing with the raycast
+        //   or we hit a pin with no parent (which should be impossible)
+        
+        //throw the pin back to the inventory
         if (CarriedPin.Parent == null)
         {
-            PlaceCarriedPinInTile(CarriedPin.Owner);
+            ReturnCarriedPinToInventory();
+            //PlaceCarriedPinInTile(CarriedPin.Owner);
         }
         else
         {
-            PlaceCarriedPinInTile(CarriedPin.Parent);
+            PlacePinInTile(CarriedPin, CarriedPin.Parent);
+            //PlaceCarriedPinInTile(CarriedPin.Parent);
         }
     }
+
+    #endregion
+
+    #endregion
+
+    #region Misc
+
+
+
+    /// <summary>
+    /// sets the item as the new carried pin
+    /// </summary>
+    /// <param name="item"></param>
+    private void PickUpPin(PinItemBehavior item)
+    {
+        CarriedPin = item;
+        CarriedPin.Parent = null;
+        CarriedPin.gameObject.SetActive(true);
+        CarriedPin.transform.SetParent(draggingParent);
+        CarriedPin.StartPinMoving();
+        ToggleInventoryScrollability(false);
+    }
+
+
+    /// <summary>
+    /// Turns on and off the pins on the other grid
+    /// </summary>
+    /// <exception cref="System.Exception"></exception>
+    private void UpdatePinVisibility()
+    {
+        pinsOnNonEnabledGrids.Clear();
+
+        //replace testingGrids with the list of equipped weapons
+        foreach (UpgradeTileGrid GridImLookingAt in testingGrids)
+        {
+            //grabs all of the tiledatas that have a pin.
+            List<UpgradeTileData> tilesWithPins = GridImLookingAt.grid.Where(x => x.pin != null).ToList();
+            foreach (UpgradeTileData tileData in tilesWithPins)
+            {
+                PinItemBehavior pinItem = inventoryPins.Find(x => x.pinData == tileData.pin);
+
+                if (pinItem == null)
+                {
+                    throw new System.Exception("Tried to find a pin thats not in the players inventory");
+                }
+
+                //turns on the pins on the current grid and turns off the pins on the other grid(s)
+                if (GridImLookingAt == currentlyEnabledGrid)
+                {
+                    pinItem.transform.SetParent(pinItem.Parent.transform);
+                    pinItem.gameObject.SetActive(true);
+                }
+                else
+                {
+                    pinItem.transform.SetParent(pinsOnOtherGridsParent);
+                    pinsOnNonEnabledGrids.Add(pinItem);
+                    pinItem.gameObject.SetActive(false);
+                }
+
+
+            }
+        }
+    }
+
+
+
 
     /// <summary>
     /// enables and disables the inventory scrollability
@@ -573,5 +572,89 @@ public class UpgradeMenuController : MenuBase
         inventoryScrollRect.StopMovement();
         inventoryScrollRect.enabled = canScroll;
     }
+    #endregion
+
+    #region Placing pins in tile
+
+    /// <summary>
+    /// places a specific pin in. Tile = null means it will return to the inventory
+    /// </summary>
+    /// <param name="pin"></param>
+    /// <param name="tile">null = return to inventory</param>
+    public void PlacePinInTile(PinItemBehavior pin, PinHolderSlot tile = null)
+    {
+        if (pin == null)
+        {
+            return;
+        }
+
+        if (tile == null)
+        {
+            tile = pin.Owner;
+        }
+
+        //if we place the carried pin, we arent carrying it anymore
+        if (CarriedPin == pin)
+        {
+            CarriedPin = null;
+        }
+
+        //if its on a tile, unequip it from that tile
+        if (pin.Parent != null && pin.Parent != pin.Owner)
+        {
+            pin.Parent.UnequipPin();
+        }
+
+        pin.Parent = tile;
+        pin.StopPinMoving();
+        tile.SetNewPinInTile(pin);
+        ToggleInventoryScrollability(true);
+    }
+
+    public void ReturnCarriedPinToInventory()
+    {
+        PlacePinInTile(CarriedPin, CarriedPin.Owner);
+    }
+
+    #endregion
+
+
+    #region depreciated functions
+
+    /*/// <summary>
+    /// returns the parameter pin to the inventory
+    /// </summary>
+    /// <param name="item"></param>
+    public void ReturnPinToInventory(PinItemBehavior item)
+    {
+        if (item.Parent != null && item.Parent != item.Owner)
+        {
+            item.Parent.UnequipPin();
+        }
+
+        item.Parent = null;
+        item.Owner.SetNewPinInTile(item);
+        ToggleInventoryScrollability(true);
+    }*/
+
+    /*/// <summary>
+    /// Sets the tile to have a pin
+    /// </summary>
+    /// <param name="tile"></param>
+    public void PlaceCarriedPinInTile(PinHolderSlot tile)
+    {
+        if (CarriedPin == null)
+        {
+            return;
+        }
+
+        CarriedPin.Parent = tile;
+        CarriedPin.StopPinMoving();
+        tile.SetNewPinInTile(CarriedPin);
+
+        CarriedPin = null;
+        ToggleInventoryScrollability(true);
+    }*/
+
     #endregion
 }

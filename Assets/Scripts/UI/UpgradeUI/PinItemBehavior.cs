@@ -76,7 +76,7 @@ public class PinItemBehavior : Clickable
     /// <summary>
     /// runs through all of the logic needed when the pin gets grabbed
     /// </summary>
-    public void PinPickedUp()
+    public void StartPinMoving()
     {
         raycastBlocker.blocksRaycasts = false; 
         pinSprite.raycastTarget = false;
@@ -88,7 +88,7 @@ public class PinItemBehavior : Clickable
     /// <summary>
     /// reenables all of the raycasting and turns off the movement
     /// </summary>
-    public void PinPlaced()
+    public void StopPinMoving()
     {
         raycastBlocker.blocksRaycasts = true;
         pinSprite.raycastTarget = true;

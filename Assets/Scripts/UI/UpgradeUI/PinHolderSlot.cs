@@ -22,15 +22,6 @@ public class PinHolderSlot : Clickable
     }
 
     /// <summary>
-    /// Triggers when this slot is clicked on
-    /// </summary>
-    public override void ClickedOn()
-    {
-        base.ClickedOn();
-        controller.PlaceCarriedPinInTile(this);
-    }
-
-    /// <summary>
     /// runs when a pin gets placed on this tile. TODO: add modifier to pin
     /// </summary>
     /// <param name="pin"></param>
