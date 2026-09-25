@@ -1,13 +1,14 @@
 /*
 * Author: Tyler
 * Contributors:
-* Last Modified: 09/21/2026
+* Last Modified: 09/22/2026
 * Summary: Scriptable object for the pins. May need to make children later on depending on how complex the codebase gets
 * To Do:   N/A
 */
 
 using NaughtyAttributes;
 using UnityEngine;
+[CreateAssetMenu(fileName = "NewPin", menuName = "Scriptables/New Pin")]
 public class PinScriptable : BaseScriptableObject
 {
     public enum PinType
