@@ -40,6 +40,11 @@ public class UpgradeTileGrid
         UIPublicEvents.UpgradeMenuClosed += SendDatatoWeapon;
     }
 
+    public void OnDestroy()
+    {
+        UIPublicEvents.UpgradeMenuClosed -= SendDatatoWeapon;
+    }
+
     [System.Serializable]
     public class GridRow
     {
