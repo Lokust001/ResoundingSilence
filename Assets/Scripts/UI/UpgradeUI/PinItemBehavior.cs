@@ -11,7 +11,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class PinItemBehavior : MonoBehaviour, IPointerClickHandler
+public class PinItemBehavior : Clickable
 {
     private CanvasGroup raycastBlocker;
     private Image pinSprite;
@@ -57,18 +57,13 @@ public class PinItemBehavior : MonoBehaviour, IPointerClickHandler
     }
 
     /// <summary>
-    /// Triggers when the eventsystem registers a click on the pin item. Will be replaced once we get in controller support.
+    /// picks this up when its clicked on
     /// </summary>
-    /// <param name="eventData"></param>
-    public void OnPointerClick(PointerEventData eventData)
+    public override void ClickedOn()
     {
-        //ensures theyre actually clicking on it
-        if (eventData.button == PointerEventData.InputButton.Left)
-        {
-            ForcePickUpPin();
-        } 
+        base.ClickedOn();
+        ForcePickUpPin();
     }
-
 
     /// <summary>
     /// picks up this pin
@@ -85,7 +80,9 @@ public class PinItemBehavior : MonoBehaviour, IPointerClickHandler
     {
         raycastBlocker.blocksRaycasts = false; 
         pinSprite.raycastTarget = false;
-        moveCo = StartCoroutine(StartMoveCoroutine());
+        FollowMouse(InputManager.Instance.CurrentMousePosition);
+        InputPublicEvents.MouseMoved += FollowMouse;
+        
     }
 
     /// <summary>
@@ -95,20 +92,23 @@ public class PinItemBehavior : MonoBehaviour, IPointerClickHandler
     {
         raycastBlocker.blocksRaycasts = true;
         pinSprite.raycastTarget = true;
-        StopCoroutine(moveCo);
+        InputPublicEvents.MouseMoved -= FollowMouse;
     }
 
     /// <summary>
-    /// moves the pin, ideally with the mouse
+    /// safety valve to disable the mouse movement
     /// </summary>
-    /// <returns></returns>
-    private IEnumerator StartMoveCoroutine()
+    private void OnDisable()
     {
-        while (true)
-        {
-            //replace with moving towards the mouse position
-            transform.position = Vector3.zero;
-            yield return null;
-        }
+        InputPublicEvents.MouseMoved -= FollowMouse;
+    }
+
+    /// <summary>
+    /// follows the mouse's position
+    /// </summary>
+    /// <param name="mousePos"></param>
+    private void FollowMouse(Vector2 mousePos)
+    {
+        transform.position = mousePos;
     }
 }
