@@ -129,6 +129,16 @@ public class UpgradeMenuController : MenuBase
     }
 
     /// <summary>
+    /// throws out an events when the menu is closed
+    /// </summary>
+    protected override void CloseMenu()
+    {
+        UIPublicEvents.UpgradeMenuClosed?.Invoke();
+
+        base.CloseMenu();
+    }
+
+    /// <summary>
     /// subscribes to all public events
     /// </summary>
     protected override void SetUpPublicEvents()
