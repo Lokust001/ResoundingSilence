@@ -179,7 +179,7 @@ public class UpgradeMenuController : MenuBase
         foreach (UpgradeTileGrid GridImLookingAt in testingGrids)
         {
             //grabs all of the tiledatas that have a pin.
-            List<UpgradeTileData> tilesWithPins = GridImLookingAt.grid.Where<UpgradeTileData>(x => x.pin != null).ToList();
+            List<UpgradeTileData> tilesWithPins = GridImLookingAt.grid.Where(x => x.pin != null).ToList();
             foreach (UpgradeTileData tileData in tilesWithPins)
             {
                 PinItemBehavior pinItem = inventoryPins.Find(x => x.pinData == tileData.pin);
@@ -192,12 +192,12 @@ public class UpgradeMenuController : MenuBase
                 //turns on the pins on the current grid and turns off the pins on the other grid(s)
                 if (GridImLookingAt == currentlyEnabledGrid)
                 {
-                    //pinItem.transform.SetParent(pinItem.Parent.transform);
+                    pinItem.transform.SetParent(pinItem.Parent.transform);
                     pinItem.gameObject.SetActive(true);
                 }
                 else
                 {
-                    //pinItem.transform.SetParent(pinsOnOtherGridsParent);
+                    pinItem.transform.SetParent(pinsOnOtherGridsParent);
                     pinsOnNonEnabledGrids.Add(pinItem);
                     pinItem.gameObject.SetActive(false);
                 }
@@ -374,6 +374,7 @@ public class UpgradeMenuController : MenuBase
         if (item.Parent != null)
         {
             item.Parent.UnequipPin();
+            
         }
 
         //places the currently held pin in the tile of the pin you want to pick up
@@ -451,6 +452,7 @@ public class UpgradeMenuController : MenuBase
     private void PickUpPin(PinItemBehavior item)
     {
         CarriedPin = item;
+        CarriedPin.Parent = null;
         CarriedPin.gameObject.SetActive(true);
         CarriedPin.transform.SetParent(draggingParent);
         CarriedPin.PinPickedUp();
@@ -468,6 +470,7 @@ public class UpgradeMenuController : MenuBase
             return;
         }
 
+        CarriedPin.Parent = tile;
         CarriedPin.PinPlaced();
         tile.SetNewPinInTile(CarriedPin);
 
@@ -486,6 +489,7 @@ public class UpgradeMenuController : MenuBase
             item.Parent.UnequipPin();
         }
 
+        item.Parent = null;
         item.Owner.SetNewPinInTile(item);
         ToggleInventoryScrollability(true);
     }
