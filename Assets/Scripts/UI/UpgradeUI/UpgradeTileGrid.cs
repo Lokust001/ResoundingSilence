@@ -8,6 +8,7 @@
 
 using NaughtyAttributes;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
@@ -33,6 +34,11 @@ public class UpgradeTileGrid
     public List<UpgradeTileData> grid { get; private set; } = new();
 
     public List<PinScriptable> pins { get; private set; } = new();
+
+    public void Awake()
+    {
+        UIPublicEvents.UpgradeMenuClosed += SendDatatoWeapon;
+    }
 
     [System.Serializable]
     public class GridRow
