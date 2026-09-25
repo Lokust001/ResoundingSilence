@@ -303,7 +303,7 @@ public class BaseWeaponScriptable : BaseScriptableObject
     {
         for(int i = 0; i < WeaponDamage.Count; i++)
         {
-            WeaponDamage[i] = (int)(Mathf.Round(BaseWeaponDamage[i] * DamageBuff));
+            WeaponDamage[i] = Mathf.CeilToInt(BaseWeaponDamage[i] * DamageBuff);
         }
     }
 
@@ -315,7 +315,7 @@ public class BaseWeaponScriptable : BaseScriptableObject
     {
         for(int i = 0; i < AttackCooldown.Count; i++)
         {
-            AttackCooldown[i] = (int)(Mathf.Round(BaseAttackCooldown[i] * SpeedBoost));
+            AttackCooldown[i] = Mathf.FloorToInt(BaseAttackCooldown[i] * SpeedBoost);
         }
     }
 }

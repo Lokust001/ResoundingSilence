@@ -8,7 +8,6 @@
 
 using NaughtyAttributes;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
@@ -208,6 +207,9 @@ public class UpgradeTileGrid
         }
     }
 
+    /// <summary>
+    /// Collects all the data from the pins on the weapon and sends it to buff the weapon stats
+    /// </summary>
     public void SendDatatoWeapon()
     {
         float damagebuff = 1.0f;
