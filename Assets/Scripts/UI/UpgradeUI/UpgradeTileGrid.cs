@@ -35,11 +35,17 @@ public class UpgradeTileGrid
 
     public List<PinScriptable> pins { get; private set; } = new();
 
+    /// <summary>
+    /// subscride to the event
+    /// </summary>
     public void Awake()
     {
         UIPublicEvents.UpgradeMenuClosed += SendDatatoWeapon;
     }
 
+    /// <summary>
+    /// unsubscride to the event
+    /// </summary>
     public void OnDestroy()
     {
         UIPublicEvents.UpgradeMenuClosed -= SendDatatoWeapon;
