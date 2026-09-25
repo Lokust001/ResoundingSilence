@@ -431,15 +431,9 @@ public class UpgradeMenuController : MenuBase
 
             //replace with the proper way to remove a pin given the tile data eventually
             tilePinIsEquippedTo.SetPin(null);
+            item.Parent = null;
             pinsOnNonEnabledGrids.Remove(item);
             
-        }
-
-        //unmodifies the pin if it modifies it at all.
-        if (item.Parent != null)
-        {
-            item.Parent.UnequipPin();
-            item.Parent = null;
         }
 
         PickUpPin(item);
