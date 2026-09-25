@@ -9,7 +9,6 @@
 using NaughtyAttributes;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -79,13 +78,6 @@ public class UpgradeMenuController : MenuBase
     [ShowIf(nameof(settings), ShownSettings.Testing)]
     private List<UpgradeTileGrid> testingGrids;
 
-    [SerializeField]
-    [ShowIf(nameof(settings), ShownSettings.Testing)]
-    private List<PinScriptable> testInventory;
-
-    [SerializeField]
-    [ShowIf(nameof(settings), ShownSettings.Testing)]
-    private List<GlyphScriptable> testListOfPossibleGlyphs;
     #endregion
 
     #region private
@@ -317,7 +309,6 @@ public class UpgradeMenuController : MenuBase
         {
             CarriedPin.StopPinMoving();
             ReturnCarriedPinToInventory();
-            //PlaceCarriedPinInTile(CarriedPin.Owner);
         }
 
         if (enableTestMode)
@@ -339,6 +330,7 @@ public class UpgradeMenuController : MenuBase
     #region Input Handling
 
     #region Picking up
+
     /// <summary>
     /// called from trying to pick up an item - not called from an empty tile
     /// </summary>
@@ -362,13 +354,11 @@ public class UpgradeMenuController : MenuBase
             {
                 //set the current item to its owner
                 ReturnCarriedPinToInventory();
-                //PlaceCarriedPinInTile(CarriedPin.Owner);
             }
             else
             {
                 //set the current item to the tile of the new one
                 PlacePinInTile(CarriedPin, item.Parent);
-                //PlaceCarriedPinInTile(item.Parent);
             }
         }
 
@@ -458,16 +448,15 @@ public class UpgradeMenuController : MenuBase
                 //try to place our carried pin where we found the new one
                 if (tile != null)
                 {
+                    //throw the pin back to the inventory or the tile the old one belonged to
                     if (tile is UpgradeTileBehavior)
                     {
                         PlacePinInTile(CarriedPin, tile);
-                        //PlaceCarriedPinInTile(tile);
                         return;
                     }
                     else
                     {
                         ReturnCarriedPinToInventory();
-                        //PlaceCarriedPinInTile(CarriedPin.Owner);
                         return;
                     }
                 }
@@ -477,23 +466,20 @@ public class UpgradeMenuController : MenuBase
             else if (raycastResults[0].gameObject.GetComponent<InventoryPinHolder>() != null)
             {
                 ReturnCarriedPinToInventory();
-                //PlaceCarriedPinInTile(CarriedPin.Owner);
                 return;
             }
         }
         //at this point in the func we know we hit nothing with the raycast
         //   or we hit a pin with no parent (which should be impossible)
         
-        //throw the pin back to the inventory
+        //throw the pin back to the inventory or the tile it belongs to
         if (CarriedPin.Parent == null)
         {
             ReturnCarriedPinToInventory();
-            //PlaceCarriedPinInTile(CarriedPin.Owner);
         }
         else
         {
             PlacePinInTile(CarriedPin, CarriedPin.Parent);
-            //PlaceCarriedPinInTile(CarriedPin.Parent);
         }
     }
 
@@ -502,8 +488,6 @@ public class UpgradeMenuController : MenuBase
     #endregion
 
     #region Misc
-
-
 
     /// <summary>
     /// sets the item as the new carried pin
@@ -518,7 +502,6 @@ public class UpgradeMenuController : MenuBase
         CarriedPin.StartPinMoving();
         ToggleInventoryScrollability(false);
     }
-
 
     /// <summary>
     /// Turns on and off the pins on the other grid
@@ -554,14 +537,9 @@ public class UpgradeMenuController : MenuBase
                     pinsOnNonEnabledGrids.Add(pinItem);
                     pinItem.gameObject.SetActive(false);
                 }
-
-
             }
         }
     }
-
-
-
 
     /// <summary>
     /// enables and disables the inventory scrollability
@@ -572,6 +550,7 @@ public class UpgradeMenuController : MenuBase
         inventoryScrollRect.StopMovement();
         inventoryScrollRect.enabled = canScroll;
     }
+
     #endregion
 
     #region Placing pins in tile
@@ -611,50 +590,13 @@ public class UpgradeMenuController : MenuBase
         ToggleInventoryScrollability(true);
     }
 
+    /// <summary>
+    /// Shorthand function for returning the currently carried pin back to its inventory slot
+    /// </summary>
     public void ReturnCarriedPinToInventory()
     {
         PlacePinInTile(CarriedPin, CarriedPin.Owner);
     }
-
-    #endregion
-
-
-    #region depreciated functions
-
-    /*/// <summary>
-    /// returns the parameter pin to the inventory
-    /// </summary>
-    /// <param name="item"></param>
-    public void ReturnPinToInventory(PinItemBehavior item)
-    {
-        if (item.Parent != null && item.Parent != item.Owner)
-        {
-            item.Parent.UnequipPin();
-        }
-
-        item.Parent = null;
-        item.Owner.SetNewPinInTile(item);
-        ToggleInventoryScrollability(true);
-    }*/
-
-    /*/// <summary>
-    /// Sets the tile to have a pin
-    /// </summary>
-    /// <param name="tile"></param>
-    public void PlaceCarriedPinInTile(PinHolderSlot tile)
-    {
-        if (CarriedPin == null)
-        {
-            return;
-        }
-
-        CarriedPin.Parent = tile;
-        CarriedPin.StopPinMoving();
-        tile.SetNewPinInTile(CarriedPin);
-
-        CarriedPin = null;
-        ToggleInventoryScrollability(true);
-    }*/
 
     #endregion
 }
