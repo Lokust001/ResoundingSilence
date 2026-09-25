@@ -15,8 +15,8 @@ public class EnvironmentalAttacks : MonoBehaviour
     [SerializeField] private List<GameObject> VerticalSpawnLoactaions;
     [SerializeField] private List<GameObject> HorizontalSpawnLoactaions;
     [SerializeField] private float TimeInbetweenAttacks;
-    private bool horizonatal = true;
-    public Coroutine attackCoroutineInstance;
+    private bool horizontal = true;
+    private Coroutine attackCoroutineInstance;
 
     /// <summary>
     /// temp call to start the attack coroutine
@@ -34,7 +34,7 @@ public class EnvironmentalAttacks : MonoBehaviour
     {
         while (true)
         {
-            if (horizonatal)
+            if (horizontal)
             {
                 int spawnPoint = Random.Range(0, HorizontalSpawnLoactaions.Count);
                 GameObject temp = Instantiate(AttackPrefab, HorizontalSpawnLoactaions[spawnPoint].transform.position, HorizontalSpawnLoactaions[spawnPoint].transform.rotation);
@@ -46,7 +46,7 @@ public class EnvironmentalAttacks : MonoBehaviour
                 GameObject temp = Instantiate(AttackPrefab, VerticalSpawnLoactaions[spawnPoint].transform.position, VerticalSpawnLoactaions[spawnPoint].transform.rotation);
                 StartCoroutine(temp.GetComponent<WorldAttack>().windup());
             }
-            horizonatal = !horizonatal;
+            horizontal = !horizontal;
             yield return new WaitForSeconds(TimeInbetweenAttacks);
 
         }

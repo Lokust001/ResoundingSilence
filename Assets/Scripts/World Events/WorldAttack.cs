@@ -16,6 +16,10 @@ public class WorldAttack : MonoBehaviour
     [SerializeField] private Material attackFresh;
     [SerializeField] private Material attackDanger;
 
+    /// <summary>
+    /// starts a timer and returns using a material to communicate to the player what stage its in
+    /// </summary>
+    /// <returns></returns>
     public IEnumerator windup()
     {
         float timer = 0.0f;
