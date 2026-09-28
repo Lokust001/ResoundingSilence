@@ -9,7 +9,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class PinHolderSlot : MonoBehaviour, IPointerClickHandler
+public class PinHolderSlot : Clickable
 {
     protected UpgradeMenuController controller;
 
@@ -19,26 +19,6 @@ public class PinHolderSlot : MonoBehaviour, IPointerClickHandler
     private void Awake()
     {
         controller = GetComponentInParent<UpgradeMenuController>();
-    }
-
-    /// <summary>
-    /// places the tile on this pin.
-    /// </summary>
-    /// <param name="eventData"></param>
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        if (eventData.button == PointerEventData.InputButton.Left)
-        {
-            ClickedOn();
-        }
-    }
-
-    /// <summary>
-    /// Triggers when this slot is clicked on
-    /// </summary>
-    public virtual void ClickedOn()
-    {
-        controller.PlacePinInTile(this);
     }
 
     /// <summary>

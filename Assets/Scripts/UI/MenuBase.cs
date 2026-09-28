@@ -18,7 +18,8 @@ public class MenuBase : MonoBehaviour
     /// </summary>
     public virtual void InitMenu()
     {
-        SetUpPublicEvents();
+        UIPublicEvents.HideOpenMenus += CloseMenu;
+        UIPublicEvents.NewMenuOpened += OpenMenu;
     }
 
     /// <summary>
@@ -31,6 +32,8 @@ public class MenuBase : MonoBehaviour
             gameObject.SetActive(false);
             return;
         }
+
+        SetUpPublicEvents();
     }
 
     /// <summary>
@@ -40,16 +43,24 @@ public class MenuBase : MonoBehaviour
     /// </summary>
     protected virtual void CloseMenu()
     {
+        TearDownPublicEvents();
         gameObject.SetActive(false);
     }
 
     /// <summary>
-    /// subscribes to all public events needed.
+    /// subscribes to all public events not related to initialization.
     /// </summary>
     protected virtual void SetUpPublicEvents()
     {
-        UIPublicEvents.HideOpenMenus += CloseMenu;
-        UIPublicEvents.NewMenuOpened += OpenMenu;
+        
+    }
+
+    /// <summary>
+    /// unsubscribes form all public events not related to initialization
+    /// </summary>
+    protected virtual void TearDownPublicEvents()
+    {
+        
     }
 
     /// <summary>
@@ -59,6 +70,7 @@ public class MenuBase : MonoBehaviour
     {
         UIPublicEvents.HideOpenMenus -= CloseMenu;
         UIPublicEvents.NewMenuOpened -= OpenMenu;
+        TearDownPublicEvents();
     }
 
     /// <summary>

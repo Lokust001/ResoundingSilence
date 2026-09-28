@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &9091097274607552556
+--- !u!1 &763004748093990746
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,22 +8,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 8298919428656391331}
-  - component: {fileID: 1919719274878455250}
+  - component: {fileID: 5996624224962964085}
+  - component: {fileID: 3721265985269225579}
   m_Layer: 0
-  m_Name: UIManager
+  m_Name: MouseUIService
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &8298919428656391331
+--- !u!4 &5996624224962964085
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9091097274607552556}
+  m_GameObject: {fileID: 763004748093990746}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -32,21 +32,15 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1919719274878455250
+--- !u!114 &3721265985269225579
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9091097274607552556}
+  m_GameObject: {fileID: 763004748093990746}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 290547095452326438132c96b24d1066, type: 3}
+  m_Script: {fileID: 11500000, guid: 2278f438053cddb4cb79a47495208881, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UIManager
-  services:
-  - {fileID: 3721265985269225579, guid: 1e8db777852c3a4499e4736266bd070c, type: 3}
-  mainCanvasPrefab: {fileID: 1026929601811753844, guid: 21a076ab0f20f314f949e56267618bab, type: 3}
-  menuPrefabs:
-  - {fileID: 631485149142615837, guid: b14f1d9aaa95810469ba9c9b442d609c, type: 3}
-  - {fileID: 7146239793647941094, guid: 4ef7d14c87a0ae74ab613ad7c9abeab3, type: 3}
+  m_EditorClassIdentifier: Assembly-CSharp::MouseUIService

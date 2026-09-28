@@ -17,6 +17,8 @@ public class InputManager : BaseManager
 {
     public static InputManager Instance;
 
+    public Vector2 CurrentMousePosition;
+
     #region InputActions
 
     private PlayerInput pInput;
@@ -102,6 +104,7 @@ public class InputManager : BaseManager
     private void Move_performed(InputAction.CallbackContext obj)
     {
         InputPublicEvents.MovePressed?.Invoke(obj.ReadValue<Vector2>());
+        
     }
 
     /// <summary>
@@ -155,7 +158,8 @@ public class InputManager : BaseManager
     /// <param name="obj"></param>
     private void Aim_performed(InputAction.CallbackContext obj)
     {
-        InputPublicEvents.MouseMoved?.Invoke(obj.ReadValue<Vector2>());
+        CurrentMousePosition = obj.ReadValue<Vector2>();
+        InputPublicEvents.MouseMoved?.Invoke(CurrentMousePosition);
     }
 
     /// <summary>

@@ -23,5 +23,7 @@ public static class UIPublicEvents
 
     public static Action<PinItemBehavior> PinPickedUp;
 
+    public static Action UpgradeMenuClosed;
+
     #endregion
 }
