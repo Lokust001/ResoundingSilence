@@ -49,7 +49,7 @@ GameObject:
   - component: {fileID: 5338943625410773033}
   - component: {fileID: 428448680879319751}
   m_Layer: 0
-  m_Name: TestEnemy
+  m_Name: TestBaseEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -154,7 +154,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a562987bc386c9341bc5f92d61951fd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyWalk
-  m_Agent: {fileID: 0}
 --- !u!136 &1939381331358990405
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -329,7 +328,7 @@ GameObject:
   - component: {fileID: 5437595391178199074}
   - component: {fileID: 173922961431659772}
   m_Layer: 0
-  m_Name: ActiveCombatZone
+  m_Name: PlayerFoundZone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -362,9 +361,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 346dc50688e608b41a085d2be4d07c42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyShoot
-  bulletPrefab: {fileID: 4365726781555918685, guid: 3e66196bf5b5c1840850f414ea65867e, type: 3}
-  chargingATKParent: {fileID: 5994382746196217271}
-  enemyData: {fileID: 0}
+  attackProjectilePrefab: {fileID: 4365726781555918685, guid: 3e66196bf5b5c1840850f414ea65867e, type: 3}
+  attackIndicatorParent: {fileID: 5994382746196217271}
 --- !u!135 &173922961431659772
 SphereCollider:
   m_ObjectHideFlags: 0

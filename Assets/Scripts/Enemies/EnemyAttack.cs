@@ -1,24 +1,28 @@
 using System.Collections;
 using UnityEngine;
+using static BaseEnemyScriptable;
 
 public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
 {
 
     [SerializeField]
-    private GameObject bulletPrefab;
+    private GameObject attackProjectilePrefab;
 
     [SerializeField]
-    private GameObject chargingATKParent;
+    private GameObject attackIndicatorArea;
 
     private SphereCollider sphereTrigger;
     private EnemyWalk enemyMovement;
     private Transform playerTransform;
     private Vector3 fireBulletDirection;
     private Coroutine activeATKorCooldown;
+    private Coroutine enemyCharging;
+
+    private IEnumerator queuedMeleeAttack;
 
     private bool inAttackRange;
 
-    public BaseEnemyScriptable enemyData;
+    private BaseEnemyScriptable enemyData;
     void Start()
     {
         sphereTrigger = GetComponent<SphereCollider>();
@@ -60,7 +64,9 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
     /// </summary>
     private void InitiateAttack() 
     {
-        
+        //If there is already a cooldown or ability active, don't start another one
+        if (activeATKorCooldown != null) return;
+
         switch (enemyData.enemyType)
         {
             case BaseEnemyScriptable.EnemyType.SingleShooter:
@@ -70,18 +76,22 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
                 FireBulletsCone();
                 break;
             case BaseEnemyScriptable.EnemyType.ChargingMelee:
-                activeATKorCooldown ??= StartCoroutine(WindupChargerAttack());
-                break;
+                float chargingMeleeDistance = attackIndicatorArea.transform.localPosition.z;
+                queuedMeleeAttack = enemyMovement.ChargeTowardsLocation(chargingMeleeDistance);
+                activeATKorCooldown = StartCoroutine(AtkIndicatorWindupAndAction());
+                return;
             case BaseEnemyScriptable.EnemyType.Melee:
-                break;
+                float meleeAttackDistance = attackIndicatorArea.transform.localPosition.z;
+                queuedMeleeAttack = PerformMeleeAttack(meleeAttackDistance);
+                activeATKorCooldown = StartCoroutine(AtkIndicatorWindupAndAction());
+                return;
             default:
                 break;
         }
-        //If there is already a cooldown or ability active, don't start another one
-        if (activeATKorCooldown != null) return;
         //However, if the action was near instantaneous or didn't need a coroutine, start a catch-all cooldown for them instead
-        activeATKorCooldown = StartCoroutine(AttackCooldownCoroutine());
+        activeATKorCooldown ??= StartCoroutine(AttackCooldownCoroutine());
     }
+
 
     /// <summary>
     /// Universal coroutine method called that handles cooldowns or stationary logic after an attack for each enemy.
@@ -120,7 +130,7 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
         Vector3 bulletTravelDirection = bulletRotation * (isSingleShot ? CalculateBulletDirection() : fireBulletDirection);
 
         //Instantiate bullet with the direction, travelspeed, lifetime, and give it the enemy position (can be changed later)
-        Instantiate(bulletPrefab).GetComponentInChildren<BulletBehavior>().Init(bulletTravelDirection, enemyData.bulletTravelSpeed, enemyData.bulletLife, transform.position);
+        Instantiate(attackProjectilePrefab).GetComponentInChildren<BulletBehavior>().Init(bulletTravelDirection, enemyData.bulletTravelSpeed, enemyData.bulletLife, transform.position);
     }
     /// <summary>
     /// Helper method to provide the Vector3 direction that the player is at
@@ -174,16 +184,20 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
     /// via an indicator that extends. The indicator then disappears and the enemy will launch itself very fast in that direction.
     /// </summary>
     /// <returns></returns>
-    private IEnumerator WindupChargerAttack() 
+    private IEnumerator AtkIndicatorWindupAndAction() 
     {
-        //Retrieve the MeshRenderer from the attack indicator from having access to its parent
-        MeshRenderer chargeIndicator = chargingATKParent.GetComponentInChildren<MeshRenderer>();
+        //Retrieve the MeshRenderer from the attack indicator
+        MeshRenderer indicatorRenderer = attackIndicatorArea.GetComponent<MeshRenderer>();
+
+        //Get the parent of the attack indicator as it scales/extends the indicator
+        Transform indicatorParentScaler = attackIndicatorArea.transform.parent;
+
         //Retriever the innate/design-specified length of the chargeIndicator to influence the charging distance
-        float chargeIndicatorZlength = chargeIndicator.transform.localPosition.z;
+        //float chargeIndicatorZlength = indicatorRenderer.transform.localPosition.z;
 
         //Local cache variables for performance boost and code readability
         float countupTimer = 0;
-        float goalTime = enemyData.chargingDirectionTime;
+        float goalTime = enemyData.attackChargeDuration;
 
         Material startMat = enemyData.earlyChargeMaterial;
         Material endMat = enemyData.endChargeMaterial;
@@ -200,25 +214,65 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
             //Lock-on to player direction while charging up
             enemyTransform.LookAt(playerTransform);
             //Transition between two colors/mats
-            chargeIndicator.material.Lerp(startMat, endMat, tValue);
-            //Extend the visual attack indicator
-            chargingATKParent.transform.localScale = new Vector3(1, 1, tValue);
+            indicatorRenderer.material.Lerp(startMat, endMat, tValue);
+            //Extend the visual attack indicator through the parent as it is the pivot point
+            indicatorParentScaler.localScale = new Vector3(1, 1, tValue);
 
             yield return new WaitForFixedUpdate();
         }
         //The parent's scale is mostly irrelevant, it acts as the pivot for the actual indicator.
         //Setting the z scale to 0 makes the indicator invisible, and increasing the z scale
         //over time makes the actual indicator "grow" over time.
-        chargingATKParent.transform.localScale = new(1, 1, 0);
+        indicatorParentScaler.localScale = new(1, 1, 0);
 
         //Pass the Charging behavior towards enemyMovement to handle the sudden burst of movement
-        yield return StartCoroutine(enemyMovement.ChargeTowardsLocation(chargeIndicatorZlength));
+        enemyCharging = StartCoroutine(queuedMeleeAttack);
+        yield return enemyCharging;
 
         inAttackRange = false;
 
         //Start a Cooldown Coroutine
         activeATKorCooldown = StartCoroutine(AttackCooldownCoroutine());
     }
+
+    private IEnumerator PerformMeleeAttack(float attackTravelDistance) 
+    {
+        attackProjectilePrefab.SetActive(true);
+
+        Transform meleeAtkTransform = attackProjectilePrefab.transform;
+
+        Vector3 initialAOEOffsetPosition = meleeAtkTransform.localPosition;
+
+        Vector3 attackGoalPosition = (attackTravelDistance * Vector3.forward) + initialAOEOffsetPosition;
+
+        float timer = 0;
+        float goalDuration = enemyData.attackUptimeDuration;
+
+        float evenSpeed = attackTravelDistance / goalDuration;
+
+
+        while (timer < goalDuration) 
+        {
+            yield return new WaitForFixedUpdate();
+
+            timer += Time.fixedDeltaTime;
+
+            meleeAtkTransform.localPosition = Vector3.MoveTowards(meleeAtkTransform.localPosition, attackGoalPosition, evenSpeed * Time.fixedDeltaTime);
+
+            Debug.Log(meleeAtkTransform.localPosition);
+        }
+
+        meleeAtkTransform.localPosition = attackGoalPosition;
+        yield return null;
+        attackProjectilePrefab.SetActive(false);
+        meleeAtkTransform.localPosition = initialAOEOffsetPosition;
+    }
+
+    public bool IsEnemyCurrentlyCharging() 
+    {
+        return enemyCharging != null;
+    }
+
 
     public void SetEntityData(BaseScriptableObject baseScriptable)
     {

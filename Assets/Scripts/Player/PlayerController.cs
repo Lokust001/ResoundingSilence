@@ -17,9 +17,7 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     float invincibilityDuration;
-
-    [SerializeField]
-    float knockbackDestinationAccuracyThreshold;
+    
 
     #region Private Variables
     Rigidbody rigidbody;
@@ -111,7 +109,7 @@ public class PlayerController : MonoBehaviour
     /// Lets the player take damage, with optional/nullable knockbackInfo
     /// </summary>
     /// <param name="knockbackInfo"></param>
-    public void TakeDamage((Vector3 knockbackDistance, float knockbackSpeed)? knockbackInfo = null)
+    public void TakeDamage((Vector3 knockbackDistance, float kbDuration)? knockbackInfo = null)
     {
         //If the player is already damaged/invicible at the moment
         if (dmgCoroutine != null)
@@ -142,7 +140,7 @@ public class PlayerController : MonoBehaviour
         dmgCoroutine = null;
     }
 
-    public IEnumerator TakePlayerKnockback((Vector3 knockbackDistance, float knockbackSpeed) knockbackInfo) 
+    public IEnumerator TakePlayerKnockback((Vector3 knockbackDistance, float knockbackDuration) knockbackInfo) 
     {
         //Stop player input
         StopPlayerMovementAndInput();
@@ -155,22 +153,71 @@ public class PlayerController : MonoBehaviour
 
         //Calculate the knockback destination, which is the player's current position plus its calculated offset after knockback
         Vector3 knockbackDestination = playerTransform.position + knockbackInfo.knockbackDistance;
+
+        //Total distance between the player and the destination of the knockback
+        float maxDistance = Vector3.Distance(playerTransform.position, knockbackDestination);
+
+        //Tracker for remaining distance between player and knockback position
+        float distance = maxDistance;
+
+        //Count-up timer
+        float timer = 0;
+        //Timer goal and while loop break condition
+        float timeLimit = knockbackInfo.knockbackDuration;
+
+        /*                  - Physics Note -
+         * Speed is calculated through Distance divided by Time
+         *      We already possess Distance (maxDistance)
+         *      We also possess Time (timeLimit)
+         *      
+         *  As a result, we can calculate both the linearUniformKnockbackSpeed
+         *  & also the dynamicKnockbackSpeed
+         */
+
         
-        //calculate the distance and how far the distance is bridged between frames
-        float distanceDeltaMultiplier = knockbackInfo.knockbackSpeed;
-        float distance = (knockbackDestination - playerTransform.position).sqrMagnitude;
+        //The constant speed that would allow the player to move to knockbackDestination linearly
+        float linearUniformKnockbackSpeed = maxDistance / timeLimit;
 
-        Debug.Log("Starting Knockback");
+        //Cached fixedUpdate interval
+        float fixedUpdateTick = Time.fixedDeltaTime;
 
-        //While the distance has more than the accuracy threshold,
-        //move the player towards the knockback position and then calculate the new distance
-        while (distance > knockbackDestinationAccuracyThreshold) 
+        //The minimum speed to LERP to over time T
+        float minimumKnockbackSpeed = linearUniformKnockbackSpeed * fixedUpdateTick;
+
+        //The maximum speed the will initially be applied to the player
+        float maximumKnockbackSpeed = 2 * linearUniformKnockbackSpeed;
+
+        //For the duration of knockback,
+        //Incrementally move the player towards the destination distance while dynamically calculating its speed on every FixedUpdate tick
+        //The dynamic speed allows for the player to be initially fast, then slow down
+        while (timer < timeLimit) 
         {
-            Vector3 knockbackDelta = Vector3.MoveTowards(playerTransform.position, knockbackDestination, distanceDeltaMultiplier * Time.deltaTime);
+            //Tick FixedUpdate while we haven't reached duration yet
+            //On the initial start of this loop, the time would be 0, so the player wouldn't move anywhere
+            //To maintain as much precision as possible, wait first, and then move the player
+            yield return new WaitForFixedUpdate();
+
+            timer += fixedUpdateTick;
+            //0 to 1
+            float timerT = timer / timeLimit;
+            
+            //Calculate new distance and time-dependent knockback force
+            distance = Vector3.Distance(playerTransform.position, knockbackDestination);
+
+            //Its just this line that needs work
+            float dynamicDeltaSpeed = Mathf.Lerp(maximumKnockbackSpeed, minimumKnockbackSpeed, timerT);
+
+            //Calculate and move towards the knockback position
+            Vector3 knockbackDelta = Vector3.MoveTowards(playerTransform.position, knockbackDestination, dynamicDeltaSpeed * fixedUpdateTick);
             rigidbody.MovePosition(knockbackDelta);
-            distance = (knockbackDelta - playerTransform.position).sqrMagnitude;
-            yield return null;
+
+
+            Debug.Log("\tDistance: " + distance + " \tSpeed: " + dynamicDeltaSpeed + " \tTime: " + timer);
+
         }
+        
+        //The final move for 100% accuracy
+        rigidbody.MovePosition(knockbackDestination);
 
         //Re-enable gravity and the collider
         rigidbody.useGravity = GetComponent<Collider>().enabled = true;

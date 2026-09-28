@@ -14,8 +14,9 @@ public class BaseEnemyScriptable : BaseScriptableObject
     {
         SingleShooter,
         ConeShooter,
+        Melee,
         ChargingMelee,
-        Melee
+        BuffEnemy
     }
     [SerializeField]
     public EnemyType enemyType;
@@ -23,6 +24,11 @@ public class BaseEnemyScriptable : BaseScriptableObject
     {
         return enemyType == EnemyType.SingleShooter || enemyType == EnemyType.ConeShooter;
     }
+    private bool isMelee() 
+    {
+        return enemyType == EnemyType.Melee || enemyType == EnemyType.ChargingMelee;
+    }
+
 
     [SerializeField, Header("General Attributes")]
     public string enemyName;
@@ -32,7 +38,7 @@ public class BaseEnemyScriptable : BaseScriptableObject
     public float timeBetweenAttacks;
 
     [ShowIf(nameof(isShooter))]
-    [Header("All Enemy Attributes")]
+    [Header("Shooter Enemy Attributes")]
     public float bulletTravelSpeed;
     [ShowIf(nameof(isShooter))]
     [SerializeField]
@@ -40,31 +46,46 @@ public class BaseEnemyScriptable : BaseScriptableObject
     [ShowIf(nameof(isShooter))]
     public GameObject bulletPrefab;
 
-    [Header("Cone Shooter Attributes")]
+    [Header("Cone Shooter Enemy Attributes")]
     [ShowIf(nameof(enemyType), EnemyType.ConeShooter)]
     public int bulletsToFire;
 
     [ShowIf(nameof(enemyType), EnemyType.ConeShooter)]
     public float bulletSpreadRadiusDegrees;
 
-    [Header("Charging Melee Attributes")]
-    [ShowIf(nameof(enemyType), EnemyType.ChargingMelee)]
-    public float chargingDirectionTime;
+    [Header("Melee Enemy Attributes")]
+    [ShowIf(nameof(isMelee))]
+    public float attackChargeDuration;
 
-    [ShowIf(nameof(enemyType), EnemyType.ChargingMelee)]
-    public float chargeSpeedForce;
-    [ShowIf(nameof(enemyType), EnemyType.ChargingMelee)]
-    public float chargePlayerKnockbackForce;
-    [ShowIf(nameof(enemyType), EnemyType.ChargingMelee)]
-    public float chargePlayerKnockbackDistanceMultiplier;
-    [ShowIf(nameof(enemyType), EnemyType.ChargingMelee)]
-    public float chargeDestinationAccuracyThreshold;
-
-
-
-    [ShowIf(nameof(enemyType), EnemyType.ChargingMelee)]
+    [ShowIf(nameof(isMelee))]
     [Tooltip("The materials/colors that will be used for the charge-up attack. " +
         "The attack indicator will linearly interlpolate (transition) between the two colors")]
     public Material earlyChargeMaterial, endChargeMaterial;
+
+    [ShowIf(nameof(enemyType), EnemyType.Melee)]
+    public float attackUptimeDuration;
+
+    [Header("Charging Melee Enemy Attributes")]
+    [ShowIf(nameof(enemyType), EnemyType.ChargingMelee)]
+    public float chargeSpeedForce;
+
+    [ShowIf(nameof(enemyType), EnemyType.ChargingMelee)]
+    public float chargeDestinationAccuracy;
+
+    [ShowIf(nameof(enemyType), EnemyType.ChargingMelee)]
+    public float playerHitKnockbackDuration;
+
+    [ShowIf(nameof(enemyType), EnemyType.ChargingMelee)]
+    public float playerHitKnockbackDistance;
+
+    [Header("Buff Enemy Attributes")]
+    [ShowIf(nameof(enemyType), EnemyType.BuffEnemy)]
+    public float buffChargeDuration;
+    [ShowIf(nameof(enemyType), EnemyType.BuffEnemy), Range(0.01f, 1)]
+    public float buffPercentHealthLost;
+    [ShowIf(nameof(enemyType), EnemyType.BuffEnemy)]
+    public float moveAwayDistance;
+
+
 
 }

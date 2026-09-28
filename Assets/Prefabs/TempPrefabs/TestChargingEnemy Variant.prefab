@@ -72,6 +72,14 @@ PrefabInstance:
       propertyPath: enemyData
       value: 
       objectReference: {fileID: 11400000, guid: db102c2e3d4135444b94b9f6633440b5, type: 2}
+    - target: {fileID: 5437595391178199074, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: attackIndicatorArea
+      value: 
+      objectReference: {fileID: 7284461385046440497}
+    - target: {fileID: 5994382746196217271, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6325128634737111795, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: m_Name
       value: TestChargingEnemy Variant
@@ -124,3 +132,8 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &7284461385046440497 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6382122427774393384, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+  m_PrefabInstance: {fileID: 4433302902533383705}
+  m_PrefabAsset: {fileID: 0}

@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cb529eb0eaafc66418e136a89e011d83, type: 3}
-  m_Name: Test ChargingMelee
+  m_Name: Test Melee
   m_EditorClassIdentifier: Assembly-CSharp::BaseEnemyScriptable
-  enemyType: 3
-  enemyName: Test Charge
+  enemyType: 2
+  enemyName: Test Mele
   enemyHealth: 3
   timeBetweenAttacks: 3
   bulletTravelSpeed: 0
@@ -22,10 +22,10 @@ MonoBehaviour:
   bulletsToFire: 0
   bulletSpreadRadiusDegrees: 0
   attackChargeDuration: 3
-  activeAOEUptime: 0
-  chargeSpeedForce: 250
-  chargeDestinationAccuracy: 0.01
-  playerHitKnockbackDuration: 2.5
-  playerHitKnockbackDistance: 15
   earlyChargeMaterial: {fileID: 2100000, guid: c160c7aea25a6e043b4eb127b5bec42c, type: 2}
   endChargeMaterial: {fileID: 2100000, guid: f6d5b7e222f01374bb41a79eea5671b5, type: 2}
+  attackUptimeDuration: 0.7
+  chargeSpeedForce: 0
+  chargeDestinationAccuracy: 0
+  playerHitKnockbackDuration: 0
+  playerHitKnockbackDistance: 0

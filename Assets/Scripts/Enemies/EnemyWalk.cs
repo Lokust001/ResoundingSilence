@@ -11,6 +11,8 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver
     
     private BaseEnemyScriptable enemyData;
 
+    private EnemyAttack enemyAttack;
+
     Transform enemyTransform;
 
     void Start()
@@ -18,6 +20,7 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver
         m_Agent = GetComponent<NavMeshAgent>();
         enemyTransform = transform;
         m_GameObject = FindAnyObjectByType<PlayerController>().gameObject;
+        enemyAttack = GetComponentInChildren<EnemyAttack>();
         StartPlayerSearch();
     }
 
@@ -58,7 +61,7 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver
         //While there is still a significant gap or distance between the enemy and its charge destination,
         //calculate its current distance from its goal, move the enemy towards the goal by a factor of its chargeSpeedForce,
         //and finally wait a frame then repeat
-        while (distanceToGoal > enemyData.chargeDestinationAccuracyThreshold) 
+        while (distanceToGoal > enemyData.chargeDestinationAccuracy) 
         {
             distanceToGoal =  (chargeDestination - enemyTransform.position).sqrMagnitude;
             Vector3 goalOverTime = Vector3.MoveTowards(enemyTransform.position, chargeDestination, enemyData.chargeSpeedForce * Time.deltaTime);
@@ -77,11 +80,19 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver
 
         if (collision.gameObject.TryGetComponent<PlayerController>(out PlayerController player))
         {
-            Vector3 pushDirection = player.transform.position - transform.position;
-            pushDirection.y = 0;
-            pushDirection = pushDirection.normalized * enemyData.chargePlayerKnockbackDistanceMultiplier;
+            if (enemyAttack.IsEnemyCurrentlyCharging())
+            {
+                Vector3 pushDirection = player.transform.position - transform.position;
+                pushDirection.y = 0;
+                pushDirection = pushDirection.normalized * enemyData.playerHitKnockbackDistance;
 
-            player.TakeDamage((pushDirection, enemyData.chargePlayerKnockbackForce));
+                player.TakeDamage((pushDirection, enemyData.playerHitKnockbackDuration));
+            }
+            else 
+            {
+                player.TakeDamage();
+
+            }
         }
     }
 

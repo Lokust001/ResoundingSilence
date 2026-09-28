@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &2292838387291440883
+--- !u!1001 &1755116670182630778
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -10,15 +10,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2892623662654031983, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -13.6
+      value: 2.64
       objectReference: {fileID: 0}
     - target: {fileID: 2892623662654031983, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1
+      value: 1.43
       objectReference: {fileID: 0}
     - target: {fileID: 2892623662654031983, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 13.39
+      value: 3.6
       objectReference: {fileID: 0}
     - target: {fileID: 2892623662654031983, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: m_LocalRotation.w
@@ -50,47 +50,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5338943625410773033, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: m_StoppingDistance
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5437595391178199074, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
-      propertyPath: enemyData
-      value: 
-      objectReference: {fileID: 11400000, guid: 408722e5daa85ee4ebd95d3ff2139cb3, type: 2}
-    - target: {fileID: 5437595391178199074, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
-      propertyPath: bulletPrefab
-      value: 
-      objectReference: {fileID: 4365726781555918685, guid: 3e66196bf5b5c1840850f414ea65867e, type: 3}
-    - target: {fileID: 5437595391178199074, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
-      propertyPath: bulletsToFire
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 5437595391178199074, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
-      propertyPath: bulletLifetime
-      value: 10
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5437595391178199074, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: chargingATKParent
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 5437595391178199074, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
-      propertyPath: bulletSpreadDegrees
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 5437595391178199074, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
-      propertyPath: enemyScriptableObject
-      value: 
-      objectReference: {fileID: 11400000, guid: 408722e5daa85ee4ebd95d3ff2139cb3, type: 2}
-    - target: {fileID: 5437595391178199074, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
-      propertyPath: bulletSpreadRadiusDegrees
-      value: 80
-      objectReference: {fileID: 0}
     - target: {fileID: 6325128634737111795, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: m_Name
-      value: TestConeShooterEnemy Variant
-      objectReference: {fileID: 0}
-    - target: {fileID: 6325128634737111795, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
-      propertyPath: m_Layer
-      value: 7
+      value: TestShooterEnemy Variant
       objectReference: {fileID: 0}
     - target: {fileID: 6325128634737111795, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: m_IsActive
@@ -99,7 +67,7 @@ PrefabInstance:
     - target: {fileID: 8424250619371523661, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: enemyData
       value: 
-      objectReference: {fileID: 11400000, guid: 408722e5daa85ee4ebd95d3ff2139cb3, type: 2}
+      objectReference: {fileID: 11400000, guid: f1eed48e39678ff4ea5625ddb7054071, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 5994382746196217271, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
