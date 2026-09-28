@@ -7,17 +7,21 @@
 */
 
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UpgradeTileBehavior : MonoBehaviour
+public class UpgradeTileBehavior : PinHolderSlot
 {
     public bool isActive;
     public Vector2Int coords;
+
     [SerializeField]
     private UpgradeTileBehavior[] adjacentTiles;
-    private UpgradeMenuController controller;
 
     public UpgradeTileData tileData;
+
+
+    #region Tile Generation
 
     /// <summary>
     /// Initializes the tile - called when this tile initializes
@@ -26,7 +30,6 @@ public class UpgradeTileBehavior : MonoBehaviour
     /// <param name="coords">the tiles xy positiion in the grid</param>
     public void InitTile()
     {
-        controller = GetComponentInParent<UpgradeMenuController>();
 
         UIPublicEvents.UpgradeGridInitialized += GridInitialized;
     }
@@ -65,6 +68,8 @@ public class UpgradeTileBehavior : MonoBehaviour
             return;
         }
 
+        tileData = data;
+
         isActive = data.isActive;
 
         this.coords = data.coords;
@@ -74,4 +79,30 @@ public class UpgradeTileBehavior : MonoBehaviour
 
         GetComponent<Image>().enabled = isActive;
     }
+
+    #endregion
+
+    #region PinStuff
+
+    /// <summary>
+    /// sets the pin in this tile
+    /// </summary>
+    /// <param name="pin"></param>
+    public override void SetNewPinInTile(PinItemBehavior pin)
+    {
+        base.SetNewPinInTile(pin);
+        tileData.SetPin(pin.pinData);
+    }
+
+    /// <summary>
+    /// function gets called whenever a pin becomes unequipped from a tile
+    /// </summary>
+    public override void UnequipPin()
+    {
+        base.UnequipPin();
+
+        tileData.SetPin(null);
+    }
+
+    #endregion
 }

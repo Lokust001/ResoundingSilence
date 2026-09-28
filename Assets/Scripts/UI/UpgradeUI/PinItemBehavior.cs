@@ -1,0 +1,114 @@
+/*
+* Author: Tyler
+* Contributors:
+* Last Modified: 09/22/2026
+* Summary: The behavior for the picking up and putting down of pins
+* To Do:   N/A
+*/
+
+using System.Collections;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+
+public class PinItemBehavior : MonoBehaviour, IPointerClickHandler
+{
+    private CanvasGroup raycastBlocker;
+    private Image pinSprite;
+
+    public PinScriptable pinData;
+
+    public PinHolderSlot Parent;
+
+    public InventoryPinHolder Owner;
+
+    private Coroutine moveCo;
+
+    /// <summary>
+    /// setsa references
+    /// </summary>
+    private void Awake()
+    {
+        raycastBlocker = GetComponent<CanvasGroup>();
+        pinSprite = GetComponent<Image>();
+    }
+
+    /// <summary>
+    /// initializes the pin
+    /// </summary>
+    /// <param name="pin">the data for the pin</param>
+    /// <param name="parent">if the pin is attached to a tile</param>
+    /// <exception cref="System.Exception">Tried to make a pin that has no pindata</exception>
+    public void InitPin(PinScriptable pin, InventoryPinHolder owner)
+    {
+        if (pin == null)
+        {
+            throw new System.Exception("Tried to make a pin that has no pindata");
+        }
+
+        pinData = pin;
+        Parent = owner;
+        Owner = owner;
+        raycastBlocker.blocksRaycasts = true;
+        pinSprite.raycastTarget = true;
+
+        //replace with sprite
+        pinSprite.color = pinData.pinColor;
+    }
+
+    /// <summary>
+    /// Triggers when the eventsystem registers a click on the pin item. Will be replaced once we get in controller support.
+    /// </summary>
+    /// <param name="eventData"></param>
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        //ensures theyre actually clicking on it
+        if (eventData.button == PointerEventData.InputButton.Left)
+        {
+            ForcePickUpPin();
+        } 
+    }
+
+
+    /// <summary>
+    /// picks up this pin
+    /// </summary>
+    public void ForcePickUpPin()
+    {
+        UIPublicEvents.PinPickedUp?.Invoke(this);
+    }
+
+    /// <summary>
+    /// runs through all of the logic needed when the pin gets grabbed
+    /// </summary>
+    public void PinPickedUp()
+    {
+        raycastBlocker.blocksRaycasts = false; 
+        pinSprite.raycastTarget = false;
+        moveCo = StartCoroutine(StartMoveCoroutine());
+    }
+
+    /// <summary>
+    /// reenables all of the raycasting and turns off the movement
+    /// </summary>
+    public void PinPlaced()
+    {
+        raycastBlocker.blocksRaycasts = true;
+        pinSprite.raycastTarget = true;
+        StopCoroutine(moveCo);
+    }
+
+    /// <summary>
+    /// moves the pin, ideally with the mouse
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator StartMoveCoroutine()
+    {
+        while (true)
+        {
+            //replace with moving towards the mouse position
+            transform.position = Vector3.zero;
+            yield return null;
+        }
+    }
+}

@@ -165,7 +165,7 @@ public class UpgradeTileGrid
 
         for (int i =  0; i < glyphsToPlace; i++)
         {
-            enabledUnGlyphedTiles[Random.Range(0, enabledUnGlyphedTiles.Count)].glyph = StaticDataManager.Instance.GetRandomGlyph();
+            enabledUnGlyphedTiles[Random.Range(0, enabledUnGlyphedTiles.Count)].SetGlyph(StaticDataManager.Instance.GetRandomGlyph());
         }
 
         
