@@ -12,49 +12,80 @@ public class BaseEnemyScriptable : BaseScriptableObject
 {
     public enum EnemyType
     {
+        None,
         SingleShooter,
         ConeShooter,
         Melee,
         ChargingMelee,
         BuffEnemy
     }
-    [SerializeField]
-    public EnemyType enemyType;
-    private bool isShooter() 
+
+    private bool isShooter()
     {
         return enemyType == EnemyType.SingleShooter || enemyType == EnemyType.ConeShooter;
     }
-    private bool isMelee() 
+    private bool isMelee()
     {
         return enemyType == EnemyType.Melee || enemyType == EnemyType.ChargingMelee;
     }
+    [Header("Enemy Type (Required)")]
+    [SerializeField]
+    public EnemyType enemyType;
 
 
     [SerializeField, Header("General Attributes")]
     public string enemyName;
-    [SerializeField]
+
     public float enemyHealth;
-    [SerializeField]
+
+    private float enemyMaxHealth;
+
+    public int enemyATKDmg;
+
     public float timeBetweenAttacks;
 
+    //Buff Enemies modify these values
+    [HideInInspector]
+    public float atkBoostFactor;
+    [HideInInspector]
+    public float dmgReductionFactor;
+    
+
+    #region Shooter & ConeShooter Variables
+
+    [Header("Shooter Enemy Attributes")]
     [ShowIf(nameof(isShooter))]
     [Header("Shooter Enemy Attributes")]
+    [Tooltip("How fast the bullet travels in units/second")]
     public float bulletTravelSpeed;
+
     [ShowIf(nameof(isShooter))]
-    [SerializeField]
+    [Tooltip("How long the bullet lasts after being fired")]
     public float bulletLife;
+
     [ShowIf(nameof(isShooter))]
     public GameObject bulletPrefab;
 
+    #endregion
+
+    #region Cone Shooter Variables
+
     [Header("Cone Shooter Enemy Attributes")]
     [ShowIf(nameof(enemyType), EnemyType.ConeShooter)]
+    [Tooltip("How many bullets to fire in a cone/arc")]
     public int bulletsToFire;
 
     [ShowIf(nameof(enemyType), EnemyType.ConeShooter)]
+    [Tooltip("The radius or \"area\" that the bullets will occupy in degrees ")]
     public float bulletSpreadRadiusDegrees;
+
+    #endregion
+
+    #region Melee & ChargingMelee Variables
 
     [Header("Melee Enemy Attributes")]
     [ShowIf(nameof(isMelee))]
+    [Tooltip("How fast the bullet travels in units/second")]
     public float attackChargeDuration;
 
     [ShowIf(nameof(isMelee))]
@@ -64,6 +95,10 @@ public class BaseEnemyScriptable : BaseScriptableObject
 
     [ShowIf(nameof(enemyType), EnemyType.Melee)]
     public float attackUptimeDuration;
+
+    #endregion
+
+    #region ChargingMelee Variables
 
     [Header("Charging Melee Enemy Attributes")]
     [ShowIf(nameof(enemyType), EnemyType.ChargingMelee)]
@@ -78,14 +113,59 @@ public class BaseEnemyScriptable : BaseScriptableObject
     [ShowIf(nameof(enemyType), EnemyType.ChargingMelee)]
     public float playerHitKnockbackDistance;
 
+    #endregion
+
+    #region Buff Enemy Variables
+
     [Header("Buff Enemy Attributes")]
     [ShowIf(nameof(enemyType), EnemyType.BuffEnemy)]
     public float buffChargeDuration;
-    [ShowIf(nameof(enemyType), EnemyType.BuffEnemy), Range(0.01f, 1)]
-    public float buffPercentHealthLost;
+    [ShowIf(nameof(enemyType), EnemyType.BuffEnemy), Range(1, 100)]
+    [SerializeField]
+    private int retreatHealthPercent;
     [ShowIf(nameof(enemyType), EnemyType.BuffEnemy)]
-    public float moveAwayDistance;
+    public float retreatDistance;
+    [ShowIf(nameof(enemyType), EnemyType.BuffEnemy)]
+    public float retreatSpeed;
 
+    [ShowIf(nameof(enemyType), EnemyType.BuffEnemy), Range(1, 100)]
+    public int allyATKIncreasePercent;
 
+    [ShowIf(nameof(enemyType), EnemyType.BuffEnemy), Range(1, 100)]
+    public int allyReducedDmgPercent;
 
+    #endregion
+
+    private void Awake()
+    {
+        enemyMaxHealth = enemyHealth;
+    }
+
+    #region Helper Calculation Methods
+    private const decimal PERCENTAGE_DIVISOR = 100m;
+
+    /// <summary>
+    /// Returns the health value that the enemy needs to fall below before they change
+    /// their behavior
+    /// </summary>
+    /// <returns></returns>
+    public int GetLostHealthThreshold() 
+    {
+        float truePercentValue = (float)(retreatHealthPercent / PERCENTAGE_DIVISOR);
+        int truehealthValue = Mathf.RoundToInt(enemyMaxHealth * truePercentValue);
+
+        return Mathf.RoundToInt(enemyHealth - truehealthValue);
+    }
+
+    public float GetATKIncreaseMultiplier() 
+    {
+        return (float)(allyATKIncreasePercent / PERCENTAGE_DIVISOR);
+    }
+
+    public float GetDMGReductionMultiplier() 
+    {
+        return (float)(allyReducedDmgPercent / PERCENTAGE_DIVISOR);
+    }
+
+    #endregion
 }

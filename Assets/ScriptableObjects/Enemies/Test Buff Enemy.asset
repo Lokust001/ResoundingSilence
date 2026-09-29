@@ -12,10 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb529eb0eaafc66418e136a89e011d83, type: 3}
   m_Name: Test Buff Enemy
   m_EditorClassIdentifier: Assembly-CSharp::BaseEnemyScriptable
-  enemyType: 4
+  enemyType: 5
   enemyName: Test Buff Enemy
-  enemyHealth: 2
+  enemyHealth: 10
+  enemyATKDmg: 5
   timeBetweenAttacks: 9
+  atkBoostFactor: 0
+  dmgReductionFactor: 0
   bulletTravelSpeed: 0
   bulletLife: 0
   bulletPrefab: {fileID: 0}
@@ -30,5 +33,8 @@ MonoBehaviour:
   playerHitKnockbackDuration: 0
   playerHitKnockbackDistance: 0
   buffChargeDuration: 5
-  buffPercentHealthLost: 0.01
-  moveAwayDistance: 2
+  retreatHealthPercent: 15
+  retreatDistance: 3
+  retreatSpeed: 5
+  allyATKIncreasePercent: 20
+  allyReducedDmgPercent: 30

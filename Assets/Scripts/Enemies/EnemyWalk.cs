@@ -12,16 +12,17 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver
     private BaseEnemyScriptable enemyData;
 
     private EnemyAttack enemyAttack;
+    private EnemyBuff enemyBuff;
 
     Transform enemyTransform;
 
-    void Start()
+    void Awake()
     {
         m_Agent = GetComponent<NavMeshAgent>();
-        enemyTransform = transform;
         m_GameObject = FindAnyObjectByType<PlayerController>().gameObject;
         enemyAttack = GetComponentInChildren<EnemyAttack>();
-        StartPlayerSearch();
+        enemyBuff = GetComponentInChildren<EnemyBuff>();
+        enemyTransform = transform;
     }
 
     public void StartPlayerSearch() 
@@ -103,6 +104,27 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver
             m_Agent.destination = m_GameObject.transform.position;
             yield return new WaitForFixedUpdate();
         }
+    }
+
+    public IEnumerator MoveAwayFromPlayer() 
+    {
+        Transform playerTransform = FindAnyObjectByType<PlayerController>().transform;
+        Vector3 directionToPlayer = (enemyTransform.position - playerTransform.position).normalized;
+        directionToPlayer.y = 0;
+
+        Vector3 retreatPosition = enemyTransform.position + (directionToPlayer * enemyData.retreatDistance);
+
+        float retreatSpeed = enemyData.retreatSpeed;
+        float distance = Vector3.Distance(enemyTransform.position, retreatPosition);
+
+
+        while (distance > 0) 
+        {
+            enemyTransform.position = Vector3.MoveTowards(enemyTransform.position, retreatPosition, retreatSpeed * Time.fixedDeltaTime);
+            distance = Vector3.Distance(enemyTransform.position, retreatPosition);
+            yield return new WaitForFixedUpdate();
+        }
+        
     }
 
     public void SetEntityData(BaseScriptableObject baseScriptable)

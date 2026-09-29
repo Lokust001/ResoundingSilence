@@ -142,6 +142,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   enemyData: {fileID: 0}
+  dmgToTake: 10
 --- !u!114 &2326147083794828989
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -362,7 +363,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyShoot
   attackProjectilePrefab: {fileID: 4365726781555918685, guid: 3e66196bf5b5c1840850f414ea65867e, type: 3}
-  attackIndicatorParent: {fileID: 5994382746196217271}
+  attackIndicatorArea: {fileID: 0}
 --- !u!135 &173922961431659772
 SphereCollider:
   m_ObjectHideFlags: 0

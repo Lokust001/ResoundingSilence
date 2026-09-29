@@ -16,6 +16,9 @@ public class PlayerController : MonoBehaviour
     float playerHealth;
 
     [SerializeField]
+    float playerDamage;
+
+    [SerializeField]
     float invincibilityDuration;
     
 

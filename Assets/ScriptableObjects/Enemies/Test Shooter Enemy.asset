@@ -12,19 +12,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb529eb0eaafc66418e136a89e011d83, type: 3}
   m_Name: Test Shooter Enemy
   m_EditorClassIdentifier: Assembly-CSharp::BaseEnemyScriptable
-  enemyType: 0
+  enemyType: 1
   enemyName: Test Shooter
   enemyHealth: 3
+  enemyATKDmg: 5
   timeBetweenAttacks: 3
+  atkBoostFactor: 0
+  dmgReductionFactor: 0
   bulletTravelSpeed: 1
   bulletLife: 5
   bulletPrefab: {fileID: 4365726781555918685, guid: 3e66196bf5b5c1840850f414ea65867e, type: 3}
   bulletsToFire: 0
   bulletSpreadRadiusDegrees: 0
-  chargingDirectionTime: 0
-  chargeSpeedForce: 0
-  chargePlayerKnockbackForce: 0
-  chargePlayerKnockbackDistanceMultiplier: 0
-  chargeDestinationAccuracyThreshold: 0
+  attackChargeDuration: 0
   earlyChargeMaterial: {fileID: 0}
   endChargeMaterial: {fileID: 0}
+  attackUptimeDuration: 0
+  chargeSpeedForce: 0
+  chargeDestinationAccuracy: 0
+  playerHitKnockbackDuration: 0
+  playerHitKnockbackDistance: 0
+  buffChargeDuration: 0
+  retreatHealthPercent: 0
+  moveAwayDistance: 0
+  allyATKIncreasePercent: 0
+  allyReducedDmgPercent: 0

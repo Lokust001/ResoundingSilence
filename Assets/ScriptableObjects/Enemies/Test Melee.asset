@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb529eb0eaafc66418e136a89e011d83, type: 3}
   m_Name: Test Melee
   m_EditorClassIdentifier: Assembly-CSharp::BaseEnemyScriptable
-  enemyType: 2
+  enemyType: 3
   enemyName: Test Mele
   enemyHealth: 3
+  enemyATKDmg: 0
   timeBetweenAttacks: 3
   bulletTravelSpeed: 0
   bulletLife: 0
@@ -29,3 +30,8 @@ MonoBehaviour:
   chargeDestinationAccuracy: 0
   playerHitKnockbackDuration: 0
   playerHitKnockbackDistance: 0
+  buffChargeDuration: 0
+  percentHealthLostThreshold: 0
+  moveAwayDistance: 0
+  allyATKIncreasePercent: 0
+  allyDmgDecreasePercent: 0

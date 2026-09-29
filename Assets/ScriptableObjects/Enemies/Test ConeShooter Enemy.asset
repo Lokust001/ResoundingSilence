@@ -12,19 +12,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb529eb0eaafc66418e136a89e011d83, type: 3}
   m_Name: Test ConeShooter Enemy
   m_EditorClassIdentifier: Assembly-CSharp::BaseEnemyScriptable
-  enemyType: 1
+  enemyType: 2
   enemyName: Test
   enemyHealth: 3
+  enemyATKDmg: 0
   timeBetweenAttacks: 3
   bulletTravelSpeed: 1
   bulletLife: 5
   bulletPrefab: {fileID: 4365726781555918685, guid: 3e66196bf5b5c1840850f414ea65867e, type: 3}
   bulletsToFire: 6
   bulletSpreadRadiusDegrees: 30
-  chargingDirectionTime: 0
-  chargeSpeedForce: 0
-  chargePlayerKnockbackForce: 0
-  chargePlayerKnockbackDistanceMultiplier: 0
-  chargeDestinationAccuracyThreshold: 0
+  attackChargeDuration: 0
   earlyChargeMaterial: {fileID: 0}
   endChargeMaterial: {fileID: 0}
+  attackUptimeDuration: 0
+  chargeSpeedForce: 0
+  chargeDestinationAccuracy: 0
+  playerHitKnockbackDuration: 0
+  playerHitKnockbackDistance: 0
+  buffChargeDuration: 0
+  percentHealthLostThreshold: 0
+  moveAwayDistance: 0
+  allyATKIncreasePercent: 0
+  allyDmgDecreasePercent: 0

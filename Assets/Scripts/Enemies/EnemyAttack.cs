@@ -6,6 +6,9 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
 {
 
     [SerializeField]
+    private TriggerObjects[] onTriggerEnterObjects;
+
+    [SerializeField]
     private GameObject attackProjectilePrefab;
 
     [SerializeField]
@@ -23,10 +26,49 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
     private bool inAttackRange;
 
     private BaseEnemyScriptable enemyData;
-    void Start()
+    void Awake()
     {
         sphereTrigger = GetComponent<SphereCollider>();
         enemyMovement = GetComponentInParent<EnemyWalk>();
+    }
+
+    private void OnEnable()
+    {
+        foreach (var trigger in onTriggerEnterObjects) 
+        {
+            trigger.ChildTriggerActivated += HandleVariousAttackTriggers;
+        }
+    }
+
+    private void OnDisable()
+    {
+        foreach (var trigger in onTriggerEnterObjects)
+        {
+            trigger.ChildTriggerActivated -= HandleVariousAttackTriggers;
+        }
+    }
+
+    private void HandleVariousAttackTriggers(Collider other) 
+    {
+        var player = other.GetComponent<PlayerController>();
+        switch (enemyData.enemyType)
+        {
+            case EnemyType.None:
+                break;
+            case EnemyType.SingleShooter:
+                break;
+            case EnemyType.ConeShooter:
+                break;
+            case EnemyType.Melee:
+                player.TakeDamage();
+                break;
+            case EnemyType.ChargingMelee:
+                break;
+            case EnemyType.BuffEnemy:
+                break;
+            default:
+                break;
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -81,8 +123,7 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
                 activeATKorCooldown = StartCoroutine(AtkIndicatorWindupAndAction());
                 return;
             case BaseEnemyScriptable.EnemyType.Melee:
-                float meleeAttackDistance = attackIndicatorArea.transform.localPosition.z;
-                queuedMeleeAttack = PerformMeleeAttack(meleeAttackDistance);
+                queuedMeleeAttack = PerformMeleeAttack();
                 activeATKorCooldown = StartCoroutine(AtkIndicatorWindupAndAction());
                 return;
             default:
@@ -235,7 +276,24 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
         activeATKorCooldown = StartCoroutine(AttackCooldownCoroutine());
     }
 
-    private IEnumerator PerformMeleeAttack(float attackTravelDistance) 
+    private IEnumerator PerformMeleeAttack() 
+    {
+        yield return null;
+        attackProjectilePrefab.SetActive(true);
+
+        float timer = 0;
+        float goalDuration = enemyData.attackUptimeDuration;
+        while (timer < goalDuration)
+        {
+            yield return new WaitForFixedUpdate();
+
+            timer += Time.fixedDeltaTime;
+        }
+
+        attackProjectilePrefab.SetActive(false);
+    }
+
+    private IEnumerator PerformTravelingProjectileAttack(float attackTravelDistance) 
     {
         attackProjectilePrefab.SetActive(true);
 
@@ -258,8 +316,6 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
             timer += Time.fixedDeltaTime;
 
             meleeAtkTransform.localPosition = Vector3.MoveTowards(meleeAtkTransform.localPosition, attackGoalPosition, evenSpeed * Time.fixedDeltaTime);
-
-            Debug.Log(meleeAtkTransform.localPosition);
         }
 
         meleeAtkTransform.localPosition = attackGoalPosition;
