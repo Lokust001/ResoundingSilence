@@ -1,12 +1,13 @@
 /******************************************************************************
  * Author: Brad Dixon
  * Contributors:
- * Last Modified: 9/23/2026
+ * Last Modified: 9/29/2026
  * Brief: Handles the crossbow's basic attacks and abilities.
  * TODO:
  * ***************************************************************************/
 using UnityEngine;
 using NaughtyAttributes;
+using System.Collections;
 
 public class CrossbowBehaviour : BaseAimedWeaponBehaviour
 {
@@ -35,20 +36,26 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
     #region Splinter Shot Variables
 
     [ShowIf(nameof(ViewingSplinterShot))]
+    [Tooltip("How much total damage the splinter shot will do.")]
+    [SerializeField] int splinterShotDamage;
+
+    [ShowIf(nameof(ViewingSplinterShot))]
     [Tooltip("How big the ability AOE is.")]
-    [SerializeField] float splinterShotAOE;
+    [SerializeField] float splinterShotAOESize;
 
     [ShowIf(nameof(ViewingSplinterShot))]
-    [Tooltip("How much time must elapse between ticks of damage.")]
-    [SerializeField] float splinterShotDOTTickDelay;
+    [Tooltip("How many times the splinter shot will try to damage.")]
+    [SerializeField] int splinterShotTotalDamageTicks;
 
     [ShowIf(nameof(ViewingSplinterShot))]
-    [Tooltip("How long the DOT effects lasts.")]
-    [SerializeField] float splinterShotDOTDuration;
+    [Tooltip("How long the ability persists.")]
+    [SerializeField] float splinterShotDuration;
 
     [ShowIf(nameof(ViewingSplinterShot))]
     [Tooltip("The preview so the player can see how their ability will look.")]
     [SerializeField] GameObject splinterShotPreview;
+
+    [SerializeField] bool splinterShotPlaced;
 
     #endregion
 
@@ -69,6 +76,8 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
     [ShowIf(nameof(ViewingBombBlast))]
     [Tooltip("The preview so the player can see how their ability will look.")]
     [SerializeField] GameObject bombBlastPreview;
+
+    bool bombBlastPlaced = false;
 
     #endregion
 
@@ -165,10 +174,11 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
     {
         base.Start();
 
-        CastScatterShot();
-        CastStakeShot();
+        ScatterShotPreview();
+        StakeShotPreview();
 
         activePreview = splinterShotPreview;
+        splinterShotPlaced = false;
     }
 
     /// <summary>
@@ -204,6 +214,8 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
 
         base.AimingAbilityTwo();
     }
+
+    #region Ability Previews
 
     /// <summary>
     /// Displays the corresponding preview when an ability is selected
@@ -259,60 +271,38 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
     }
 
     /// <summary>
-    /// Determines which ability the player is trying to cast it and then casts it
+    /// How the splinter shot preview looks
     /// </summary>
-    protected override void CastingAbility()
+    private void SplinterShotPreview()
     {
-        Collider[] enemies = new Collider[0];
-
-        switch (aimingAbilityOne == true ? abilityOne : abilityTwo)
+        if (!splinterShotPlaced)
         {
-            case Abilities.SplinterShot:
-            case Abilities.BombBlast:
-                enemies = Physics.OverlapCapsule(activePreview.transform.position + Vector3.up, activePreview.transform.position,
-                    activePreview.GetComponent<CapsuleCollider>().radius);
-                break;
-            case Abilities.ScatterShot:
-            case Abilities.StakeShot:
-                enemies = Physics.OverlapBox(activePreview.GetComponent<BoxCollider>().bounds.center, 
-                    activePreview.GetComponent<BoxCollider>().bounds.extents);
-                break;
-        }
+            splinterShotPreview.transform.localScale = new Vector3(splinterShotAOESize,
+                splinterShotPreview.transform.localScale.y, splinterShotAOESize);
 
-        foreach (Collider e in enemies)
+            float abilityRange = abilityOne == Abilities.SplinterShot ? abilityOneRange : abilityTwoRange;
+
+            splinterShotPreview.transform.position = Vector3.ClampMagnitude(mousePos, abilityRange);
+        }
+    }
+
+    /// <summary>
+    /// How the bomb blast preview looks
+    /// </summary>
+    private void BombBlastPreview()
+    {
+        if (!bombBlastPlaced)
         {
-            Debug.Log("Hit " + e.gameObject.name);
+            float abilityRange = abilityOne == Abilities.BombBlast ? abilityOneRange : abilityTwoRange;
+
+            bombBlastPreview.transform.position = Vector3.ClampMagnitude(mousePos, abilityRange);
         }
-
-        activePreview.SetActive(false);
-
-        base.CastingAbility();
     }
 
     /// <summary>
-    /// Functinality for Splinter Shot ability
+    /// How the scatter shot preview looks
     /// </summary>
-    private void CastSplinterShot()
-    {
-        float abilityRange = abilityOne == Abilities.SplinterShot ? abilityOneRange : abilityTwoRange;
-
-        splinterShotPreview.transform.position = Vector3.ClampMagnitude(mousePos, abilityRange);
-    }
-
-    /// <summary>
-    /// Functinality for Bomb Blast ability
-    /// </summary>
-    private void CastBombBlast()
-    {
-        float abilityRange = abilityOne == Abilities.BombBlast ? abilityOneRange : abilityTwoRange;
-
-        bombBlastPreview.transform.position = Vector3.ClampMagnitude(mousePos, abilityRange);
-    }
-
-    /// <summary>
-    /// Functinality for Scatter Shot ability
-    /// </summary>
-    private void CastScatterShot()
+    private void ScatterShotPreview()
     {
         float abilityRange = abilityOne == Abilities.ScatterShot ? abilityOneRange : abilityTwoRange;
 
@@ -325,9 +315,9 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
     }
 
     /// <summary>
-    /// Functinality for Stake Shot ability
+    /// How the stake shot preview looks
     /// </summary>
-    private void CastStakeShot()
+    private void StakeShotPreview()
     {
         float abilityRange = abilityOne == Abilities.StakeShot ? abilityOneRange : abilityTwoRange;
 
@@ -339,6 +329,8 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
             stakeShotPreview.transform.localScale.y, abilityRange);
     }
 
+    #endregion
+
     /// <summary>
     /// Handles showing how the ability is being aimed
     /// </summary>
@@ -347,13 +339,100 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
         base.FixedUpdate();
 
         Vector3 lookDir = mousePos - transform.position;
-        Quaternion rot = Quaternion.RotateTowards(transform.rotation,
+        Quaternion rot = Quaternion.RotateTowards(weaponModel.transform.rotation,
             Quaternion.LookRotation(lookDir), 20f);
         rot.x = 0;
         rot.z = 0;
-        transform.rotation = rot;
+        weaponModel.transform.rotation = rot;
 
-        CastSplinterShot();
-        CastBombBlast();
+        SplinterShotPreview();
+        BombBlastPreview();
+    }
+
+    /// <summary>
+    /// Determines which ability the player is trying to cast it and then casts it
+    /// </summary>
+    protected override void CastingAbility()
+    {
+        Collider[] enemies = new Collider[0];
+
+        switch (aimingAbilityOne == true ? abilityOne : abilityTwo)
+        {
+            case Abilities.SplinterShot:
+                StartCoroutine(CastingSplinterShot());
+                break;
+            case Abilities.BombBlast:
+                enemies = Physics.OverlapCapsule(activePreview.transform.position + Vector3.up, activePreview.transform.position,
+                    activePreview.GetComponent<CapsuleCollider>().radius);
+                break;
+            case Abilities.ScatterShot:
+                CastingScatterShot();
+                break;
+            case Abilities.StakeShot:
+                enemies = Physics.OverlapBox(activePreview.GetComponent<BoxCollider>().bounds.center,
+                    activePreview.GetComponent<BoxCollider>().bounds.extents);
+                break;
+        }
+
+        //activePreview.SetActive(false);
+
+        base.CastingAbility();
+    }
+
+    /// <summary>
+    /// How the splinter shot ability interacts with the enemies
+    /// </summary>
+    private IEnumerator CastingSplinterShot()
+    {
+        splinterShotPlaced = true;
+        int tickDamage = splinterShotDamage / splinterShotTotalDamageTicks;
+        //Stores the remainder damage in case the damage doesn't divide evenly
+        int remainderDamage = splinterShotDamage % splinterShotTotalDamageTicks;
+        for(int i = 0; i < splinterShotTotalDamageTicks; ++i)
+        {
+            if(i + 1 == splinterShotTotalDamageTicks)
+            {
+                tickDamage += remainderDamage;
+            }
+            Collider[] enemiesToHit = Physics.OverlapCapsule(splinterShotPreview.transform.position + Vector3.up, splinterShotPreview.transform.position,
+                    splinterShotPreview.GetComponent<CapsuleCollider>().radius);
+
+            foreach(Collider enemyCollider in enemiesToHit)
+            {
+                if (enemyCollider.GetComponent<DummyBehaviour>())
+                {
+                    Debug.Log(enemyCollider.name + " took " + tickDamage + " damage!");
+                }
+            }
+
+            yield return new WaitForSeconds(splinterShotDuration / splinterShotTotalDamageTicks);
+        }
+
+        splinterShotPreview.SetActive(false);
+        splinterShotPlaced = false;
+    }
+
+    /// <summary>
+    /// How the bomb blast ability interacts with player and enemies
+    /// </summary>
+    private void CastingBombBlast()
+    {
+
+    }
+
+    /// <summary>
+    /// How the scatter shot ability interacts with the enemies
+    /// </summary>
+    private void CastingScatterShot()
+    {
+
+    }
+
+    /// <summary>
+    /// How the stake shot ability interacts with the enemies
+    /// </summary>
+    private void CastingStakeShot()
+    {
+
     }
 }

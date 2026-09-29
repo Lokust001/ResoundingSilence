@@ -12,6 +12,7 @@ public class BaseAimedWeaponBehaviour : BaseWeaponBehaviour
 {
     [HorizontalLine(height: 4, EColor.Violet)]
     [SerializeField] protected GameObject weaponProjectile;
+    [SerializeField] protected GameObject weaponModel;
 
     /// <summary>
     /// Spawns the projectile and fires it towards the mouse

@@ -152,8 +152,6 @@ Transform:
   - {fileID: 1230388969}
   - {fileID: 600682594}
   - {fileID: 626235955}
-  - {fileID: 186540374}
-  - {fileID: 885950848}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &179230303
@@ -185,12 +183,15 @@ MonoBehaviour:
   abilityTwoDamage: 20
   abilityTwoRange: 6
   weaponProjectile: {fileID: 8805286060830696359, guid: f4083c9721c5aa04280c3f4b179ddf88, type: 3}
-  abilityOne: 2
+  weaponModel: {fileID: 1230388968}
+  abilityOne: 0
   abilityTwo: 3
-  splinterShotAOE: 0
-  splinterShotDOTTickDelay: 0
-  splinterShotDOTDuration: 0
+  splinterShotDamage: 13
+  splinterShotAOESize: 3
+  splinterShotTotalDamageTicks: 5
+  splinterShotDuration: 5
   splinterShotPreview: {fileID: 600682590}
+  splinterShotPlaced: 0
   bombBlastAOE: 5
   playerLaunchDistance: 0
   enemyLaunchDistance: 0
@@ -778,10 +779,10 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 0.10000001}
+  m_LocalScale: {x: 2.5, y: 1.2499999, z: 0.2777778}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 179230302}
+  m_Father: {fileID: 1230388969}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &186540375
 BoxCollider:
@@ -1736,10 +1737,10 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.1, z: 2.5}
+  m_LocalScale: {x: 0.75, y: 0.27777776, z: 3.125}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 179230302}
+  m_Father: {fileID: 1230388969}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1191040246
 GameObject:
@@ -2175,7 +2176,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.4, y: 0.36, z: 0.8}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 186540374}
+  - {fileID: 885950848}
   m_Father: {fileID: 179230302}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &1230388970
