@@ -26,4 +26,11 @@ public static class UIPublicEvents
     public static Action UpgradeMenuClosed;
 
     #endregion
+
+    #region Player HUD
+
+    public static Action<CooldownUIController.CooldownToUpdate, float> UpdateHUDCooldownUI;
+    public static Action<CooldownUIController.CooldownToUpdate> ImmediatelyRefreshCooldown;
+
+    #endregion
 }
