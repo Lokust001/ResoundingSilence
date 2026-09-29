@@ -64,7 +64,7 @@ public class UpgradeTileBehavior : PinHolderSlot
 
             //temporary
             GetComponent<Image>().enabled = false;
-
+            data = null;
             return;
         }
 
