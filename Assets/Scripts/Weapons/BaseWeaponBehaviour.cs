@@ -46,10 +46,6 @@ public class BaseWeaponBehaviour : MonoBehaviour
     [SerializeField] protected float abilityOneEndLag;
 
     [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityOne)]
-    [Tooltip("How much damage the ability does.")]
-    [SerializeField] protected int abilityOneDamage;
-
-    [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityOne)]
     [Tooltip("How far from the player the ability can be cast.")]
     [SerializeField] protected float abilityOneRange;
 
@@ -64,10 +60,6 @@ public class BaseWeaponBehaviour : MonoBehaviour
     [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityTwo)]
     [Tooltip("How long the ability puts the player in end lag for.")]
     [SerializeField] protected float abilityTwoEndLag;
-
-    [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityTwo)]
-    [Tooltip("How much damage the ability does.")]
-    [SerializeField] protected int abilityTwoDamage;
 
     [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityTwo)]
     [Tooltip("How far from the player the ability can be cast.")]

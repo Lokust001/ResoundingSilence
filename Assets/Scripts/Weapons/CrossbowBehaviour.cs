@@ -3,7 +3,7 @@
  * Contributors:
  * Last Modified: 9/29/2026
  * Brief: Handles the crossbow's basic attacks and abilities.
- * TODO:
+ * TODO: In the inspector, update the layer masks to include enemy layers
  * ***************************************************************************/
 using UnityEngine;
 using NaughtyAttributes;
@@ -55,15 +55,25 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
     [Tooltip("The preview so the player can see how their ability will look.")]
     [SerializeField] GameObject splinterShotPreview;
 
-    [SerializeField] bool splinterShotPlaced;
+    [ShowIf(nameof(ViewingSplinterShot))]
+    [Tooltip("Which types of layers should be checked to damage with the splinter shot.")]
+    [SerializeField] LayerMask splinterShotLayerMask;
 
     #endregion
 
     #region Bomb Blast Variables
 
     [ShowIf(nameof(ViewingBombBlast))]
+    [Tooltip("How much damage bomb blast does to enemies.")]
+    [SerializeField] int bombBlastDamage;
+
+    [ShowIf(nameof(ViewingBombBlast))]
     [Tooltip("How big the ability AOE is.")]
-    [SerializeField] float bombBlastAOE;
+    [SerializeField] float bombBlastAOESize;
+
+    [ShowIf(nameof(ViewingBombBlast))]
+    [Tooltip("How long it takes for the bomb blast to detonate.")]
+    [SerializeField] float bombBlastDetTime;
 
     [ShowIf(nameof(ViewingBombBlast))]
     [Tooltip("How far the player gets launched.")]
@@ -77,7 +87,9 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
     [Tooltip("The preview so the player can see how their ability will look.")]
     [SerializeField] GameObject bombBlastPreview;
 
-    bool bombBlastPlaced = false;
+    [ShowIf(nameof(ViewingBombBlast))]
+    [Tooltip("Which types of layers should be checked to launch with the bomb blast.")]
+    [SerializeField] LayerMask bombBlastLayerMask;
 
     #endregion
 
@@ -178,7 +190,6 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
         StakeShotPreview();
 
         activePreview = splinterShotPreview;
-        splinterShotPlaced = false;
     }
 
     /// <summary>
@@ -275,15 +286,12 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
     /// </summary>
     private void SplinterShotPreview()
     {
-        if (!splinterShotPlaced)
-        {
-            splinterShotPreview.transform.localScale = new Vector3(splinterShotAOESize,
-                splinterShotPreview.transform.localScale.y, splinterShotAOESize);
+        splinterShotPreview.transform.localScale = new Vector3(splinterShotAOESize,
+            splinterShotPreview.transform.localScale.y, splinterShotAOESize);
 
-            float abilityRange = abilityOne == Abilities.SplinterShot ? abilityOneRange : abilityTwoRange;
+        float abilityRange = abilityOne == Abilities.SplinterShot ? abilityOneRange : abilityTwoRange;
 
-            splinterShotPreview.transform.position = Vector3.ClampMagnitude(mousePos, abilityRange);
-        }
+        splinterShotPreview.transform.position = Vector3.ClampMagnitude(mousePos, abilityRange);
     }
 
     /// <summary>
@@ -291,12 +299,9 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
     /// </summary>
     private void BombBlastPreview()
     {
-        if (!bombBlastPlaced)
-        {
-            float abilityRange = abilityOne == Abilities.BombBlast ? abilityOneRange : abilityTwoRange;
+        float abilityRange = abilityOne == Abilities.BombBlast ? abilityOneRange : abilityTwoRange;
 
-            bombBlastPreview.transform.position = Vector3.ClampMagnitude(mousePos, abilityRange);
-        }
+        bombBlastPreview.transform.position = Vector3.ClampMagnitude(mousePos, abilityRange);
     }
 
     /// <summary>
@@ -362,8 +367,7 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
                 StartCoroutine(CastingSplinterShot());
                 break;
             case Abilities.BombBlast:
-                enemies = Physics.OverlapCapsule(activePreview.transform.position + Vector3.up, activePreview.transform.position,
-                    activePreview.GetComponent<CapsuleCollider>().radius);
+                StartCoroutine(CastingBombBlast());
                 break;
             case Abilities.ScatterShot:
                 CastingScatterShot();
@@ -386,7 +390,6 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
     {
         GameObject tempAbility = Instantiate(splinterShotPreview, splinterShotPreview.transform.position, Quaternion.identity);
 
-        //tempAbility.transform.SetParent(transform);
         int tickDamage = splinterShotDamage / splinterShotTotalDamageTicks;
         //Stores the remainder damage in case the damage doesn't divide evenly
         int remainderDamage = splinterShotDamage % splinterShotTotalDamageTicks;
@@ -397,7 +400,7 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
                 tickDamage += remainderDamage;
             }
             Collider[] enemiesToHit = Physics.OverlapCapsule(tempAbility.transform.position + Vector3.up, tempAbility.transform.position,
-                    tempAbility.GetComponent<CapsuleCollider>().radius);
+                    tempAbility.GetComponent<CapsuleCollider>().radius, splinterShotLayerMask);
 
             foreach(Collider enemyCollider in enemiesToHit)
             {
@@ -416,9 +419,31 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
     /// <summary>
     /// How the bomb blast ability interacts with player and enemies
     /// </summary>
-    private void CastingBombBlast()
+    private IEnumerator CastingBombBlast()
     {
+        GameObject tempAbility = Instantiate(bombBlastPreview, bombBlastPreview.transform.position, Quaternion.identity);
 
+        yield return new WaitForSeconds(bombBlastDetTime);
+
+        Collider[] entitiesToHit = Physics.OverlapCapsule(tempAbility.transform.position + Vector3.up, tempAbility.transform.position,
+                    tempAbility.GetComponent<CapsuleCollider>().radius, bombBlastLayerMask);
+
+        foreach (Collider entityCollider in entitiesToHit)
+        {
+            if (entityCollider.GetComponent<DummyBehaviour>())
+            {
+                Debug.Log(entityCollider.name + " took " + bombBlastDamage + " damage!");
+                entityCollider.GetComponent<Rigidbody>().AddExplosionForce(enemyLaunchDistance, tempAbility.transform.position,
+                    bombBlastAOESize, .1f, ForceMode.Impulse);
+            }
+            else if(entityCollider.GetComponent<DummyPlayerBehaviour>())
+            {
+                entityCollider.GetComponent<Rigidbody>().AddExplosionForce(playerLaunchDistance, tempAbility.transform.position,
+                    bombBlastAOESize, 0, ForceMode.Impulse);
+            }
+        }
+
+        Destroy(tempAbility);
     }
 
     /// <summary>
