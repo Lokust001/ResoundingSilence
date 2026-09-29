@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccbfc7cacdf5fad469822296124c7adb, type: 3}
+  m_Name: CrossbowData
+  m_EditorClassIdentifier: Assembly-CSharp::BaseWeaponScriptable
+  weaponType: 1
+  shownSettings: 3
+  effectType: 0
+  WeaponName: 
+  WeaponDamage: 0a000000
+  AttackCooldown:
+  - 0.2
+  ProjectileSpeed:
+  - 5
+  ProjectileLifetime:
+  - 2
+  MovementSlowdown: []
+  HasPierce: 0
+  PierceDamageFalloff:
+  - 20
+  PierceLifetimeFalloff:
+  - 0
+  PierceAmount: 00000000
+  MinPierceDamage: 0
+  HasLifesteal: 0
+  LifestealAmount: 5
+  DecayDamage: 0
+  MaxDecayStacks: 0
+  DecayDelay: 0
+  DecayDuration: 0
+  SlowStrength: 0
+  SlowDuration: 0
+  WeakStrength: 0
+  WeakDuration: 0
+  ShockDamage: 0
+  MaxShockStacks: 0
+  ShockDelay: 0
+  ShockDuration: 0
+  ChainDelay: 0
+  ChainRange: 0
+  MaxChainCount: 0
+  BurnDamage: 0
+  MaxBurnStacks: 0
+  BurnDelay: 0
+  BurnDuration: 0
+  IgniteDelay: 0
+  IgniteSize: 0
+  IgniteChancePerStack: 0
