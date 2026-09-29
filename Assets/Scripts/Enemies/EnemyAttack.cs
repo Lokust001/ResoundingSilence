@@ -1,3 +1,9 @@
+/* Author: Dalsten Yan
+ * Contributors:
+ * Last Modified: 9/28/26
+ * Summary: Handles most of the player attacking logic for each type of enemy
+ * TODO: More as needed
+ */
 using System.Collections;
 using UnityEngine;
 using static BaseEnemyScriptable;
@@ -32,6 +38,9 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
         enemyMovement = GetComponentInParent<EnemyWalk>();
     }
 
+    /// <summary>
+    /// For each child trigger, make HandleVariousAttackTriggers a listener to handle the event
+    /// </summary>
     private void OnEnable()
     {
         foreach (var trigger in onTriggerEnterObjects) 
@@ -40,6 +49,9 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
         }
     }
 
+    /// <summary>
+    /// For each child trigger, remove HandleVariousAttackTriggers as a listener
+    /// </summary>
     private void OnDisable()
     {
         foreach (var trigger in onTriggerEnterObjects)
@@ -48,32 +60,24 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
         }
     }
 
+    /// <summary>
+    /// Makes the player take damage after running into the triggers
+    /// (can be changed in the future)
+    /// </summary>
+    /// <param name="other"></param>
     private void HandleVariousAttackTriggers(Collider other) 
     {
         var player = other.GetComponent<PlayerController>();
-        switch (enemyData.enemyType)
-        {
-            case EnemyType.None:
-                break;
-            case EnemyType.SingleShooter:
-                break;
-            case EnemyType.ConeShooter:
-                break;
-            case EnemyType.Melee:
-                player.TakeDamage();
-                break;
-            case EnemyType.ChargingMelee:
-                break;
-            case EnemyType.BuffEnemy:
-                break;
-            default:
-                break;
-        }
+        player.TakeDamage();
     }
 
+    /// <summary>
+    /// Stop seeking behavior if a player is found, and initiates attack
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
-        if (other.GetComponent<PlayerController>() != null) 
+        if (other.GetComponent<PlayerController>()) 
         {
             enemyMovement.EndPlayerSearch();
             inAttackRange = true;
@@ -83,17 +87,13 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
         }
     }
 
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.GetComponent<PlayerController>() != null)
-        {
-            inAttackRange = true;
-        }
-    }
-
+    /// <summary>
+    /// Mark that the player is no longer in attack range
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerExit(Collider other)
     {
-        if (other.GetComponent<PlayerController>() != null)
+        if (other.GetComponent<PlayerController>())
         {
             inAttackRange = false;
         }
@@ -233,9 +233,6 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
         //Get the parent of the attack indicator as it scales/extends the indicator
         Transform indicatorParentScaler = attackIndicatorArea.transform.parent;
 
-        //Retriever the innate/design-specified length of the chargeIndicator to influence the charging distance
-        //float chargeIndicatorZlength = indicatorRenderer.transform.localPosition.z;
-
         //Local cache variables for performance boost and code readability
         float countupTimer = 0;
         float goalTime = enemyData.attackChargeDuration;
@@ -276,6 +273,10 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
         activeATKorCooldown = StartCoroutine(AttackCooldownCoroutine());
     }
 
+    /// <summary>
+    /// Sets the AOE object to active for the spcified amount of time in enemyData, then turns it off
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator PerformMeleeAttack() 
     {
         yield return null;
@@ -293,6 +294,11 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
         attackProjectilePrefab.SetActive(false);
     }
 
+    /// <summary>
+    /// [unused for now]
+    /// </summary>
+    /// <param name="attackTravelDistance"></param>
+    /// <returns></returns>
     private IEnumerator PerformTravelingProjectileAttack(float attackTravelDistance) 
     {
         attackProjectilePrefab.SetActive(true);
@@ -323,7 +329,10 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
         attackProjectilePrefab.SetActive(false);
         meleeAtkTransform.localPosition = initialAOEOffsetPosition;
     }
-
+    /// <summary>
+    /// Helper method for ChargingEnemies, indicates if they are actively running down their charged attack
+    /// </summary>
+    /// <returns></returns>
     public bool IsEnemyCurrentlyCharging() 
     {
         return enemyCharging != null;

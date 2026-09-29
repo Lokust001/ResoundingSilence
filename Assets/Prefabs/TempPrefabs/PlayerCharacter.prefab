@@ -107,8 +107,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   moveSpeed: 15
   playerHealth: 5
+  playerDamage: 0
+  invincibilityLayerNamesToIgnore:
+  - Enemies
+  - EnemyProjectile
   invincibilityDuration: 5
-  knockbackDestinationAccuracyThreshold: 0.01
 --- !u!136 &2029719042621437843
 CapsuleCollider:
   m_ObjectHideFlags: 0

@@ -135,7 +135,9 @@ public class BaseEnemyScriptable : BaseScriptableObject
     public int allyReducedDmgPercent;
 
     #endregion
-
+    /// <summary>
+    /// Sets max health as a variable for various health-related functionality
+    /// </summary>
     private void Awake()
     {
         enemyMaxHealth = enemyHealth;
@@ -157,11 +159,19 @@ public class BaseEnemyScriptable : BaseScriptableObject
         return Mathf.RoundToInt(enemyHealth - truehealthValue);
     }
 
+    /// <summary>
+    /// Calculate the decimal multiplier of an ATK buff
+    /// </summary>
+    /// <returns></returns>
     public float GetATKIncreaseMultiplier() 
     {
         return (float)(allyATKIncreasePercent / PERCENTAGE_DIVISOR);
     }
 
+    /// <summary>
+    /// Calculate the decimal multiplier of DMG reduction buff
+    /// </summary>
+    /// <returns></returns>
     public float GetDMGReductionMultiplier() 
     {
         return (float)(allyReducedDmgPercent / PERCENTAGE_DIVISOR);

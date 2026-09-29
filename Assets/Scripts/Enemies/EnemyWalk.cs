@@ -1,3 +1,9 @@
+/* Author: Dalsten Yan
+ * Contributors:
+ * Last Modified: 9/28/26
+ * Summary: Script that simulates enemy movement, seeking, charing down, and retreating
+ * TODO: More as needed
+ */
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
@@ -15,6 +21,7 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver
     private EnemyBuff enemyBuff;
 
     Transform enemyTransform;
+    CapsuleCollider capsuleCollider;
 
     void Awake()
     {
@@ -22,15 +29,22 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver
         m_GameObject = FindAnyObjectByType<PlayerController>().gameObject;
         enemyAttack = GetComponentInChildren<EnemyAttack>();
         enemyBuff = GetComponentInChildren<EnemyBuff>();
+        capsuleCollider = GetComponent<CapsuleCollider>();
         enemyTransform = transform;
     }
 
+    /// <summary>
+    /// Start searching for the player by un-constraining the nav mesh agent and moving towards the player
+    /// </summary>
     public void StartPlayerSearch() 
     {
         m_Agent.isStopped = false;
         walkingCoroutine = StartCoroutine(MoveTowardsPlayer());
     }
 
+    /// <summary>
+    /// Stop searching for the player by constraining the nav mesh agent
+    /// </summary>
     public void EndPlayerSearch() 
     {
         m_Agent.isStopped = true;
@@ -42,6 +56,11 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver
         walkingCoroutine = null;
     }
 
+    /// <summary>
+    /// Given a distance, make the enemy charge towards the direction they were facing
+    /// </summary>
+    /// <param name="chargeDistance"></param>
+    /// <returns></returns>
     public IEnumerator ChargeTowardsLocation(float chargeDistance) 
     {
         Rigidbody rb = GetComponent<Rigidbody>();
@@ -76,11 +95,15 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver
         
     }
 
+    /// <summary>
+    /// If the enemy runs into the player it is currently running down the charge, make player take damage and knockback
+    /// </summary>
+    /// <param name="collision"></param>
     private void OnCollisionEnter(Collision collision)
     {
-
         if (collision.gameObject.TryGetComponent<PlayerController>(out PlayerController player))
         {
+            Debug.Log(Physics.GetIgnoreCollision(collision.collider, capsuleCollider));
             if (enemyAttack.IsEnemyCurrentlyCharging())
             {
                 Vector3 pushDirection = player.transform.position - transform.position;
@@ -89,14 +112,13 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver
 
                 player.TakeDamage((pushDirection, enemyData.playerHitKnockbackDuration));
             }
-            else 
-            {
-                player.TakeDamage();
-
-            }
         }
     }
 
+    /// <summary>
+    /// Move incrementally closer towards the player until this Coroutine is stopped
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator MoveTowardsPlayer() 
     {
         while (true) 
@@ -106,6 +128,10 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver
         }
     }
 
+    /// <summary>
+    /// Move away from the player by a specified distance over time
+    /// </summary>
+    /// <returns></returns>
     public IEnumerator MoveAwayFromPlayer() 
     {
         Transform playerTransform = FindAnyObjectByType<PlayerController>().transform;

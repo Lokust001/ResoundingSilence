@@ -1,12 +1,14 @@
-/* Author: Dalsten Yan
- * Creation Date 9/15/2026
- * 
- * PlayerController.cs enables the player character to move based on captured PlayerInput 
- */
-
-using UnityEngine;
-using Unity.Scripting;
+/*
+* Author: Dalsten Yan
+* Contributors:
+* Last Modified: 09/18/2026
+* Summary: Player input, stats, and damage are handled here
+* To Do:   Add more variables as needed.
+*/
 using System.Collections;
+using Unity.Scripting;
+using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField]
@@ -19,11 +21,17 @@ public class PlayerController : MonoBehaviour
     float playerDamage;
 
     [SerializeField]
+    string[] invincibilityLayerNamesToIgnore;
+
+    [SerializeField]
     float invincibilityDuration;
+
+    
     
 
     #region Private Variables
     Rigidbody rigidbody;
+    CapsuleCollider playerModelCollider;
     Vector3 playerVelocity;
 
     Coroutine dmgCoroutine;
@@ -48,6 +56,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
+        playerModelCollider = GetComponent<CapsuleCollider>();
 
         //Original movement speed is zero + start move coroutine
         PlayerInputEnded();
@@ -122,34 +131,59 @@ public class PlayerController : MonoBehaviour
         dmgCoroutine ??= StartCoroutine(PlayerInvincibilityFrames());
 
         //If there is knockback data and there is no knockback coroutine active 
-        if(knockbackInfo.HasValue)
+        if (knockbackInfo.HasValue)
             knockbackCoroutine ??= StartCoroutine(TakePlayerKnockback(knockbackInfo.Value));
     }
 
+    /// <summary>
+    /// Simulate the player not being able to take any damage visually
+    /// or collide with any enemies for a short time
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator PlayerInvincibilityFrames() 
     {
+        //Make the player intangible to collisions from specified layers
+        SetInvincibilityIntangible(true);
+
         Renderer playerRenderer = GetComponent<Renderer>();
         Color original = playerRenderer.material.color;
         playerRenderer.material.color = Color.red;
         float timer = 0;
+
         while (timer < invincibilityDuration) 
         {
             timer += Time.deltaTime;
             
             yield return null;
         }
+        SetInvincibilityIntangible(false);
 
         playerRenderer.material.color = original;
         dmgCoroutine = null;
     }
 
-    public IEnumerator TakePlayerKnockback((Vector3 knockbackDistance, float knockbackDuration) knockbackInfo) 
+    /// <summary>
+    /// Helper method that takes the layer name specified in invincibilityLayerNamesToIgnore 
+    /// and either toggles the collision on or off for those layers all at once
+    /// </summary>
+    /// <param name="value"></param>
+    private void SetInvincibilityIntangible(bool value) 
+    {
+        foreach (string layerName in invincibilityLayerNamesToIgnore) 
+        {
+            Physics.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer(layerName), value);
+        }
+    }
+
+    /// <summary>
+    /// Physics-based Coroutine to find the distance 
+    /// </summary>
+    /// <param name="knockbackInfo"></param>
+    /// <returns></returns>
+    public IEnumerator TakePlayerKnockback((Vector3 knockbackDistance, float knockbackDuration) knockbackInfo)
     {
         //Stop player input
         StopPlayerMovementAndInput();
-
-        //Disable gravity and the collider at once
-        rigidbody.useGravity = GetComponent<Collider>().enabled = false;
 
         //Retrieve a local copy of the player's transform
         Transform playerTransform = transform;
@@ -195,6 +229,7 @@ public class PlayerController : MonoBehaviour
         //The dynamic speed allows for the player to be initially fast, then slow down
         while (timer < timeLimit) 
         {
+
             //Tick FixedUpdate while we haven't reached duration yet
             //On the initial start of this loop, the time would be 0, so the player wouldn't move anywhere
             //To maintain as much precision as possible, wait first, and then move the player
@@ -222,8 +257,7 @@ public class PlayerController : MonoBehaviour
         //The final move for 100% accuracy
         rigidbody.MovePosition(knockbackDestination);
 
-        //Re-enable gravity and the collider
-        rigidbody.useGravity = GetComponent<Collider>().enabled = true;
+        //Let player move again
         RestartPlayerMovementAndInput();
         knockbackCoroutine = null;
     }

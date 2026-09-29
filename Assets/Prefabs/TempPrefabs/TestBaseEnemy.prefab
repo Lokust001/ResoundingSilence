@@ -48,7 +48,7 @@ GameObject:
   - component: {fileID: 1939381331358990405}
   - component: {fileID: 5338943625410773033}
   - component: {fileID: 428448680879319751}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: TestBaseEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -362,6 +362,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 346dc50688e608b41a085d2be4d07c42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyShoot
+  onTriggerEnterObjects: []
   attackProjectilePrefab: {fileID: 4365726781555918685, guid: 3e66196bf5b5c1840850f414ea65867e, type: 3}
   attackIndicatorArea: {fileID: 0}
 --- !u!135 &173922961431659772
