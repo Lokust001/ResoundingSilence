@@ -374,7 +374,7 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
                 break;
         }
 
-        //activePreview.SetActive(false);
+        activePreview.SetActive(false);
 
         base.CastingAbility();
     }
@@ -384,7 +384,9 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
     /// </summary>
     private IEnumerator CastingSplinterShot()
     {
-        splinterShotPlaced = true;
+        GameObject tempAbility = Instantiate(splinterShotPreview, splinterShotPreview.transform.position, Quaternion.identity);
+
+        //tempAbility.transform.SetParent(transform);
         int tickDamage = splinterShotDamage / splinterShotTotalDamageTicks;
         //Stores the remainder damage in case the damage doesn't divide evenly
         int remainderDamage = splinterShotDamage % splinterShotTotalDamageTicks;
@@ -394,8 +396,8 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
             {
                 tickDamage += remainderDamage;
             }
-            Collider[] enemiesToHit = Physics.OverlapCapsule(splinterShotPreview.transform.position + Vector3.up, splinterShotPreview.transform.position,
-                    splinterShotPreview.GetComponent<CapsuleCollider>().radius);
+            Collider[] enemiesToHit = Physics.OverlapCapsule(tempAbility.transform.position + Vector3.up, tempAbility.transform.position,
+                    tempAbility.GetComponent<CapsuleCollider>().radius);
 
             foreach(Collider enemyCollider in enemiesToHit)
             {
@@ -408,8 +410,7 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
             yield return new WaitForSeconds(splinterShotDuration / splinterShotTotalDamageTicks);
         }
 
-        splinterShotPreview.SetActive(false);
-        splinterShotPlaced = false;
+        Destroy(tempAbility);
     }
 
     /// <summary>
