@@ -165,6 +165,9 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
     {
         base.Start();
 
+        CastScatterShot();
+        CastStakeShot();
+
         activePreview = splinterShotPreview;
     }
 
@@ -291,7 +294,9 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
     /// </summary>
     private void CastSplinterShot()
     {
-        Debug.Log("Casting Splinter Shot");
+        float abilityRange = abilityOne == Abilities.SplinterShot ? abilityOneRange : abilityTwoRange;
+
+        splinterShotPreview.transform.position = Vector3.ClampMagnitude(mousePos, abilityRange);
     }
 
     /// <summary>
@@ -299,7 +304,9 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
     /// </summary>
     private void CastBombBlast()
     {
-        Debug.Log("Casting Bomb Blast");
+        float abilityRange = abilityOne == Abilities.BombBlast ? abilityOneRange : abilityTwoRange;
+
+        bombBlastPreview.transform.position = Vector3.ClampMagnitude(mousePos, abilityRange);
     }
 
     /// <summary>
@@ -307,7 +314,14 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
     /// </summary>
     private void CastScatterShot()
     {
-        Debug.Log("Casting Scatter Shot");
+        float abilityRange = abilityOne == Abilities.ScatterShot ? abilityOneRange : abilityTwoRange;
+
+        Vector3 pos = scatterShotPreview.transform.position;
+        pos.z = transform.position.z + ((abilityRange / 2) * 1.25f);
+        scatterShotPreview.transform.position = pos;
+
+        scatterShotPreview.transform.localScale = new Vector3(scatterShotCone, 
+            abilityRange, scatterShotPreview.transform.localScale.z);
     }
 
     /// <summary>
@@ -315,7 +329,14 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
     /// </summary>
     private void CastStakeShot()
     {
-        Debug.Log("Casting Stake Shot");
+        float abilityRange = abilityOne == Abilities.StakeShot ? abilityOneRange : abilityTwoRange;
+
+        Vector3 pos = stakeShotPreview.transform.position;
+        pos.z = transform.position.z + abilityRange / 2;
+        stakeShotPreview.transform.position = pos;
+
+        stakeShotPreview.transform.localScale = new Vector3(stakeShotPreview.transform.localScale.x, 
+            stakeShotPreview.transform.localScale.y, abilityRange);
     }
 
     /// <summary>
@@ -325,9 +346,14 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
     {
         base.FixedUpdate();
 
-        splinterShotPreview.transform.position = mousePos;
-        bombBlastPreview.transform.position = mousePos;
-        scatterShotPreview.transform.position = mousePos;
-        stakeShotPreview.transform.position = mousePos;
+        Vector3 lookDir = mousePos - transform.position;
+        Quaternion rot = Quaternion.RotateTowards(transform.rotation,
+            Quaternion.LookRotation(lookDir), 20f);
+        rot.x = 0;
+        rot.z = 0;
+        transform.rotation = rot;
+
+        CastSplinterShot();
+        CastBombBlast();
     }
 }

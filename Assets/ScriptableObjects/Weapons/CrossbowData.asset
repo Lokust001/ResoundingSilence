@@ -13,17 +13,26 @@ MonoBehaviour:
   m_Name: CrossbowData
   m_EditorClassIdentifier: Assembly-CSharp::BaseWeaponScriptable
   weaponType: 1
-  shownSettings: 3
+  shownSettings: 2
   effectType: 0
+  upgradeGrid:
+    NumberOfGlyphRange: {x: 0, y: 0}
+    attachedWeapon: {fileID: 0}
+    height: 0
+    width: 0
+    rows: []
   WeaponName: 
-  WeaponDamage: 0a000000
-  AttackCooldown:
-  - 0.2
+  WeaponDamage: 
+  BaseWeaponDamage: 0a000000
+  AttackCooldown: []
+  BaseAttackCooldown:
+  - 0.5
   ProjectileSpeed:
   - 5
   ProjectileLifetime:
   - 2
-  MovementSlowdown: []
+  MovementSlowdown:
+  - 0
   HasPierce: 0
   PierceDamageFalloff:
   - 20
