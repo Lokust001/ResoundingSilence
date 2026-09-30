@@ -50,6 +50,9 @@ public class AppManager : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// Spawns everything in after awake
+    /// </summary>
     private void Start()
     {
         //lets everything know that everything is spawned in

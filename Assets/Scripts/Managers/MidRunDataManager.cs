@@ -103,6 +103,11 @@ public class MidRunDataManager : BaseManager
         return pinInventory.Count - 1;
     }
 
+    /// <summary>
+    /// Equips a given weapon in a specific slot
+    /// </summary>
+    /// <param name="slot"></param>
+    /// <param name="weapon"></param>
     public void EquipWeaponInSlot(int slot, BaseWeaponScriptable weapon)
     {
         if (slot < 0 || slot >= equippedWeapons.Count)
@@ -113,6 +118,11 @@ public class MidRunDataManager : BaseManager
         equippedWeapons[slot] = weapon;
     }
 
+    /// <summary>
+    /// Unequips a given weapon in a specific slot
+    /// </summary>
+    /// <param name="slot"></param>
+    /// <returns></returns>
     public BaseWeaponScriptable UnequipWeapon(int slot)
     {
         if (slot < 0 || slot >= equippedWeapons.Count)
@@ -125,6 +135,9 @@ public class MidRunDataManager : BaseManager
         return temp;
     }
 
+    /// <summary>
+    /// unequips every weapon
+    /// </summary>
     public void UnequipAllWeapons()
     {
         equippedWeapons.Clear();
