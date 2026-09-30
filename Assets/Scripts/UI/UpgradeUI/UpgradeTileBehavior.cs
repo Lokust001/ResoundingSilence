@@ -64,6 +64,9 @@ public class UpgradeTileBehavior : PinHolderSlot
 
             //temporary
             GetComponent<Image>().enabled = false;
+            
+            GetComponent<Image>().color = Color.white;
+
             data = null;
             return;
         }
@@ -78,6 +81,11 @@ public class UpgradeTileBehavior : PinHolderSlot
         adjacentTiles = new UpgradeTileBehavior[8];
 
         GetComponent<Image>().enabled = isActive;
+
+        if (data.glyph != null)
+        {
+            GetComponent<Image>().color = data.glyph.glyphColor;
+        }
     }
 
     #endregion
