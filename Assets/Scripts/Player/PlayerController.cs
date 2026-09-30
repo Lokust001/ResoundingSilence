@@ -1,7 +1,7 @@
 /*
 * Author: Dalsten Yan
-* Contributors:
-* Last Modified: 09/18/2026
+* Contributors: Brad Dixon
+* Last Modified: 09/30/2026
 * Summary: Player input, stats, and damage are handled here
 * To Do:   Add more variables as needed.
 */
@@ -25,9 +25,6 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     float invincibilityDuration;
-
-    
-    
 
     #region Private Variables
     Rigidbody rigidbody;
@@ -80,8 +77,16 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     void PlayerInputEnded() 
     {
-        rigidbody.linearVelocity = Vector3.zero;
-        playerVelocity = Vector3.zero;
+        playerVelocity.x = 0;
+        playerVelocity.z = 0;
+    }
+
+    /// <summary>
+    /// Moves the player
+    /// </summary>
+    private void FixedUpdate()
+    {
+        rigidbody.linearVelocity = new Vector3(playerVelocity.x, rigidbody.linearVelocity.y, playerVelocity.z);
     }
 
     /// <summary>
@@ -114,7 +119,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     public void RestartPlayerMovementAndInput() 
     {
-        playerMovementCoroutine = StartCoroutine(MovePlayerCoroutine());
+        //playerMovementCoroutine = StartCoroutine(MovePlayerCoroutine());
     }
 
     /// <summary>
