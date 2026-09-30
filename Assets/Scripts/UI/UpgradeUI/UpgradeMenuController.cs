@@ -65,6 +65,9 @@ public class UpgradeMenuController : MenuBase
     [ShowIf(nameof(settings), ShownSettings.References)]
     private Transform pinsOnOtherGridsParent;
 
+    [SerializeField]
+    private Button swapGridsButton;
+
     #endregion
 
     #region testing
@@ -77,6 +80,10 @@ public class UpgradeMenuController : MenuBase
     [SerializeField]
     [ShowIf(nameof(settings), ShownSettings.Testing)]
     private List<UpgradeTileGrid> testingGrids;
+
+    [SerializeField]
+    [ShowIf(nameof(settings), ShownSettings.Testing)]
+    private bool DisableSwappingGrid;
 
     #endregion
 
@@ -117,8 +124,17 @@ public class UpgradeMenuController : MenuBase
     {
         base.OpenMenu();
         PopulateInventory();
-        OpenGrid(testingGrids[0]);
-        
+
+        if (MidRunDataManager.Instance.equippedWeapons.All(x => x == null))
+        {
+            OpenGrid(testingGrids[0]);
+        }
+        else
+        {
+            OpenGrid(MidRunDataManager.Instance.equippedWeapons.First(x => x != null).upgradeGrid);
+        }
+
+        swapGridsButton.interactable = !DisableSwappingGrid;
     }
 
     /// <summary>

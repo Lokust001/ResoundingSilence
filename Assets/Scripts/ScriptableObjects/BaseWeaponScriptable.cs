@@ -57,7 +57,7 @@ public class BaseWeaponScriptable : BaseScriptableObject
 
     [SerializeField]
     [Tooltip("This is the grid that will be attached to this kind of weapon when it is made")]
-    private UpgradeTileGrid upgradeGrid;
+    public UpgradeTileGrid upgradeGrid;
 
     #endregion
 
