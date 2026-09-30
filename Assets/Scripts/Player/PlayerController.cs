@@ -1,12 +1,14 @@
-/* Author: Dalsten Yan
- * Creation Date 9/15/2026
- * 
- * PlayerController.cs enables the player character to move based on captured PlayerInput 
- */
-
-using UnityEngine;
-using Unity.Scripting;
+/*
+* Author: Dalsten Yan
+* Contributors:
+* Last Modified: 09/18/2026
+* Summary: Player input, stats, and damage are handled here
+* To Do:   Add more variables as needed.
+*/
 using System.Collections;
+using Unity.Scripting;
+using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField]
@@ -15,9 +17,25 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     float playerHealth;
 
+    [SerializeField]
+    float playerDamage;
+
+    [SerializeField]
+    string[] invincibilityLayerNamesToIgnore;
+
+    [SerializeField]
+    float invincibilityDuration;
+
+    
+    
+
     #region Private Variables
     Rigidbody rigidbody;
+    CapsuleCollider playerModelCollider;
     Vector3 playerVelocity;
+
+    Coroutine dmgCoroutine;
+    Coroutine knockbackCoroutine;
 
     Coroutine playerMovementCoroutine;
     #endregion
@@ -38,6 +56,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
+        playerModelCollider = GetComponent<CapsuleCollider>();
 
         //Original movement speed is zero + start move coroutine
         PlayerInputEnded();
@@ -86,7 +105,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     public void StopPlayerMovementAndInput() 
     {
-        StopCoroutine(MovePlayerCoroutine());
+        StopCoroutine(playerMovementCoroutine);
         PlayerInputEnded();
     }
 
@@ -96,5 +115,150 @@ public class PlayerController : MonoBehaviour
     public void RestartPlayerMovementAndInput() 
     {
         playerMovementCoroutine = StartCoroutine(MovePlayerCoroutine());
+    }
+
+    /// <summary>
+    /// Lets the player take damage, with optional/nullable knockbackInfo
+    /// </summary>
+    /// <param name="knockbackInfo"></param>
+    public void TakeDamage((Vector3 knockbackDistance, float kbDuration)? knockbackInfo = null)
+    {
+        //If the player is already damaged/invicible at the moment
+        if (dmgCoroutine != null)
+            return;
+
+        //Start a damage/invincibility couroutine
+        dmgCoroutine ??= StartCoroutine(PlayerInvincibilityFrames());
+
+        //If there is knockback data and there is no knockback coroutine active 
+        if (knockbackInfo.HasValue)
+            knockbackCoroutine ??= StartCoroutine(TakePlayerKnockback(knockbackInfo.Value));
+    }
+
+    /// <summary>
+    /// Simulate the player not being able to take any damage visually
+    /// or collide with any enemies for a short time
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator PlayerInvincibilityFrames() 
+    {
+        //Make the player intangible to collisions from specified layers
+        SetInvincibilityIntangible(true);
+
+        Renderer playerRenderer = GetComponent<Renderer>();
+        Color original = playerRenderer.material.color;
+        playerRenderer.material.color = Color.red;
+        float timer = 0;
+
+        while (timer < invincibilityDuration) 
+        {
+            timer += Time.deltaTime;
+            
+            yield return null;
+        }
+        SetInvincibilityIntangible(false);
+
+        playerRenderer.material.color = original;
+        dmgCoroutine = null;
+    }
+
+    /// <summary>
+    /// Helper method that takes the layer name specified in invincibilityLayerNamesToIgnore 
+    /// and either toggles the collision on or off for those layers all at once
+    /// </summary>
+    /// <param name="value"></param>
+    private void SetInvincibilityIntangible(bool value) 
+    {
+        foreach (string layerName in invincibilityLayerNamesToIgnore) 
+        {
+            Physics.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer(layerName), value);
+        }
+    }
+
+    /// <summary>
+    /// Physics-based Coroutine to find the distance 
+    /// </summary>
+    /// <param name="knockbackInfo"></param>
+    /// <returns></returns>
+    public IEnumerator TakePlayerKnockback((Vector3 knockbackDistance, float knockbackDuration) knockbackInfo)
+    {
+        //Stop player input
+        StopPlayerMovementAndInput();
+
+        //Retrieve a local copy of the player's transform
+        Transform playerTransform = transform;
+
+        //Calculate the knockback destination, which is the player's current position plus its calculated offset after knockback
+        Vector3 knockbackDestination = playerTransform.position + knockbackInfo.knockbackDistance;
+
+        //Total distance between the player and the destination of the knockback
+        float maxDistance = Vector3.Distance(playerTransform.position, knockbackDestination);
+
+        //Tracker for remaining distance between player and knockback position
+        float distance = maxDistance;
+
+        //Count-up timer
+        float timer = 0;
+        //Timer goal and while loop break condition
+        float timeLimit = knockbackInfo.knockbackDuration;
+
+        /*                  - Physics Note -
+         * Speed is calculated through Distance divided by Time
+         *      We already possess Distance (maxDistance)
+         *      We also possess Time (timeLimit)
+         *      
+         *  As a result, we can calculate both the linearUniformKnockbackSpeed
+         *  & also the dynamicKnockbackSpeed
+         */
+
+        
+        //The constant speed that would allow the player to move to knockbackDestination linearly
+        float linearUniformKnockbackSpeed = maxDistance / timeLimit;
+
+        //Cached fixedUpdate interval
+        float fixedUpdateTick = Time.fixedDeltaTime;
+
+        //The minimum speed to LERP to over time T
+        float minimumKnockbackSpeed = linearUniformKnockbackSpeed * fixedUpdateTick;
+
+        //The maximum speed the will initially be applied to the player
+        float maximumKnockbackSpeed = 2 * linearUniformKnockbackSpeed;
+
+        //For the duration of knockback,
+        //Incrementally move the player towards the destination distance while dynamically calculating its speed on every FixedUpdate tick
+        //The dynamic speed allows for the player to be initially fast, then slow down
+        while (timer < timeLimit) 
+        {
+
+            //Tick FixedUpdate while we haven't reached duration yet
+            //On the initial start of this loop, the time would be 0, so the player wouldn't move anywhere
+            //To maintain as much precision as possible, wait first, and then move the player
+            yield return new WaitForFixedUpdate();
+
+            timer += fixedUpdateTick;
+            //0 to 1
+            float timerT = timer / timeLimit;
+            
+            //Calculate new distance and time-dependent knockback force
+            distance = Vector3.Distance(playerTransform.position, knockbackDestination);
+
+            //Its just this line that needs work
+            float dynamicDeltaSpeed = Mathf.Lerp(maximumKnockbackSpeed, minimumKnockbackSpeed, timerT);
+
+            //Calculate and move towards the knockback position
+            Vector3 knockbackDelta = Vector3.MoveTowards(playerTransform.position, knockbackDestination, dynamicDeltaSpeed * fixedUpdateTick);
+            rigidbody.MovePosition(knockbackDelta);
+
+
+            Debug.Log("\tDistance: " + distance + " \tSpeed: " + dynamicDeltaSpeed + " \tTime: " + timer);
+
+        }
+        
+        //The final move for 100% accuracy
+        rigidbody.MovePosition(knockbackDestination);
+
+        //Let player move again
+        RestartPlayerMovementAndInput();
+        knockbackCoroutine = null;
     }
 }
