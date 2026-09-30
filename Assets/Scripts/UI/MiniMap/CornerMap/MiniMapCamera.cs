@@ -61,7 +61,11 @@ public class MiniMapCamera : MonoBehaviour
     private void OnDisable()
     {
         shouldBeFollowingPlayer = false;
-        StopCoroutine(followingPlayerCoroutine);
+        if (followingPlayerCoroutine != null)
+        {
+            StopCoroutine(followingPlayerCoroutine);
+        }
+        
     }
 
     /// <summary>

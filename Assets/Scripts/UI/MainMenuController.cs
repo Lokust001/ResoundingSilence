@@ -73,5 +73,12 @@ public class MainMenuController : MenuBase
         UIPublicEvents.UpdateUIManagerStack?.Invoke(UiMenuType.UpgradeMenu);
     }
 
+    /// <summary>
+    /// swaps over to the player hud
+    /// </summary>
+    public void EnablePlayerHUD()
+    {
+        UIPublicEvents.UpdateUIManagerStack?.Invoke(UiMenuType.PlayerHUD);
+    }
     #endregion
 }
