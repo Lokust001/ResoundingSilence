@@ -26,4 +26,8 @@ public static class InputPublicEvents
     public static Action AbilityOnePressed;
 
     public static Action AbilityTwoPressed;
+
+    public static Action DashPressed;
+
+    public static Action ToggleUpgradeMenuPressed;
 }

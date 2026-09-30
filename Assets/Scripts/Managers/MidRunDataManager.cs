@@ -19,6 +19,8 @@ public class MidRunDataManager : BaseManager
 
     public List<PinScriptable> pinInventory { get; private set; } = new();
 
+    public List<BaseWeaponScriptable> equippedWeapons { get; private set; } = new(2);
+
     [SerializeField]
     private bool EnableTestingMode;
 
@@ -50,6 +52,8 @@ public class MidRunDataManager : BaseManager
                 pinInventory.Add(pin.CreateNonRefCopy<PinScriptable>());
             }
         }
+
+        UnequipAllWeapons();
     }
 
     /// <summary>
@@ -97,5 +101,34 @@ public class MidRunDataManager : BaseManager
     {
         pinInventory.Add(pin);
         return pinInventory.Count - 1;
+    }
+
+    public void EquipWeaponInSlot(int slot, BaseWeaponScriptable weapon)
+    {
+        if (slot < 0 || slot >= equippedWeapons.Count)
+        {
+            return;
+        }
+
+        equippedWeapons[slot] = weapon;
+    }
+
+    public BaseWeaponScriptable UnequipWeapon(int slot)
+    {
+        if (slot < 0 || slot >= equippedWeapons.Count)
+        {
+            return null;
+        }
+
+        BaseWeaponScriptable temp = equippedWeapons[slot];
+        equippedWeapons[slot] = null;
+        return temp;
+    }
+
+    public void UnequipAllWeapons()
+    {
+        equippedWeapons.Clear();
+        equippedWeapons.Add(null);
+        equippedWeapons.Add(null);
     }
 }
