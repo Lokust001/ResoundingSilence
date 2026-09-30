@@ -269,6 +269,7 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
         //Pass the Charging behavior towards enemyMovement to handle the sudden burst of movement
         enemyCharging = StartCoroutine(queuedMeleeAttack);
         yield return enemyCharging;
+        enemyCharging = null;
 
         inAttackRange = false;
 
