@@ -47,6 +47,14 @@ public class AppManager : MonoBehaviour
             throw new System.Exception("Failed to initialize");
         }
 
+        
+    }
+
+    /// <summary>
+    /// Spawns everything in after awake
+    /// </summary>
+    private void Start()
+    {
         //lets everything know that everything is spawned in
         GenericPublicEvents.AllManagersInitialized?.Invoke();
     }

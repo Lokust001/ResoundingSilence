@@ -21,6 +21,7 @@ public class MainMenuController : MenuBase
     public void StartGame()
     {
         GenericPublicEvents.StartGamePressed?.Invoke();
+        UIPublicEvents.UpdateUIManagerStack?.Invoke(UiMenuType.PlayerHUD);
     }
 
     /// <summary>

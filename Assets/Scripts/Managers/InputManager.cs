@@ -32,6 +32,10 @@ public class InputManager : BaseManager
 
     private InputAction interact;
 
+    private InputAction dash;
+
+    private InputAction toggleUpgradeMenu;
+
     #endregion
 
     #region Setup
@@ -73,6 +77,8 @@ public class InputManager : BaseManager
         aim = pInput.currentActionMap.FindAction("Aim");
         abilityOne = pInput.currentActionMap.FindAction("AbilityOne");
         abilityTwo = pInput.currentActionMap.FindAction("AbilityTwo");
+        dash = pInput.currentActionMap.FindAction("Dash");
+        toggleUpgradeMenu = pInput.currentActionMap.FindAction("ToggleUpgradeMenu");
 
         //sets up the individual input actions
         move.performed += Move_performed;
@@ -90,8 +96,14 @@ public class InputManager : BaseManager
 
         abilityTwo.started += AbilityTwo_started;
 
+        dash.started += Dash_started;
+
+        toggleUpgradeMenu.started += ToggleUpgradeMenu_started;
+
         await Task.CompletedTask;
     }
+
+    
 
     #endregion
 
@@ -178,6 +190,24 @@ public class InputManager : BaseManager
     private void AbilityTwo_started(InputAction.CallbackContext obj)
     {
         InputPublicEvents.AbilityTwoPressed?.Invoke();
+    }
+
+    /// <summary>
+    /// Calls the public event for toggling the upgrade menu
+    /// </summary>
+    /// <param name="obj"></param>
+    private void ToggleUpgradeMenu_started(InputAction.CallbackContext obj)
+    {
+        InputPublicEvents.ToggleUpgradeMenuPressed?.Invoke();
+    }
+
+    /// <summary>
+    /// Calls the public event for dash
+    /// </summary>
+    /// <param name="obj"></param>
+    private void Dash_started(InputAction.CallbackContext obj)
+    {
+        InputPublicEvents.DashPressed?.Invoke();
     }
 
     #endregion
