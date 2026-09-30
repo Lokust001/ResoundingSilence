@@ -270,5 +270,6 @@ public enum UiMenuType
 {
     None,
     MainMenu,
-    UpgradeMenu
+    UpgradeMenu,
+    PlayerHUD
 }
