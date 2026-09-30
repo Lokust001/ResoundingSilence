@@ -1,7 +1,7 @@
 /******************************************************************************
  * Author: Brad Dixon
  * Contributors:
- * Last Modified: 9/23/2026
+ * Last Modified: 9/29/2026
  * Brief: Weapon architecture that all weapons inherit
  * TODO:
  * ***************************************************************************/
@@ -260,5 +260,15 @@ public class BaseWeaponBehaviour : MonoBehaviour
         {
             abilityTwoReady = true;
         }
+    }
+
+    /// <summary>
+    /// Converts the inspector variable to it's percentage value if it isn't already a percent
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    protected float ConvertToPercentage(float value)
+    {
+        return value >= 1 ? value / 100 : value;
     }
 }

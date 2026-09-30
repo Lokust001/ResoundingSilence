@@ -96,6 +96,10 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
     #region Scatter Shot Variables
 
     [ShowIf(nameof(ViewingScatterShot))]
+    [Tooltip("How much damage scatter shot does.")]
+    [SerializeField] int scatterShotDamage;
+
+    [ShowIf(nameof(ViewingScatterShot))]
     [Tooltip("The angle at which the scatter shot will spread.")]
     [SerializeField] float scatterShotCone;
 
@@ -107,21 +111,25 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
     [Tooltip("The preview so the player can see how their ability will look.")]
     [SerializeField] GameObject scatterShotPreview;
 
+    [ShowIf(nameof(ViewingScatterShot))]
+    [Tooltip("Which types of layers should be checked to hit with scatter shot.")]
+    [SerializeField] LayerMask scatterShotLayerMask;
+
     #endregion
 
     #region Stake Shot Variables
 
     [ShowIf(nameof(ViewingStakeShot))]
-    [Tooltip("How much percent damage the stake shot does per tick.")]
-    [SerializeField] float stakeShotDOTPercentage;
+    [Tooltip("How much total damage the stake shot will do.")]
+    [SerializeField] int stakeShotDamage;
 
     [ShowIf(nameof(ViewingStakeShot))]
     [Tooltip("How much the stake shot DOT life steals for.")]
     [SerializeField] float stakeShotLifeStealAmount;
 
     [ShowIf(nameof(ViewingStakeShot))]
-    [Tooltip("How much time must elapse between ticks of damage.")]
-    [SerializeField] float stakeShotDOTTickDelay;
+    [Tooltip("How many ticks of damage the stake shot does.")]
+    [SerializeField] int stakeShotTickCount;
 
     [ShowIf(nameof(ViewingStakeShot))]
     [Tooltip("How long the DOT effects lasts.")]
@@ -359,8 +367,6 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
     /// </summary>
     protected override void CastingAbility()
     {
-        Collider[] enemies = new Collider[0];
-
         switch (aimingAbilityOne == true ? abilityOne : abilityTwo)
         {
             case Abilities.SplinterShot:
@@ -373,8 +379,7 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
                 CastingScatterShot();
                 break;
             case Abilities.StakeShot:
-                enemies = Physics.OverlapBox(activePreview.GetComponent<BoxCollider>().bounds.center,
-                    activePreview.GetComponent<BoxCollider>().bounds.extents);
+                StartCoroutine(CastingStakeShot());
                 break;
         }
 
@@ -451,14 +456,49 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
     /// </summary>
     private void CastingScatterShot()
     {
+        Collider[] enemiesHit = Physics.OverlapBox(activePreview.GetComponent<BoxCollider>().bounds.center,
+                    activePreview.GetComponent<BoxCollider>().bounds.extents, Quaternion.identity, scatterShotLayerMask);
 
+        foreach(Collider enemyCollider in enemiesHit)
+        {
+            if(enemyCollider.GetComponent<DummyBehaviour>())
+            {
+                Debug.Log(enemyCollider.name + " took " + scatterShotDamage + " damage!");
+
+                int healValue = Mathf.CeilToInt(scatterShotDamage * ConvertToPercentage(scatterShotLifeSteal));
+
+                Debug.Log("I healed for " + healValue + " health!");
+            }
+        }
     }
 
     /// <summary>
     /// How the stake shot ability interacts with the enemies
     /// </summary>
-    private void CastingStakeShot()
+    private IEnumerator CastingStakeShot()
     {
+        Collider[] enemiesHit = Physics.OverlapBox(activePreview.GetComponent<BoxCollider>().bounds.center,
+                    activePreview.GetComponent<BoxCollider>().bounds.extents, Quaternion.identity, scatterShotLayerMask);
 
+        int tickDamage = stakeShotDamage / stakeShotTickCount;
+        //Stores the remainder damage in case the damage doesn't divide evenly
+        int remainderDamage = stakeShotDamage % stakeShotTickCount;
+
+        for (int i = 0; i < stakeShotTickCount; ++i)
+        {
+            foreach (Collider enemyCollider in enemiesHit)
+            {
+                if (enemyCollider.GetComponent<DummyBehaviour>())
+                {
+                    Debug.Log(enemyCollider.name + " took " + tickDamage + " damage!");
+
+                    int healValue = Mathf.CeilToInt(tickDamage * ConvertToPercentage(scatterShotLifeSteal));
+
+                    Debug.Log("I healed for " + healValue + " health!");
+                }
+            }
+
+            yield return new WaitForSeconds(stakeShotDOTDuration / stakeShotTickCount);
+        }
     }
 }

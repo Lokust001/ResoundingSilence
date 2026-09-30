@@ -182,8 +182,8 @@ MonoBehaviour:
   abilityTwoRange: 6
   weaponProjectile: {fileID: 8805286060830696359, guid: f4083c9721c5aa04280c3f4b179ddf88, type: 3}
   weaponModel: {fileID: 1230388968}
-  abilityOne: 0
-  abilityTwo: 1
+  abilityOne: 2
+  abilityTwo: 3
   splinterShotDamage: 13
   splinterShotAOESize: 3
   splinterShotTotalDamageTicks: 5
@@ -201,13 +201,17 @@ MonoBehaviour:
   bombBlastLayerMask:
     serializedVersion: 2
     m_Bits: 65
+  scatterShotDamage: 5
   scatterShotCone: 2
-  scatterShotLifeSteal: 0
+  scatterShotLifeSteal: 10
   scatterShotPreview: {fileID: 186540368}
-  stakeShotDOTPercentage: 0
-  stakeShotLifeStealAmount: 0
-  stakeShotDOTTickDelay: 0
-  stakeShotDOTDuration: 0
+  scatterShotLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  stakeShotDamage: 20
+  stakeShotLifeStealAmount: 100
+  stakeShotTickCount: 10
+  stakeShotDOTDuration: 3
   stakeShotPreview: {fileID: 885950844}
 --- !u!1 &186540368
 GameObject:

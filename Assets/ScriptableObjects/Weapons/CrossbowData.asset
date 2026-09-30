@@ -22,9 +22,10 @@ MonoBehaviour:
     width: 0
     rows: []
   WeaponName: 
-  WeaponDamage: 
+  WeaponDamage: 0a000000
   BaseWeaponDamage: 0a000000
-  AttackCooldown: []
+  AttackCooldown:
+  - 0.5
   BaseAttackCooldown:
   - 0.5
   ProjectileSpeed:
@@ -40,7 +41,7 @@ MonoBehaviour:
   - 0
   PierceAmount: 00000000
   MinPierceDamage: 0
-  HasLifesteal: 0
+  HasLifesteal: 1
   LifestealAmount: 5
   DecayDamage: 0
   MaxDecayStacks: 0
