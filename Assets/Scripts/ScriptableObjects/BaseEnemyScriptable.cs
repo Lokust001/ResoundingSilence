@@ -19,11 +19,18 @@ public class BaseEnemyScriptable : BaseScriptableObject
         ChargingMelee,
         BuffEnemy
     }
-
+    /// <summary>
+    /// Checks if this enemy needs to show/display shooter variables
+    /// </summary>
+    /// <returns></returns>
     private bool isShooter()
     {
         return enemyType == EnemyType.SingleShooter || enemyType == EnemyType.ConeShooter;
     }
+    /// <summary>
+    /// Checks if this enemy needs to show/display melee variables
+    /// </summary>
+    /// <returns></returns>
     private bool isMelee()
     {
         return enemyType == EnemyType.Melee || enemyType == EnemyType.ChargingMelee;

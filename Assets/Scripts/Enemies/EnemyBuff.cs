@@ -23,6 +23,9 @@ public class EnemyBuff : MonoBehaviour, IEntityDataReceiver
 
     private Coroutine interruptableCharge;
 
+    /// <summary>
+    /// Grabs necessary components and instantiates a new List
+    /// </summary>
     private void Awake()
     {
         buffedEnemies = new List<Enemy>();
@@ -123,6 +126,10 @@ public class EnemyBuff : MonoBehaviour, IEntityDataReceiver
         }
     }
 
+    /// <summary>
+    /// Casts the scriptable object into a BaseEnemyScriptable and assigns the data of the enemy to this script
+    /// </summary>
+    /// <param name="baseScriptable"></param>
     public void SetEntityData(BaseScriptableObject baseScriptable)
     {
         enemyData = (BaseEnemyScriptable)baseScriptable;

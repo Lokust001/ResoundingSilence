@@ -23,6 +23,9 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver
     Transform enemyTransform;
     CapsuleCollider capsuleCollider;
 
+    /// <summary>
+    /// Grabs necessary components and assigns enemyTransform to transform component
+    /// </summary>
     void Awake()
     {
         m_Agent = GetComponent<NavMeshAgent>();
@@ -153,6 +156,10 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver
         
     }
 
+    /// <summary>
+    /// Casts the scriptable object into a BaseEnemyScriptable and assigns the data of the enemy to this script
+    /// </summary>
+    /// <param name="baseScriptable"></param>
     public void SetEntityData(BaseScriptableObject baseScriptable)
     {
         enemyData = (BaseEnemyScriptable)baseScriptable;

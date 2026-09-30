@@ -32,6 +32,9 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
     private bool inAttackRange;
 
     private BaseEnemyScriptable enemyData;
+    /// <summary>
+    /// Grabs the sphere collider for the search radius and enemy movement script
+    /// </summary>
     void Awake()
     {
         sphereTrigger = GetComponent<SphereCollider>();
@@ -295,7 +298,7 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
     }
 
     /// <summary>
-    /// [unused for now]
+    /// Attack method that activates and pushes an object attached to the enemy a short distance forward over time
     /// </summary>
     /// <param name="attackTravelDistance"></param>
     /// <returns></returns>
@@ -338,7 +341,10 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
         return enemyCharging != null;
     }
 
-
+    /// <summary>
+    /// Casts the scriptable object into a BaseEnemyScriptable and assigns the data of the enemy to this script
+    /// </summary>
+    /// <param name="baseScriptable"></param>
     public void SetEntityData(BaseScriptableObject baseScriptable)
     {
         enemyData = (BaseEnemyScriptable)baseScriptable;
