@@ -6,9 +6,16 @@
  * TODO: Delete this once the crossbow is hooked up to the player. 
  *       PlayerController was checked out at the time of making this.
  * ***************************************************************************/
+using TMPro;
 using UnityEngine;
 
 public class DummyPlayerBehaviour : MonoBehaviour
 {
+    [SerializeField]
+    private TMP_Text healthText;
 
+    public void Heal(float healthToHeal)
+    {
+        healthText.text = $"Healed for <color=green>{healthToHeal}</color>";
+    }
 }

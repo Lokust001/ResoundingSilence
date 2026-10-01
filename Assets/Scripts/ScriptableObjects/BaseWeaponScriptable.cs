@@ -130,7 +130,10 @@ public class BaseWeaponScriptable : BaseScriptableObject
 
     [ShowIf(nameof(WeaponLifeSteal))]
     [Tooltip("How much lifesteal a weapon has.")]
-    public float LifestealAmount;
+    public float BaseLifestealAmount;
+
+    [HideInInspector]
+    public float lifestealAmount;
 
     #endregion
 
@@ -323,6 +326,7 @@ public class BaseWeaponScriptable : BaseScriptableObject
     {
         WeaponDamage = BaseWeaponDamage.ToList();
         AttackCooldown = BaseAttackCooldown.ToList();
+        lifestealAmount = BaseLifestealAmount;
         upgradeGrid.attachedWeapon = this;
     }
 
@@ -348,5 +352,10 @@ public class BaseWeaponScriptable : BaseScriptableObject
         {
             AttackCooldown[i] = BaseAttackCooldown[i] * SpeedBoost;
         }
+    }
+
+    public void updateLifestealPercent(float lifestealPercent)
+    {
+        lifestealAmount = BaseLifestealAmount * lifestealPercent;
     }
 }
