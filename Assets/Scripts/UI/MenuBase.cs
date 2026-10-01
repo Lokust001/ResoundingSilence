@@ -19,21 +19,33 @@ public class MenuBase : MonoBehaviour
     public virtual void InitMenu()
     {
         UIPublicEvents.HideOpenMenus += CloseMenu;
-        UIPublicEvents.NewMenuOpened += OpenMenu;
+        UIPublicEvents.NewMenuOpened += AttemptToOpenMenu;
     }
 
     /// <summary>
     /// Mostly empty function that exists to be overwritten with actual functionality dependant on the menu.
     /// Contains error checks. Designed to be at the top of the overridden function, not the bottom.
     /// </summary>
-    protected virtual void OpenMenu()
+    protected virtual void MenuOpenedSucessfully()
     {
-        if (UIManager.Instance.GetCurrentMenu() != menuType) {
+        
+    }
+
+    private void AttemptToOpenMenu()
+    {
+        if (!isActiveAndEnabled)
+        {
+            return;
+        }
+
+        if (UIManager.Instance.GetCurrentMenu() != menuType)
+        {
             gameObject.SetActive(false);
             return;
         }
 
         SetUpPublicEvents();
+        MenuOpenedSucessfully();
     }
 
     /// <summary>
@@ -69,7 +81,7 @@ public class MenuBase : MonoBehaviour
     protected virtual void OnDestroy()
     {
         UIPublicEvents.HideOpenMenus -= CloseMenu;
-        UIPublicEvents.NewMenuOpened -= OpenMenu;
+        UIPublicEvents.NewMenuOpened -= MenuOpenedSucessfully;
         TearDownPublicEvents();
     }
 
