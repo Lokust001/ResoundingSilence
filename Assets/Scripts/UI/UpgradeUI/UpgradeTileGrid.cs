@@ -211,7 +211,6 @@ public class UpgradeTileGrid
     /// </summary>
     public void SendDatatoWeapon()
     {
-        Debug.Log($"Sending data to weapon from {this.GetHashCode()}");
         float damagebuff = 1.0f;
         float AttackSpeedBuff = 1.0f;
         GetPins();

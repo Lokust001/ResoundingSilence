@@ -235,7 +235,10 @@ public class BaseWeaponScriptable : BaseScriptableObject
     private List<AbilityBaseScriptable> editableAbilities = new();
 
     
-
+    /// <summary>
+    /// Initializes the editableabilities list if it hasnt already been ititialized. Returns the list of editable abilities
+    /// </summary>
+    /// <returns></returns>
     public List<AbilityBaseScriptable> GetAbilities()
     {
         if (editableAbilities.Count <= 0)

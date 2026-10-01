@@ -31,6 +31,9 @@ public class MenuBase : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// Tries to open the menu - if it can it triggers MenuOpenedSucessfully
+    /// </summary>
     private void AttemptToOpenMenu()
     {
         if (!isActiveAndEnabled)

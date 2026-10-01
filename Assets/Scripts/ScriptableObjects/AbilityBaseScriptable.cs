@@ -1,3 +1,12 @@
+/*
+* Author: Tyler
+* Contributors:
+* Last Modified: 10/1/2026
+* Summary: Scriptable object for the abilities. Will havbe specific abilities derive from this as needed, but these 
+*          vars are on every ability scriptable
+* To Do:   N/A
+*/
+
 using NaughtyAttributes;
 using UnityEngine;
 
