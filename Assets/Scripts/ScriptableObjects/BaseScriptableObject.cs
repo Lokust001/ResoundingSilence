@@ -16,7 +16,7 @@ public class BaseScriptableObject : ScriptableObject
     /// <typeparam name="T"> The type of the scriptable object </typeparam>
     /// <returns> A copy of the current Scriptable Object </returns>
     /// <exception cref="System.Exception"> if you see this error the whole project is fucked </exception>
-    public T CreateNonRefCopy<T>() where T : BaseScriptableObject
+    public virtual T CreateNonRefCopy<T>() where T : BaseScriptableObject
     {
         T copy = Instantiate((T)this);
 
