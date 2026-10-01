@@ -354,6 +354,10 @@ public class BaseWeaponScriptable : BaseScriptableObject
         }
     }
 
+    /// <summary>
+    /// changes how much lifesteal the weapon has based on the parameter. Parameter should be a percentage
+    /// </summary>
+    /// <param name="lifestealPercent"></param>
     public void updateLifestealPercent(float lifestealPercent)
     {
         lifestealAmount = BaseLifestealAmount * lifestealPercent;

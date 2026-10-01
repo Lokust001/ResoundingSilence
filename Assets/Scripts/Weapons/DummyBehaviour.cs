@@ -64,6 +64,10 @@ public class DummyBehaviour : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// FOR TESTING ONLY - writes the damage it took above the dummys head
+    /// </summary>
+    /// <param name="damage"></param>
     public void TakeDamage(float damage)
     {
         damageText.text = $"Took <color=red>{damage}</color> damage.";

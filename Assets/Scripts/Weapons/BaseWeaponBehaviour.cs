@@ -150,16 +150,6 @@ public class BaseWeaponBehaviour : MonoBehaviour
         }
     }
 
-    private void SnapToMouseWhenMenuClosed()
-    {
-        if (UIManager.Instance.CurrentlyInFullscreenMenu())
-        {
-            return;
-        }
-
-
-    }
-
     /// <summary>
     /// How the player aims ability one. Also sets whether or not the player is aiming the ability
     /// </summary>
