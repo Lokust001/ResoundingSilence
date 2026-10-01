@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb529eb0eaafc66418e136a89e011d83, type: 3}
+  m_Name: Test ChargingMelee
+  m_EditorClassIdentifier: Assembly-CSharp::BaseEnemyScriptable
+  enemyType: 4
+  enemyName: Test Charge
+  enemyHealth: 3
+  enemyATKDmg: 0
+  timeBetweenAttacks: 3
+  bulletTravelSpeed: 0
+  bulletLife: 0
+  bulletPrefab: {fileID: 0}
+  bulletsToFire: 0
+  bulletSpreadRadiusDegrees: 0
+  attackChargeDuration: 3
+  earlyChargeMaterial: {fileID: 2100000, guid: c160c7aea25a6e043b4eb127b5bec42c, type: 2}
+  endChargeMaterial: {fileID: 2100000, guid: f6d5b7e222f01374bb41a79eea5671b5, type: 2}
+  attackUptimeDuration: 0
+  chargeSpeedForce: 250
+  chargeDestinationAccuracy: 0.01
+  playerHitKnockbackDuration: 2.5
+  playerHitKnockbackDistance: 15
+  buffChargeDuration: 0
+  percentHealthLostThreshold: 0
+  moveAwayDistance: 0
+  allyATKIncreasePercent: 0
+  allyDmgDecreasePercent: 0

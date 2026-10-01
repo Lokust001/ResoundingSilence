@@ -8,7 +8,6 @@
 
 using NaughtyAttributes;
 using System.Collections.Generic;
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 [System.Serializable]
@@ -37,7 +36,7 @@ public class UpgradeTileGrid
     /// </summary>
     public void Awake()
     {
-        UIPublicEvents.UpgradeMenuClosed += SendDatatoWeapon;
+        
     }
 
     /// <summary>
@@ -155,6 +154,8 @@ public class UpgradeTileGrid
             HasBeenInitialized = true;
         }
 
+        UIPublicEvents.UpgradeMenuClosed += SendDatatoWeapon;
+
         List<UpgradeTileData> enabledUnGlyphedTiles = new();
 
         //initialize each tile
@@ -212,6 +213,7 @@ public class UpgradeTileGrid
     {
         float damagebuff = 1.0f;
         float AttackSpeedBuff = 1.0f;
+        GetPins();
         foreach(var pin in pins)
         {
             if(pin.StatToChange == PinScriptable.WeaponStatToChange.bulletDamage)
