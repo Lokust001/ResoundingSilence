@@ -6,8 +6,10 @@
 * To Do:   
 */
 
+
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -16,7 +18,8 @@ public class EnemySpawner : MonoBehaviour
 
     private int dangerPoints;
 
-    private float distanceFromSpawn;
+    [SerializeField]
+    private int pointsPerSecondPassed;
 
     [SerializeField]
     private float enemyGenerationTime;
@@ -29,6 +32,7 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField]
     List<SpawnTier> enemyGroupTiers;
 
+    [Header("[Debug] Don't edit these fields"), SerializeField]
     List<GameObject> generatedEnemies;
 
     /// <summary>
@@ -38,6 +42,9 @@ public class EnemySpawner : MonoBehaviour
     {
         generatedEnemies = new List<GameObject>();
         generationReadyFlag = true;
+
+        spawnLocations = GetComponentsInChildren<Transform>();
+
     }
 
     /// <summary>
@@ -46,7 +53,9 @@ public class EnemySpawner : MonoBehaviour
     /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent<PlayerController>(out PlayerController p))
+        //If there is ONLY a PlayerController in the parent object and not the current object
+        //(which prevents the player model from double activation)
+        if (other.GetComponentInParent<PlayerController>() != null && other.GetComponent<PlayerController>() == null)
         {
             SpawnEnemies();
         }
@@ -58,7 +67,7 @@ public class EnemySpawner : MonoBehaviour
     /// <param name="other"></param>
     private void OnTriggerExit(Collider other)
     {
-        if (other.TryGetComponent<PlayerController>(out PlayerController p))
+        if (other.GetComponentInParent<PlayerController>() != null && other.GetComponent<PlayerController>() == null)
         {
             DespawnEnemies();
         }
@@ -86,22 +95,17 @@ public class EnemySpawner : MonoBehaviour
     /// </summary>
     private void PlaceEnemiesAtTransforms() 
     {
+        List<Transform> transformCopy = spawnLocations.ToList<Transform>();
+
         foreach (var enemy in generatedEnemies)
         {
+            int randomIndex = Random.Range(0, transformCopy.Count);
+            Vector3 spawnLocation = transformCopy[randomIndex].position;
+            enemy.transform.position = spawnLocation;
+            transformCopy.RemoveAt(randomIndex);
             enemy.SetActive(true);
-            enemy.transform.position = GetRandomSpawnPosition();
+            
         }
-    }
-
-    /// <summary>
-    /// Finds a random spawn position for the enemy to start on that hasn't been taken up yet
-    /// </summary>
-    /// <returns></returns>
-    private Vector3 GetRandomSpawnPosition() 
-    {
-        //TODO: Check that an enemy isn't already there
-        int randomIndex = Random.Range(0, spawnLocations.Length + 1);
-        return spawnLocations[randomIndex].position;
     }
 
 
@@ -120,20 +124,46 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
+
     /// <summary>
     /// Calculates and assigns a tier of enemies based on the number of danger points
     /// </summary>
     private void GenerateEnemyGroup() 
     {
-        //Logic to decide Tier goes here after discussion
+        //Initialization
+        List<GameObject> calculatedEnemyPool = new();
 
-        //Debug tier decision
-        GameObject[] calculatedEnemyPool = enemyGroupTiers[0].enemyPool;
+        dangerPoints = GameTimerManager.Instance.GetRoundedGameTime() * pointsPerSecondPassed;
+        Debug.Log("Danger Points calculated to be: " + dangerPoints + " pts, from " + GameTimerManager.Instance.GetRoundedGameTime() + "secs x " + pointsPerSecondPassed + 
+            " points per second passed");
+
+        //Loop through the tiers starting from the highest tier
+        //If this spawner's danger points matches any tier,
+        //assign the enemypool and then stop this loop
+        for (int i = enemyGroupTiers.Count - 1; i >= 0; i--) 
+        {
+            if (dangerPoints >= enemyGroupTiers[i].minimumPoints) 
+            {
+                calculatedEnemyPool = enemyGroupTiers[i].enemyPool.ToList<GameObject>();
+                Debug.Log(enemyGroupTiers[i].tierName + " was chosen from calculated danger points");
+                break;
+            }
+        }
 
         foreach (var enemy in calculatedEnemyPool) 
         {
             GameObject createdEnemy = Instantiate(enemy, transform.position, Quaternion.identity);
             createdEnemy.SetActive(false);
+            createdEnemy.GetComponent<Enemy>().destroyCancellationToken.Register(() => 
+            //Inner Method that removes the destroyed enemy from the list,
+            //then starts a timer for the next generation interval
+            {
+                
+                generatedEnemies.Remove(createdEnemy);
+                if (generatedEnemies.Count <= 0)
+                    StartCoroutine(NextGenerationCooldown());
+            });
+            
             generatedEnemies.Add(createdEnemy);
         }
     }
@@ -141,6 +171,7 @@ public class EnemySpawner : MonoBehaviour
     private IEnumerator NextGenerationCooldown()
     {
         yield return new WaitForSeconds(enemyGenerationTime);
+
         generationReadyFlag = true;
     }
 

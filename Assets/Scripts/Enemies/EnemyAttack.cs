@@ -61,6 +61,8 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
         {
             trigger.ChildTriggerActivated -= HandleVariousAttackTriggers;
         }
+        ResetIndicatorParent();
+        activeATKorCooldown = enemyCharging = null;
     }
 
     /// <summary>
@@ -264,7 +266,7 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
         //The parent's scale is mostly irrelevant, it acts as the pivot for the actual indicator.
         //Setting the z scale to 0 makes the indicator invisible, and increasing the z scale
         //over time makes the actual indicator "grow" over time.
-        indicatorParentScaler.localScale = new(1, 1, 0);
+        ResetIndicatorParent();
 
         //Pass the Charging behavior towards enemyMovement to handle the sudden burst of movement
         enemyCharging = StartCoroutine(queuedMeleeAttack);
@@ -275,6 +277,15 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
 
         //Start a Cooldown Coroutine
         activeATKorCooldown = StartCoroutine(AttackCooldownCoroutine());
+    }
+
+    /// <summary>
+    /// Resets the parent indicator scale so that that the indicator isn't showing
+    /// </summary>
+    private void ResetIndicatorParent() 
+    {
+        if(attackIndicatorArea != null)
+            attackIndicatorArea.transform.parent.localScale = new(1, 1, 0);
     }
 
     /// <summary>
@@ -349,5 +360,6 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
     public void SetEntityData(BaseScriptableObject baseScriptable)
     {
         enemyData = (BaseEnemyScriptable)baseScriptable;
+        Awake();
     }
 }

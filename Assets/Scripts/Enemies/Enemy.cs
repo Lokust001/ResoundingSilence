@@ -10,6 +10,7 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+
     [SerializeField]
     private BaseEnemyScriptable enemyData;
 
@@ -28,12 +29,17 @@ public class Enemy : MonoBehaviour
     /// <summary>
     /// Calls different start behaviors depending on the enemy type
     /// </summary>
-    private void Start()
+    private void OnEnable()
+    {
+        EnemyStartBehavior();
+    }
+
+    private void EnemyStartBehavior() 
     {
         switch (enemyData.enemyType)
         {
             case BaseEnemyScriptable.EnemyType.BuffEnemy:
-                GetComponentInChildren<EnemyBuff>(true).AttemptBuffingAllies(); 
+                GetComponentInChildren<EnemyBuff>(true).AttemptBuffingAllies();
                 break;
             default:
                 GetComponent<EnemyWalk>().StartPlayerSearch();
@@ -106,6 +112,12 @@ public class Enemy : MonoBehaviour
     {
         EnemyTakeDamage(dmgToTake);
         
+    }
+
+    [Button("EnemyDeath")]
+    public void EnemyDeath() 
+    {
+        Destroy(gameObject);
     }
 }
 

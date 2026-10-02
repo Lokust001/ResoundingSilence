@@ -163,5 +163,6 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver
     public void SetEntityData(BaseScriptableObject baseScriptable)
     {
         enemyData = (BaseEnemyScriptable)baseScriptable;
+        Awake();
     }
 }

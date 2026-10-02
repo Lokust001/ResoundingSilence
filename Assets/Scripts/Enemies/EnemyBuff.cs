@@ -37,7 +37,7 @@ public class EnemyBuff : MonoBehaviour, IEntityDataReceiver
     /// <summary>
     /// Public method that can be activated from any script to start buff behavior and keep tabs on health
     /// </summary>
-    public void AttemptBuffingAllies() 
+    public void AttemptBuffingAllies()
     {
         StartCoroutine(MonitorAndRetreat());
         interruptableCharge = StartCoroutine(ChargingBuff());
@@ -81,6 +81,20 @@ public class EnemyBuff : MonoBehaviour, IEntityDataReceiver
         //Stop charing up the buff if it is active
         StopCoroutine(interruptableCharge);
 
+        ClearBuffFromAllies();
+        
+        //Wait for the enemy to move away from the player
+        yield return StartCoroutine(enemyMovement.MoveAwayFromPlayer());
+
+        //Starts the process all over again
+        AttemptBuffingAllies();
+    }
+
+    /// <summary>
+    /// Makes every ally affected by the buff lose their buff
+    /// </summary>
+    private void ClearBuffFromAllies() 
+    {
         //Turn off the aura visual and prevent new enemies from entering it
         buffAuraTrigger.enabled = buffAuraMesh.enabled = false;
 
@@ -92,12 +106,6 @@ public class EnemyBuff : MonoBehaviour, IEntityDataReceiver
 
         //Discard currently tracked buffed enemies since they are no longer buffed
         buffedEnemies.Clear();
-
-        //Wait for the enemy to move away from the player
-        yield return StartCoroutine(enemyMovement.MoveAwayFromPlayer());
-
-        //Starts the process all over again
-        AttemptBuffingAllies();
     }
 
     /// <summary>
@@ -126,6 +134,11 @@ public class EnemyBuff : MonoBehaviour, IEntityDataReceiver
         }
     }
 
+    private void OnDisable()
+    {
+        ClearBuffFromAllies();
+    }
+
     /// <summary>
     /// Casts the scriptable object into a BaseEnemyScriptable and assigns the data of the enemy to this script
     /// </summary>
@@ -133,5 +146,6 @@ public class EnemyBuff : MonoBehaviour, IEntityDataReceiver
     public void SetEntityData(BaseScriptableObject baseScriptable)
     {
         enemyData = (BaseEnemyScriptable)baseScriptable;
+        Awake();
     }
 }
