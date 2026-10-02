@@ -14,8 +14,10 @@ public class PinScriptable : BaseScriptableObject
     public enum PinType
     {
         none,
-        damage,
-        buffDebuff
+        Power,
+        Vitality,
+        Speed,
+        Status
     }
 
     public enum WeaponStatToChange
@@ -23,7 +25,8 @@ public class PinScriptable : BaseScriptableObject
         none,
         bulletDamage,
         attackSpeed,
-        addDebuff
+        addDebuff,
+        LifestealPercent
     }
 
     [HorizontalLine(4, EColor.Indigo)]

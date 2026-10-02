@@ -36,7 +36,7 @@ public class UpgradeTileGrid
     /// </summary>
     public void Awake()
     {
-        UIPublicEvents.UpgradeMenuClosed += SendDatatoWeapon;
+        
     }
 
     /// <summary>
@@ -154,6 +154,8 @@ public class UpgradeTileGrid
             HasBeenInitialized = true;
         }
 
+        UIPublicEvents.UpgradeMenuClosed += SendDatatoWeapon;
+
         List<UpgradeTileData> enabledUnGlyphedTiles = new();
 
         //initialize each tile
@@ -211,8 +213,10 @@ public class UpgradeTileGrid
     {
         float damagebuff = 1.0f;
         float AttackSpeedBuff = 1.0f;
+        float lifestealBuff = 1.0f;
+        GetPins();
         foreach(var pin in pins)
-        {
+        { 
             if(pin.StatToChange == PinScriptable.WeaponStatToChange.bulletDamage)
             {
                 damagebuff += pin.ModifierNumber;
@@ -221,8 +225,13 @@ public class UpgradeTileGrid
             {
                 AttackSpeedBuff /= pin.ModifierNumber;
             }
+            else if (pin.StatToChange == PinScriptable.WeaponStatToChange.LifestealPercent)
+            {
+                lifestealBuff += pin.ModifierNumber;
+            }
         }
         attachedWeapon.updateWeaponSpeed(AttackSpeedBuff);
         attachedWeapon.updateWeaponDamage(damagebuff);
+        attachedWeapon.updateLifestealPercent(lifestealBuff);
     }
 }

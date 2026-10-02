@@ -69,15 +69,15 @@ public class BaseProjectileBehaviour : MonoBehaviour
         //Replace dummy check with enemy collision check
         if(other.GetComponent<DummyBehaviour>())
         {
-            //TODO Replace with damage enemy
-            Debug.Log("Did " + myDamage + " damage!");
+            //replace with the enemy taking damage
+            other.GetComponent<DummyBehaviour>().TakeDamage(myDamage);
 
             if(hasLifesteal)
             {
-                int healValue = Mathf.CeilToInt(myDamage * ConvertToPercentage(weaponRef.LifestealAmount));
+                int healValue = Mathf.CeilToInt(myDamage * ConvertToPercentage(weaponRef.lifestealAmount));
 
                 //TODO Replace with heal player
-                Debug.Log("Healed for " + healValue + "!");
+                FindAnyObjectByType<DummyPlayerBehaviour>().Heal(healValue);
             }
 
             //Don't want to destroy projectile if it pierces

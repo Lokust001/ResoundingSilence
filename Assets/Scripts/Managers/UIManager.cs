@@ -113,6 +113,7 @@ public class UIManager : BaseManager
     {
         GenericPublicEvents.AllManagersInitialized += GameStarted;
         UIPublicEvents.UpdateUIManagerStack += UpdateUiManagerStack;
+        InputPublicEvents.ToggleUpgradeMenuPressed += ToggleUpgradeMenu;
 
         await Task.CompletedTask;
     }
@@ -124,6 +125,7 @@ public class UIManager : BaseManager
     {
         GenericPublicEvents.AllManagersInitialized -= GameStarted;
         UIPublicEvents.UpdateUIManagerStack -= UpdateUiManagerStack;
+        InputPublicEvents.ToggleUpgradeMenuPressed -= ToggleUpgradeMenu;
     }
 
     #endregion
@@ -136,6 +138,28 @@ public class UIManager : BaseManager
     private void GameStarted()
     {
         UpdateUiManagerStack(UiMenuType.MainMenu);
+    }
+
+    /// <summary>
+    /// Toggles the visibility of the upgrade menu
+    /// 
+    /// TODO: add in more constraints
+    /// </summary>
+    private void ToggleUpgradeMenu()
+    {
+        //Close upgrade menu
+        if (currentlyOpenedMenus.Peek() == UiMenuType.UpgradeMenu)
+        {
+            CloseCurrentMenus();
+            return;
+        }
+
+        //can open upgrade menu from hud
+        if (currentlyOpenedMenus.Peek() == UiMenuType.PlayerHUD)
+        {
+            UIPublicEvents.UpdateUIManagerStack(UiMenuType.UpgradeMenu);
+            return;
+        }
     }
 
     #endregion
@@ -154,13 +178,9 @@ public class UIManager : BaseManager
         {
             throw new System.Exception($"Tried to open a menu with type {menuType}");
         }
-        if (currentlyOpenedMenus.Count > 0 && menuType == currentlyOpenedMenus.Peek())
-        {
-            throw new System.Exception($"Tried to open a menu thats already open: {menuType}");
-        }
 
-        //hide the menus that are open rn
-        UIPublicEvents.HideOpenMenus?.Invoke();
+        /*//hide the menus that are open rn
+        UIPublicEvents.HideOpenMenus?.Invoke();*/
 
         //updates the stack with the newest menu type
         currentlyOpenedMenus.Push(menuType);
@@ -221,9 +241,11 @@ public class UIManager : BaseManager
             throw new System.Exception("Tried to close the menu thats the last menu in the stack");
         }
 
+        //hide the menus that are open rn
         UIPublicEvents.HideOpenMenus?.Invoke();
         currentlyOpenedMenus.Pop();
-        UpdateUiManagerStack(currentlyOpenedMenus.Peek());
+
+        OpenMenus();
     }
 
     #endregion
