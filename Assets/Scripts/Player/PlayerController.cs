@@ -41,8 +41,11 @@ public class PlayerController : MonoBehaviour
     Coroutine playerMovementCoroutine;
 
     Vector3 dashDir;
-    bool canDash;
-    bool chainDashing;
+
+    //Serialized so you can test more easily right now. Once the game has feedback for when a dash is ready, these shouldn't be serialized
+    [SerializeField] bool canDash;
+    [SerializeField] bool chainDashing;
+    
     int currentDash;
 
     #endregion
@@ -118,7 +121,7 @@ public class PlayerController : MonoBehaviour
         //Makes sure you can't dash while in the air
         if (rigidbody.linearVelocity.y == 0 && (canDash || chainDashing))
         {
-            StartCoroutine(PlayerDash());
+             StartCoroutine(PlayerDash());
         }
     }
 
@@ -131,6 +134,11 @@ public class PlayerController : MonoBehaviour
         canDash = false;
 
         ++currentDash;
+
+        if(currentDash > 1)
+        {
+            StopCoroutine(TimeToChainDash());
+        }
         Vector3 dashPoint = transform.position + (dashDir.normalized * dashRange);
 
         StopCoroutine(playerMovementCoroutine);
@@ -146,10 +154,46 @@ public class PlayerController : MonoBehaviour
             yield return null;
         }
 
-        canDash = true;
+        if(currentDash < totalDashes)
+        {
+            StartCoroutine(TimeToChainDash());
+        }
+        else
+        {
+            currentDash = 0;
+            chainDashing = false;
+            StartCoroutine(ResetDash(dashCooldown));
+        }
+
         RestartPlayerMovementAndInput();
 
         yield return null;
+    }
+
+    /// <summary>
+    /// After x amount of time, dash comes off of cooldown
+    /// </summary>
+    /// <param name="cooldownTime"></param> How long the dash cooldown is. Using a param so that if you don't chain dash, 
+    /// the time it waits for gets removed from cooldown time
+    /// <returns></returns>
+    IEnumerator ResetDash(float cooldownTime)
+    {
+        yield return new WaitForSeconds(cooldownTime);
+        canDash = true;
+    }
+
+    /// <summary>
+    /// How long the player has to chain dash before dashing goes on cooldown
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator TimeToChainDash()
+    {
+        chainDashing = true;
+        yield return new WaitForSeconds(chainDashWindow);
+        currentDash = 0;
+        chainDashing = false;
+
+        StartCoroutine(ResetDash(dashCooldown - chainDashWindow));
     }
 
     /// <summary>
