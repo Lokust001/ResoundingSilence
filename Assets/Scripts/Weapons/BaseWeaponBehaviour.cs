@@ -201,6 +201,11 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// </summary>
     virtual protected void FixedUpdate()
     {
+        if (UIManager.Instance.CurrentlyInFullscreenMenu())
+        {
+            return;
+        }
+
         if (isAttacking && attackReady)
         {
             Attack();
