@@ -30,6 +30,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] int totalDashes;
     [SerializeField] float chainDashWindow;
 
+    [Tooltip("What layers the player shouldn't collide with while they are invinvible.")]
+    [SerializeField] LayerMask ignoreWhileInvincible;
+
     #region Private Variables
     Rigidbody rigidbody;
     CapsuleCollider playerModelCollider;
@@ -37,6 +40,7 @@ public class PlayerController : MonoBehaviour
 
     Coroutine dmgCoroutine;
     Coroutine knockbackCoroutine;
+    Coroutine dashWindowCoroutine;
 
     Coroutine playerMovementCoroutine;
 
@@ -132,31 +136,36 @@ public class PlayerController : MonoBehaviour
     private IEnumerator PlayerDash()
     {
         canDash = false;
+        chainDashing = false;
+
+        rigidbody.excludeLayers += ignoreWhileInvincible;
 
         ++currentDash;
 
         if(currentDash > 1)
         {
-            StopCoroutine(TimeToChainDash());
+            StopCoroutine(dashWindowCoroutine);
         }
-        Vector3 dashPoint = transform.position + (dashDir.normalized * dashRange);
+
+        Vector3 dashPoint = Physics.Raycast(transform.position, dashDir.normalized, out RaycastHit hit, dashRange, ~ignoreWhileInvincible) ? hit.point : transform.position + (dashDir.normalized * dashRange);
 
         StopCoroutine(playerMovementCoroutine);
 
         for (float t = 0; t < dashDuration; t += Time.deltaTime)
         {
-            transform.position = (Vector3.MoveTowards(transform.position, dashPoint, (t / dashDuration)));
-
             if (transform.position == dashPoint)
             {
                 break;
             }
+            transform.position = (Vector3.MoveTowards(transform.position, dashPoint, (t / dashDuration)));
             yield return null;
         }
 
+        rigidbody.excludeLayers -= ignoreWhileInvincible;
+
         if(currentDash < totalDashes)
         {
-            StartCoroutine(TimeToChainDash());
+            dashWindowCoroutine = StartCoroutine(TimeToChainDash());
         }
         else
         {
