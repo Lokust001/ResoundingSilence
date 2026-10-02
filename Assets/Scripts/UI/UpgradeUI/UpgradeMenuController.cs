@@ -9,6 +9,7 @@
 using NaughtyAttributes;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -66,7 +67,12 @@ public class UpgradeMenuController : MenuBase
     private Transform pinsOnOtherGridsParent;
 
     [SerializeField]
+    [ShowIf(nameof(settings), ShownSettings.References)]
     private Button swapGridsButton;
+
+    [SerializeField]
+    [ShowIf(nameof(settings), ShownSettings.References)]
+    private TMP_Text tooltipTextObject;
 
     #endregion
 
@@ -135,6 +141,7 @@ public class UpgradeMenuController : MenuBase
         }
 
         swapGridsButton.interactable = !DisableSwappingGrid;
+        UIPublicEvents.SetNewTooltipTextObject?.Invoke(tooltipTextObject);
     }
 
     /// <summary>
