@@ -7,6 +7,7 @@
  * ***************************************************************************/
 using UnityEngine;
 using System.Collections.Generic;
+using TMPro;
 
 public class DummyBehaviour : MonoBehaviour
 {
@@ -18,6 +19,9 @@ public class DummyBehaviour : MonoBehaviour
 
     [Tooltip("If true, the dummy will move between points.")]
     [SerializeField] bool movingDummy;
+
+    [SerializeField]
+    private TMP_Text damageText;
 
     /// <summary>
     /// Sets the rigidbody and starting velocity.
@@ -58,5 +62,14 @@ public class DummyBehaviour : MonoBehaviour
                 SetVelocity();
             }
         }
+    }
+
+    /// <summary>
+    /// FOR TESTING ONLY - writes the damage it took above the dummys head
+    /// </summary>
+    /// <param name="damage"></param>
+    public void TakeDamage(float damage)
+    {
+        damageText.text = $"Took <color=red>{damage}</color> damage.";
     }
 }
