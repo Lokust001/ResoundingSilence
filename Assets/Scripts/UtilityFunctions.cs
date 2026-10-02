@@ -1,8 +1,26 @@
+/*
+* Author: Tyler
+* Contributors:
+* Last Modified: 10/2/2026
+* Summary: Utility script. Is just for math functoins to save space and time
+* To Do:   N/A
+*/
+
 using System.Collections.Generic;
 using UnityEngine;
 
 public static class UtilityFunctions
 {
+    /// <summary>
+    /// Returns a list of all adjacent tiles of a given coordinate in a given list
+    /// </summary>
+    /// <typeparam name="T"> The type to return. </typeparam>
+    /// <param name="coords"> The coordinates of the center tile. </param>
+    /// <param name="collection"> The list of objects to grab adjacency from. </param>
+    /// <param name="height"> How tall the grid is. </param>
+    /// <param name="width"> How wide the grid is. </param>
+    /// <param name="countDiagonals"> If you want the returned list to include diagonals, this should be true. True by default.</param>
+    /// <returns></returns>
     public static List<T> GetAdjacentTiles<T>(Vector2Int coords,
                                               List<T> collection,
                                               int height, int width,
@@ -19,6 +37,12 @@ public static class UtilityFunctions
         return temp;
     }
 
+    /// <summary>
+    /// helper function - returns the vector 2 direction when given a number.
+    /// </summary>
+    /// <param name="i">0 = north, then moving clockwise with 7 = northwest. </param>
+    /// <returns></returns>
+    /// <exception cref="System.Exception"></exception>
     private static Vector2Int GetDirectionGivenInt(int i = -1)
     {
         if (i < 0 || i >= 8)
