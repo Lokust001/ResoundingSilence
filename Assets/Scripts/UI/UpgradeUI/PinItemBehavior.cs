@@ -108,6 +108,9 @@ public class PinItemBehavior : Clickable
         transform.position = mousePos;
     }
 
+    /// <summary>
+    /// requests a tooltip when hovered over.
+    /// </summary>
     public override void HoveredOver()
     {
         base.HoveredOver();
