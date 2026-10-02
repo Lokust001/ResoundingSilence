@@ -120,9 +120,9 @@ public class UpgradeMenuController : MenuBase
     /// <summary>
     /// Populates everything once the menu is opened.
     /// </summary>
-    protected override void OpenMenu()
+    protected override void MenuOpenedSucessfully()
     {
-        base.OpenMenu();
+        base.MenuOpenedSucessfully();
         PopulateInventory();
 
         if (MidRunDataManager.Instance.equippedWeapons.All(x => x == null))

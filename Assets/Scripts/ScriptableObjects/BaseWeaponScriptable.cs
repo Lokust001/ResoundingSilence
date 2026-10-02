@@ -10,6 +10,7 @@
 using NaughtyAttributes;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 [CreateAssetMenu(fileName = "NewBaseWeapon", menuName = "Scriptables/Weapons/BaseWeapon")]
 public class BaseWeaponScriptable : BaseScriptableObject
@@ -35,8 +36,10 @@ public class BaseWeaponScriptable : BaseScriptableObject
     {
         None,
         Lore,
-        CombatData,
-        StatusEffects
+        BaseWeaponData,
+        StatusEffects,
+        Abilities,
+        UpgradeGrid
     }
 
     [SerializeField]
@@ -55,7 +58,7 @@ public class BaseWeaponScriptable : BaseScriptableObject
         "Use to select what type of status effects this weapon will inflict.")]
     private EffectType effectType;
 
-    [SerializeField]
+    [ShowIf(nameof(shownSettings), ShownSettings.UpgradeGrid)]
     [Tooltip("This is the grid that will be attached to this kind of weapon when it is made")]
     public UpgradeTileGrid upgradeGrid;
 
@@ -76,14 +79,14 @@ public class BaseWeaponScriptable : BaseScriptableObject
     [HideInInspector]
     public List<int> WeaponDamage = new List<int>();
 
-    [ShowIf(nameof(shownSettings), ShownSettings.CombatData)]
+    [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
     [Tooltip("How much damage the weapon does. Is a list in case the weapon has multiple hits in a combo.")]
     public List<int> BaseWeaponDamage = new List<int>();
 
     [HideInInspector]
     public List<float> AttackCooldown = new List<float>();
 
-    [ShowIf(nameof(shownSettings), ShownSettings.CombatData)]
+    [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
     [Tooltip("How much damage the weapon does. Is a list in case the weapon has multiple hits in a combo.")]
     public List<float> BaseAttackCooldown = new List<float>();
 
@@ -121,13 +124,16 @@ public class BaseWeaponScriptable : BaseScriptableObject
     [Tooltip("The minimum amount of damage the weapon can be decreased to from piercing. If <= 0, will just destroy when damage is 0.")]
     public int MinPierceDamage;
 
-    [ShowIf(nameof(shownSettings), ShownSettings.CombatData)]
+    [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
     [Tooltip("Whether or not a weapon has lifesteal.")]
     public bool HasLifesteal;
 
     [ShowIf(nameof(WeaponLifeSteal))]
     [Tooltip("How much lifesteal a weapon has.")]
-    public float LifestealAmount;
+    public float BaseLifestealAmount;
+
+    [HideInInspector]
+    public float lifestealAmount;
 
     #endregion
 
@@ -223,13 +229,40 @@ public class BaseWeaponScriptable : BaseScriptableObject
 
     #endregion
 
+    #region Abilities
+
+    [ShowIf(nameof(shownSettings), ShownSettings.Abilities)]
+    [Expandable]
+    [SerializeField]
+    private List<AbilityBaseScriptable> abilities = new();
+    private List<AbilityBaseScriptable> editableAbilities = new();
+
+    
+    /// <summary>
+    /// Initializes the editableabilities list if it hasnt already been ititialized. Returns the list of editable abilities
+    /// </summary>
+    /// <returns></returns>
+    public List<AbilityBaseScriptable> GetAbilities()
+    {
+        if (editableAbilities.Count <= 0)
+        {
+            foreach (AbilityBaseScriptable ability in abilities)
+            {
+                editableAbilities.Add(ability.CreateNonRefCopy<AbilityBaseScriptable>());
+            }
+        }
+
+        return editableAbilities;
+    }
+    #endregion
+
     /// <summary>
     /// Custom bool for multiple enum values
     /// </summary>
     /// <returns></returns>
     private bool RangedWeaponSettings()
     {
-        return weaponType == WeaponType.Ranged && shownSettings == ShownSettings.CombatData;
+        return weaponType == WeaponType.Ranged && shownSettings == ShownSettings.BaseWeaponData;
     }
 
     /// <summary>
@@ -238,7 +271,7 @@ public class BaseWeaponScriptable : BaseScriptableObject
     /// <returns></returns>
     private bool WeaponLifeSteal()
     {
-        return shownSettings == ShownSettings.CombatData && HasLifesteal;
+        return shownSettings == ShownSettings.BaseWeaponData && HasLifesteal;
     }
 
     /// <summary>
@@ -291,8 +324,10 @@ public class BaseWeaponScriptable : BaseScriptableObject
     /// </summary>
     public void Awake()
     {
-        WeaponDamage = BaseWeaponDamage;
-        AttackCooldown = BaseAttackCooldown;
+        WeaponDamage = BaseWeaponDamage.ToList();
+        AttackCooldown = BaseAttackCooldown.ToList();
+        lifestealAmount = BaseLifestealAmount;
+        upgradeGrid.attachedWeapon = this;
     }
 
     /// <summary>
@@ -310,12 +345,21 @@ public class BaseWeaponScriptable : BaseScriptableObject
     /// <summary>
     /// changes weapon attack speed based on the amount of dpeed buffs given to the weapon on the grid
     /// </summary>
-    /// <param name="DamageBuff">Less than one, multiplies the base attack cooldown</param>
+    /// <param name="SpeedBoost">Less than one, multiplies the base attack cooldown</param>
     public void updateWeaponSpeed(float SpeedBoost)
     {
         for(int i = 0; i < AttackCooldown.Count; i++)
         {
-            AttackCooldown[i] = Mathf.FloorToInt(BaseAttackCooldown[i] * SpeedBoost);
+            AttackCooldown[i] = BaseAttackCooldown[i] * SpeedBoost;
         }
+    }
+
+    /// <summary>
+    /// changes how much lifesteal the weapon has based on the parameter. Parameter should be a percentage
+    /// </summary>
+    /// <param name="lifestealPercent"></param>
+    public void updateLifestealPercent(float lifestealPercent)
+    {
+        lifestealAmount = BaseLifestealAmount * lifestealPercent;
     }
 }

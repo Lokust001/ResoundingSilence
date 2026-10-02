@@ -18,7 +18,9 @@ public class BaseWeaponBehaviour : MonoBehaviour
     }
 
     //Public so the upgrade manager can find the reference
-    [HideInInspector] public BaseWeaponScriptable ThisWeaponData;
+    //[HideInInspector]
+    [Expandable]
+    public BaseWeaponScriptable ThisWeaponData;
     [SerializeField] protected int weaponDataID;
     [SerializeField] protected LayerMask groundLayerMask;
 
@@ -71,6 +73,9 @@ public class BaseWeaponBehaviour : MonoBehaviour
     virtual protected void Start()
     {
         ThisWeaponData = StaticDataManager.Instance.GetWeaponAtID(weaponDataID);
+
+        //tells the abilities to instantiate
+        ThisWeaponData.GetAbilities();
         attackReady = true;
 
         if(!abilityOneReady)
@@ -196,6 +201,11 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// </summary>
     virtual protected void FixedUpdate()
     {
+        if (UIManager.Instance.CurrentlyInFullscreenMenu())
+        {
+            return;
+        }
+
         if (isAttacking && attackReady)
         {
             Attack();

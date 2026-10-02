@@ -16,11 +16,14 @@ MonoBehaviour:
   shownSettings: 2
   effectType: 0
   upgradeGrid:
-    NumberOfGlyphRange: {x: 0, y: 0}
-    attachedWeapon: {fileID: 0}
-    height: 0
-    width: 0
-    rows: []
+    NumberOfGlyphRange: {x: 1, y: 1}
+    attachedWeapon: {fileID: 11400000}
+    height: 3
+    width: 5
+    rows:
+    - rowTiles: 0000000100
+    - rowTiles: 0101010101
+    - rowTiles: 0000000100
   WeaponName: 
   WeaponDamage: 0a000000
   BaseWeaponDamage: 0a000000
@@ -42,7 +45,8 @@ MonoBehaviour:
   PierceAmount: 00000000
   MinPierceDamage: 0
   HasLifesteal: 1
-  LifestealAmount: 5
+  BaseLifestealAmount: 1
+  lifestealAmount: 0
   DecayDamage: 0
   MaxDecayStacks: 0
   DecayDelay: 0
@@ -65,3 +69,6 @@ MonoBehaviour:
   IgniteDelay: 0
   IgniteSize: 0
   IgniteChancePerStack: 0
+  abilities:
+  - {fileID: 11400000, guid: 85cfda095c6c67542b6b37e91792c2a0, type: 2}
+  - {fileID: 11400000, guid: 85cfda095c6c67542b6b37e91792c2a0, type: 2}
