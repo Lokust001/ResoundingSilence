@@ -27,23 +27,25 @@ public class EnemySpawner : MonoBehaviour
     private bool generationReadyFlag;
 
     [SerializeField]
-    Transform[] spawnLocations;
+    List<Transform> spawnLocations;
 
     [SerializeField]
-    List<SpawnTier> enemyGroupTiers;
+    SpawnTier[] enemyGroupTiers;
 
     [Header("[Debug] Don't edit these fields"), SerializeField]
-    List<GameObject> generatedEnemies;
+    List<Enemy> generatedEnemies;
 
     /// <summary>
     /// Instantiates generatedEnemies so that it isn't null and allows the first generation to happen
     /// </summary>
     private void Awake()
     {
-        generatedEnemies = new List<GameObject>();
+        generatedEnemies = new List<Enemy>();
         generationReadyFlag = true;
 
-        spawnLocations = GetComponentsInChildren<Transform>();
+        //Retrieves all spawn transforms and removes the one on the parent gameobject
+        spawnLocations = GetComponentsInChildren<Transform>().ToList<Transform>();
+        spawnLocations.Remove(transform);
 
     }
 
@@ -97,13 +99,19 @@ public class EnemySpawner : MonoBehaviour
     {
         List<Transform> transformCopy = spawnLocations.ToList<Transform>();
 
+        if (transformCopy.Count < generatedEnemies.Count) 
+        {
+            Debug.LogWarning("An enemy spawner has less transforms than the amount of enemies it needs to spawn, re-using some transforms");
+        }
+
+
         foreach (var enemy in generatedEnemies)
         {
             int randomIndex = Random.Range(0, transformCopy.Count);
             Vector3 spawnLocation = transformCopy[randomIndex].position;
             enemy.transform.position = spawnLocation;
             transformCopy.RemoveAt(randomIndex);
-            enemy.SetActive(true);
+            enemy.EnableEnemy();
             
         }
     }
@@ -120,7 +128,7 @@ public class EnemySpawner : MonoBehaviour
 
         foreach (var enemy in generatedEnemies) 
         {
-            enemy.SetActive(false);
+            enemy.DisableEnemy();
         }
     }
 
@@ -140,7 +148,7 @@ public class EnemySpawner : MonoBehaviour
         //Loop through the tiers starting from the highest tier
         //If this spawner's danger points matches any tier,
         //assign the enemypool and then stop this loop
-        for (int i = enemyGroupTiers.Count - 1; i >= 0; i--) 
+        for (int i = enemyGroupTiers.Length - 1; i >= 0; i--) 
         {
             if (dangerPoints >= enemyGroupTiers[i].minimumPoints) 
             {
@@ -152,15 +160,15 @@ public class EnemySpawner : MonoBehaviour
 
         foreach (var enemy in calculatedEnemyPool) 
         {
-            GameObject createdEnemy = Instantiate(enemy, transform.position, Quaternion.identity);
-            createdEnemy.SetActive(false);
-            createdEnemy.GetComponent<Enemy>().destroyCancellationToken.Register(() => 
+            Enemy createdEnemy = Instantiate(enemy, transform.position, Quaternion.identity).GetComponent<Enemy>();
+            createdEnemy.DisableEnemy();
+            createdEnemy.destroyCancellationToken.Register(() => 
             //Inner Method that removes the destroyed enemy from the list,
             //then starts a timer for the next generation interval
             {
                 
                 generatedEnemies.Remove(createdEnemy);
-                if (generatedEnemies.Count <= 0)
+                if (generatedEnemies.Count <= 0 && this != null)
                     StartCoroutine(NextGenerationCooldown());
             });
             

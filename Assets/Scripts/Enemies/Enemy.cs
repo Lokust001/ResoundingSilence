@@ -12,6 +12,9 @@ public class Enemy : MonoBehaviour
 {
 
     [SerializeField]
+    private bool testWithoutSpawner;
+
+    [SerializeField]
     private BaseEnemyScriptable enemyData;
 
     [SerializeField, Header("Debug Variables")]
@@ -24,14 +27,10 @@ public class Enemy : MonoBehaviour
     {
         enemyData = enemyData.CreateNonRefCopy<BaseEnemyScriptable>();
         PropagateEnemyData();
-    }
+        EnableEnemy();
 
-    /// <summary>
-    /// Calls different start behaviors depending on the enemy type
-    /// </summary>
-    private void OnEnable()
-    {
-        EnemyStartBehavior();
+        if (testWithoutSpawner)
+            EnableEnemy();
     }
 
     private void EnemyStartBehavior() 
@@ -55,6 +54,23 @@ public class Enemy : MonoBehaviour
         foreach (IEntityDataReceiver entity in GetComponentsInChildren<IEntityDataReceiver>(true))
         {
             entity.SetEntityData(enemyData);
+        }
+    }
+
+    public void EnableEnemy() 
+    {
+        foreach (ICustomEnabler entity in GetComponentsInChildren<ICustomEnabler>(true))
+        {
+            entity.EnableEntity();
+        }
+        EnemyStartBehavior();
+    }
+
+    public void DisableEnemy() 
+    {
+        foreach (ICustomDisabler entity in GetComponentsInChildren<ICustomDisabler>(true))
+        {
+            entity.DisableEntity();
         }
     }
 
@@ -103,6 +119,8 @@ public class Enemy : MonoBehaviour
     {
         return Mathf.RoundToInt(enemyData.enemyATKDmg + (enemyData.enemyATKDmg * enemyData.atkBoostFactor));
     }
+
+
 
     /// <summary>
     /// Debug Attack enemy while attacking doesn't exist yet

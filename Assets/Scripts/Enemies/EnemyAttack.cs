@@ -8,7 +8,7 @@ using System.Collections;
 using UnityEngine;
 using static BaseEnemyScriptable;
 
-public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
+public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICustomDisabler
 {
 
     [SerializeField]
@@ -21,6 +21,7 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
     private GameObject attackIndicatorArea;
 
     private SphereCollider sphereTrigger;
+    private CapsuleCollider chargingCapCollider;
     private EnemyWalk enemyMovement;
     private Transform playerTransform;
     private Vector3 fireBulletDirection;
@@ -35,10 +36,11 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
     /// <summary>
     /// Grabs the sphere collider for the search radius and enemy movement script
     /// </summary>
-    void Awake()
+    private void InitializeVariables() 
     {
         sphereTrigger = GetComponent<SphereCollider>();
         enemyMovement = GetComponentInParent<EnemyWalk>();
+        chargingCapCollider = GetComponent<CapsuleCollider>();
     }
 
     /// <summary>
@@ -61,8 +63,6 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
         {
             trigger.ChildTriggerActivated -= HandleVariousAttackTriggers;
         }
-        ResetIndicatorParent();
-        activeATKorCooldown = enemyCharging = null;
     }
 
     /// <summary>
@@ -273,8 +273,6 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
         yield return enemyCharging;
         enemyCharging = null;
 
-        inAttackRange = false;
-
         //Start a Cooldown Coroutine
         activeATKorCooldown = StartCoroutine(AttackCooldownCoroutine());
     }
@@ -360,6 +358,33 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
     public void SetEntityData(BaseScriptableObject baseScriptable)
     {
         enemyData = (BaseEnemyScriptable)baseScriptable;
-        Awake();
+        InitializeVariables();
+
     }
+
+    /// <summary>
+    /// Specifies whcih triggers and colliders to enable when this enemy is enabled
+    /// </summary>
+    public void EnableEntity()
+    {
+        sphereTrigger.enabled = true;
+        if(chargingCapCollider != null)
+            chargingCapCollider.enabled = true;
+    }
+
+    /// <summary>
+    /// Specifies which methods, coroutines, and triggers/colliders to disable when this enemy is disabled
+    /// </summary>
+    public void DisableEntity()
+    {
+        StopAllCoroutines();
+        ResetIndicatorParent();
+        activeATKorCooldown = enemyCharging = null;
+        sphereTrigger.enabled = false;
+
+        if (chargingCapCollider != null)
+            chargingCapCollider.enabled = false;
+    }
+
+    
 }

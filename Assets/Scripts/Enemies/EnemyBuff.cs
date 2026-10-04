@@ -8,9 +8,10 @@
 using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class EnemyBuff : MonoBehaviour, IEntityDataReceiver
+public class EnemyBuff : MonoBehaviour, IEntityDataReceiver, ICustomDisabler
 {
     BaseEnemyScriptable enemyData;
 
@@ -26,7 +27,7 @@ public class EnemyBuff : MonoBehaviour, IEntityDataReceiver
     /// <summary>
     /// Grabs necessary components and instantiates a new List
     /// </summary>
-    private void Awake()
+    private void InitializeVariables() 
     {
         buffedEnemies = new List<Enemy>();
         enemyMovement = GetComponentInParent<EnemyWalk>();
@@ -134,11 +135,6 @@ public class EnemyBuff : MonoBehaviour, IEntityDataReceiver
         }
     }
 
-    private void OnDisable()
-    {
-        ClearBuffFromAllies();
-    }
-
     /// <summary>
     /// Casts the scriptable object into a BaseEnemyScriptable and assigns the data of the enemy to this script
     /// </summary>
@@ -146,6 +142,14 @@ public class EnemyBuff : MonoBehaviour, IEntityDataReceiver
     public void SetEntityData(BaseScriptableObject baseScriptable)
     {
         enemyData = (BaseEnemyScriptable)baseScriptable;
-        Awake();
+        InitializeVariables();
+    }
+
+    /// <summary>
+    /// Specifies which method to run to disable the functionality of this enemy when it is called to be disabled
+    /// </summary>
+    public void DisableEntity()
+    {
+        ClearBuffFromAllies();
     }
 }
