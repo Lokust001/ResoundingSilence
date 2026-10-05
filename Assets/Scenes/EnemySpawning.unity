@@ -1186,13 +1186,21 @@ PrefabInstance:
       value: EnemySpawner
       objectReference: {fileID: 0}
     - target: {fileID: 6935129378967799495, guid: 9c86bc2b840ea8840842d54849c8753c, type: 3}
+      propertyPath: enemyGroupTiers.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6935129378967799495, guid: 9c86bc2b840ea8840842d54849c8753c, type: 3}
+      propertyPath: enemyGroupTiers.Array.data[0].tierName
+      value: tier 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6935129378967799495, guid: 9c86bc2b840ea8840842d54849c8753c, type: 3}
       propertyPath: enemyGroupTiers.Array.data[0].enemyPool.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6935129378967799495, guid: 9c86bc2b840ea8840842d54849c8753c, type: 3}
       propertyPath: 'enemyGroupTiers.Array.data[0].enemyPool.Array.data[0]'
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 5744320469832728330, guid: f6aca458b8f2f08478e04f3803fe0390, type: 3}
     - target: {fileID: 6935129378967799495, guid: 9c86bc2b840ea8840842d54849c8753c, type: 3}
       propertyPath: 'enemyGroupTiers.Array.data[0].enemyPool.Array.data[1]'
       value: 

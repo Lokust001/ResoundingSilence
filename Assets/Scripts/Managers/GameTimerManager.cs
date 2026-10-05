@@ -7,28 +7,59 @@
 */
 using NaughtyAttributes;
 using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class GameTimerManager : BaseManager
 {
 
     public static GameTimerManager Instance { get; private set; }
-
     private float currentGameTime;
     private Coroutine gameTimeCoroutine;
 
+    [SerializeField]
+    private bool EnableTestingMode = false;
+
     /// <summary>
-    /// Sets up the singleton
+    /// Custom debugging check
     /// </summary>
     private void Awake()
+    {
+        if (EnableTestingMode)
+        {
+            _ = InitManager();
+            StartOrResumeGameTime();
+        }
+    }
+
+
+    /// <summary>
+    /// Custom initialization for singleton
+    /// </summary>
+    /// <returns></returns>
+    public async override Awaitable InitManager() 
     {
         if (Instance == null)
         {
             Instance = this;
         }
         else { Destroy(this); }
-        StartOrResumeGameTime();
+
+        GenericPublicEvents.AllManagersInitialized += StartOrResumeGameTime;
+
+        await Task.CompletedTask;
     }
+
+
+    /// <summary>
+    /// unsubscribes from public events
+    /// </summary>
+    private void OnDestroy()
+    {
+        GenericPublicEvents.AllManagersInitialized -= StartOrResumeGameTime;
+    }
+
+
 
     /// <summary>
     /// public method to start game time or game timer

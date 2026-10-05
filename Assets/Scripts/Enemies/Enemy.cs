@@ -33,6 +33,9 @@ public class Enemy : MonoBehaviour
             EnableEnemy();
     }
 
+    /// <summary>
+    /// Dictates what first action the enemy should take when it is enabled
+    /// </summary>
     private void EnemyStartBehavior() 
     {
         switch (enemyData.enemyType)
@@ -57,6 +60,9 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Calls the EnableEntity method on all enemy scripts with ICustomEnabler
+    /// </summary>
     public void EnableEnemy() 
     {
         foreach (ICustomEnabler entity in GetComponentsInChildren<ICustomEnabler>(true))
@@ -66,6 +72,9 @@ public class Enemy : MonoBehaviour
         EnemyStartBehavior();
     }
 
+    /// <summary>
+    /// Calls the DisableEntity method on all enemy scripts with ICustomDisabler
+    /// </summary>
     public void DisableEnemy() 
     {
         foreach (ICustomDisabler entity in GetComponentsInChildren<ICustomDisabler>(true))
@@ -131,6 +140,9 @@ public class Enemy : MonoBehaviour
         EnemyTakeDamage(dmgToTake);
         
     }
+    /// <summary>
+    /// Simulates an enemydeath
+    /// </summary>
 
     [Button("EnemyDeath")]
     public void EnemyDeath() 

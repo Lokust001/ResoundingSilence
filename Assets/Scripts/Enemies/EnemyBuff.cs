@@ -5,10 +5,8 @@
 * Summary: This is the base scriptable object for all eneny scriptable objects.
 * To Do:   Add more variables as needed.
 */
-using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemyBuff : MonoBehaviour, IEntityDataReceiver, ICustomDisabler
@@ -27,7 +25,7 @@ public class EnemyBuff : MonoBehaviour, IEntityDataReceiver, ICustomDisabler
     /// <summary>
     /// Grabs necessary components and instantiates a new List
     /// </summary>
-    private void InitializeVariables() 
+    private void InitializeVariables()
     {
         buffedEnemies = new List<Enemy>();
         enemyMovement = GetComponentInParent<EnemyWalk>();
@@ -48,12 +46,12 @@ public class EnemyBuff : MonoBehaviour, IEntityDataReceiver, ICustomDisabler
     /// Coroutine that counts up time until the buff collider is active and can be seen
     /// </summary>
     /// <returns></returns>
-    public IEnumerator ChargingBuff() 
+    public IEnumerator ChargingBuff()
     {
         float timer = 0;
         float goal = enemyData.buffChargeDuration;
 
-        while (timer < goal) 
+        while (timer < goal)
         {
             yield return null;
             timer += Time.deltaTime;
@@ -66,7 +64,7 @@ public class EnemyBuff : MonoBehaviour, IEntityDataReceiver, ICustomDisabler
     /// Semi-Looped method that simulates retreat behavior
     /// </summary>
     /// <returns></returns>
-    private IEnumerator MonitorAndRetreat() 
+    private IEnumerator MonitorAndRetreat()
     {
         float currentHealth = enemyData.enemyHealth;
         int deactivationThreshold = enemyData.GetLostHealthThreshold();
@@ -83,7 +81,7 @@ public class EnemyBuff : MonoBehaviour, IEntityDataReceiver, ICustomDisabler
         StopCoroutine(interruptableCharge);
 
         ClearBuffFromAllies();
-        
+
         //Wait for the enemy to move away from the player
         yield return StartCoroutine(enemyMovement.MoveAwayFromPlayer());
 
@@ -94,7 +92,7 @@ public class EnemyBuff : MonoBehaviour, IEntityDataReceiver, ICustomDisabler
     /// <summary>
     /// Makes every ally affected by the buff lose their buff
     /// </summary>
-    private void ClearBuffFromAllies() 
+    private void ClearBuffFromAllies()
     {
         //Turn off the aura visual and prevent new enemies from entering it
         buffAuraTrigger.enabled = buffAuraMesh.enabled = false;
@@ -115,7 +113,7 @@ public class EnemyBuff : MonoBehaviour, IEntityDataReceiver, ICustomDisabler
     /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent<Enemy>(out Enemy enemy)) 
+        if (other.TryGetComponent<Enemy>(out Enemy enemy))
         {
             enemy.ReceiveBuff(enemyData.GetATKIncreaseMultiplier(), enemyData.GetDMGReductionMultiplier());
             buffedEnemies.Add(enemy);
@@ -150,6 +148,7 @@ public class EnemyBuff : MonoBehaviour, IEntityDataReceiver, ICustomDisabler
     /// </summary>
     public void DisableEntity()
     {
+        StopAllCoroutines();
         ClearBuffFromAllies();
     }
 }

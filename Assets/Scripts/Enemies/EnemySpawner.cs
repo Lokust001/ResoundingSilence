@@ -5,12 +5,9 @@
 * Summary: Spawns and caches enemies when player is nearby
 * To Do:   
 */
-
-
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
@@ -80,7 +77,7 @@ public class EnemySpawner : MonoBehaviour
     /// Spawns a group of enemies at random spawn locations.
     /// If a group of enemies has not been chosen yet, choose one.
     /// </summary>
-    private void SpawnEnemies() 
+    private void SpawnEnemies()
     {
         //If there is no chosen enemy picked, generate some
         if (generatedEnemies.Count == 0 && generationReadyFlag)
@@ -95,11 +92,11 @@ public class EnemySpawner : MonoBehaviour
     /// <summary>
     /// Makes new enemies or unfinishing existing enmies appear at random spawn locations
     /// </summary>
-    private void PlaceEnemiesAtTransforms() 
+    private void PlaceEnemiesAtTransforms()
     {
         List<Transform> transformCopy = spawnLocations.ToList<Transform>();
 
-        if (transformCopy.Count < generatedEnemies.Count) 
+        if (transformCopy.Count < generatedEnemies.Count)
         {
             Debug.LogWarning("An enemy spawner has less transforms than the amount of enemies it needs to spawn, re-using some transforms");
         }
@@ -112,7 +109,7 @@ public class EnemySpawner : MonoBehaviour
             enemy.transform.position = spawnLocation;
             transformCopy.RemoveAt(randomIndex);
             enemy.EnableEnemy();
-            
+
         }
     }
 
@@ -120,13 +117,13 @@ public class EnemySpawner : MonoBehaviour
     /// <summary>
     /// If any enemies are still alive, cache the enemies for future spawning.
     /// </summary>
-    private void DespawnEnemies() 
+    private void DespawnEnemies()
     {
         //If they've finished off all enemies, don't run this method
         if (generatedEnemies.Count < 1)
             return;
 
-        foreach (var enemy in generatedEnemies) 
+        foreach (var enemy in generatedEnemies)
         {
             enemy.DisableEnemy();
         }
@@ -136,21 +133,21 @@ public class EnemySpawner : MonoBehaviour
     /// <summary>
     /// Calculates and assigns a tier of enemies based on the number of danger points
     /// </summary>
-    private void GenerateEnemyGroup() 
+    private void GenerateEnemyGroup()
     {
         //Initialization
         List<GameObject> calculatedEnemyPool = new();
 
         dangerPoints = GameTimerManager.Instance.GetRoundedGameTime() * pointsPerSecondPassed;
-        Debug.Log("Danger Points calculated to be: " + dangerPoints + " pts, from " + GameTimerManager.Instance.GetRoundedGameTime() + "secs x " + pointsPerSecondPassed + 
+        Debug.Log("Danger Points calculated to be: " + dangerPoints + " pts, from " + GameTimerManager.Instance.GetRoundedGameTime() + "secs x " + pointsPerSecondPassed +
             " points per second passed");
 
         //Loop through the tiers starting from the highest tier
         //If this spawner's danger points matches any tier,
         //assign the enemypool and then stop this loop
-        for (int i = enemyGroupTiers.Length - 1; i >= 0; i--) 
+        for (int i = enemyGroupTiers.Length - 1; i >= 0; i--)
         {
-            if (dangerPoints >= enemyGroupTiers[i].minimumPoints) 
+            if (dangerPoints >= enemyGroupTiers[i].minimumPoints)
             {
                 calculatedEnemyPool = enemyGroupTiers[i].enemyPool.ToList<GameObject>();
                 Debug.Log(enemyGroupTiers[i].tierName + " was chosen from calculated danger points");
@@ -158,24 +155,28 @@ public class EnemySpawner : MonoBehaviour
             }
         }
 
-        foreach (var enemy in calculatedEnemyPool) 
+        foreach (var enemy in calculatedEnemyPool)
         {
             Enemy createdEnemy = Instantiate(enemy, transform.position, Quaternion.identity).GetComponent<Enemy>();
             createdEnemy.DisableEnemy();
-            createdEnemy.destroyCancellationToken.Register(() => 
+            createdEnemy.destroyCancellationToken.Register(() =>
             //Inner Method that removes the destroyed enemy from the list,
             //then starts a timer for the next generation interval
             {
-                
+
                 generatedEnemies.Remove(createdEnemy);
                 if (generatedEnemies.Count <= 0 && this != null)
                     StartCoroutine(NextGenerationCooldown());
             });
-            
+
             generatedEnemies.Add(createdEnemy);
         }
     }
 
+    /// <summary>
+    /// Run a timer for a specified amount of time before setting a flag
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator NextGenerationCooldown()
     {
         yield return new WaitForSeconds(enemyGenerationTime);
