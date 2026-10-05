@@ -69,14 +69,6 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
         walkingCoroutine = null;
     }
 
-    private Vector3 BrakeDestination()
-    {
-        Vector3 playerPosition = m_GameObject.transform.position;
-        Vector3 direction = (enemyTransform.position - playerPosition).normalized;
-        float distance = capsuleCollider.radius;
-        return playerPosition + (direction * distance);
-    }
-
     /// <summary>
     /// Given a distance, make the enemy charge towards the direction they were facing
     /// </summary>
