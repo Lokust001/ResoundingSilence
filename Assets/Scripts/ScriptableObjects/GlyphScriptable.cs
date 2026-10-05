@@ -26,6 +26,8 @@ public class GlyphScriptable : BaseScriptableObject
     [Tooltip("TEMPORARY - REPLACE WITH SPRITE WHEN I GET THEM")]
     public Color glyphColor;
 
+    public float GlyphChangeAmount;
+
     public GlyphType Type;
 
     public enum GlyphType

@@ -254,7 +254,7 @@ public class UpgradeTileGrid
                     buffAmount *= 2;
                 }
 
-                damagebuff += buffAmount;
+                damagebuff += (buffAmount / 100);
                 
             }
             else if(pin.StatToChange == PinScriptable.WeaponStatToChange.AttackSpeed)
@@ -299,9 +299,30 @@ public class UpgradeTileGrid
                 {
                     buffAmount *= 2;
                 }
-                lifestealBuff += buffAmount;
+                lifestealBuff += (buffAmount / 100);
             }
         }
+        foreach(UpgradeTileData tile in grid)
+        {
+            if (tile.GlyphActive)
+            {
+                switch(tile.glyph.Type)
+                {
+                    case 0:
+                        return;
+                    case GlyphScriptable.GlyphType.CooldownReduction:
+                        return;
+                    case GlyphScriptable.GlyphType.DamageBuff:
+                        damagebuff *= (tile.glyph.GlyphChangeAmount / 100);
+                        return;
+                    case GlyphScriptable.GlyphType.HealthingReceived:
+                        return;
+                    case GlyphScriptable.GlyphType.StatusEffect: 
+                        return;
+                }
+            }
+        }
+
         attachedWeapon.updateWeaponSpeed(AttackSpeedBuff);
         attachedWeapon.updateWeaponDamage(damagebuff);
         attachedWeapon.updateLifestealPercent(lifestealBuff);

@@ -48,5 +48,4 @@ public class PinScriptable : BaseScriptableObject
     [Header("TEMPORARY - REPLACE WITH SPRITE WHEN I GET THEM")]
     [Tooltip("TEMPORARY - REPLACE WITH SPRITE WHEN I GET THEM")]
     public Color pinColor;
-
 }
