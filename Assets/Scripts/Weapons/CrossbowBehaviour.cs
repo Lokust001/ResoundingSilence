@@ -448,7 +448,7 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
                 entityCollider.GetComponent<Rigidbody>().AddExplosionForce(enemyLaunchDistance, tempAbility.transform.position,
                     bombBlastAOESize, .1f, ForceMode.Impulse);
             }
-            else if(entityCollider.GetComponent<DummyPlayerBehaviour>())
+            else if(entityCollider.GetComponent<DummyPlayerBehaviour>() || entityCollider.GetComponent<PlayerController>())
             {
                 entityCollider.GetComponent<Rigidbody>().AddExplosionForce(playerLaunchDistance, tempAbility.transform.position,
                     bombBlastAOESize, 0, ForceMode.Impulse);
