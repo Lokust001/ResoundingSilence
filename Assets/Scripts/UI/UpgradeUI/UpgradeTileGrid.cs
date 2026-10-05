@@ -220,15 +220,15 @@ public class UpgradeTileGrid
         GetPins();
         foreach(var pin in pins)
         { 
-            if(pin.StatToChange == PinScriptable.WeaponStatToChange.bulletDamage)
+            if(pin.StatToChange == PinScriptable.WeaponStatToChange.BulletDamage)
             {
                 damagebuff += pin.ModifierNumber;
             }
-            else if(pin.StatToChange == PinScriptable.WeaponStatToChange.attackSpeed)
+            else if(pin.StatToChange == PinScriptable.WeaponStatToChange.AttackSpeed)
             {
                 AttackSpeedBuff /= pin.ModifierNumber;
             }
-            else if (pin.StatToChange == PinScriptable.WeaponStatToChange.LifestealPercent)
+            else if (pin.StatToChange == PinScriptable.WeaponStatToChange.Lifesteal)
             {
                 lifestealBuff += pin.ModifierNumber;
             }
