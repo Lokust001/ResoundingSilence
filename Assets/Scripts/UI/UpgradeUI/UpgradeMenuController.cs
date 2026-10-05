@@ -148,6 +148,9 @@ public class UpgradeMenuController : MenuBase
         UIPublicEvents.SetNewTooltipTextObject?.Invoke(tooltipTextObject);
     }
 
+    /// <summary>
+    /// throws a public event when the upgrade menu closes
+    /// </summary>
     protected override void CloseMenu()
     {
         UIPublicEvents.UpgradeMenuClosed?.Invoke();

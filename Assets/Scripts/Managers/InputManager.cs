@@ -99,6 +99,9 @@ public class InputManager : BaseManager
         await Task.CompletedTask;
     }
 
+    /// <summary>
+    /// enables the evergreen public events
+    /// </summary>
     private void EnableEvergreenPublicEvents()
     {
         pInput.onControlsChanged += PInput_onControlsChanged;
@@ -107,6 +110,9 @@ public class InputManager : BaseManager
         UIPublicEvents.UpgradeMenuClosed += SwapActionMapToMidRun;
     }
 
+    /// <summary>
+    /// disables the evergreen public events
+    /// </summary>
     private void DisableEvergreenPublicEvents()
     {
         pInput.onControlsChanged -= PInput_onControlsChanged;
@@ -126,6 +132,11 @@ public class InputManager : BaseManager
     }
 
     #endregion
+
+    /// <summary>
+    /// Triggers when the player swaps their input controls
+    /// </summary>
+    /// <param name="obj"></param>
     private void PInput_onControlsChanged(PlayerInput obj)
     {
         string currentControlScheme = obj.currentControlScheme;
@@ -147,6 +158,9 @@ public class InputManager : BaseManager
 
     #region enabling and disabling public events
 
+    /// <summary>
+    /// enables the midrun action map
+    /// </summary>
     public void SwapActionMapToMidRun()
     {
         pInput.currentActionMap.Disable();
@@ -160,6 +174,9 @@ public class InputManager : BaseManager
 
     }
 
+    /// <summary>
+    /// enables the upgrade menu action map
+    /// </summary>
     public void SwapActionMapToUpgradeMenu()
     {
         pInput.currentActionMap.Disable();
@@ -172,6 +189,9 @@ public class InputManager : BaseManager
         Debug.Log("upgrade menu enabled");
     }
 
+    /// <summary>
+    /// enables the midrun public events
+    /// </summary>
     private void EnableMidRunPublicEvents()
     {
         //needs to be redone every time the action map changes
@@ -211,6 +231,9 @@ public class InputManager : BaseManager
         swapWeapon.started += SwapWeapon_started;
     }
 
+    /// <summary>
+    /// enables the upgrade menu public events
+    /// </summary>
     private void EnableUpgradeMenuPublicEvents()
     {
         ToggleUpgradeMenuInUpgradeMenu = pInput.currentActionMap.FindAction("ToggleUpgradeMenu");
@@ -230,6 +253,9 @@ public class InputManager : BaseManager
         SelectPin.started += SelectPin_started;
     }
 
+    /// <summary>
+    /// disables the mid run public events
+    /// </summary>
     private void DisableMidRunPublicEvents()
     {
         move.performed -= Move_performed;
@@ -252,6 +278,9 @@ public class InputManager : BaseManager
         toggleUpgradeMenuInMidRun.started -= ToggleUpgradeMenu_started;
     }
 
+    /// <summary>
+    /// disables the upgrade menu public events
+    /// </summary>
     private void DisableUpgradeMenuPublicEvents()
     {
         ToggleUpgradeMenuInUpgradeMenu.started -= ToggleUpgradeMenuInUpgradeMenu_started;
