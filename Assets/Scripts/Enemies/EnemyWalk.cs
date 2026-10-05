@@ -26,6 +26,12 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     private MeshRenderer meshRenderer;
     private Rigidbody rigidbody;
 
+    private int s;
+    private void Awake()
+    {
+        s = LayerMask.NameToLayer("Player");
+    }
+
     /// <summary>
     /// Grabs necessary components and assigns enemyTransform to transform component
     /// </summary>
@@ -47,7 +53,6 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     /// </summary>
     public void StartPlayerSearch() 
     {
-        //m_Agent.isStopped = false;
         walkingCoroutine = StartCoroutine(MoveTowardsPlayer());
     }
 
@@ -56,12 +61,20 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     /// </summary>
     public void EndPlayerSearch() 
     {
-        //m_Agent.isStopped = true;
+        m_Agent.isStopped = true;
         if (walkingCoroutine != null) 
         {
             StopCoroutine(walkingCoroutine);
         }
         walkingCoroutine = null;
+    }
+
+    private Vector3 BrakeDestination()
+    {
+        Vector3 playerPosition = m_GameObject.transform.position;
+        Vector3 direction = (enemyTransform.position - playerPosition).normalized;
+        float distance = capsuleCollider.radius;
+        return playerPosition + (direction * distance);
     }
 
     /// <summary>
@@ -110,6 +123,8 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     {
         if (collision.gameObject.TryGetComponent<PlayerController>(out PlayerController player))
         {
+            //Debug.Log("Enemy collided player layer #: " + s);
+            Debug.Log(Physics.GetIgnoreLayerCollision(s, gameObject.layer));
             if (enemyAttack.IsEnemyCurrentlyCharging())
             {
                 Vector3 pushDirection = player.transform.position - transform.position;
@@ -127,6 +142,8 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     /// <returns></returns>
     private IEnumerator MoveTowardsPlayer() 
     {
+        Debug.Log("Following Player");
+        m_Agent.isStopped = false;
         while (true) 
         {
             m_Agent.destination = m_GameObject.transform.position;
