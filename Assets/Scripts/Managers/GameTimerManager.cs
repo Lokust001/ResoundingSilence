@@ -109,6 +109,9 @@ public class GameTimerManager : BaseManager
         return Mathf.RoundToInt(currentGameTime);
     }
 
+    /// <summary>
+    /// Logs to the console the current game time
+    /// </summary>
     [Button("Get Current Time")]
     public void DebugCurrentGameTime() 
     {
