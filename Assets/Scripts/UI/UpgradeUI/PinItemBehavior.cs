@@ -6,9 +6,7 @@
 * To Do:   N/A
 */
 
-using System.Collections;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class PinItemBehavior : Clickable
@@ -21,8 +19,6 @@ public class PinItemBehavior : Clickable
     public PinHolderSlot Parent;
 
     public InventoryPinHolder Owner;
-
-    private Coroutine moveCo;
 
     /// <summary>
     /// setsa references
@@ -78,11 +74,11 @@ public class PinItemBehavior : Clickable
     /// </summary>
     public void StartPinMoving()
     {
-        raycastBlocker.blocksRaycasts = false; 
+        raycastBlocker.blocksRaycasts = false;
         pinSprite.raycastTarget = false;
         FollowMouse(InputManager.Instance.CurrentMousePosition);
         InputPublicEvents.MouseMoved += FollowMouse;
-        
+
     }
 
     /// <summary>
@@ -110,5 +106,14 @@ public class PinItemBehavior : Clickable
     private void FollowMouse(Vector2 mousePos)
     {
         transform.position = mousePos;
+    }
+
+    /// <summary>
+    /// requests a tooltip when hovered over.
+    /// </summary>
+    public override void HoveredOver()
+    {
+        base.HoveredOver();
+        TooltipUIService.Instance.RequestTooltip(pinData);
     }
 }

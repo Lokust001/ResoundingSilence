@@ -7,6 +7,7 @@
 */
 
 using System;
+using TMPro;
 using UnityEngine;
 
 public static class UIPublicEvents
@@ -31,6 +32,12 @@ public static class UIPublicEvents
 
     public static Action<CooldownUIController.CooldownToUpdate, float> UpdateHUDCooldownUI;
     public static Action<CooldownUIController.CooldownToUpdate> ImmediatelyRefreshCooldown;
+
+    #endregion
+
+    #region Tooltips
+
+    public static Action<TMP_Text> SetNewTooltipTextObject;
 
     #endregion
 }
