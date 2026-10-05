@@ -10,6 +10,8 @@ using NaughtyAttributes;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Splines;
+using UnityEngine.Tilemaps;
 
 [System.Serializable]
 public class UpgradeTileGrid
@@ -45,7 +47,7 @@ public class UpgradeTileGrid
     /// </summary>
     public void OnDestroy()
     {
-        UIPublicEvents.PinChangedOnWeapon -= SendDatatoWeapon;
+        UIPublicEvents.PinChangedOnWeapon -= NewPinSet;
     }
 
     [System.Serializable]
@@ -155,7 +157,7 @@ public class UpgradeTileGrid
             HasBeenInitialized = true;
         }
 
-        UIPublicEvents.PinChangedOnWeapon += SendDatatoWeapon;
+        UIPublicEvents.PinChangedOnWeapon += NewPinSet;
 
         List<UpgradeTileData> enabledUnGlyphedTiles = new();
 
@@ -208,6 +210,16 @@ public class UpgradeTileGrid
     }
 
     /// <summary>
+    /// wrapper to call all the data changing info when a new pin is set
+    /// </summary>
+    /// <param name="pin"></param>
+    public void NewPinSet(PinScriptable pin)
+    {
+        CheckGlyphs(pin);
+        SendDatatoWeapon(pin);
+    }
+
+    /// <summary>
     /// Collects all the data from the pins on the weapon and sends it to buff the weapon stats
     /// </summary>
     public void SendDatatoWeapon(PinScriptable newpin)
@@ -219,22 +231,97 @@ public class UpgradeTileGrid
         float lifestealBuff = 1.0f;
         GetPins();
         foreach(var pin in pins)
-        { 
-            if(pin.StatToChange == PinScriptable.WeaponStatToChange.BulletDamage)
+        {
+            UpgradeTileData thisTile = grid.FirstOrDefault(x => x.pin == pin);
+            if (pin.StatToChange == PinScriptable.WeaponStatToChange.BulletDamage)
             {
-                damagebuff += pin.ModifierNumber;
+                float buffAmount = pin.ModifierNumber;
+                bool doubleButton = false;
+                List<UpgradeTileData> temp = UtilityFunctions.GetAdjacentTiles<UpgradeTileData>(thisTile.coords, grid, height, width);
+                foreach(var tile in temp)
+                {
+                    if(tile != null)
+                    {
+                        //put more
+                        if (tile.GlyphActive && tile.glyph.Type == GlyphScriptable.GlyphType.DoubleAdjacentGlyphs)
+                        {
+                            doubleButton = true;
+                        }
+                    }
+                }
+                if((thisTile.GlyphActive && thisTile.glyph.Type == GlyphScriptable.GlyphType.DoubleThisGlyph) || doubleButton)
+                {
+                    buffAmount *= 2;
+                }
+
+                damagebuff += buffAmount;
+                
             }
             else if(pin.StatToChange == PinScriptable.WeaponStatToChange.AttackSpeed)
             {
-                AttackSpeedBuff /= pin.ModifierNumber;
+                float buffAmount = pin.ModifierNumber;
+                bool doubleButton = false;
+                List<UpgradeTileData> temp = UtilityFunctions.GetAdjacentTiles<UpgradeTileData>(thisTile.coords, grid, height, width);
+                foreach (var tile in temp)
+                {
+                    if (tile != null)
+                    {
+                        //put more
+                        if (tile.GlyphActive && tile.glyph.Type == GlyphScriptable.GlyphType.DoubleAdjacentGlyphs)
+                        {
+                            doubleButton = true;
+                        }
+                    }
+                }
+                if ((thisTile.GlyphActive && thisTile.glyph.Type == GlyphScriptable.GlyphType.DoubleThisGlyph) || doubleButton)
+                {
+                    buffAmount *= 2;
+                }
+                AttackSpeedBuff *= (100 - buffAmount) / 100;
             }
             else if (pin.StatToChange == PinScriptable.WeaponStatToChange.Lifesteal)
             {
-                lifestealBuff += pin.ModifierNumber;
+                float buffAmount = pin.ModifierNumber;
+                bool doubleButton = false;
+                List<UpgradeTileData> temp = UtilityFunctions.GetAdjacentTiles<UpgradeTileData>(thisTile.coords, grid, height, width);
+                foreach (var tile in temp)
+                {
+                    if (tile != null)
+                    {
+                        //put more
+                        if (tile.GlyphActive && tile.glyph.Type == GlyphScriptable.GlyphType.DoubleAdjacentGlyphs)
+                        {
+                            doubleButton = true;
+                        }
+                    }
+                }
+                if ((thisTile.GlyphActive && thisTile.glyph.Type == GlyphScriptable.GlyphType.DoubleThisGlyph) || doubleButton)
+                {
+                    buffAmount *= 2;
+                }
+                lifestealBuff += buffAmount;
             }
         }
         attachedWeapon.updateWeaponSpeed(AttackSpeedBuff);
         attachedWeapon.updateWeaponDamage(damagebuff);
         attachedWeapon.updateLifestealPercent(lifestealBuff);
+    }
+
+
+    /// <summary>
+    /// when a new pin is set check if it was on a glyph that it's compatable with
+    /// </summary>
+    /// <param name="newpin"></param>
+    public void CheckGlyphs(PinScriptable newpin)
+    {
+        UpgradeTileData tile = grid.FirstOrDefault(x => x.pin == newpin);
+        if(tile.glyph != null && newpin.Type == tile.glyph.PinTypeToModify)
+        {
+            tile.GlyphActive = true;
+        }
+        else
+        {
+            tile.GlyphActive = false;
+        }
     }
 }
