@@ -384,6 +384,8 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
 
         if (chargingCapCollider != null)
             chargingCapCollider.enabled = false;
+        if (attackProjectilePrefab != null)
+            attackProjectilePrefab.SetActive(false);
     }
 
     
