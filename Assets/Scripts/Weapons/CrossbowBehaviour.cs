@@ -300,7 +300,7 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
         float abilityRange = abilityOne == Abilities.SplinterShot ? abilityOneRange : abilityTwoRange;
 
         float staticY = splinterShotPreview.transform.position.y;
-        Vector3 pos = transform.position + Vector3.ClampMagnitude(mousePos - transform.position, abilityRange);
+        Vector3 pos = transform.position + Vector3.ClampMagnitude(mousePos, abilityRange);
         pos.y = staticY;
         splinterShotPreview.transform.position = pos;
     }
@@ -313,7 +313,7 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
         float abilityRange = abilityOne == Abilities.BombBlast ? abilityOneRange : abilityTwoRange;
 
         float staticY = bombBlastPreview.transform.position.y;
-        Vector3 pos = transform.position + Vector3.ClampMagnitude(mousePos - transform.position, abilityRange);
+        Vector3 pos = transform.position + Vector3.ClampMagnitude(mousePos, abilityRange);
         pos.y = staticY;
         bombBlastPreview.transform.position = pos;
     }
@@ -362,7 +362,7 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
             return;
         }
 
-        Vector3 lookDir = mouseDir;
+        Vector3 lookDir = mousePos;
         Quaternion rot = Quaternion.RotateTowards(weaponModel.transform.rotation,
             Quaternion.LookRotation(lookDir), 20f);
         rot.x = 0;

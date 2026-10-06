@@ -28,7 +28,6 @@ public class BaseWeaponBehaviour : MonoBehaviour
     [SerializeField] protected AbilitySettings abilitySettings;
 
     protected Vector3 mousePos = Vector3.zero;
-    protected Vector3 mouseDir = Vector3.zero;
 
     protected bool isAttacking;
     protected bool attackReady;
@@ -146,8 +145,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundLayerMask))
         {
-            mousePos = hit.point;
-            mouseDir = hit.point - transform.position;
+            mousePos = hit.point - transform.position;
         }
     }
 
