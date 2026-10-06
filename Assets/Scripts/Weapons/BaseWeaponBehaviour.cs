@@ -141,12 +141,11 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// </summary>
     protected void GetMousPos(Vector2 pos)
     {
-        Plane p = new Plane(Vector3.forward, 0);
         Ray ray = Camera.main.ScreenPointToRay(pos);
 
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundLayerMask))
         {
-            mousePos = hit.point;
+            mousePos = hit.point - transform.position;
         }
     }
 
