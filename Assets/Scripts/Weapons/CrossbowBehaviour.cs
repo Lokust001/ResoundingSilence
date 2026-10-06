@@ -1,7 +1,7 @@
 /******************************************************************************
  * Author: Brad Dixon
  * Contributors:
- * Last Modified: 9/29/2026
+ * Last Modified: 10/06/2026
  * Brief: Handles the crossbow's basic attacks and abilities.
  * TODO: In the inspector, update the layer masks to include enemy layers
  * ***************************************************************************/
@@ -299,7 +299,7 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
 
         float abilityRange = abilityOne == Abilities.SplinterShot ? abilityOneRange : abilityTwoRange;
 
-        splinterShotPreview.transform.position = Vector3.ClampMagnitude(mousePos, abilityRange);
+        splinterShotPreview.transform.position = transform.position + Vector3.ClampMagnitude(mousePos - transform.position, abilityRange);
     }
 
     /// <summary>
@@ -309,7 +309,7 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
     {
         float abilityRange = abilityOne == Abilities.BombBlast ? abilityOneRange : abilityTwoRange;
 
-        bombBlastPreview.transform.position = Vector3.ClampMagnitude(mousePos, abilityRange);
+        bombBlastPreview.transform.position = transform.position + Vector3.ClampMagnitude(mousePos - transform.position, abilityRange);
     }
 
     /// <summary>
