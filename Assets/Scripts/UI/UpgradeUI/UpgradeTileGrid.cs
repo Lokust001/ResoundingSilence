@@ -8,6 +8,7 @@
 
 using NaughtyAttributes;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
@@ -44,7 +45,7 @@ public class UpgradeTileGrid
     /// </summary>
     public void OnDestroy()
     {
-        UIPublicEvents.UpgradeMenuClosed -= SendDatatoWeapon;
+        UIPublicEvents.PinChangedOnWeapon -= SendDatatoWeapon;
     }
 
     [System.Serializable]
@@ -154,7 +155,7 @@ public class UpgradeTileGrid
             HasBeenInitialized = true;
         }
 
-        UIPublicEvents.UpgradeMenuClosed += SendDatatoWeapon;
+        UIPublicEvents.PinChangedOnWeapon += SendDatatoWeapon;
 
         List<UpgradeTileData> enabledUnGlyphedTiles = new();
 
@@ -209,23 +210,25 @@ public class UpgradeTileGrid
     /// <summary>
     /// Collects all the data from the pins on the weapon and sends it to buff the weapon stats
     /// </summary>
-    public void SendDatatoWeapon()
+    public void SendDatatoWeapon(PinScriptable newpin)
     {
+        UpgradeTileData data = grid.FirstOrDefault(x  => x.pin == newpin);
+
         float damagebuff = 1.0f;
         float AttackSpeedBuff = 1.0f;
         float lifestealBuff = 1.0f;
         GetPins();
         foreach(var pin in pins)
         { 
-            if(pin.StatToChange == PinScriptable.WeaponStatToChange.bulletDamage)
+            if(pin.StatToChange == PinScriptable.WeaponStatToChange.BulletDamage)
             {
                 damagebuff += pin.ModifierNumber;
             }
-            else if(pin.StatToChange == PinScriptable.WeaponStatToChange.attackSpeed)
+            else if(pin.StatToChange == PinScriptable.WeaponStatToChange.AttackSpeed)
             {
                 AttackSpeedBuff /= pin.ModifierNumber;
             }
-            else if (pin.StatToChange == PinScriptable.WeaponStatToChange.LifestealPercent)
+            else if (pin.StatToChange == PinScriptable.WeaponStatToChange.Lifesteal)
             {
                 lifestealBuff += pin.ModifierNumber;
             }

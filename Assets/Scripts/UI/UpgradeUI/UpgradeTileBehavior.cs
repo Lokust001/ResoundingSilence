@@ -6,9 +6,11 @@
 * To Do:   N/A
 */
 
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
+
 
 public class UpgradeTileBehavior : PinHolderSlot
 {
@@ -16,7 +18,7 @@ public class UpgradeTileBehavior : PinHolderSlot
     public Vector2Int coords;
 
     [SerializeField]
-    private UpgradeTileBehavior[] adjacentTiles;
+    private List<UpgradeTileBehavior> adjacentTiles;
 
     public UpgradeTileData tileData;
 
@@ -47,7 +49,11 @@ public class UpgradeTileBehavior : PinHolderSlot
     /// </summary>
     private void GridInitialized()
     {
-        adjacentTiles = controller.getAdjacentTiles(coords);
+        adjacentTiles = UtilityFunctions.GetAdjacentTiles<UpgradeTileBehavior>(coords, 
+            controller.tilesInGrid.ToList(), 
+            controller.currentlyEnabledGrid.width, 
+            controller.currentlyEnabledGrid.height);
+       
     }
 
     /// <summary>
@@ -64,7 +70,7 @@ public class UpgradeTileBehavior : PinHolderSlot
 
             //temporary
             GetComponent<Image>().enabled = false;
-            
+
             GetComponent<Image>().color = Color.white;
 
             data = null;
@@ -78,7 +84,7 @@ public class UpgradeTileBehavior : PinHolderSlot
         this.coords = data.coords;
         gameObject.name = $"Upgrade Tile: {coords.x}, {coords.y}";
 
-        adjacentTiles = new UpgradeTileBehavior[8];
+        adjacentTiles = new(8);
 
         GetComponent<Image>().enabled = isActive;
 
@@ -99,7 +105,9 @@ public class UpgradeTileBehavior : PinHolderSlot
     public override void SetNewPinInTile(PinItemBehavior pin)
     {
         base.SetNewPinInTile(pin);
+        
         tileData.SetPin(pin.pinData);
+        UIPublicEvents.PinChangedOnWeapon?.Invoke(pin.pinData);
     }
 
     /// <summary>
@@ -108,8 +116,9 @@ public class UpgradeTileBehavior : PinHolderSlot
     public override void UnequipPin()
     {
         base.UnequipPin();
-
+        
         tileData.SetPin(null);
+        UIPublicEvents.PinChangedOnWeapon?.Invoke(null);
     }
 
     #endregion
