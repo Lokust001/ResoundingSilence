@@ -18,7 +18,13 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
     private GameObject attackProjectilePrefab;
 
     [SerializeField]
+    private GameObject aoeAttack;
+
+    [SerializeField]
     private GameObject attackIndicatorArea;
+
+    [SerializeField]
+    private string ignoreLayerTurnoff;
 
     private SphereCollider sphereTrigger;
     private CapsuleCollider chargingCapCollider;
@@ -145,9 +151,11 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
     /// <returns></returns>
     private IEnumerator AttackCooldownCoroutine() 
     {
+        Debug.Log("Started Cooldown");
         //Wait for the time between attacks, then clear the active coroutine
         yield return new WaitForSeconds(enemyData.timeBetweenAttacks);
         activeATKorCooldown = null;
+        Debug.Log("Ended Cooldown");
 
         //If player is not in attack range, start searching for it
         if (!inAttackRange)
@@ -284,6 +292,9 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
     {
         if(attackIndicatorArea != null)
             attackIndicatorArea.transform.parent.localScale = new(1, 1, 0);
+        if (aoeAttack != null)
+            aoeAttack.SetActive(false);
+
     }
 
     /// <summary>
@@ -293,7 +304,7 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
     private IEnumerator PerformMeleeAttack() 
     {
         yield return null;
-        attackProjectilePrefab.SetActive(true);
+        aoeAttack.SetActive(true);
 
         float timer = 0;
         float goalDuration = enemyData.attackUptimeDuration;
@@ -304,7 +315,7 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
             timer += Time.fixedDeltaTime;
         }
 
-        attackProjectilePrefab.SetActive(false);
+        aoeAttack.SetActive(false);
     }
 
     /// <summary>
@@ -384,8 +395,6 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
 
         if (chargingCapCollider != null)
             chargingCapCollider.enabled = false;
-        if (attackProjectilePrefab != null)
-            attackProjectilePrefab.SetActive(false);
     }
 
     
