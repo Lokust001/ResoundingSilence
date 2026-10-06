@@ -164,7 +164,7 @@ public class UpgradeMenuController : MenuBase
     {
         base.SetUpPublicEvents();
         UIPublicEvents.PinPickedUp += SetCarriedPin;
-        InputPublicEvents.ShootReleased += DropHeldPin;
+        InputPublicEvents.PinReleased += DropHeldPin;
     }
 
     /// <summary>
@@ -174,7 +174,7 @@ public class UpgradeMenuController : MenuBase
     {
         base.TearDownPublicEvents();
         UIPublicEvents.PinPickedUp -= SetCarriedPin;
-        InputPublicEvents.ShootReleased -= DropHeldPin;
+        InputPublicEvents.PinReleased -= DropHeldPin;
     }
 
     /// <summary>

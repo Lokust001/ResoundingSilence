@@ -56,6 +56,7 @@ public class InputManager : BaseManager
 
     private InputAction SelectPin;
 
+    private InputAction MousePosition;
     #endregion
 
     #region Setup
@@ -243,6 +244,7 @@ public class InputManager : BaseManager
         EnableWeapon1 = pInput.currentActionMap.FindAction("EnableWeapon1");
         EnableWeapon2 = pInput.currentActionMap.FindAction("EnableWeapon2");
         SelectPin = pInput.currentActionMap.FindAction("SelectPin");
+        MousePosition = pInput.currentActionMap.FindAction("MousePosition");
 
         ToggleUpgradeMenuInUpgradeMenu.started += ToggleUpgradeMenuInUpgradeMenu_started;
         SwapFocusToGrid.started += SwapFocusToGrid_started;
@@ -251,7 +253,11 @@ public class InputManager : BaseManager
         EnableWeapon1.started += EnableWeapon1_started;
         EnableWeapon2.started += EnableWeapon2_started;
         SelectPin.started += SelectPin_started;
+        SelectPin.canceled += SelectPin_canceled;
+        MousePosition.performed += Aim_performed;
     }
+
+
 
     /// <summary>
     /// disables the mid run public events
@@ -290,6 +296,8 @@ public class InputManager : BaseManager
         EnableWeapon1.started -= EnableWeapon1_started;
         EnableWeapon2.started -= EnableWeapon2_started;
         SelectPin.started -= SelectPin_started;
+        SelectPin.canceled -= SelectPin_canceled;
+        MousePosition.performed -= Aim_performed;
     }
 
 
@@ -431,6 +439,12 @@ public class InputManager : BaseManager
         Debug.Log("Pin Selected");
     }
 
+    private void SelectPin_canceled(InputAction.CallbackContext obj)
+    {
+        InputPublicEvents.PinReleased?.Invoke();
+    }
+
+
     /// <summary>
     /// calls the public event that enables the grid for weapon 2
     /// </summary>
@@ -484,6 +498,8 @@ public class InputManager : BaseManager
     {
         InputPublicEvents.ToggleUpgradeMenuPressed?.Invoke();
     }
+
+
 
     #endregion
 }

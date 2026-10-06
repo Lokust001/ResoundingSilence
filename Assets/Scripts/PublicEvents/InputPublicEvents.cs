@@ -44,6 +44,9 @@ public static class InputPublicEvents
     #region UpgradeMenu Controls
 
     public static Action SelectPin;
+
+    public static Action PinReleased;
+
     public static Action EnableWeapon1;
     public static Action EnableWeapon2;
     public static Action SwapFocusToTarot;
