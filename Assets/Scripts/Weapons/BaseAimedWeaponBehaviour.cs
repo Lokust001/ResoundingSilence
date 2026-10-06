@@ -19,7 +19,7 @@ public class BaseAimedWeaponBehaviour : BaseWeaponBehaviour
     /// </summary>
     override protected void Attack()
     {
-        Vector3 bulletDir = mousePos;
+        Vector3 bulletDir = mouseDir;
         bulletDir.y = 0;
 
         GameObject spawnedProjectile = Instantiate(weaponProjectile, transform.position, Quaternion.LookRotation(bulletDir.normalized, Vector3.up));
