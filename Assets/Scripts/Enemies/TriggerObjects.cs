@@ -17,7 +17,6 @@ public class TriggerObjects : MonoBehaviour
     /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.name);
         if (other.TryGetComponent<PlayerController>(out PlayerController player)) 
         {
             ChildTriggerActivated?.Invoke(other);

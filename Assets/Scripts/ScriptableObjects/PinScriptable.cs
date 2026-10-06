@@ -23,11 +23,15 @@ public class PinScriptable : BaseScriptableObject
     public enum WeaponStatToChange
     {
         none,
-        bulletDamage,
-        attackSpeed,
+        BulletDamage,
+        AttackSpeed,
         addDebuff,
-        LifestealPercent
+        Lifesteal
     }
+
+    [HorizontalLine(4, EColor.Red)]
+    [Tooltip("The name of the pin")]
+    public string PinName;
 
     [HorizontalLine(4, EColor.Indigo)]
     [Header("Pin Gameplay Values")]

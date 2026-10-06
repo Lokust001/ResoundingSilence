@@ -7,6 +7,7 @@
 */
 
 using System;
+using TMPro;
 using UnityEngine;
 
 public static class UIPublicEvents
@@ -19,11 +20,14 @@ public static class UIPublicEvents
 
 
     #region UpgradeMenu
+
+    public static Action UpgradeMenuOpened;
+    public static Action UpgradeMenuClosed;
     public static Action UpgradeGridInitialized;
 
     public static Action<PinItemBehavior> PinPickedUp;
 
-    public static Action UpgradeMenuClosed;
+    public static Action<PinScriptable> PinChangedOnWeapon;
 
     #endregion
 
@@ -31,6 +35,12 @@ public static class UIPublicEvents
 
     public static Action<CooldownUIController.CooldownToUpdate, float> UpdateHUDCooldownUI;
     public static Action<CooldownUIController.CooldownToUpdate> ImmediatelyRefreshCooldown;
+
+    #endregion
+
+    #region Tooltips
+
+    public static Action<TMP_Text> SetNewTooltipTextObject;
 
     #endregion
 }

@@ -9,6 +9,7 @@
 using NaughtyAttributes;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -66,7 +67,15 @@ public class UpgradeMenuController : MenuBase
     private Transform pinsOnOtherGridsParent;
 
     [SerializeField]
+    [ShowIf(nameof(settings), ShownSettings.References)]
     private Button swapGridsButton;
+
+    [SerializeField]
+    [ShowIf(nameof(settings), ShownSettings.References)]
+    private TMP_Text tooltipTextObject;
+
+    [HideInInspector]
+    public UpgradeTileGrid currentlyEnabledGrid;
 
     #endregion
 
@@ -88,14 +97,14 @@ public class UpgradeMenuController : MenuBase
     #endregion
 
     #region private
-    private List<UpgradeTileBehavior> tilesInGrid = new();
+    public List<UpgradeTileBehavior> tilesInGrid { get; private set; } = new();
 
     private List<PinItemBehavior> inventoryPins = new();
     private List<InventoryPinHolder> inventorySlots = new();
     private int gridHeight;
     private int gridWidth;
 
-    private UpgradeTileGrid currentlyEnabledGrid;
+
 
     [HideInInspector]
     public PinItemBehavior CarriedPin;
@@ -135,15 +144,16 @@ public class UpgradeMenuController : MenuBase
         }
 
         swapGridsButton.interactable = !DisableSwappingGrid;
+        UIPublicEvents.UpgradeMenuOpened?.Invoke();
+        UIPublicEvents.SetNewTooltipTextObject?.Invoke(tooltipTextObject);
     }
 
     /// <summary>
-    /// throws out an events when the menu is closed
+    /// throws a public event when the upgrade menu closes
     /// </summary>
     protected override void CloseMenu()
     {
         UIPublicEvents.UpgradeMenuClosed?.Invoke();
-
         base.CloseMenu();
     }
 
@@ -154,7 +164,7 @@ public class UpgradeMenuController : MenuBase
     {
         base.SetUpPublicEvents();
         UIPublicEvents.PinPickedUp += SetCarriedPin;
-        InputPublicEvents.ShootReleased += DropHeldPin;
+        InputPublicEvents.PinReleased += DropHeldPin;
     }
 
     /// <summary>
@@ -164,7 +174,7 @@ public class UpgradeMenuController : MenuBase
     {
         base.TearDownPublicEvents();
         UIPublicEvents.PinPickedUp -= SetCarriedPin;
-        InputPublicEvents.ShootReleased -= DropHeldPin;
+        InputPublicEvents.PinReleased -= DropHeldPin;
     }
 
     /// <summary>
@@ -186,7 +196,7 @@ public class UpgradeMenuController : MenuBase
         }
     }
 
-    
+
 
     /// <summary>
     /// Initializes the grid for the first time. TODO: replace testGrid with the grid of the actual weapon.
@@ -240,78 +250,6 @@ public class UpgradeMenuController : MenuBase
         UpdatePinVisibility();
     }
 
-    #endregion
-
-    #region Getters
-
-    /// <summary>
-    /// grabs the adjacent tiles from a given set of coordinates
-    /// </summary>
-    /// <param name="coords"></param>
-    /// <returns>0 - north, 1 - northeast, 2 - east, 3 - southeast, 4 - south, 5 - southwest, 6 - west, 7 - northwest </returns>
-    public UpgradeTileBehavior[] getAdjacentTiles(Vector2Int coords)
-    {
-        UpgradeTileBehavior[] temp = new UpgradeTileBehavior[8];
-
-        //check north
-        temp[0] = GetTile(new Vector2Int(coords.x, coords.y - 1));
-
-        //check northeast
-        temp[1] = GetTile(new Vector2Int(coords.x + 1, coords.y - 1));
-
-        //check east
-        temp[2] = GetTile(new Vector2Int(coords.x + 1, coords.y));
-
-        //check southeast
-        temp[3] = GetTile(new Vector2Int(coords.x + 1, coords.y + 1));
-
-        //check south
-        temp[4] = GetTile(new Vector2Int(coords.x, coords.y + 1));
-
-        //check southwest
-        temp[5] = GetTile(new Vector2Int(coords.x - 1, coords.y + 1));
-
-        //check west
-        temp[6] = GetTile(new Vector2Int(coords.x - 1, coords.y));
-
-        //check northwest
-        temp[7] = GetTile(new Vector2Int(coords.x - 1, coords.y - 1));
-
-        return temp;
-    }
-
-    /// <summary>
-    /// grabs a tile given the index in the tilesInGrid list
-    /// </summary>
-    /// <param name="index"></param>
-    /// <returns></returns>
-    public UpgradeTileBehavior GetTile(int index)
-    {
-        if (index < 0 || index >= tilesInGrid.Count)
-        {
-            return null;
-        }
-        else
-        {
-            return tilesInGrid[index];
-        }
-    }
-
-    /// <summary>
-    /// grabs the tile given the coordinates
-    /// </summary>
-    /// <param name="coords"></param>
-    /// <returns></returns>
-    public UpgradeTileBehavior GetTile(Vector2Int coords)
-    {
-        if (coords.x < 0 || coords.x >= gridWidth ||
-            coords.y < 0 || coords.y >= gridHeight)
-        {
-            return null;
-        }
-
-        return GetTile(coords.x + (coords.y * gridWidth));
-    }
     #endregion
 
     #region ButtonFuncs
@@ -487,7 +425,7 @@ public class UpgradeMenuController : MenuBase
         }
         //at this point in the func we know we hit nothing with the raycast
         //   or we hit a pin with no parent (which should be impossible)
-        
+
         //throw the pin back to the inventory or the tile it belongs to
         if (CarriedPin.Parent == null)
         {

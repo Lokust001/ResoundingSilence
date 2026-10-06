@@ -141,6 +141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4a75311c003ac24d8d07e273d723f03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
+  testWithoutSpawner: 0
   enemyData: {fileID: 0}
   dmgToTake: 10
 --- !u!114 &2326147083794828989
@@ -192,7 +193,7 @@ NavMeshAgent:
   m_Acceleration: 6.5
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 4
+  m_StoppingDistance: 3
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1

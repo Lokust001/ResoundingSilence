@@ -10,6 +10,10 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+
+    [SerializeField]
+    private bool testWithoutSpawner;
+
     [SerializeField]
     private BaseEnemyScriptable enemyData;
 
@@ -23,17 +27,21 @@ public class Enemy : MonoBehaviour
     {
         enemyData = enemyData.CreateNonRefCopy<BaseEnemyScriptable>();
         PropagateEnemyData();
+        EnableEnemy();
+
+        if (testWithoutSpawner)
+            EnableEnemy();
     }
 
     /// <summary>
-    /// Calls different start behaviors depending on the enemy type
+    /// Dictates what first action the enemy should take when it is enabled
     /// </summary>
-    private void Start()
+    private void EnemyStartBehavior() 
     {
         switch (enemyData.enemyType)
         {
             case BaseEnemyScriptable.EnemyType.BuffEnemy:
-                GetComponentInChildren<EnemyBuff>(true).AttemptBuffingAllies(); 
+                GetComponentInChildren<EnemyBuff>(true).AttemptBuffingAllies();
                 break;
             default:
                 GetComponent<EnemyWalk>().StartPlayerSearch();
@@ -49,6 +57,29 @@ public class Enemy : MonoBehaviour
         foreach (IEntityDataReceiver entity in GetComponentsInChildren<IEntityDataReceiver>(true))
         {
             entity.SetEntityData(enemyData);
+        }
+    }
+
+    /// <summary>
+    /// Calls the EnableEntity method on all enemy scripts with ICustomEnabler
+    /// </summary>
+    public void EnableEnemy() 
+    {
+        foreach (ICustomEnabler entity in GetComponentsInChildren<ICustomEnabler>(true))
+        {
+            entity.EnableEntity();
+        }
+        EnemyStartBehavior();
+    }
+
+    /// <summary>
+    /// Calls the DisableEntity method on all enemy scripts with ICustomDisabler
+    /// </summary>
+    public void DisableEnemy() 
+    {
+        foreach (ICustomDisabler entity in GetComponentsInChildren<ICustomDisabler>(true))
+        {
+            entity.DisableEntity();
         }
     }
 
@@ -98,6 +129,8 @@ public class Enemy : MonoBehaviour
         return Mathf.RoundToInt(enemyData.enemyATKDmg + (enemyData.enemyATKDmg * enemyData.atkBoostFactor));
     }
 
+
+
     /// <summary>
     /// Debug Attack enemy while attacking doesn't exist yet
     /// </summary>
@@ -106,6 +139,15 @@ public class Enemy : MonoBehaviour
     {
         EnemyTakeDamage(dmgToTake);
         
+    }
+    /// <summary>
+    /// Simulates an enemydeath
+    /// </summary>
+
+    [Button("EnemyDeath")]
+    public void EnemyDeath() 
+    {
+        Destroy(gameObject);
     }
 }
 

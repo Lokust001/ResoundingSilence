@@ -12,6 +12,10 @@ using UnityEngine;
 
 public static class InputPublicEvents
 {
+    public static Action ControllerEnabled;
+    public static Action KeyboardMouseEnabled;
+
+    #region MidRun
     public static Action<Vector2> MouseMoved;
 
     public static Action<Vector2> MovePressed;
@@ -30,4 +34,24 @@ public static class InputPublicEvents
     public static Action DashPressed;
 
     public static Action ToggleUpgradeMenuPressed;
+
+    public static Action PausePressed;
+
+    public static Action SwapWeaponPressed;
+
+    #endregion
+
+    #region UpgradeMenu Controls
+
+    public static Action SelectPin;
+
+    public static Action PinReleased;
+
+    public static Action EnableWeapon1;
+    public static Action EnableWeapon2;
+    public static Action SwapFocusToTarot;
+    public static Action SwapFocusToInventory;
+    public static Action SwapFocusToGrid;
+
+    #endregion
 }
