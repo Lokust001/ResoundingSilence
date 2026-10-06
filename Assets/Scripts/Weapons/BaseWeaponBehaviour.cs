@@ -146,7 +146,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundLayerMask))
         {
-            mousePos = hit.point;
+            mousePos = hit.point - transform.position;
         }
     }
 

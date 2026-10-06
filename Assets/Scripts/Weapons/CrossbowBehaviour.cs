@@ -356,7 +356,7 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
             return;
         }
 
-        Vector3 lookDir = mousePos - transform.position;
+        Vector3 lookDir = mousePos;
         Quaternion rot = Quaternion.RotateTowards(weaponModel.transform.rotation,
             Quaternion.LookRotation(lookDir), 20f);
         rot.x = 0;
