@@ -20,6 +20,9 @@ public static class UIPublicEvents
 
 
     #region UpgradeMenu
+
+    public static Action UpgradeMenuOpened;
+    public static Action UpgradeMenuClosed;
     public static Action UpgradeGridInitialized;
 
     public static Action<PinItemBehavior> PinPickedUp;
