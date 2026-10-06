@@ -27,9 +27,7 @@ public class Enemy : MonoBehaviour
     {
         enemyData = enemyData.CreateNonRefCopy<BaseEnemyScriptable>();
         PropagateEnemyData();
-        EnableEnemy();
-
-        if (testWithoutSpawner)
+        if(testWithoutSpawner)
             EnableEnemy();
     }
 
