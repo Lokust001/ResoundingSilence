@@ -104,7 +104,7 @@ public class UpgradeMenuController : MenuBase
     private int gridHeight;
     private int gridWidth;
 
-    
+
 
     [HideInInspector]
     public PinItemBehavior CarriedPin;
@@ -144,7 +144,17 @@ public class UpgradeMenuController : MenuBase
         }
 
         swapGridsButton.interactable = !DisableSwappingGrid;
+        UIPublicEvents.UpgradeMenuOpened?.Invoke();
         UIPublicEvents.SetNewTooltipTextObject?.Invoke(tooltipTextObject);
+    }
+
+    /// <summary>
+    /// throws a public event when the upgrade menu closes
+    /// </summary>
+    protected override void CloseMenu()
+    {
+        UIPublicEvents.UpgradeMenuClosed?.Invoke();
+        base.CloseMenu();
     }
 
     /// <summary>
@@ -154,7 +164,7 @@ public class UpgradeMenuController : MenuBase
     {
         base.SetUpPublicEvents();
         UIPublicEvents.PinPickedUp += SetCarriedPin;
-        InputPublicEvents.ShootReleased += DropHeldPin;
+        InputPublicEvents.PinReleased += DropHeldPin;
     }
 
     /// <summary>
@@ -164,7 +174,7 @@ public class UpgradeMenuController : MenuBase
     {
         base.TearDownPublicEvents();
         UIPublicEvents.PinPickedUp -= SetCarriedPin;
-        InputPublicEvents.ShootReleased -= DropHeldPin;
+        InputPublicEvents.PinReleased -= DropHeldPin;
     }
 
     /// <summary>
@@ -186,7 +196,7 @@ public class UpgradeMenuController : MenuBase
         }
     }
 
-    
+
 
     /// <summary>
     /// Initializes the grid for the first time. TODO: replace testGrid with the grid of the actual weapon.
@@ -415,7 +425,7 @@ public class UpgradeMenuController : MenuBase
         }
         //at this point in the func we know we hit nothing with the raycast
         //   or we hit a pin with no parent (which should be impossible)
-        
+
         //throw the pin back to the inventory or the tile it belongs to
         if (CarriedPin.Parent == null)
         {

@@ -45,6 +45,7 @@ public class MouseUIService : BaseService
     {
         InputPublicEvents.MouseMoved += UpdateMousePos;
         InputPublicEvents.ShootPressed += Click;
+        InputPublicEvents.SelectPin += Click;
 
         await Task.CompletedTask;
     }
@@ -56,6 +57,7 @@ public class MouseUIService : BaseService
     {
         InputPublicEvents.MouseMoved -= UpdateMousePos;
         InputPublicEvents.ShootPressed -= Click;
+        InputPublicEvents.SelectPin -= Click;
     }
 
     /// <summary>
