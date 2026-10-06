@@ -371,7 +371,7 @@ public class PlayerController : MonoBehaviour
             rigidbody.MovePosition(knockbackDelta);
 
 
-            Debug.Log("\tDistance: " + distance + " \tSpeed: " + dynamicDeltaSpeed + " \tTime: " + timer);
+            //Debug.Log("\tDistance: " + distance + " \tSpeed: " + dynamicDeltaSpeed + " \tTime: " + timer);
 
         }
         
