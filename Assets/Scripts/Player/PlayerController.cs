@@ -1,14 +1,12 @@
 /*
 * Author: Dalsten Yan
-* Contributors:
-* Last Modified: 09/18/2026
+* Contributors: Brad Dixon
+* Last Modified: 10/06/2026
 * Summary: Player input, stats, and damage are handled here
 * To Do:   Add more variables as needed.
 */
 using System.Collections;
-using Unity.Scripting;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField]
@@ -26,8 +24,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     float invincibilityDuration;
 
-    
-    
+    [SerializeField] float dashRange;
+    [SerializeField] float dashDuration;
+    [SerializeField] float dashCooldown;
+    [SerializeField] int totalDashes;
+    [SerializeField] float chainDashWindow;
+
+    [Tooltip("What layers the player shouldn't collide with while they are invinvible.")]
+    [SerializeField] LayerMask ignoreWhileInvincible;
 
     #region Private Variables
     Rigidbody rigidbody;
@@ -36,27 +40,54 @@ public class PlayerController : MonoBehaviour
 
     Coroutine dmgCoroutine;
     Coroutine knockbackCoroutine;
+    Coroutine dashWindowCoroutine;
 
     Coroutine playerMovementCoroutine;
+
+    Vector3 dashDir;
+
+    //Serialized so you can test more easily right now. Once the game has feedback for when a dash is ready, these shouldn't be serialized
+    [SerializeField] bool canDash;
+    [SerializeField] bool chainDashing;
+    
+    int currentDash;
+
     #endregion
 
     #region Unity Methods
 
+    /// <summary>
+    /// Allows the script to listen for player input
+    /// </summary>
     private void OnEnable()
     {
         InputPublicEvents.MovePressed += PlayerInputStarted;
         InputPublicEvents.MoveReleased += PlayerInputEnded;
+        InputPublicEvents.DashPressed += PlayerDashPressed;
     }
 
+    /// <summary>
+    /// Stops listening when the object is destroyed. 
+    /// </summary>
     private void OnDisable()
     {
         InputPublicEvents.MovePressed -= PlayerInputStarted;
         InputPublicEvents.MoveReleased -= PlayerInputEnded;
+        InputPublicEvents.DashPressed -= PlayerDashPressed;
     }
+
+    /// <summary>
+    /// Sets components
+    /// </summary>
     void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
         playerModelCollider = GetComponent<CapsuleCollider>();
+
+        //Defaults to right in case player dashes before ever moving
+        dashDir = Vector3.right;
+        currentDash = 0;
+        canDash = true;
 
         //Original movement speed is zero + start move coroutine
         PlayerInputEnded();
@@ -70,8 +101,10 @@ public class PlayerController : MonoBehaviour
     /// <param name="moveDirection"></param>
     void PlayerInputStarted(Vector2 moveDirection) 
     {
-        playerVelocity.x = moveDirection.x * moveSpeed;
-        playerVelocity.z = moveDirection.y * moveSpeed;
+        playerVelocity.x = moveDirection.x;
+        playerVelocity.z = moveDirection.y;
+
+        dashDir = new Vector3(moveDirection.x, 0, moveDirection.y);
     }
 
     /// <summary>
@@ -80,8 +113,96 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     void PlayerInputEnded() 
     {
-        rigidbody.linearVelocity = Vector3.zero;
-        playerVelocity = Vector3.zero;
+        playerVelocity.x = 0;
+        playerVelocity.z = 0;
+    }
+
+    /// <summary>
+    /// Checks that the player is able to dash
+    /// </summary>
+    private void PlayerDashPressed()
+    {
+        //Makes sure you can't dash while in the air
+        if (rigidbody.linearVelocity.y == 0 && (canDash || chainDashing))
+        {
+             StartCoroutine(PlayerDash());
+        }
+    }
+
+    /// <summary>
+    /// Dashes the player in the last direction they were moving
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator PlayerDash()
+    {
+        canDash = false;
+        chainDashing = false;
+
+        rigidbody.excludeLayers += ignoreWhileInvincible;
+
+        ++currentDash;
+
+        if(currentDash > 1)
+        {
+            StopCoroutine(dashWindowCoroutine);
+        }
+
+        Vector3 dashPoint = Physics.Raycast(transform.position, dashDir.normalized, out RaycastHit hit, dashRange, ~ignoreWhileInvincible) ? hit.point : transform.position + (dashDir.normalized * dashRange);
+
+        StopCoroutine(playerMovementCoroutine);
+
+        for (float t = 0; t < dashDuration; t += Time.deltaTime)
+        {
+            if (transform.position == dashPoint)
+            {
+                break;
+            }
+            transform.position = (Vector3.MoveTowards(transform.position, dashPoint, (t / dashDuration)));
+            yield return null;
+        }
+
+        rigidbody.excludeLayers -= ignoreWhileInvincible;
+
+        if(currentDash < totalDashes)
+        {
+            dashWindowCoroutine = StartCoroutine(TimeToChainDash());
+        }
+        else
+        {
+            currentDash = 0;
+            chainDashing = false;
+            StartCoroutine(ResetDash(dashCooldown));
+        }
+
+        RestartPlayerMovementAndInput();
+
+        yield return null;
+    }
+
+    /// <summary>
+    /// After x amount of time, dash comes off of cooldown
+    /// </summary>
+    /// <param name="cooldownTime"></param> How long the dash cooldown is. Using a param so that if you don't chain dash, 
+    /// the time it waits for gets removed from cooldown time
+    /// <returns></returns>
+    IEnumerator ResetDash(float cooldownTime)
+    {
+        yield return new WaitForSeconds(cooldownTime);
+        canDash = true;
+    }
+
+    /// <summary>
+    /// How long the player has to chain dash before dashing goes on cooldown
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator TimeToChainDash()
+    {
+        chainDashing = true;
+        yield return new WaitForSeconds(chainDashWindow);
+        currentDash = 0;
+        chainDashing = false;
+
+        StartCoroutine(ResetDash(dashCooldown - chainDashWindow));
     }
 
     /// <summary>
@@ -93,7 +214,7 @@ public class PlayerController : MonoBehaviour
         while (true) 
         {
             //Propagate calculated velocity to rigidbody & make player move
-            rigidbody.linearVelocity = playerVelocity;
+            rigidbody.linearVelocity = new Vector3(playerVelocity.x * moveSpeed, rigidbody.linearVelocity.y, playerVelocity.z * moveSpeed);
 
             //Tick Coroutine as if it were in FixedUpdate
             yield return new WaitForFixedUpdate();
@@ -250,7 +371,7 @@ public class PlayerController : MonoBehaviour
             rigidbody.MovePosition(knockbackDelta);
 
 
-            Debug.Log("\tDistance: " + distance + " \tSpeed: " + dynamicDeltaSpeed + " \tTime: " + timer);
+            //Debug.Log("\tDistance: " + distance + " \tSpeed: " + dynamicDeltaSpeed + " \tTime: " + timer);
 
         }
         

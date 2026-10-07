@@ -1124,14 +1124,14 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1142123860064501185}
+  - {fileID: 5712929060553215861}
+  - {fileID: 65490877412381193}
   - {fileID: 2122604764233073717}
   - {fileID: 3440755791322720558}
   - {fileID: 8171145772514272918}
   - {fileID: 5918980167002557550}
   - {fileID: 2998325558724428653}
   - {fileID: 4247941652432194231}
-  - {fileID: 5712929060553215861}
-  - {fileID: 65490877412381193}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1163,6 +1163,12 @@ MonoBehaviour:
   pinsOnOtherGridsParent: {fileID: 4247941652432194231}
   swapGridsButton: {fileID: 5626566061936829090}
   tooltipTextObject: {fileID: 3638218854745270501}
+  currentlyEnabledGrid:
+    NumberOfGlyphRange: {x: 0, y: 0}
+    attachedWeapon: {fileID: 0}
+    height: 0
+    width: 0
+    rows: []
   enableTestMode: 1
   testingGrids:
   - NumberOfGlyphRange: {x: 2, y: 4}

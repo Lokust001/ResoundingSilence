@@ -105,7 +105,9 @@ public class UpgradeTileBehavior : PinHolderSlot
     public override void SetNewPinInTile(PinItemBehavior pin)
     {
         base.SetNewPinInTile(pin);
+        
         tileData.SetPin(pin.pinData);
+        UIPublicEvents.PinChangedOnWeapon?.Invoke(pin.pinData);
     }
 
     /// <summary>
@@ -114,8 +116,9 @@ public class UpgradeTileBehavior : PinHolderSlot
     public override void UnequipPin()
     {
         base.UnequipPin();
-
+        
         tileData.SetPin(null);
+        UIPublicEvents.PinChangedOnWeapon?.Invoke(null);
     }
 
     #endregion
