@@ -245,7 +245,7 @@ public class UpgradeTileGrid
                 }
                 else
                 {
-                    buffAmount *= (1 + GetAdjacentBuff(thisTile));
+                    buffAmount *= (1 + (GetAdjacentBuff(thisTile)/100));
                 }
 
                 if ((thisTile.GlyphActive && thisTile.glyph.Type == GlyphScriptable.GlyphType.DoubleThisGlyph) || doubleGlyphAdjacent(thisTile))
@@ -264,7 +264,7 @@ public class UpgradeTileGrid
                 }
                 else
                 {
-                    buffAmount *= (1 + GetAdjacentBuff(thisTile));
+                    buffAmount *= (1 + (GetAdjacentBuff(thisTile) / 100));
                 }
 
                 if ((thisTile.GlyphActive && thisTile.glyph.Type == GlyphScriptable.GlyphType.DoubleThisGlyph) || doubleGlyphAdjacent(thisTile))
@@ -282,7 +282,7 @@ public class UpgradeTileGrid
                 }
                 else
                 {
-                    buffAmount *= (1 + GetAdjacentBuff(thisTile));
+                    buffAmount *= (1 + (GetAdjacentBuff(thisTile) / 100));
                 }
 
                 if ((thisTile.GlyphActive && thisTile.glyph.Type == GlyphScriptable.GlyphType.DoubleThisGlyph) || doubleGlyphAdjacent(thisTile))
@@ -300,19 +300,19 @@ public class UpgradeTileGrid
                 switch(tile.glyph.Type)
                 {
                     case 0:
-                        return;
+                        break;
                     case GlyphScriptable.GlyphType.CooldownReduction:
                         //ToDo add this to the cooldown of the weapons
-                        return;
+                        break;
                     case GlyphScriptable.GlyphType.DamageBuff:
                         damagebuff *= 1 + (tile.glyph.GlyphChangeAmount / 100);
-                        return;
+                        break;
                     case GlyphScriptable.GlyphType.HealthingReceived:
                         playerController.healingPotency = 1 + (tile.glyph.GlyphChangeAmount / 100);
-                        return;
+                        break;
                     case GlyphScriptable.GlyphType.StatusEffect: 
                         //ToDo Add the extra StatusEffect Buffs
-                        return;
+                        break;
                 }
             }
         }
@@ -351,7 +351,7 @@ public class UpgradeTileGrid
         List<UpgradeTileData> temp = UtilityFunctions.GetAdjacentTiles<UpgradeTileData>(tile.coords, grid, height, width);
         foreach (var currentTile in temp)
         {
-            if (currentTile != null && tile.pin.Type == currentTile.pin.Type)
+            if (currentTile != null && currentTile.pin != null && tile.pin.Type == currentTile.pin.Type)
             {
                 BuffAmount += tile.pin.AdjacentTileScaling;
             }
