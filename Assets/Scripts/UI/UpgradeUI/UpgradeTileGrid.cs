@@ -30,9 +30,12 @@ public class UpgradeTileGrid
     [Header("Grid tiles"), Tooltip("This is the upgrade grid - 0, 0 is the top left element and it goes to the right.")]
     public List<GridRow> rows;
 
+    public PlayerController playerController;
+
     public List<UpgradeTileData> grid { get; private set; } = new();
 
     public List<PinScriptable> pins { get; private set; } = new();
+
 
     /// <summary>
     /// subscride to the event
@@ -236,44 +239,35 @@ public class UpgradeTileGrid
             if (pin.StatToChange == PinScriptable.WeaponStatToChange.BulletDamage)
             {
                 float buffAmount = pin.ModifierNumber;
-                bool doubleButton = false;
-                List<UpgradeTileData> temp = UtilityFunctions.GetAdjacentTiles<UpgradeTileData>(thisTile.coords, grid, height, width);
-                foreach(var tile in temp)
+                if(pin.AdditiveScaling)
                 {
-                    if(tile != null)
-                    {
-                        //put more
-                        if (tile.GlyphActive && tile.glyph.Type == GlyphScriptable.GlyphType.DoubleAdjacentGlyphs)
-                        {
-                            doubleButton = true;
-                        }
-                    }
+                    buffAmount += GetAdjacentBuff(thisTile);
                 }
-                if((thisTile.GlyphActive && thisTile.glyph.Type == GlyphScriptable.GlyphType.DoubleThisGlyph) || doubleButton)
+                else
+                {
+                    buffAmount *= (1 + GetAdjacentBuff(thisTile));
+                }
+
+                if ((thisTile.GlyphActive && thisTile.glyph.Type == GlyphScriptable.GlyphType.DoubleThisGlyph) || doubleGlyphAdjacent(thisTile))
                 {
                     buffAmount *= 2;
                 }
-
                 damagebuff += (buffAmount / 100);
                 
             }
             else if(pin.StatToChange == PinScriptable.WeaponStatToChange.AttackSpeed)
             {
                 float buffAmount = pin.ModifierNumber;
-                bool doubleButton = false;
-                List<UpgradeTileData> temp = UtilityFunctions.GetAdjacentTiles<UpgradeTileData>(thisTile.coords, grid, height, width);
-                foreach (var tile in temp)
+                if(pin.AdditiveScaling)
                 {
-                    if (tile != null)
-                    {
-                        //put more
-                        if (tile.GlyphActive && tile.glyph.Type == GlyphScriptable.GlyphType.DoubleAdjacentGlyphs)
-                        {
-                            doubleButton = true;
-                        }
-                    }
+                    buffAmount += GetAdjacentBuff(thisTile);
                 }
-                if ((thisTile.GlyphActive && thisTile.glyph.Type == GlyphScriptable.GlyphType.DoubleThisGlyph) || doubleButton)
+                else
+                {
+                    buffAmount *= (1 + GetAdjacentBuff(thisTile));
+                }
+
+                if ((thisTile.GlyphActive && thisTile.glyph.Type == GlyphScriptable.GlyphType.DoubleThisGlyph) || doubleGlyphAdjacent(thisTile))
                 {
                     buffAmount *= 2;
                 }
@@ -282,26 +276,23 @@ public class UpgradeTileGrid
             else if (pin.StatToChange == PinScriptable.WeaponStatToChange.Lifesteal)
             {
                 float buffAmount = pin.ModifierNumber;
-                bool doubleButton = false;
-                List<UpgradeTileData> temp = UtilityFunctions.GetAdjacentTiles<UpgradeTileData>(thisTile.coords, grid, height, width);
-                foreach (var tile in temp)
+                if (pin.AdditiveScaling)
                 {
-                    if (tile != null)
-                    {
-                        //put more
-                        if (tile.GlyphActive && tile.glyph.Type == GlyphScriptable.GlyphType.DoubleAdjacentGlyphs)
-                        {
-                            doubleButton = true;
-                        }
-                    }
+                    buffAmount += GetAdjacentBuff(thisTile);
                 }
-                if ((thisTile.GlyphActive && thisTile.glyph.Type == GlyphScriptable.GlyphType.DoubleThisGlyph) || doubleButton)
+                else
+                {
+                    buffAmount *= (1 + GetAdjacentBuff(thisTile));
+                }
+
+                if ((thisTile.GlyphActive && thisTile.glyph.Type == GlyphScriptable.GlyphType.DoubleThisGlyph) || doubleGlyphAdjacent(thisTile))
                 {
                     buffAmount *= 2;
                 }
                 lifestealBuff += (buffAmount / 100);
             }
         }
+
         foreach(UpgradeTileData tile in grid)
         {
             if (tile.GlyphActive)
@@ -311,13 +302,16 @@ public class UpgradeTileGrid
                     case 0:
                         return;
                     case GlyphScriptable.GlyphType.CooldownReduction:
+                        //ToDo add this to the cooldown of the weapons
                         return;
                     case GlyphScriptable.GlyphType.DamageBuff:
-                        damagebuff *= (tile.glyph.GlyphChangeAmount / 100);
+                        damagebuff *= 1 + (tile.glyph.GlyphChangeAmount / 100);
                         return;
                     case GlyphScriptable.GlyphType.HealthingReceived:
+                        playerController.healingPotency = 1 + (tile.glyph.GlyphChangeAmount / 100);
                         return;
                     case GlyphScriptable.GlyphType.StatusEffect: 
+                        //ToDo Add the extra StatusEffect Buffs
                         return;
                 }
             }
@@ -344,5 +338,42 @@ public class UpgradeTileGrid
         {
             tile.GlyphActive = false;
         }
+    }
+
+    /// <summary>
+    /// funtion to go through all the adjacent tiles and if there pins of the same type adjacent it stores how much of a buff the pin will get and returns that amount
+    /// </summary>
+    /// <param name="tile"></param>
+    /// <returns> % amount buff that revieved by the adjacent tiles</returns>
+    public int GetAdjacentBuff(UpgradeTileData tile)
+    {
+        int BuffAmount = 0;
+        List<UpgradeTileData> temp = UtilityFunctions.GetAdjacentTiles<UpgradeTileData>(tile.coords, grid, height, width);
+        foreach (var currentTile in temp)
+        {
+            if (currentTile != null && tile.pin.Type == currentTile.pin.Type)
+            {
+                BuffAmount += tile.pin.AdjacentTileScaling;
+            }
+        }
+        return BuffAmount;
+    }
+
+    /// <summary>
+    /// Checks if adjacent tile to the current tile has a glyph the doubles the effects of adjacent tiles
+    /// </summary>
+    /// <param name="tile"></param>
+    /// <returns></returns>
+    public bool doubleGlyphAdjacent(UpgradeTileData tile)
+    {
+        List<UpgradeTileData> temp = UtilityFunctions.GetAdjacentTiles<UpgradeTileData>(tile.coords, grid, height, width);
+        foreach (var currentTile in temp)
+        {
+            if (currentTile != null && currentTile.GlyphActive && currentTile.glyph.Type == GlyphScriptable.GlyphType.DoubleAdjacentGlyphs)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
