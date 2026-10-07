@@ -45,8 +45,12 @@ public class PinHolderSlot : ControllerSupportedClickable
 
     }
 
+    /// <summary>
+    /// Highlights when this is hovered over.
+    /// </summary>
     public override void HoveredOver()
     {
+        //if this is hovered over and has a pin in it, tell that pin to hover
         if (pin != null && pin.Parent == this)
         {
             pin.HoveredOver();
@@ -57,18 +61,17 @@ public class PinHolderSlot : ControllerSupportedClickable
         
     }
 
+    /// <summary>
+    /// unhighlights when focus is lost from this
+    /// </summary>
     public override void UnHoveredOver()
     {
+        //unhovers the pin too
         if (pin != null)
         {
             pin.UnHoveredOver();
         }
 
         Highlight.enabled = false;
-    }
-
-    public override void ClickedOn()
-    {
-        base.ClickedOn();
     }
 }

@@ -111,7 +111,7 @@ public class PinItemBehavior : ControllerSupportedClickable
     }
 
     /// <summary>
-    /// requests a tooltip when hovered over.
+    /// requests a tooltip and highlights when hovered over.
     /// </summary>
     public override void HoveredOver()
     {
@@ -120,6 +120,9 @@ public class PinItemBehavior : ControllerSupportedClickable
         TooltipUIService.Instance.RequestTooltip(pinData);
     }
 
+    /// <summary>
+    /// unhighlights when focus leaves this.
+    /// </summary>
     public override void UnHoveredOver()
     {
         base.UnHoveredOver();

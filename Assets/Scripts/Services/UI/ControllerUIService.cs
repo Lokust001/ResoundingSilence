@@ -1,7 +1,14 @@
+/*
+* Author: Tyler
+* Contributors:
+* Last Modified: 10/7/2026
+* Summary: This service controls the controller's ability to switch between scenes.
+* To Do:   N/A
+*/
+
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
 
 public class ControllerUIService : BaseService
 {
@@ -50,7 +57,7 @@ public class ControllerUIService : BaseService
             throw new System.Exception("No event system found");
         }
 
-        
+
 
         //add to this if statement for every menu i have to make custom controller supp for
         if (UIManager.Instance.GetCurrentMenu() == UiMenuType.UpgradeMenu)
@@ -62,7 +69,7 @@ public class ControllerUIService : BaseService
             EventSystem.current.SetSelectedGameObject(null);
         }
 
-        
+
     }
 
     public void SetDefaultSelectedGameobject(GameObject selectedObj)
@@ -85,7 +92,7 @@ public class ControllerUIService : BaseService
         //add to this if statement for every menu i have to make custom controller supp for
         if (UIManager.Instance.GetCurrentMenu() == UiMenuType.UpgradeMenu)
         {
-            FindAnyObjectByType<UpgradeControllerSupportManager>().SelectDefaultInventoryPin();
+            FindAnyObjectByType<UpgradeControllerSupportManager>().SelectLastSelectedInventoryPin();
         }
         else
         {
@@ -93,5 +100,5 @@ public class ControllerUIService : BaseService
         }
     }
 
-    
+
 }

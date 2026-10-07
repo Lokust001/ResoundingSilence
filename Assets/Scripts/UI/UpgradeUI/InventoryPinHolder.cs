@@ -35,6 +35,12 @@ public class InventoryPinHolder : PinHolderSlot
         
 
     }
+
+    /// <summary>
+    /// Gets all of the nighbors in the pin holder, then returns them
+    /// TODO: Also swap over to the grid if this is the rightmost item
+    /// </summary>
+    /// <returns></returns>
     public override List<ControllerSupportedClickable> getNeighbors()
     {
         List<ControllerSupportedClickable> returnlist = new();

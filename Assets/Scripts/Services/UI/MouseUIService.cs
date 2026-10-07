@@ -51,6 +51,10 @@ public class MouseUIService : BaseService
         await Task.CompletedTask;
     }
 
+    /// <summary>
+    /// turns on the mouse input public events - 
+    /// these ones are the ones that get disabled when the player swaps to controller
+    /// </summary>
     private void EnableMousePublicEvents()
     {
         InputPublicEvents.MouseMoved += UpdateMousePos;
@@ -58,6 +62,9 @@ public class MouseUIService : BaseService
         InputPublicEvents.SelectPin += Click;
     }
 
+    /// <summary>
+    /// disables the mouse input public events - called when the player swaps to controller
+    /// </summary>
     private void DisableMousePublicEvents()
     {
         InputPublicEvents.MouseMoved -= UpdateMousePos;

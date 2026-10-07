@@ -38,6 +38,16 @@ public static class UtilityFunctions
         return temp;
     }
 
+    /// <summary>
+    /// gets adjacent tiles given the index, not the coords
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="index"> the index of the item in the list </param>
+    /// <param name="collection"> The list of objects to grab adjacency from. </param>
+    /// <param name="height"> How tall the grid is. </param>
+    /// <param name="width"> How wide the grid is. </param>
+    /// <param name="countDiagonals"> If you want the returned list to include diagonals, this should be true. True by default.</param>
+    /// <returns></returns>
     public static List<T> GetAdjacentTiles<T>(int index,
                                               List<T> collection,
                                               int height, int width,
@@ -85,6 +95,11 @@ public static class UtilityFunctions
         }
     }
 
+    /// <summary>
+    /// converts a vec2int into the directional int. 0 = north, then moving clockwise with 7 = northwest.
+    /// </summary>
+    /// <param name="dir"></param>
+    /// <returns></returns>
     public static int ConvertVecIntToIntDirection(Vector2Int dir)
     {
         if (dir.x == 0 && dir.y == 1)

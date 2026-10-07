@@ -102,17 +102,7 @@ public class InputManager : BaseManager
         await Task.CompletedTask;
     }
 
-    private void ThrowCurrentControlScheme()
-    {
-        if (pInput.currentControlScheme.ToLower() == "controller")
-        {
-            ControllerEnabled();
-        }
-        else if (pInput.currentControlScheme.ToLower() == "keyboardmouse")
-        {
-            KeyboardMouseEnabled();
-        }
-    }
+    
 
     /// <summary>
     /// enables the evergreen public events
@@ -158,6 +148,7 @@ public class InputManager : BaseManager
 
     #endregion
 
+    #region Control Scheme Changing
     /// <summary>
     /// Triggers when the player swaps their input controls
     /// </summary>
@@ -167,19 +158,42 @@ public class InputManager : BaseManager
         ThrowCurrentControlScheme();
     }
 
+    /// <summary>
+    /// Calls sub functions depending on the type of control scheme thats currently being used
+    /// </summary>
+    private void ThrowCurrentControlScheme()
+    {
+        if (pInput.currentControlScheme.ToLower() == "controller")
+        {
+            ControllerEnabled();
+        }
+        else if (pInput.currentControlScheme.ToLower() == "keyboardmouse")
+        {
+            KeyboardMouseEnabled();
+        }
+    }
+
+    /// <summary>
+    /// throws an event when the controller becomes enabled
+    /// </summary>
     private void ControllerEnabled()
     {
         ControllerIsEnabled = true;
         Cursor.lockState = CursorLockMode.Locked;
         InputPublicEvents.ControllerEnabled?.Invoke();
     }
-
+    
+    /// <summary>
+    /// throws an event when the keyboard and mouse become enabled
+    /// </summary>
     private void KeyboardMouseEnabled()
     {
         ControllerIsEnabled = false;
         Cursor.lockState = CursorLockMode.None;
         InputPublicEvents.KeyboardMouseEnabled?.Invoke();
     }
+
+    #endregion
 
     #region enabling and disabling public events
 

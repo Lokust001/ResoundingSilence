@@ -1,3 +1,11 @@
+/*
+* Author: Tyler
+* Contributors:
+* Last Modified:10/7/2026
+* Summary: This service controls the controller's focus for the upgrade menu.
+* To Do:   N/A
+*/
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -29,6 +37,9 @@ public class UpgradeControllerSupportManager : MonoBehaviour
 
     private Vector2 currentMoveDirection;
 
+    /// <summary>
+    /// initializes this script
+    /// </summary>
     public void InitSupportManager()
     {
         menu = GetComponent<UpgradeMenuController>();
@@ -43,7 +54,9 @@ public class UpgradeControllerSupportManager : MonoBehaviour
     }
 
 
-
+    /// <summary>
+    /// triggers when the keyboard and mouse is enabled - temporarily shuts down the menu
+    /// </summary>
     private void KBMEnabled()
     {
         DisablePublicEvents();
@@ -52,6 +65,9 @@ public class UpgradeControllerSupportManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// turns on the public events that are input specific
+    /// </summary>
     private void EnablePublicEvents()
     {
         InputPublicEvents.SelectPin += PinSelected;
@@ -59,6 +75,9 @@ public class UpgradeControllerSupportManager : MonoBehaviour
         InputPublicEvents.AimCancelled += PlayerStoppedMoving;
     }
 
+    /// <summary>
+    /// turns on the public events that are input specific
+    /// </summary>
     private void DisablePublicEvents()
     {
         InputPublicEvents.SelectPin -= PinSelected;
@@ -67,15 +86,29 @@ public class UpgradeControllerSupportManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Tears down public events
+    /// </summary>
     private void OnDestroy()
     {
         DisablePublicEvents();
-        InputPublicEvents.ControllerEnabled += EnablePublicEvents;
-        InputPublicEvents.KeyboardMouseEnabled += DisablePublicEvents;
+        InputPublicEvents.ControllerEnabled -= EnablePublicEvents;
+        InputPublicEvents.KeyboardMouseEnabled -= DisablePublicEvents;
     }
 
-    public void SelectDefaultInventoryPin()
+    /// <summary>
+    /// Selects the last selected inventory pin.
+    /// </summary>
+    /// <exception cref="System.Exception"></exception>
+    public void SelectLastSelectedInventoryPin()
     {
+        //if youve selected an inventory slot, selects that one
+        if (prevSelectedInventorySlot != null)
+        {
+            SelectInventoryItem(prevSelectedInventorySlot);
+            return;
+        }
+
         InventoryPinHolder defaultInventoryPin = menu.inventorySlots[0];
 
         if (defaultInventoryPin == null)
@@ -86,6 +119,9 @@ public class UpgradeControllerSupportManager : MonoBehaviour
         SelectInventoryItem(defaultInventoryPin);
     }
 
+    /// <summary>
+    /// deselects the object the player is holding
+    /// </summary>
     public void DeselectCurrentObject()
     {
         if (currentSelectedItem != null)
@@ -96,6 +132,10 @@ public class UpgradeControllerSupportManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// selects an inventory item
+    /// </summary>
+    /// <param name="inventoryItem"></param>
     public void SelectInventoryItem(ControllerSupportedClickable inventoryItem)
     {
         currentSelectedItem = inventoryItem;
@@ -103,17 +143,27 @@ public class UpgradeControllerSupportManager : MonoBehaviour
         currentSelectedItem.HoveredOver();
     }
 
+    /// <summary>
+    /// clicks on a pin
+    /// currently disabled
+    /// </summary>
     private void PinSelected()
     {
-        if (currentSelectedItem != null)
+        /*if (currentSelectedItem != null)
         {
             currentSelectedItem.ClickedOn();
-        }
+        }*/
     }
 
+    /// <summary>
+    /// attempts to move the held object based on the direction
+    /// </summary>
+    /// <param name="vecDirection"></param>
     private void MoveSelectedObject(Vector2 vecDirection)
     {
         currentMoveDirection = vecDirection;
+
+        //if we aren't already moving, start moving
         if (playerMovingInMenu == null)
         {
             playerMovingInMenu = StartCoroutine(PlayerIsMoving());
@@ -121,22 +171,32 @@ public class UpgradeControllerSupportManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// stops the player's movement (if they already are moving)
+    /// </summary>
     private void PlayerStoppedMoving()
     {
         if (playerMovingInMenu != null)
         {
             playerCanMove = false;
             playerMovingInMenu = null;
+
+            //stopall ironically only stops the coroutines on this object
             StopAllCoroutines();
             playerHasMovedOnce = false;
             isOnMoveCooldown = false;
         }
     }
 
+    /// <summary>
+    /// the coroutine that controls the player's movement throughout the ui menu.
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator PlayerIsMoving()
     {
         while (playerCanMove)
         {
+            //if we are on cooldown, skip to the next frame
             if (isOnMoveCooldown)
             {
                 yield return null;
@@ -144,13 +204,15 @@ public class UpgradeControllerSupportManager : MonoBehaviour
             }
             isOnMoveCooldown = true;
             StartCoroutine(StartMoveCooldown());
+            
+            //grab the current item's neighbors
             testingList = currentSelectedItem.getNeighbors();
 
+            //grab where we are looking to move and convert it to an int
             Vector2Int dir = new Vector2Int(Mathf.RoundToInt(currentMoveDirection.x), Mathf.RoundToInt(currentMoveDirection.y));
-
-
             int indexedDirection = UtilityFunctions.ConvertVecIntToIntDirection(dir);
 
+            //if we have a place to move to, move
             if (testingList[indexedDirection] != null)
             {
                 DeselectCurrentObject();
@@ -167,9 +229,15 @@ public class UpgradeControllerSupportManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// the cooldown for moving
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator StartMoveCooldown()
     {
         float timer = 0f;
+
+        //if it's the first time the player has moved this cycle, cool down for longer
         float target = playerHasMovedOnce ? moveCooldown : startingMoveCooldown;
         playerHasMovedOnce = true;
         while (timer < target)
@@ -181,12 +249,16 @@ public class UpgradeControllerSupportManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// updates the inventory scroll rect based on where the selected object is
+    /// </summary>
+    /// <exception cref="System.Exception"></exception>
     private void CheckIfInventoryScrollNeedsUpdating()
     {
         RectTransform scrollRect = menu.inventoryScrollRect.GetComponent<RectTransform>();
         if (scrollRect == null)
         {
-            throw new System.Exception("Scroll rect doesnt have a recttransform");
+            throw new System.Exception("Scroll rect doesnt have a rect transform");
         }
 
         RectTransform selRect = currentSelectedItem.GetComponent<RectTransform>();
@@ -196,6 +268,7 @@ public class UpgradeControllerSupportManager : MonoBehaviour
         float scrollViewMinY = contentRect.anchoredPosition.y;
         float scrollViewMaxY = contentRect.anchoredPosition.y + scrollRect.rect.height;
 
+        //move scroll rect to fit with the selected object. 
         if (SelYPos > scrollViewMaxY)
         {
             float newY = SelYPos - scrollRect.rect.height;
