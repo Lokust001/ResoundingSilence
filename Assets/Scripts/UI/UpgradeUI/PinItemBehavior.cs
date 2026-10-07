@@ -9,8 +9,10 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PinItemBehavior : Clickable
+public class PinItemBehavior : ControllerSupportedClickable
 {
+    [SerializeField]
+    private Image Highlight;
     private CanvasGroup raycastBlocker;
     private Image pinSprite;
 
@@ -114,6 +116,13 @@ public class PinItemBehavior : Clickable
     public override void HoveredOver()
     {
         base.HoveredOver();
+        Highlight.enabled = true;
         TooltipUIService.Instance.RequestTooltip(pinData);
+    }
+
+    public override void UnHoveredOver()
+    {
+        base.UnHoveredOver();
+        Highlight.enabled = false;
     }
 }

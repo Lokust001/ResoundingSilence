@@ -6,6 +6,7 @@
 * To Do:   N/A
 */
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -35,6 +36,16 @@ public static class UtilityFunctions
             temp.Add(GetTile(coords + GetDirectionGivenInt(countDiagonals ? i : i * 2), collection, height, width));
         }
         return temp;
+    }
+
+    public static List<T> GetAdjacentTiles<T>(int index,
+                                              List<T> collection,
+                                              int height, int width,
+                                              bool countDiagonals = true)
+    {
+        Vector2Int coords = new Vector2Int(index % width, index / width);
+
+        return GetAdjacentTiles<T>(coords, collection, height, width, countDiagonals);
     }
 
     /// <summary>
@@ -74,6 +85,48 @@ public static class UtilityFunctions
         }
     }
 
+    public static int ConvertVecIntToIntDirection(Vector2Int dir)
+    {
+        if (dir.x == 0 && dir.y == 1)
+        {
+            return 0;
+        }
+        if (dir.x == 1 && dir.y == 1)
+        {
+            return 1;
+        }
+        if (dir.x == 1 && dir.y == 0)
+        {
+            return 2;
+        }
+        if (dir.x == 1 && dir.y == -1)
+        {
+            return 3;
+        }
+        if (dir.x == 0 && dir.y == -1)
+        {
+            return 4;
+        }
+        if (dir.x == -1 && dir.y == -1)
+        {
+            return 5;
+        }
+
+        //has to be in this order or else it skips over to -1. idk why
+        if (dir.x == -1 && dir.y == 1)
+        {
+            return 7;
+        }
+        if (dir.x == -1 && dir.y == 0)
+        {
+            return 6;
+        }
+        
+
+
+        return -1;
+    }
+
     /// <summary>
     /// grabs a tile given the index in the given list
     /// </summary>
@@ -96,7 +149,7 @@ public static class UtilityFunctions
     /// </summary>
     /// <param name="coords"></param>
     /// <returns></returns>
-    private static T GetTile<T>(Vector2Int coords, List<T> collection, int width, int height)
+    private static T GetTile<T>(Vector2Int coords, List<T> collection, int height, int width)
     {
         if (coords.x < 0 || coords.x >= width ||
             coords.y < 0 || coords.y >= height)

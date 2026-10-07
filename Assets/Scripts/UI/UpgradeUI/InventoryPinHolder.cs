@@ -6,12 +6,12 @@
 * To Do:   N/A
 */
 
-using UnityEngine;
+using System.Collections.Generic;
 
 public class InventoryPinHolder : PinHolderSlot
 {
-    private PinItemBehavior pin;
     public PinScriptable pinData { get; private set; }
+    
 
     /// <summary>
     /// initializes the slot
@@ -28,6 +28,30 @@ public class InventoryPinHolder : PinHolderSlot
     /// </summary>
     public override void ClickedOn()
     {
-        controller.GrabPlacedPin(pin);
+        if (pin.Parent != this)
+        {
+            controller.GrabPlacedPin(pin);
+        }
+        
+
+    }
+    public override List<ControllerSupportedClickable> getNeighbors()
+    {
+        List<ControllerSupportedClickable> returnlist = new();
+
+        List<InventoryPinHolder> temp = UtilityFunctions.GetAdjacentTiles<InventoryPinHolder>(
+            controller.inventorySlots.IndexOf(this),
+            controller.inventorySlots,
+            controller.inventorySlots.Count,
+            2);
+
+        for (int i = 0; i < temp.Count; i++)
+        {
+            returnlist.Add(temp[i]);
+        }
+
+        return returnlist;
+
+
     }
 }

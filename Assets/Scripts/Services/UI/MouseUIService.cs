@@ -34,20 +34,35 @@ public class MouseUIService : BaseService
             Destroy(this);
         }
 
-        await SetUpPublicEvents();
+        await SetUpEvergreenPublicEvents();
     }
 
     /// <summary>
     /// sets up all public events
     /// </summary>
     /// <returns></returns>
-    private async Awaitable SetUpPublicEvents()
+    private async Awaitable SetUpEvergreenPublicEvents()
+    {
+        InputPublicEvents.ControllerEnabled += DisableMousePublicEvents;
+        InputPublicEvents.KeyboardMouseEnabled += EnableMousePublicEvents;
+
+        EnableMousePublicEvents();
+
+        await Task.CompletedTask;
+    }
+
+    private void EnableMousePublicEvents()
     {
         InputPublicEvents.MouseMoved += UpdateMousePos;
         InputPublicEvents.ShootPressed += Click;
         InputPublicEvents.SelectPin += Click;
+    }
 
-        await Task.CompletedTask;
+    private void DisableMousePublicEvents()
+    {
+        InputPublicEvents.MouseMoved -= UpdateMousePos;
+        InputPublicEvents.ShootPressed -= Click;
+        InputPublicEvents.SelectPin -= Click;
     }
 
     /// <summary>
@@ -55,9 +70,15 @@ public class MouseUIService : BaseService
     /// </summary>
     private void OnDestroy()
     {
-        InputPublicEvents.MouseMoved -= UpdateMousePos;
-        InputPublicEvents.ShootPressed -= Click;
-        InputPublicEvents.SelectPin -= Click;
+        if (!InputManager.Instance.ControllerIsEnabled)
+        {
+            InputPublicEvents.MouseMoved -= UpdateMousePos;
+            InputPublicEvents.ShootPressed -= Click;
+            InputPublicEvents.SelectPin -= Click;
+        }
+
+        InputPublicEvents.ControllerEnabled -= DisableMousePublicEvents;
+        InputPublicEvents.KeyboardMouseEnabled -= EnableMousePublicEvents;
     }
 
     /// <summary>
@@ -80,25 +101,29 @@ public class MouseUIService : BaseService
             if (raycastResults[0].gameObject.GetComponent<Clickable>() != null)
             {
                 raycastResultClickable = raycastResults[0].gameObject.GetComponent<Clickable>();
+
+                
+            }
+
+            if (raycastResultClickable != previouslyHoveredObj)
+            {
+                if (previouslyHoveredObj != null)
+                {
+                    previouslyHoveredObj.UnHoveredOver();
+                    previouslyHoveredObj = null;
+                }
+
+                //sets the next clickable
+                if (raycastResultClickable != null)
+                {
+                    previouslyHoveredObj = raycastResultClickable;
+                    previouslyHoveredObj.HoveredOver();
+                }
             }
         }
-
+        
         //unhover over the previously held clickable if its different from what youre hovering over now
-        if (raycastResultClickable != previouslyHoveredObj)
-        {
-            if (previouslyHoveredObj != null)
-            {
-                previouslyHoveredObj.UnHoveredOver();
-                previouslyHoveredObj = null;
-            }
-
-            //sets the next clickable
-            if (raycastResultClickable != null)
-            {
-                previouslyHoveredObj = raycastResultClickable;
-                previouslyHoveredObj.HoveredOver();
-            }
-        }
+        
 
         
     }

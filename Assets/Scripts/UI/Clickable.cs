@@ -10,6 +10,7 @@ using UnityEngine;
 
 public class Clickable : MonoBehaviour
 {
+
     /// <summary>
     /// triggers when this object is clicked on
     /// </summary>
