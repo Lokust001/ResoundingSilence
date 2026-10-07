@@ -44,6 +44,9 @@ public class PinScriptable : BaseScriptableObject
     [Tooltip("How you want to change the weapon")]
     public WeaponStatToChange StatToChange;
 
+    [Tooltip("How much (in %) this gains from having adjacent tiles be the same type")]
+    public int AdjacentTileScaling;
+
     [HorizontalLine(4, EColor.Blue)]
     [Header("TEMPORARY - REPLACE WITH SPRITE WHEN I GET THEM")]
     [Tooltip("TEMPORARY - REPLACE WITH SPRITE WHEN I GET THEM")]
