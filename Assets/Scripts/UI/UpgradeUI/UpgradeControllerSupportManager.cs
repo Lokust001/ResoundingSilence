@@ -8,6 +8,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class UpgradeControllerSupportManager : MonoBehaviour
@@ -37,6 +38,8 @@ public class UpgradeControllerSupportManager : MonoBehaviour
 
     private Vector2 currentMoveDirection;
 
+
+    #region setup and public events
     /// <summary>
     /// initializes this script
     /// </summary>
@@ -73,6 +76,9 @@ public class UpgradeControllerSupportManager : MonoBehaviour
         InputPublicEvents.SelectPin += PinSelected;
         InputPublicEvents.PlayerAimed += MoveSelectedObject;
         InputPublicEvents.AimCancelled += PlayerStoppedMoving;
+        InputPublicEvents.SwapFocusToInventory += MoveFocusToInventory;
+        InputPublicEvents.SwapFocusToGrid += MoveFocusToGrid;
+        InputPublicEvents.SwapFocusToTarot += MoveFocusToTarot;
     }
 
     /// <summary>
@@ -83,7 +89,9 @@ public class UpgradeControllerSupportManager : MonoBehaviour
         InputPublicEvents.SelectPin -= PinSelected;
         InputPublicEvents.PlayerAimed -= MoveSelectedObject;
         InputPublicEvents.AimCancelled -= PlayerStoppedMoving;
-
+        InputPublicEvents.SwapFocusToInventory -= MoveFocusToInventory;
+        InputPublicEvents.SwapFocusToGrid -= MoveFocusToGrid;
+        InputPublicEvents.SwapFocusToTarot -= MoveFocusToTarot;
     }
 
     /// <summary>
@@ -96,64 +104,9 @@ public class UpgradeControllerSupportManager : MonoBehaviour
         InputPublicEvents.KeyboardMouseEnabled -= DisablePublicEvents;
     }
 
-    /// <summary>
-    /// Selects the last selected inventory pin.
-    /// </summary>
-    /// <exception cref="System.Exception"></exception>
-    public void SelectLastSelectedInventoryPin()
-    {
-        //if youve selected an inventory slot, selects that one
-        if (prevSelectedInventorySlot != null)
-        {
-            SelectInventoryItem(prevSelectedInventorySlot);
-            return;
-        }
+    #endregion
 
-        InventoryPinHolder defaultInventoryPin = menu.inventorySlots[0];
-
-        if (defaultInventoryPin == null)
-        {
-            throw new System.Exception("Inventory is null");
-        }
-
-        SelectInventoryItem(defaultInventoryPin);
-    }
-
-    /// <summary>
-    /// deselects the object the player is holding
-    /// </summary>
-    public void DeselectCurrentObject()
-    {
-        if (currentSelectedItem != null)
-        {
-            currentSelectedItem.UnHoveredOver();
-            currentSelectedItem = null;
-        }
-
-    }
-
-    /// <summary>
-    /// selects an inventory item
-    /// </summary>
-    /// <param name="inventoryItem"></param>
-    public void SelectInventoryItem(ControllerSupportedClickable inventoryItem)
-    {
-        currentSelectedItem = inventoryItem;
-        prevSelectedInventorySlot = inventoryItem;
-        currentSelectedItem.HoveredOver();
-    }
-
-    /// <summary>
-    /// clicks on a pin
-    /// currently disabled
-    /// </summary>
-    private void PinSelected()
-    {
-        /*if (currentSelectedItem != null)
-        {
-            currentSelectedItem.ClickedOn();
-        }*/
-    }
+    #region movement
 
     /// <summary>
     /// attempts to move the held object based on the direction
@@ -204,7 +157,7 @@ public class UpgradeControllerSupportManager : MonoBehaviour
             }
             isOnMoveCooldown = true;
             StartCoroutine(StartMoveCooldown());
-            
+
             //grab the current item's neighbors
             testingList = currentSelectedItem.getNeighbors();
 
@@ -212,17 +165,54 @@ public class UpgradeControllerSupportManager : MonoBehaviour
             Vector2Int dir = new Vector2Int(Mathf.RoundToInt(currentMoveDirection.x), Mathf.RoundToInt(currentMoveDirection.y));
             int indexedDirection = UtilityFunctions.ConvertVecIntToIntDirection(dir);
 
-            //if we have a place to move to, move
-            if (testingList[indexedDirection] != null)
+
+            if (testingList[indexedDirection] == null)
+            {
+                yield return null;
+                continue;
+            }
+            //different behavior based on what we are
+            if (testingList[indexedDirection] is InventoryPinHolder invSlot)
             {
                 DeselectCurrentObject();
+                SelectInventoryItem(invSlot);
+                CheckIfInventoryScrollNeedsUpdating();
 
-                if (testingList[indexedDirection] is InventoryPinHolder invSlot)
+                yield return null;
+                continue;
+            }
+
+            if (testingList[indexedDirection] is UpgradeTileBehavior origTile)
+            {
+                if (origTile.isActive)
                 {
-                    SelectInventoryItem(invSlot);
-                    CheckIfInventoryScrollNeedsUpdating();
+                    DeselectCurrentObject();
+                    SelectGridItem(origTile);
                 }
 
+                UpgradeTileBehavior NextGridTileInDirection = GetNextGridTile(origTile, indexedDirection);
+
+                if (NextGridTileInDirection == null)
+                {
+                    yield return null;
+                    continue;
+                }
+                else
+                {
+                    DeselectCurrentObject();
+                    SelectGridItem(NextGridTileInDirection);
+                }
+
+                yield return null;
+                continue;
+            }
+
+            if (testingList[indexedDirection] is UpgradeMenuTarotCardUI tarot)
+            {
+                DeselectCurrentObject();
+                SelectTarotCard(tarot);
+                yield return null;
+                continue;
             }
 
             yield return null;
@@ -279,4 +269,183 @@ public class UpgradeControllerSupportManager : MonoBehaviour
             contentRect.anchoredPosition = new Vector2(contentRect.anchoredPosition.x, Mathf.Abs(selRect.anchoredPosition.y) - 100);
         }
     }
+
+    #endregion
+
+    #region Selection
+
+
+
+    /// <summary>
+    /// deselects the object the player is holding
+    /// </summary>
+    public void DeselectCurrentObject()
+    {
+        if (currentSelectedItem != null)
+        {
+            currentSelectedItem.UnHoveredOver();
+            currentSelectedItem = null;
+        }
+
+    }
+
+
+
+    /// <summary>
+    /// clicks on a pin
+    /// currently disabled
+    /// </summary>
+    private void PinSelected()
+    {
+        /*if (currentSelectedItem != null)
+        {
+            currentSelectedItem.ClickedOn();
+        }*/
+    }
+
+    #endregion
+
+    #region Grid
+
+    private void MoveFocusToGrid()
+    {
+        currentSelectedItem.UnHoveredOver();
+        SelectLastSelectedGridTile();
+    }
+
+    /// <summary>
+    /// Selects the last selected inventory pin.
+    /// </summary>
+    /// <exception cref="System.Exception"></exception>
+    public void SelectLastSelectedGridTile()
+    {
+        //if youve selected an inventory slot, selects that one
+        if (prevSelectedGridSlot != null)
+        {
+            SelectGridItem(prevSelectedGridSlot);
+            return;
+        }
+
+        UpgradeTileBehavior defaultGridPin = menu.tilesInGrid.FirstOrDefault(x => x.isActive == true);
+
+        if (defaultGridPin == null)
+        {
+            throw new System.Exception("Grid has no active tiles");
+        }
+
+        SelectGridItem(defaultGridPin);
+    }
+
+    /// <summary>
+    /// selects an inventory item
+    /// </summary>
+    /// <param name="gridItem"></param>
+    public void SelectGridItem(ControllerSupportedClickable gridItem)
+    {
+        currentSelectedItem = gridItem;
+        prevSelectedGridSlot = gridItem;
+        currentSelectedItem.HoveredOver();
+    }
+
+    private UpgradeTileBehavior GetNextGridTile(UpgradeTileBehavior startingTileInclusive, int direction)
+    {
+        //UpgradeTileBehavior nextTile = startingTileInclusive.adjacentTiles[direction];
+
+        if (startingTileInclusive == null || startingTileInclusive.isActive)
+        {
+            return startingTileInclusive;
+        }
+
+        return GetNextGridTile(startingTileInclusive.adjacentTiles[direction], direction);
+    }
+
+    #endregion
+
+    #region Inventory
+
+    private void MoveFocusToInventory()
+    {
+        currentSelectedItem.UnHoveredOver();
+        SelectLastSelectedInventoryPin();
+    }
+
+    /// <summary>
+    /// Selects the last selected inventory pin.
+    /// </summary>
+    /// <exception cref="System.Exception"></exception>
+    public void SelectLastSelectedInventoryPin()
+    {
+        //if youve selected an inventory slot, selects that one
+        if (prevSelectedInventorySlot != null)
+        {
+            SelectInventoryItem(prevSelectedInventorySlot);
+            return;
+        }
+
+        InventoryPinHolder defaultInventoryPin = menu.inventorySlots[0];
+
+        if (defaultInventoryPin == null)
+        {
+            throw new System.Exception("Inventory is null");
+        }
+
+        SelectInventoryItem(defaultInventoryPin);
+    }
+
+    /// <summary>
+    /// selects an inventory item
+    /// </summary>
+    /// <param name="inventoryItem"></param>
+    public void SelectInventoryItem(ControllerSupportedClickable inventoryItem)
+    {
+        currentSelectedItem = inventoryItem;
+        prevSelectedInventorySlot = inventoryItem;
+        currentSelectedItem.HoveredOver();
+    }
+
+    #endregion
+
+    #region Tarot
+
+    private void MoveFocusToTarot()
+    {
+        currentSelectedItem.UnHoveredOver();
+        SelectLastSelectedTarotTile();
+    }
+
+    /// <summary>
+    /// Selects the last selected inventory pin.
+    /// </summary>
+    /// <exception cref="System.Exception"></exception>
+    public void SelectLastSelectedTarotTile()
+    {
+        //if youve selected an inventory slot, selects that one
+        if (prevSelectedTarotCard != null)
+        {
+            SelectTarotCard(prevSelectedTarotCard);
+            return;
+        }
+
+        UpgradeMenuTarotCardUI defaultTarotCard = menu.tarotSlots[0];
+
+        if (defaultTarotCard == null)
+        {
+            throw new System.Exception("Grid has no active tiles");
+        }
+
+        SelectTarotCard(defaultTarotCard);
+    }
+
+    /// <summary>
+    /// selects an inventory item
+    /// </summary>
+    /// <param name="tarotCard"></param>
+    public void SelectTarotCard(ControllerSupportedClickable tarotCard)
+    {
+        currentSelectedItem = tarotCard;
+        prevSelectedTarotCard = tarotCard;
+        currentSelectedItem.HoveredOver();
+    }
+
+    #endregion
 }

@@ -77,6 +77,9 @@ public class UpgradeMenuController : MenuBase
     [HideInInspector]
     public UpgradeTileGrid currentlyEnabledGrid;
 
+    [ShowIf(nameof(settings), ShownSettings.References)]
+    public List<UpgradeMenuTarotCardUI> tarotSlots = new();
+
     #endregion
 
     #region testing
@@ -101,6 +104,8 @@ public class UpgradeMenuController : MenuBase
 
     private List<PinItemBehavior> inventoryPins = new();
     public List<InventoryPinHolder> inventorySlots = new();
+
+    
     private int gridHeight;
     private int gridWidth;
 
@@ -124,6 +129,8 @@ public class UpgradeMenuController : MenuBase
     {
         base.InitMenu();
         GetComponent<UpgradeControllerSupportManager>().InitSupportManager();
+
+        
     }
 
     /// <summary>
@@ -131,6 +138,11 @@ public class UpgradeMenuController : MenuBase
     /// </summary>
     protected override void MenuOpenedSucessfully()
     {
+
+        foreach (UpgradeMenuTarotCardUI tarotUI in tarotSlots)
+        {
+            tarotUI.InitCardUI();
+        }
 
         PopulateInventory();
 
