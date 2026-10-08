@@ -33,6 +33,8 @@ public class PlayerController : MonoBehaviour
     [Tooltip("What layers the player shouldn't collide with while they are invinvible.")]
     [SerializeField] LayerMask ignoreWhileInvincible;
 
+    [HideInInspector] public float healingPotency;
+
     #region Private Variables
     Rigidbody rigidbody;
     CapsuleCollider playerModelCollider;
@@ -414,5 +416,14 @@ public class PlayerController : MonoBehaviour
         _ = enemy;
         Debug.Log("Entered? " + enteredTrigger);
         enemy.SetInRangedArea(enteredTrigger);
+    }
+
+    /// <summary>
+    /// Used to heal the player while using the healing potency that you can get from buttons
+    /// </summary>
+    /// <param name="healAmount"></param>
+    public void healPlayer(int healAmount)
+    {
+        playerHealth += healingPotency * healAmount;
     }
 }

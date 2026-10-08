@@ -50,11 +50,11 @@ public class UpgradeMenuController : MenuBase
     [ShowIf(nameof(settings), ShownSettings.References)]
     private PinItemBehavior pinItemPrefab;
 
-   
+
     [ShowIf(nameof(settings), ShownSettings.References)]
     public Transform inventory;
 
-   
+
     [ShowIf(nameof(settings), ShownSettings.References)]
     public ScrollRect inventoryScrollRect;
 
@@ -131,7 +131,7 @@ public class UpgradeMenuController : MenuBase
     /// </summary>
     protected override void MenuOpenedSucessfully()
     {
-        
+
         PopulateInventory();
 
         if (MidRunDataManager.Instance.equippedWeapons.All(x => x == null))
@@ -190,7 +190,7 @@ public class UpgradeMenuController : MenuBase
             InventoryPinHolder tempSlot = Instantiate(inventoryPinSlot, inventory);
 
             PinItemBehavior temp = Instantiate(pinItemPrefab, tempSlot.transform);
-            
+
             tempSlot.InitSlot(temp);
             temp.InitPin(pin, tempSlot);
             inventoryPins.Add(temp);
@@ -294,12 +294,7 @@ public class UpgradeMenuController : MenuBase
     /// <param name="item"></param>
     private void SetCarriedPin(PinItemBehavior item)
     {
-        //unmodifies the pin if it modifies it at all.
-        if (item.Parent != null)
-        {
-            item.Parent.UnequipPin();
 
-        }
 
         //places the currently held pin in the tile of the pin you want to pick up
         if (CarriedPin != null)
@@ -356,7 +351,6 @@ public class UpgradeMenuController : MenuBase
             pinsOnNonEnabledGrids.Remove(item);
 
         }
-
         PickUpPin(item);
     }
 
@@ -453,10 +447,20 @@ public class UpgradeMenuController : MenuBase
     private void PickUpPin(PinItemBehavior item)
     {
         CarriedPin = item;
+
+        if (CarriedPin.Parent is UpgradeTileBehavior tile)
+        {
+            tile.UnequipPin();
+        }
+
         CarriedPin.Parent = null;
+
+
+
         CarriedPin.gameObject.SetActive(true);
         CarriedPin.transform.SetParent(draggingParent);
         CarriedPin.StartPinMoving();
+
         ToggleInventoryScrollability(false);
     }
 
