@@ -6,6 +6,7 @@
 * To Do:   N/A
 */
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -35,6 +36,26 @@ public static class UtilityFunctions
             temp.Add(GetTile(coords + GetDirectionGivenInt(countDiagonals ? i : i * 2), collection, height, width));
         }
         return temp;
+    }
+
+    /// <summary>
+    /// gets adjacent tiles given the index, not the coords
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="index"> the index of the item in the list </param>
+    /// <param name="collection"> The list of objects to grab adjacency from. </param>
+    /// <param name="height"> How tall the grid is. </param>
+    /// <param name="width"> How wide the grid is. </param>
+    /// <param name="countDiagonals"> If you want the returned list to include diagonals, this should be true. True by default.</param>
+    /// <returns></returns>
+    public static List<T> GetAdjacentTiles<T>(int index,
+                                              List<T> collection,
+                                              int height, int width,
+                                              bool countDiagonals = true)
+    {
+        Vector2Int coords = new Vector2Int(index % width, index / width);
+
+        return GetAdjacentTiles<T>(coords, collection, height, width, countDiagonals);
     }
 
     /// <summary>
@@ -75,6 +96,53 @@ public static class UtilityFunctions
     }
 
     /// <summary>
+    /// converts a vec2int into the directional int. 0 = north, then moving clockwise with 7 = northwest.
+    /// </summary>
+    /// <param name="dir"></param>
+    /// <returns></returns>
+    public static int ConvertVecIntToIntDirection(Vector2Int dir)
+    {
+        if (dir.x == 0 && dir.y == 1)
+        {
+            return 0;
+        }
+        if (dir.x == 1 && dir.y == 1)
+        {
+            return 1;
+        }
+        if (dir.x == 1 && dir.y == 0)
+        {
+            return 2;
+        }
+        if (dir.x == 1 && dir.y == -1)
+        {
+            return 3;
+        }
+        if (dir.x == 0 && dir.y == -1)
+        {
+            return 4;
+        }
+        if (dir.x == -1 && dir.y == -1)
+        {
+            return 5;
+        }
+
+        //has to be in this order or else it skips over to -1. idk why
+        if (dir.x == -1 && dir.y == 1)
+        {
+            return 7;
+        }
+        if (dir.x == -1 && dir.y == 0)
+        {
+            return 6;
+        }
+        
+
+
+        return -1;
+    }
+
+    /// <summary>
     /// grabs a tile given the index in the given list
     /// </summary>
     /// <param name="index"></param>
@@ -96,7 +164,7 @@ public static class UtilityFunctions
     /// </summary>
     /// <param name="coords"></param>
     /// <returns></returns>
-    private static T GetTile<T>(Vector2Int coords, List<T> collection, int width, int height)
+    private static T GetTile<T>(Vector2Int coords, List<T> collection, int height, int width)
     {
         if (coords.x < 0 || coords.x >= width ||
             coords.y < 0 || coords.y >= height)

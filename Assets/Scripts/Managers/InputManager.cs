@@ -57,6 +57,8 @@ public class InputManager : BaseManager
     private InputAction SelectPin;
 
     private InputAction MousePosition;
+
+    private InputAction MoveSelectedObject;
     #endregion
 
     #region Setup
@@ -92,13 +94,15 @@ public class InputManager : BaseManager
         pInput.currentActionMap.Enable();
 
 
-
+        
         EnableEvergreenPublicEvents();
         //sets up the individual input actions
         EnableMidRunPublicEvents();
 
         await Task.CompletedTask;
     }
+
+    
 
     /// <summary>
     /// enables the evergreen public events
@@ -109,6 +113,7 @@ public class InputManager : BaseManager
 
         UIPublicEvents.UpgradeMenuOpened += SwapActionMapToUpgradeMenu;
         UIPublicEvents.UpgradeMenuClosed += SwapActionMapToMidRun;
+        GenericPublicEvents.AllManagersInitialized += ThrowCurrentControlScheme;
     }
 
     /// <summary>
@@ -119,6 +124,7 @@ public class InputManager : BaseManager
         pInput.onControlsChanged -= PInput_onControlsChanged;
         UIPublicEvents.UpgradeMenuOpened -= SwapActionMapToUpgradeMenu;
         UIPublicEvents.UpgradeMenuClosed -= SwapActionMapToMidRun;
+        GenericPublicEvents.AllManagersInitialized -= ThrowCurrentControlScheme;
     }
 
 
@@ -128,34 +134,66 @@ public class InputManager : BaseManager
     private void OnDestroy()
     {
         DisableEvergreenPublicEvents();
-        DisableMidRunPublicEvents();
-        DisableUpgradeMenuPublicEvents();
+
+        if (move != null)
+        {
+            DisableMidRunPublicEvents();
+        }
+        if (ToggleUpgradeMenuInUpgradeMenu != null)
+        {
+            DisableUpgradeMenuPublicEvents();
+        }
+        
     }
 
     #endregion
 
+    #region Control Scheme Changing
     /// <summary>
     /// Triggers when the player swaps their input controls
     /// </summary>
     /// <param name="obj"></param>
     private void PInput_onControlsChanged(PlayerInput obj)
     {
-        string currentControlScheme = obj.currentControlScheme;
-        Debug.Log($"control scheme: {currentControlScheme}");
+        ThrowCurrentControlScheme();
+    }
 
-        if (currentControlScheme.ToLower() == "controller")
+    /// <summary>
+    /// Calls sub functions depending on the type of control scheme thats currently being used
+    /// </summary>
+    private void ThrowCurrentControlScheme()
+    {
+        if (pInput.currentControlScheme.ToLower() == "controller")
         {
-            ControllerIsEnabled = true;
-            Cursor.lockState = CursorLockMode.Locked;
-            InputPublicEvents.ControllerEnabled?.Invoke();
+            ControllerEnabled();
         }
-        else if (currentControlScheme.ToLower() == "keyboardmouse")
+        else if (pInput.currentControlScheme.ToLower() == "keyboardmouse")
         {
-            ControllerIsEnabled = false;
-            Cursor.lockState = CursorLockMode.None;
-            InputPublicEvents.KeyboardMouseEnabled?.Invoke();
+            KeyboardMouseEnabled();
         }
     }
+
+    /// <summary>
+    /// throws an event when the controller becomes enabled
+    /// </summary>
+    private void ControllerEnabled()
+    {
+        ControllerIsEnabled = true;
+        Cursor.lockState = CursorLockMode.Locked;
+        InputPublicEvents.ControllerEnabled?.Invoke();
+    }
+    
+    /// <summary>
+    /// throws an event when the keyboard and mouse become enabled
+    /// </summary>
+    private void KeyboardMouseEnabled()
+    {
+        ControllerIsEnabled = false;
+        Cursor.lockState = CursorLockMode.None;
+        InputPublicEvents.KeyboardMouseEnabled?.Invoke();
+    }
+
+    #endregion
 
     #region enabling and disabling public events
 
@@ -245,6 +283,7 @@ public class InputManager : BaseManager
         EnableWeapon2 = pInput.currentActionMap.FindAction("EnableWeapon2");
         SelectPin = pInput.currentActionMap.FindAction("SelectPin");
         MousePosition = pInput.currentActionMap.FindAction("MousePosition");
+        MoveSelectedObject = pInput.currentActionMap.FindAction("Move");
 
         ToggleUpgradeMenuInUpgradeMenu.started += ToggleUpgradeMenuInUpgradeMenu_started;
         SwapFocusToGrid.started += SwapFocusToGrid_started;
@@ -255,7 +294,11 @@ public class InputManager : BaseManager
         SelectPin.started += SelectPin_started;
         SelectPin.canceled += SelectPin_canceled;
         MousePosition.performed += Aim_performed;
+        MoveSelectedObject.performed += Aim_performed;
+        MoveSelectedObject.canceled += MoveSelectedObject_canceled;
     }
+
+    
 
 
 
@@ -367,8 +410,16 @@ public class InputManager : BaseManager
     /// <param name="obj"></param>
     private void Aim_performed(InputAction.CallbackContext obj)
     {
-        CurrentMousePosition = obj.ReadValue<Vector2>();
-        InputPublicEvents.MouseMoved?.Invoke(CurrentMousePosition);
+        if (!ControllerIsEnabled)
+        {
+            CurrentMousePosition = obj.ReadValue<Vector2>();
+            InputPublicEvents.MouseMoved?.Invoke(CurrentMousePosition);
+        }
+        else
+        {
+            InputPublicEvents.PlayerAimed?.Invoke(obj.ReadValue<Vector2>());
+        }
+        
     }
 
     /// <summary>
@@ -423,6 +474,16 @@ public class InputManager : BaseManager
     private void Pause_started(InputAction.CallbackContext obj)
     {
         InputPublicEvents.PausePressed?.Invoke();
+    }
+
+    /// <summary>
+    /// Cancels the player aiming
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <exception cref="System.NotImplementedException"></exception>
+    private void MoveSelectedObject_canceled(InputAction.CallbackContext obj)
+    {
+        InputPublicEvents.AimCancelled?.Invoke();
     }
 
     #endregion
