@@ -3,7 +3,7 @@
 * Contributors:
 * Last Modified: 10/01/2026
 * Summary: The debug console and all the code that comes with it
-* To Do:   N/A
+* To Do:   The Debug console SpreadSheet
 */
 using System.Collections;
 using UnityEngine;
@@ -11,7 +11,6 @@ using UnityEngine.UI;
 
 public class DebugConsole : MonoBehaviour
 {
-    [SerializeField] GameObject console;
     [SerializeField] TMPro.TMP_InputField inputs;
     [SerializeField] TMPro.TMP_Text textArea;
     [SerializeField] ScrollRect logScrollRect;
