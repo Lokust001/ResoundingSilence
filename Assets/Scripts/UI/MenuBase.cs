@@ -13,6 +13,9 @@ public class MenuBase : MonoBehaviour
     [SerializeField]
     protected UiMenuType menuType;
 
+    [SerializeField]
+    protected GameObject defaultSelectedGameobject;
+
     /// <summary>
     /// Initializes the menu. Can go anywhere in the overridden function.
     /// </summary>
@@ -23,12 +26,16 @@ public class MenuBase : MonoBehaviour
     }
 
     /// <summary>
-    /// Mostly empty function that exists to be overwritten with actual functionality dependant on the menu.
-    /// Contains error checks. Designed to be at the top of the overridden function, not the bottom.
+    /// Tells the controller service that this menu opened
     /// </summary>
     protected virtual void MenuOpenedSucessfully()
     {
-        
+        ControllerUIService.Instance.SetDefaultSelectedGameobject(defaultSelectedGameobject);
+
+        if (InputManager.Instance.ControllerIsEnabled)
+        {
+            ControllerUIService.Instance.SetEventSystemSelectedObjToDefault();
+        }
     }
 
     /// <summary>

@@ -8,7 +8,7 @@ using System.Collections;
 using UnityEngine;
 using static BaseEnemyScriptable;
 
-public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
+public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICustomDisabler
 {
 
     [SerializeField]
@@ -18,9 +18,16 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
     private GameObject attackProjectilePrefab;
 
     [SerializeField]
+    private GameObject aoeAttack;
+
+    [SerializeField]
     private GameObject attackIndicatorArea;
 
+    [SerializeField]
+    private string ignoreLayerTurnoff;
+
     private SphereCollider sphereTrigger;
+    private CapsuleCollider chargingCapCollider;
     private EnemyWalk enemyMovement;
     private Transform playerTransform;
     private Vector3 fireBulletDirection;
@@ -35,10 +42,11 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
     /// <summary>
     /// Grabs the sphere collider for the search radius and enemy movement script
     /// </summary>
-    void Awake()
+    private void InitializeVariables() 
     {
         sphereTrigger = GetComponent<SphereCollider>();
         enemyMovement = GetComponentInParent<EnemyWalk>();
+        chargingCapCollider = GetComponent<CapsuleCollider>();
     }
 
     /// <summary>
@@ -143,9 +151,11 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
     /// <returns></returns>
     private IEnumerator AttackCooldownCoroutine() 
     {
+        Debug.Log("Started Cooldown");
         //Wait for the time between attacks, then clear the active coroutine
         yield return new WaitForSeconds(enemyData.timeBetweenAttacks);
         activeATKorCooldown = null;
+        Debug.Log("Ended Cooldown");
 
         //If player is not in attack range, start searching for it
         if (!inAttackRange)
@@ -264,17 +274,27 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
         //The parent's scale is mostly irrelevant, it acts as the pivot for the actual indicator.
         //Setting the z scale to 0 makes the indicator invisible, and increasing the z scale
         //over time makes the actual indicator "grow" over time.
-        indicatorParentScaler.localScale = new(1, 1, 0);
+        ResetIndicatorParent();
 
         //Pass the Charging behavior towards enemyMovement to handle the sudden burst of movement
         enemyCharging = StartCoroutine(queuedMeleeAttack);
         yield return enemyCharging;
         enemyCharging = null;
 
-        inAttackRange = false;
-
         //Start a Cooldown Coroutine
         activeATKorCooldown = StartCoroutine(AttackCooldownCoroutine());
+    }
+
+    /// <summary>
+    /// Resets the parent indicator scale so that that the indicator isn't showing
+    /// </summary>
+    private void ResetIndicatorParent() 
+    {
+        if(attackIndicatorArea != null)
+            attackIndicatorArea.transform.parent.localScale = new(1, 1, 0);
+        if (aoeAttack != null)
+            aoeAttack.SetActive(false);
+
     }
 
     /// <summary>
@@ -284,7 +304,7 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
     private IEnumerator PerformMeleeAttack() 
     {
         yield return null;
-        attackProjectilePrefab.SetActive(true);
+        aoeAttack.SetActive(true);
 
         float timer = 0;
         float goalDuration = enemyData.attackUptimeDuration;
@@ -295,7 +315,7 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
             timer += Time.fixedDeltaTime;
         }
 
-        attackProjectilePrefab.SetActive(false);
+        aoeAttack.SetActive(false);
     }
 
     /// <summary>
@@ -349,5 +369,33 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver
     public void SetEntityData(BaseScriptableObject baseScriptable)
     {
         enemyData = (BaseEnemyScriptable)baseScriptable;
+        InitializeVariables();
+
     }
+
+    /// <summary>
+    /// Specifies whcih triggers and colliders to enable when this enemy is enabled
+    /// </summary>
+    public void EnableEntity()
+    {
+        sphereTrigger.enabled = true;
+        if(chargingCapCollider != null)
+            chargingCapCollider.enabled = true;
+    }
+
+    /// <summary>
+    /// Specifies which methods, coroutines, and triggers/colliders to disable when this enemy is disabled
+    /// </summary>
+    public void DisableEntity()
+    {
+        StopAllCoroutines();
+        ResetIndicatorParent();
+        activeATKorCooldown = enemyCharging = null;
+        sphereTrigger.enabled = false;
+
+        if (chargingCapCollider != null)
+            chargingCapCollider.enabled = false;
+    }
+
+    
 }

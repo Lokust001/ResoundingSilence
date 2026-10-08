@@ -8,7 +8,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyWalk : MonoBehaviour, IEntityDataReceiver
+public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICustomDisabler
 {
     private NavMeshAgent m_Agent;
     private GameObject m_GameObject;
@@ -23,16 +23,28 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver
     Transform enemyTransform;
     CapsuleCollider capsuleCollider;
 
+    private MeshRenderer meshRenderer;
+    private Rigidbody rigidbody;
+
+    private int s;
+    private void Awake()
+    {
+        s = LayerMask.NameToLayer("Player");
+    }
+
     /// <summary>
     /// Grabs necessary components and assigns enemyTransform to transform component
     /// </summary>
-    void Awake()
+    private void InitializeVariables() 
     {
         m_Agent = GetComponent<NavMeshAgent>();
         m_GameObject = FindAnyObjectByType<PlayerController>().gameObject;
         enemyAttack = GetComponentInChildren<EnemyAttack>();
         enemyBuff = GetComponentInChildren<EnemyBuff>();
         capsuleCollider = GetComponent<CapsuleCollider>();
+
+        meshRenderer = GetComponent<MeshRenderer>();
+        rigidbody = GetComponent<Rigidbody>();
         enemyTransform = transform;
     }
 
@@ -41,7 +53,6 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver
     /// </summary>
     public void StartPlayerSearch() 
     {
-        m_Agent.isStopped = false;
         walkingCoroutine = StartCoroutine(MoveTowardsPlayer());
     }
 
@@ -51,7 +62,6 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver
     public void EndPlayerSearch() 
     {
         m_Agent.isStopped = true;
-
         if (walkingCoroutine != null) 
         {
             StopCoroutine(walkingCoroutine);
@@ -66,7 +76,6 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver
     /// <returns></returns>
     public IEnumerator ChargeTowardsLocation(float chargeDistance) 
     {
-        Rigidbody rb = GetComponent<Rigidbody>();
 
         //Double the charge distance to account for the offset of the dash indicator
         Vector3 enemyForwardChargeDistance = 2 * chargeDistance * transform.forward;
@@ -79,7 +88,7 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver
         float distanceToGoal = (chargeDestination - enemyTransform.position).sqrMagnitude;
 
         //Make the rigidbody on the enemy temporarily kinematic to avoid letting it be interrupted by the player
-        rb.isKinematic = true;
+        rigidbody.isKinematic = true;
 
         //While there is still a significant gap or distance between the enemy and its charge destination,
         //calculate its current distance from its goal, move the enemy towards the goal by a factor of its chargeSpeedForce,
@@ -88,13 +97,13 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver
         {
             distanceToGoal =  (chargeDestination - enemyTransform.position).sqrMagnitude;
             Vector3 goalOverTime = Vector3.MoveTowards(enemyTransform.position, chargeDestination, enemyData.chargeSpeedForce * Time.deltaTime);
-            rb.MovePosition(goalOverTime);
+            rigidbody.MovePosition(goalOverTime);
             yield return null;
         }
 
         //Restore properties and velocity
-        rb.isKinematic = false;
-        rb.linearVelocity = rb.angularVelocity = Vector3.zero;
+        rigidbody.isKinematic = false;
+        rigidbody.linearVelocity = rigidbody.angularVelocity = Vector3.zero;
         
     }
 
@@ -106,7 +115,8 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver
     {
         if (collision.gameObject.TryGetComponent<PlayerController>(out PlayerController player))
         {
-            Debug.Log(Physics.GetIgnoreCollision(collision.collider, capsuleCollider));
+            //Debug.Log("Enemy collided player layer #: " + s);
+            Debug.Log(Physics.GetIgnoreLayerCollision(s, gameObject.layer));
             if (enemyAttack.IsEnemyCurrentlyCharging())
             {
                 Vector3 pushDirection = player.transform.position - transform.position;
@@ -124,6 +134,8 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver
     /// <returns></returns>
     private IEnumerator MoveTowardsPlayer() 
     {
+        Debug.Log("Following Player");
+        m_Agent.isStopped = false;
         while (true) 
         {
             m_Agent.destination = m_GameObject.transform.position;
@@ -163,5 +175,26 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver
     public void SetEntityData(BaseScriptableObject baseScriptable)
     {
         enemyData = (BaseEnemyScriptable)baseScriptable;
+        InitializeVariables();
+    }
+
+    /// <summary>
+    /// Specifies which components on this enemy to enable when it is called to be enabled
+    /// </summary>
+    public void EnableEntity()
+    {
+        meshRenderer.enabled = true;
+        capsuleCollider.enabled = true;
+    }
+
+    /// <summary>
+    /// Specifies which components & methods to discable when this enemy needs to be disabled
+    /// </summary>
+    public void DisableEntity()
+    {
+        EndPlayerSearch();
+        StopAllCoroutines();
+        meshRenderer.enabled = false;
+        capsuleCollider.enabled = false;
     }
 }

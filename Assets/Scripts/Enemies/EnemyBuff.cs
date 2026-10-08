@@ -5,12 +5,11 @@
 * Summary: This is the base scriptable object for all eneny scriptable objects.
 * To Do:   Add more variables as needed.
 */
-using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyBuff : MonoBehaviour, IEntityDataReceiver
+public class EnemyBuff : MonoBehaviour, IEntityDataReceiver, ICustomDisabler
 {
     BaseEnemyScriptable enemyData;
 
@@ -26,7 +25,7 @@ public class EnemyBuff : MonoBehaviour, IEntityDataReceiver
     /// <summary>
     /// Grabs necessary components and instantiates a new List
     /// </summary>
-    private void Awake()
+    private void InitializeVariables()
     {
         buffedEnemies = new List<Enemy>();
         enemyMovement = GetComponentInParent<EnemyWalk>();
@@ -37,7 +36,7 @@ public class EnemyBuff : MonoBehaviour, IEntityDataReceiver
     /// <summary>
     /// Public method that can be activated from any script to start buff behavior and keep tabs on health
     /// </summary>
-    public void AttemptBuffingAllies() 
+    public void AttemptBuffingAllies()
     {
         StartCoroutine(MonitorAndRetreat());
         interruptableCharge = StartCoroutine(ChargingBuff());
@@ -47,12 +46,12 @@ public class EnemyBuff : MonoBehaviour, IEntityDataReceiver
     /// Coroutine that counts up time until the buff collider is active and can be seen
     /// </summary>
     /// <returns></returns>
-    public IEnumerator ChargingBuff() 
+    public IEnumerator ChargingBuff()
     {
         float timer = 0;
         float goal = enemyData.buffChargeDuration;
 
-        while (timer < goal) 
+        while (timer < goal)
         {
             yield return null;
             timer += Time.deltaTime;
@@ -65,7 +64,7 @@ public class EnemyBuff : MonoBehaviour, IEntityDataReceiver
     /// Semi-Looped method that simulates retreat behavior
     /// </summary>
     /// <returns></returns>
-    private IEnumerator MonitorAndRetreat() 
+    private IEnumerator MonitorAndRetreat()
     {
         float currentHealth = enemyData.enemyHealth;
         int deactivationThreshold = enemyData.GetLostHealthThreshold();
@@ -81,6 +80,20 @@ public class EnemyBuff : MonoBehaviour, IEntityDataReceiver
         //Stop charing up the buff if it is active
         StopCoroutine(interruptableCharge);
 
+        ClearBuffFromAllies();
+
+        //Wait for the enemy to move away from the player
+        yield return StartCoroutine(enemyMovement.MoveAwayFromPlayer());
+
+        //Starts the process all over again
+        AttemptBuffingAllies();
+    }
+
+    /// <summary>
+    /// Makes every ally affected by the buff lose their buff
+    /// </summary>
+    private void ClearBuffFromAllies()
+    {
         //Turn off the aura visual and prevent new enemies from entering it
         buffAuraTrigger.enabled = buffAuraMesh.enabled = false;
 
@@ -92,12 +105,6 @@ public class EnemyBuff : MonoBehaviour, IEntityDataReceiver
 
         //Discard currently tracked buffed enemies since they are no longer buffed
         buffedEnemies.Clear();
-
-        //Wait for the enemy to move away from the player
-        yield return StartCoroutine(enemyMovement.MoveAwayFromPlayer());
-
-        //Starts the process all over again
-        AttemptBuffingAllies();
     }
 
     /// <summary>
@@ -106,7 +113,7 @@ public class EnemyBuff : MonoBehaviour, IEntityDataReceiver
     /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent<Enemy>(out Enemy enemy)) 
+        if (other.TryGetComponent<Enemy>(out Enemy enemy))
         {
             enemy.ReceiveBuff(enemyData.GetATKIncreaseMultiplier(), enemyData.GetDMGReductionMultiplier());
             buffedEnemies.Add(enemy);
@@ -133,5 +140,15 @@ public class EnemyBuff : MonoBehaviour, IEntityDataReceiver
     public void SetEntityData(BaseScriptableObject baseScriptable)
     {
         enemyData = (BaseEnemyScriptable)baseScriptable;
+        InitializeVariables();
+    }
+
+    /// <summary>
+    /// Specifies which method to run to disable the functionality of this enemy when it is called to be disabled
+    /// </summary>
+    public void DisableEntity()
+    {
+        StopAllCoroutines();
+        ClearBuffFromAllies();
     }
 }

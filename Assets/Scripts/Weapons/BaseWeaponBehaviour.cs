@@ -73,7 +73,8 @@ public class BaseWeaponBehaviour : MonoBehaviour
     virtual protected void Start()
     {
         ThisWeaponData = StaticDataManager.Instance.GetWeaponAtID(weaponDataID);
-
+        //TESTING ONLY
+        MidRunDataManager.Instance.EquipWeaponInSlot(0, ThisWeaponData);
         //tells the abilities to instantiate
         ThisWeaponData.GetAbilities();
         attackReady = true;
@@ -141,12 +142,11 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// </summary>
     protected void GetMousPos(Vector2 pos)
     {
-        Plane p = new Plane(Vector3.forward, 0);
         Ray ray = Camera.main.ScreenPointToRay(pos);
 
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundLayerMask))
         {
-            mousePos = hit.point;
+            mousePos = hit.point - transform.position;
         }
     }
 
@@ -201,6 +201,11 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// </summary>
     virtual protected void FixedUpdate()
     {
+        if (UIManager.Instance.CurrentlyInFullscreenMenu())
+        {
+            return;
+        }
+
         if (isAttacking && attackReady)
         {
             Attack();

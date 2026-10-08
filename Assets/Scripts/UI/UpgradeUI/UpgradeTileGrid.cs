@@ -8,6 +8,7 @@
 
 using NaughtyAttributes;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
@@ -27,9 +28,13 @@ public class UpgradeTileGrid
     [Header("Grid tiles"), Tooltip("This is the upgrade grid - 0, 0 is the top left element and it goes to the right.")]
     public List<GridRow> rows;
 
+    public PlayerController playerController;
+
     public List<UpgradeTileData> grid { get; private set; } = new();
 
     public List<PinScriptable> pins { get; private set; } = new();
+
+    public List<UpgradeTileData> AdajacencyTest { get; private set; } = new();
 
     /// <summary>
     /// subscride to the event
@@ -44,7 +49,7 @@ public class UpgradeTileGrid
     /// </summary>
     public void OnDestroy()
     {
-        UIPublicEvents.UpgradeMenuClosed -= SendDatatoWeapon;
+        UIPublicEvents.PinChangedOnWeapon -= NewPinSet;
     }
 
     [System.Serializable]
@@ -154,7 +159,7 @@ public class UpgradeTileGrid
             HasBeenInitialized = true;
         }
 
-        UIPublicEvents.UpgradeMenuClosed += SendDatatoWeapon;
+        UIPublicEvents.PinChangedOnWeapon += NewPinSet;
 
         List<UpgradeTileData> enabledUnGlyphedTiles = new();
 
@@ -207,25 +212,165 @@ public class UpgradeTileGrid
     }
 
     /// <summary>
+    /// wrapper to call all the data changing info when a new pin is set
+    /// </summary>
+    /// <param name="pin"></param>
+    public void NewPinSet(PinScriptable pin)
+    {
+        CheckGlyphs(pin);
+        SendDatatoWeapon(pin);
+    }
+
+    /// <summary>
     /// Collects all the data from the pins on the weapon and sends it to buff the weapon stats
     /// </summary>
-    public void SendDatatoWeapon()
+    public void SendDatatoWeapon(PinScriptable newpin)
     {
         float damagebuff = 1.0f;
         float AttackSpeedBuff = 1.0f;
+        float lifestealBuff = 1.0f;
         GetPins();
         foreach(var pin in pins)
         {
-            if(pin.StatToChange == PinScriptable.WeaponStatToChange.bulletDamage)
+            UpgradeTileData thisTile = grid.FirstOrDefault(x => x.pin == pin);
+            if (pin.StatToChange == PinScriptable.WeaponStatToChange.BulletDamage)
             {
-                damagebuff += pin.ModifierNumber;
+                float buffAmount = pin.ModifierNumber;
+                if(pin.AdditiveScaling)
+                {
+                    buffAmount += GetAdjacentBuff(thisTile);
+                }
+                else
+                {
+                    buffAmount *= (1 + (GetAdjacentBuff(thisTile)/100));
+                }
+
+                if ((thisTile.GlyphActive && thisTile.glyph.Type == GlyphScriptable.GlyphType.DoubleThisGlyph) || doubleGlyphAdjacent(thisTile))
+                {
+                    buffAmount *= 2;
+                }
+                damagebuff += (buffAmount / 100);
+                
             }
-            else if(pin.StatToChange == PinScriptable.WeaponStatToChange.attackSpeed)
+            else if(pin.StatToChange == PinScriptable.WeaponStatToChange.AttackSpeed)
             {
-                AttackSpeedBuff /= pin.ModifierNumber;
+                float buffAmount = pin.ModifierNumber;
+                if(pin.AdditiveScaling)
+                {
+                    buffAmount += GetAdjacentBuff(thisTile);
+                }
+                else
+                {
+                    buffAmount *= (1 + (GetAdjacentBuff(thisTile) / 100));
+                }
+
+                if ((thisTile.GlyphActive && thisTile.glyph.Type == GlyphScriptable.GlyphType.DoubleThisGlyph) || doubleGlyphAdjacent(thisTile))
+                {
+                    buffAmount *= 2;
+                }
+                AttackSpeedBuff *= (100 - buffAmount) / 100;
+            }
+            else if (pin.StatToChange == PinScriptable.WeaponStatToChange.Lifesteal)
+            {
+                float buffAmount = pin.ModifierNumber;
+                if (pin.AdditiveScaling)
+                {
+                    buffAmount += GetAdjacentBuff(thisTile);
+                }
+                else
+                {
+                    buffAmount *= (1 + (GetAdjacentBuff(thisTile) / 100));
+                }
+
+                if ((thisTile.GlyphActive && thisTile.glyph.Type == GlyphScriptable.GlyphType.DoubleThisGlyph) || doubleGlyphAdjacent(thisTile))
+                {
+                    buffAmount *= 2;
+                }
+                lifestealBuff += (buffAmount / 100);
             }
         }
+
+        foreach(UpgradeTileData tile in grid)
+        {
+            if (tile.GlyphActive)
+            {
+                switch(tile.glyph.Type)
+                {
+                    case 0:
+                        break;
+                    case GlyphScriptable.GlyphType.CooldownReduction:
+                        //ToDo add this to the cooldown of the weapons
+                        break;
+                    case GlyphScriptable.GlyphType.DamageBuff:
+                        damagebuff *= 1 + (tile.glyph.GlyphChangeAmount / 100);
+                        break;
+                    case GlyphScriptable.GlyphType.HealthingReceived:
+                        playerController.healingPotency = 1 + (tile.glyph.GlyphChangeAmount / 100);
+                        break;
+                    case GlyphScriptable.GlyphType.StatusEffect: 
+                        //ToDo Add the extra StatusEffect Buffs
+                        break;
+                }
+            }
+        }
+
         attachedWeapon.updateWeaponSpeed(AttackSpeedBuff);
         attachedWeapon.updateWeaponDamage(damagebuff);
+        attachedWeapon.updateLifestealPercent(lifestealBuff);
+    }
+
+
+    /// <summary>
+    /// when a new pin is set check if it was on a glyph that it's compatable with
+    /// </summary>
+    /// <param name="newpin"></param>
+    public void CheckGlyphs(PinScriptable newpin)
+    {
+        UpgradeTileData tile = grid.FirstOrDefault(x => x.pin == newpin);
+        if(tile.glyph != null && newpin.Type == tile.glyph.PinTypeToModify)
+        {
+            tile.GlyphActive = true;
+        }
+        else
+        {
+            tile.GlyphActive = false;
+        }
+    }
+
+    /// <summary>
+    /// funtion to go through all the adjacent tiles and if there pins of the same type adjacent it stores how much of a buff the pin will get and returns that amount
+    /// </summary>
+    /// <param name="tile"></param>
+    /// <returns> % amount buff that revieved by the adjacent tiles</returns>
+    public float GetAdjacentBuff(UpgradeTileData tile)
+    {
+        int BuffAmount = 0;
+        AdajacencyTest = UtilityFunctions.GetAdjacentTiles<UpgradeTileData>(tile.coords, grid, height, width);
+        foreach (var currentTile in AdajacencyTest)
+        {
+            if (currentTile != null && currentTile.pin != null && tile.pin.Type == currentTile.pin.Type)
+            {
+                BuffAmount += tile.pin.AdjacentTileScaling;
+            }
+        }
+        return BuffAmount;
+    }
+
+    /// <summary>
+    /// Checks if adjacent tile to the current tile has a glyph the doubles the effects of adjacent tiles
+    /// </summary>
+    /// <param name="tile"></param>
+    /// <returns></returns>
+    public bool doubleGlyphAdjacent(UpgradeTileData tile)
+    {
+        List<UpgradeTileData> temp = UtilityFunctions.GetAdjacentTiles<UpgradeTileData>(tile.coords, grid, height, width);
+        foreach (var currentTile in temp)
+        {
+            if (currentTile != null && currentTile.GlyphActive && currentTile.glyph.Type == GlyphScriptable.GlyphType.DoubleAdjacentGlyphs)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

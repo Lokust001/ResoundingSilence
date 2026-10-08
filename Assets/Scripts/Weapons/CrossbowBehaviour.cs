@@ -1,7 +1,7 @@
 /******************************************************************************
  * Author: Brad Dixon
  * Contributors:
- * Last Modified: 9/29/2026
+ * Last Modified: 10/06/2026
  * Brief: Handles the crossbow's basic attacks and abilities.
  * TODO: In the inspector, update the layer masks to include enemy layers
  * ***************************************************************************/
@@ -299,7 +299,10 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
 
         float abilityRange = abilityOne == Abilities.SplinterShot ? abilityOneRange : abilityTwoRange;
 
-        splinterShotPreview.transform.position = Vector3.ClampMagnitude(mousePos, abilityRange);
+        float staticY = splinterShotPreview.transform.position.y;
+        Vector3 pos = transform.position + Vector3.ClampMagnitude(mousePos, abilityRange);
+        pos.y = staticY;
+        splinterShotPreview.transform.position = pos;
     }
 
     /// <summary>
@@ -309,7 +312,10 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
     {
         float abilityRange = abilityOne == Abilities.BombBlast ? abilityOneRange : abilityTwoRange;
 
-        bombBlastPreview.transform.position = Vector3.ClampMagnitude(mousePos, abilityRange);
+        float staticY = bombBlastPreview.transform.position.y;
+        Vector3 pos = transform.position + Vector3.ClampMagnitude(mousePos, abilityRange);
+        pos.y = staticY;
+        bombBlastPreview.transform.position = pos;
     }
 
     /// <summary>
@@ -351,7 +357,12 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
     {
         base.FixedUpdate();
 
-        Vector3 lookDir = mousePos - transform.position;
+        if (UIManager.Instance.CurrentlyInFullscreenMenu())
+        {
+            return;
+        }
+
+        Vector3 lookDir = mousePos;
         Quaternion rot = Quaternion.RotateTowards(weaponModel.transform.rotation,
             Quaternion.LookRotation(lookDir), 20f);
         rot.x = 0;
@@ -411,7 +422,8 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
             {
                 if (enemyCollider.GetComponent<DummyBehaviour>())
                 {
-                    Debug.Log(enemyCollider.name + " took " + tickDamage + " damage!");
+                    //replace with the enemy taking damage
+                    enemyCollider.GetComponent<DummyBehaviour>().TakeDamage(tickDamage);
                 }
             }
 
@@ -437,13 +449,14 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
         {
             if (entityCollider.GetComponent<DummyBehaviour>())
             {
-                Debug.Log(entityCollider.name + " took " + bombBlastDamage + " damage!");
+                //replace with the enemy taking damage
+                entityCollider.GetComponent<DummyBehaviour>().TakeDamage(bombBlastDamage);
                 entityCollider.GetComponent<Rigidbody>().AddExplosionForce(enemyLaunchDistance, tempAbility.transform.position,
                     bombBlastAOESize, .1f, ForceMode.Impulse);
             }
-            else if(entityCollider.GetComponent<DummyPlayerBehaviour>())
+            else if(entityCollider.GetComponent<DummyPlayerBehaviour>() || entityCollider.GetComponentInParent<PlayerController>())
             {
-                entityCollider.GetComponent<Rigidbody>().AddExplosionForce(playerLaunchDistance, tempAbility.transform.position,
+                entityCollider.GetComponentInParent<Rigidbody>().AddExplosionForce(playerLaunchDistance, tempAbility.transform.position,
                     bombBlastAOESize, 0, ForceMode.Impulse);
             }
         }
@@ -463,11 +476,13 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
         {
             if(enemyCollider.GetComponent<DummyBehaviour>())
             {
-                Debug.Log(enemyCollider.name + " took " + scatterShotDamage + " damage!");
+                //replace with the enemy taking damage
+                enemyCollider.GetComponent<DummyBehaviour>().TakeDamage(scatterShotDamage);
 
                 int healValue = Mathf.CeilToInt(scatterShotDamage * ConvertToPercentage(scatterShotLifeSteal));
 
-                Debug.Log("I healed for " + healValue + " health!");
+                //TODO Replace with heal player
+                FindAnyObjectByType<DummyPlayerBehaviour>().Heal(healValue);
             }
         }
     }
@@ -490,11 +505,13 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
             {
                 if (enemyCollider.GetComponent<DummyBehaviour>())
                 {
-                    Debug.Log(enemyCollider.name + " took " + tickDamage + " damage!");
+                    //replace with the enemy taking damage
+                    enemyCollider.GetComponent<DummyBehaviour>().TakeDamage(tickDamage);
 
                     int healValue = Mathf.CeilToInt(tickDamage * ConvertToPercentage(scatterShotLifeSteal));
 
-                    Debug.Log("I healed for " + healValue + " health!");
+                    //TODO Replace with heal player
+                    FindAnyObjectByType<DummyPlayerBehaviour>().Heal(healValue);
                 }
             }
 
