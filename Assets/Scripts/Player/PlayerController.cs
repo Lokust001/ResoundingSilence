@@ -61,6 +61,11 @@ public class PlayerController : MonoBehaviour
     
     int currentDash;
 
+    [SerializeField]
+    private TriggerObjects meleeRangeTrigger;
+    [SerializeField]
+    private TriggerObjects rangedRangeTrigger;
+
     #endregion
 
     #region Unity Methods
@@ -73,7 +78,9 @@ public class PlayerController : MonoBehaviour
         InputPublicEvents.MovePressed += PlayerInputStarted;
         InputPublicEvents.MoveReleased += PlayerInputEnded;
         InputPublicEvents.DashPressed += PlayerDashPressed;
-        TempOnEnable();
+
+        meleeRangeTrigger.PlayerTriggerActivated += MeleeZoneHandler;
+        rangedRangeTrigger.PlayerTriggerActivated += RangedZoneHandler;
     }
 
     /// <summary>
@@ -84,7 +91,9 @@ public class PlayerController : MonoBehaviour
         InputPublicEvents.MovePressed -= PlayerInputStarted;
         InputPublicEvents.MoveReleased -= PlayerInputEnded;
         InputPublicEvents.DashPressed -= PlayerDashPressed;
-        TempOnDisable();
+
+        meleeRangeTrigger.PlayerTriggerActivated -= MeleeZoneHandler;
+        rangedRangeTrigger.PlayerTriggerActivated -= RangedZoneHandler;
     }
 
     /// <summary>
@@ -397,24 +406,6 @@ public class PlayerController : MonoBehaviour
         //Let player move again
         RestartPlayerMovementAndInput();
         knockbackCoroutine = null;
-    }
-
-    [SerializeField]
-    private TriggerObjects meleeRangeTrigger;
-    [SerializeField]
-    private TriggerObjects rangedRangeTrigger;
-
-    private void TempOnEnable() 
-    {
-        meleeRangeTrigger.PlayerTriggerActivated += MeleeZoneHandler;
-        rangedRangeTrigger.PlayerTriggerActivated += RangedZoneHandler;
-    }
-
-    private void TempOnDisable() 
-    {
-        meleeRangeTrigger.PlayerTriggerActivated -= MeleeZoneHandler;
-        rangedRangeTrigger.PlayerTriggerActivated -= RangedZoneHandler;
-
     }
 
     private void MeleeZoneHandler(Enemy enemy, bool enteredTrigger) 
