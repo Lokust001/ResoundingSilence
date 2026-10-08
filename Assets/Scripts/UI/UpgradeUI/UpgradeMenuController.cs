@@ -77,6 +77,9 @@ public class UpgradeMenuController : MenuBase
     [HideInInspector]
     public UpgradeTileGrid currentlyEnabledGrid;
 
+    [ShowIf(nameof(settings), ShownSettings.References)]
+    public List<UpgradeMenuTarotCardUI> tarotSlots = new();
+
     #endregion
 
     #region testing
@@ -101,6 +104,7 @@ public class UpgradeMenuController : MenuBase
 
     private List<PinItemBehavior> inventoryPins = new();
     public List<InventoryPinHolder> inventorySlots = new();
+
     private int gridHeight;
     private int gridWidth;
 
@@ -131,6 +135,10 @@ public class UpgradeMenuController : MenuBase
     /// </summary>
     protected override void MenuOpenedSucessfully()
     {
+        foreach (UpgradeMenuTarotCardUI tarotUI in tarotSlots)
+        {
+            tarotUI.InitCardUI();
+        }
 
         PopulateInventory();
 
@@ -184,18 +192,20 @@ public class UpgradeMenuController : MenuBase
     /// </summary>
     private void PopulateInventory()
     {
-        //replace with a system that checks if it sees any you already have soon
         foreach (PinScriptable pin in MidRunDataManager.Instance.pinInventory)
         {
-            InventoryPinHolder tempSlot = Instantiate(inventoryPinSlot, inventory);
+            if (inventoryPins.Find(x => x.pinData == pin) == null)
+            {
+                InventoryPinHolder tempSlot = Instantiate(inventoryPinSlot, inventory);
 
-            PinItemBehavior temp = Instantiate(pinItemPrefab, tempSlot.transform);
+                PinItemBehavior temp = Instantiate(pinItemPrefab, tempSlot.transform);
 
-            tempSlot.InitSlot(temp);
-            temp.InitPin(pin, tempSlot);
-            inventoryPins.Add(temp);
-            inventorySlots.Add(tempSlot);
-            temp.transform.position = tempSlot.transform.position;
+                tempSlot.InitSlot(temp);
+                temp.InitPin(pin, tempSlot);
+                inventoryPins.Add(temp);
+                inventorySlots.Add(tempSlot);
+                temp.transform.position = tempSlot.transform.position;
+            }
         }
     }
 

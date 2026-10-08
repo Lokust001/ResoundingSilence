@@ -17,8 +17,7 @@ public class UpgradeTileBehavior : PinHolderSlot
     public bool isActive;
     public Vector2Int coords;
 
-    [SerializeField]
-    private List<UpgradeTileBehavior> adjacentTiles;
+    public List<UpgradeTileBehavior> adjacentTiles;
 
     public UpgradeTileData tileData;
 
@@ -119,6 +118,22 @@ public class UpgradeTileBehavior : PinHolderSlot
         
         tileData.SetPin(null);
         UIPublicEvents.PinChangedOnWeapon?.Invoke(null);
+    }
+
+    /// <summary>
+    /// returns the neighbors of this tile. Returns as controllersupportclickables
+    /// </summary>
+    /// <returns></returns>
+    public override List<ControllerSupportedClickable> getNeighbors()
+    {
+        List<ControllerSupportedClickable> returnList = new();
+
+        for (int i = 0; i < adjacentTiles.Count; i++)
+        {
+            returnList.Add(adjacentTiles[i]);
+        }
+
+        return returnList;
     }
 
     #endregion
