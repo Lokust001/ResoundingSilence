@@ -17,6 +17,7 @@ public static class InputPublicEvents
 
     #region MidRun
     public static Action<Vector2> MouseMoved;
+    public static Action<Vector2> PlayerAimed;
 
     public static Action<Vector2> MovePressed;
     public static Action MoveReleased;
@@ -52,6 +53,8 @@ public static class InputPublicEvents
     public static Action SwapFocusToTarot;
     public static Action SwapFocusToInventory;
     public static Action SwapFocusToGrid;
+
+    public static Action AimCancelled;
 
     #endregion
 }
