@@ -17,9 +17,6 @@ public class Enemy : MonoBehaviour
     private bool testWithoutSpawner;
 
     [SerializeField]
-    private bool testAlternateShooterBehavior;
-
-    [SerializeField]
     private BaseEnemyScriptable enemyData;
 
     private EnemyAttack attackBehavior;
@@ -31,14 +28,11 @@ public class Enemy : MonoBehaviour
     private bool inMeleeRange;
     private bool inRangedRange;
 
-    private bool firstAction;
-
     /// <summary>
     /// Creates a copy of the scriptable object not tied to the inspector, then propagates it other scripts
     /// </summary>
     void Awake()
     {
-        firstAction = false;
         attackBehavior = GetComponentInChildren<EnemyAttack>();
         movementBeahvior = GetComponentInChildren<EnemyWalk>();
         enemyData = enemyData.CreateNonRefCopy<BaseEnemyScriptable>();
@@ -49,51 +43,82 @@ public class Enemy : MonoBehaviour
 
     private void OnEnable()
     {
-        if(testAlternateShooterBehavior)
-            aggroTrigger.EnemyTriggerActivated += EnableEnemyAggro;
+        aggroTrigger.EnemyTriggerActivated += EnableEnemyAggro;
     }
 
     private void EnableEnemyAggro(PlayerController obj)
     {
+        Debug.Log(gameObject.name + " is aggro'd");
         aggroTrigger.EnemyTriggerActivated -= EnableEnemyAggro;
-        StartCoroutine(RepeatedlyCheckRange());
-        attackBehavior.CustomStartCooldown();
+        FirstEnemyAction();
 
+    }
+
+    /// <summary>
+    /// The first decision that the enemy takes, on whether it follows 
+    /// one temporal-based loop or two
+    /// </summary>
+    private void FirstEnemyAction() 
+    {
+        switch (enemyData.enemyType)
+        {
+            case BaseEnemyScriptable.EnemyType.None:
+                break;
+            case BaseEnemyScriptable.EnemyType.SingleShooter:
+            case BaseEnemyScriptable.EnemyType.ConeShooter:
+                StartCoroutine(RepeatedlyCheckShooterRange());
+                break;
+            case BaseEnemyScriptable.EnemyType.Melee:
+            case BaseEnemyScriptable.EnemyType.ChargingMelee:
+                movementBeahvior.StartFollowingPlayer();
+                break;
+            case BaseEnemyScriptable.EnemyType.BuffEnemy:
+                GetComponentInChildren<EnemyBuff>(true).AttemptBuffingAllies();
+                break;
+            default:
+                break;
+        }
     }
 
     private void OnDisable()
     {
-        if (testAlternateShooterBehavior)
-            aggroTrigger.EnemyTriggerActivated -= EnableEnemyAggro;
+        aggroTrigger.EnemyTriggerActivated -= EnableEnemyAggro;
     }
 
+    /// <summary>
+    /// The nth decision that the enemy takes, dictated by which range it is currently present in
+    /// </summary>
     public void NextEnemyAction() 
     {
         if (!inRangedRange && !inMeleeRange)
         {
-            OutOfRangeBehavior();
+            NotInPlayerZones();
         }
         else if (inRangedRange)
         {
-            RangedZoneAction();
+            RangedZoneEntryBehaviors(true);
         }
         else if (inMeleeRange)
         {
-            MeleeZoneAction();
+            MeleeZoneEntryBehaviors(true);
         }
     }
 
-    private IEnumerator RepeatedlyCheckRange() 
+    /// <summary>
+    /// Temporal-based loop that only activates the next decision after a specified amount of time
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator RepeatedlyCheckShooterRange() 
     {
-        yield return new WaitForSeconds(enemyData.timeBetweenRangeChecks);
         NextEnemyAction();
-        StartCoroutine(RepeatedlyCheckRange());
+        yield return new WaitForSeconds(enemyData.timeBetweenRangeChecks);
+        StartCoroutine(RepeatedlyCheckShooterRange());
     }
 
     /// <summary>
-    /// Dictates what first action the enemy should take when it is not near the player
+    /// The decision to track the player (for all but one enemy) when they are not in range
     /// </summary>
-    private void OutOfRangeBehavior() 
+    private void NotInPlayerZones() 
     {
         switch (enemyData.enemyType)
         {
@@ -101,7 +126,7 @@ public class Enemy : MonoBehaviour
                 Debug.LogError("Invalid EnemyType entered Zone!");
                 break;
             case BaseEnemyScriptable.EnemyType.BuffEnemy:
-                GetComponentInChildren<EnemyBuff>(true).AttemptBuffingAllies();
+                //Intentionally left blank to avoid default case
                 break;
             default:
                 movementBeahvior.StartFollowingPlayer();
@@ -109,21 +134,15 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public bool GetTestAlternateBehavior() 
-    {
-        return testAlternateShooterBehavior;
-    }
-
-    public void SetInRangedZone(bool value) 
+    public void SetInRangedArea(bool value) 
     {
         inRangedRange = value;
-        if (!testAlternateShooterBehavior && !attackBehavior.IsEnemyOnCooldown()) 
-        {
-            NextEnemyAction();
-        }
+        //If the player entered
+        if(inRangedRange)
+            RangedZoneEntryBehaviors(false);
     }
 
-    private void RangedZoneAction() 
+    private void RangedZoneEntryBehaviors(bool activateTimeBasedIntervalActions) 
     {
         switch (enemyData.enemyType)
         {
@@ -132,27 +151,29 @@ public class Enemy : MonoBehaviour
                 break;
             case BaseEnemyScriptable.EnemyType.SingleShooter:
             case BaseEnemyScriptable.EnemyType.ConeShooter:
+                //Entry Behavior
                 movementBeahvior.EndPlayerSearch();
-                if (!testAlternateShooterBehavior)
-                    attackBehavior.InitiateAttack();
+                break;
+            case BaseEnemyScriptable.EnemyType.Melee:
+            case BaseEnemyScriptable.EnemyType.ChargingMelee:
+                //if(activateTimeBasedIntervalActions)
+                //    movementBeahvior.StartFollowingPlayer();
                 break;
             default:
                 break;
         }
     }
 
-    public void SetInMeleeZone(bool value) 
+    public void SetInMeleeArea(bool value) 
     {
         inRangedRange = !value;
         inMeleeRange = value;
-        if (!testAlternateShooterBehavior && !attackBehavior.IsEnemyOnCooldown())
-        {
-            NextEnemyAction();
-        }
-
+        //If the player entered
+        if (inMeleeRange)
+            MeleeZoneEntryBehaviors(false);
     }
 
-    private void MeleeZoneAction() 
+    private void MeleeZoneEntryBehaviors(bool activateTimeBasedIntervalActions) 
     {
         switch (enemyData.enemyType)
         {
@@ -162,10 +183,13 @@ public class Enemy : MonoBehaviour
             case BaseEnemyScriptable.EnemyType.SingleShooter:
             case BaseEnemyScriptable.EnemyType.ConeShooter:
                 movementBeahvior.EndPlayerSearch();
-                StartCoroutine(movementBeahvior.MoveAwayFromPlayer());
+                //Only do this if a time-based check has passed via RepeatedlyCheckShooterRange
+                if(activateTimeBasedIntervalActions)
+                    StartCoroutine(movementBeahvior.MoveAwayFromPlayer());
                 break;
             case BaseEnemyScriptable.EnemyType.Melee:
             case BaseEnemyScriptable.EnemyType.ChargingMelee:
+                movementBeahvior.EndPlayerSearch();
                 attackBehavior.InitiateAttack();
                 break;
             default:
@@ -193,9 +217,6 @@ public class Enemy : MonoBehaviour
         {
             entity.EnableEntity();
         }
-        if(!testAlternateShooterBehavior)
-            OutOfRangeBehavior();
-        
     }
 
     /// <summary>
@@ -207,8 +228,9 @@ public class Enemy : MonoBehaviour
         {
             entity.DisableEntity();
         }
-        SetInMeleeZone(false);
-        SetInRangedZone(false);
+        SetInMeleeArea(false);
+        SetInRangedArea(false);
+        StopAllCoroutines();
     }
 
     /// <summary>

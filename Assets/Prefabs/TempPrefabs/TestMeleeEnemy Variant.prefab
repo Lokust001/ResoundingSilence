@@ -3056,6 +3056,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6725d744f418194b805c2aba199566f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  triggerShapeColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!33 &1501176859269157853
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -6019,7 +6020,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 16676
+  m_VersionIndex: 16682
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -6242,10 +6243,6 @@ PrefabInstance:
       propertyPath: enemyData
       value: 
       objectReference: {fileID: 11400000, guid: db940b34b3693db4aa56103f331074c6, type: 2}
-    - target: {fileID: 8564224598725686547, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
-      propertyPath: m_Name
-      value: PlayerMeleeZone
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 5994382746196217271, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}

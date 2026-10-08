@@ -406,12 +406,13 @@ public class PlayerController : MonoBehaviour
     private void MeleeZoneHandler(Enemy enemy, bool enteredTrigger) 
     {
         _ = enemy;
-        enemy.SetInMeleeZone(enteredTrigger);
+        enemy.SetInMeleeArea(enteredTrigger);
     }
 
     private void RangedZoneHandler(Enemy enemy, bool enteredTrigger) 
     {
         _ = enemy;
-        enemy.SetInRangedZone(enteredTrigger);
+        Debug.Log("Entered? " + enteredTrigger);
+        enemy.SetInRangedArea(enteredTrigger);
     }
 }

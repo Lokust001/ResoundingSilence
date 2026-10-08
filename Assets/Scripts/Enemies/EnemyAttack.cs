@@ -157,14 +157,30 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
         activeATKorCooldown = null;
         Debug.Log("Ended Cooldown");
 
-        if (baseEnemyBehavior.GetTestAlternateBehavior()) 
-        {
-            Debug.Log("May or may not be in range and attacking");
-            InitiateAttack();
-            yield break;
-        }
+        AfterCooldownDecision();
+        
+    }
 
-        baseEnemyBehavior.NextEnemyAction();
+    private void AfterCooldownDecision() 
+    {
+        switch (enemyData.enemyType)
+        {
+            case EnemyType.None:
+                break;
+            case EnemyType.SingleShooter:
+            case EnemyType.ConeShooter:
+                InitiateAttack();
+                break;
+            case EnemyType.Melee:
+            case EnemyType.ChargingMelee:
+                baseEnemyBehavior.NextEnemyAction();
+                break;
+            case EnemyType.BuffEnemy:
+                break;
+            default:
+                break;
+        }
+        
     }
 
     /// <summary>

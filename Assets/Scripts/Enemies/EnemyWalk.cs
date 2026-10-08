@@ -47,7 +47,7 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     /// </summary>
     public void StartFollowingPlayer() 
     {
-        walkingCoroutine = StartCoroutine(MoveTowardsPlayer());
+        walkingCoroutine ??= StartCoroutine(MoveTowardsPlayer());
     }
 
     /// <summary>
@@ -60,8 +60,8 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
         if (walkingCoroutine != null) 
         {
             StopCoroutine(walkingCoroutine);
+            walkingCoroutine = null;
         }
-        walkingCoroutine = null;
     }
 
     /// <summary>
