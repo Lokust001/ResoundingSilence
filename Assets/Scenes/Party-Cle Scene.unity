@@ -16186,7 +16186,7 @@ PrefabInstance:
     - target: {fileID: 284186459964226538, guid: 326f5361bc40915439535290087c2508, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 8781699f7b19a194fb55e173fa3f26c1, type: 2}
+      objectReference: {fileID: 2100000, guid: 8fba64bf089b67d4d9a37d03fe71a0d6, type: 2}
     - target: {fileID: 3854593961640145606, guid: 326f5361bc40915439535290087c2508, type: 3}
       propertyPath: m_Name
       value: Crossbow Shotgun Shot
@@ -16248,6 +16248,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9166128072955188937, guid: 326f5361bc40915439535290087c2508, type: 3}
+      propertyPath: InitialModule.rotation3D
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9166128072955188937, guid: 326f5361bc40915439535290087c2508, type: 3}
       propertyPath: ShapeModule.alignToDirection
       value: 1
       objectReference: {fileID: 0}
@@ -16269,11 +16273,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9166128072955188937, guid: 326f5361bc40915439535290087c2508, type: 3}
       propertyPath: InitialModule.startRotation.scalar
-      value: 1.5707963
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9166128072955188937, guid: 326f5361bc40915439535290087c2508, type: 3}
       propertyPath: InitialModule.startSpeed.minScalar
       value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 9166128072955188937, guid: 326f5361bc40915439535290087c2508, type: 3}
+      propertyPath: InitialModule.startRotationX.scalar
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9166128072955188937, guid: 326f5361bc40915439535290087c2508, type: 3}
+      propertyPath: InitialModule.startRotationY.scalar
+      value: 1.5707963
       objectReference: {fileID: 0}
     - target: {fileID: 9166128072955188937, guid: 326f5361bc40915439535290087c2508, type: 3}
       propertyPath: InitialModule.startLifetime.minScalar
