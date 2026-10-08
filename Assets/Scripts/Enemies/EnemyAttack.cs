@@ -34,9 +34,6 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
 
     private IEnumerator queuedMeleeAttack;
 
-    private bool inAttackRange;
-    private bool isAggro;
-
     private BaseEnemyScriptable enemyData;
     /// <summary>
     /// Grabs the sphere collider for the search radius and enemy movement script
@@ -94,20 +91,6 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
     }
 
     /// <summary>
-    /// Mark that the player is no longer in attack range
-    /// </summary>
-    /// <param name="other"></param>
-    //private void OnTriggerExit(Collider other)
-    //{
-    //    if (other.GetComponent<PlayerController>())
-    //    {
-    //        inAttackRange = false;
-    //    }
-    //}
-
-
-
-    /// <summary>
     /// Method to handle the different types of attacks that various enemies can do or different enemy types in general alongside priming cooldowns
     /// </summary>
     public void InitiateAttack() 
@@ -139,28 +122,23 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
         activeATKorCooldown ??= StartCoroutine(AttackCooldownCoroutine());
     }
 
-    public void CustomStartCooldown() 
-    {
-        StartCoroutine(AttackCooldownCoroutine());
-    }
-
-
     /// <summary>
     /// Universal coroutine method called that handles cooldowns or stationary logic after an attack for each enemy.
     /// </summary>
     /// <returns></returns>
     private IEnumerator AttackCooldownCoroutine() 
     {
-        Debug.Log("Started Cooldown");
         //Wait for the time between attacks, then clear the active coroutine
         yield return new WaitForSeconds(enemyData.timeBetweenAttacks);
         activeATKorCooldown = null;
-        Debug.Log("Ended Cooldown");
 
         AfterCooldownDecision();
         
     }
 
+    /// <summary>
+    /// The next action to take after experiencing the time between attacks or actions
+    /// </summary>
     private void AfterCooldownDecision() 
     {
         switch (enemyData.enemyType)
@@ -363,11 +341,6 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
         yield return null;
         attackProjectilePrefab.SetActive(false);
         meleeAtkTransform.localPosition = initialAOEOffsetPosition;
-    }
-
-    public bool IsEnemyOnCooldown() 
-    {
-        return activeATKorCooldown != null;
     }
 
     /// <summary>

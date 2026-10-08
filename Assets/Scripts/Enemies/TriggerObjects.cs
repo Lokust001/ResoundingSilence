@@ -23,12 +23,10 @@ public class TriggerObjects : MonoBehaviour
     {
         if (other.TryGetComponent<PlayerController>(out var player)) 
         {
-            Debug.Log(other.name);  
             EnemyTriggerActivated?.Invoke(player);
         }
         else if (other.TryGetComponent<Enemy>(out var enemy)) 
         {
-            Debug.Log(gameObject.name + " entered by: " + other.name);
             PlayerTriggerActivated?.Invoke(enemy, true);
         }
     }

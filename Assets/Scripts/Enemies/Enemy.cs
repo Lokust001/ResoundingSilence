@@ -41,11 +41,48 @@ public class Enemy : MonoBehaviour
             EnableEnemy();
     }
 
-    private void OnEnable()
+    /// <summary>
+    /// Sends the enemyData variable to every script that has the IEntityDataReceiver interface
+    /// </summary>
+    void PropagateEnemyData()
     {
-        aggroTrigger.EnemyTriggerActivated += EnableEnemyAggro;
+        foreach (IEntityDataReceiver entity in GetComponentsInChildren<IEntityDataReceiver>(true))
+        {
+            entity.SetEntityData(enemyData);
+        }
     }
 
+    /// <summary>
+    /// Calls the EnableEntity method on all enemy scripts with ICustomEnabler
+    /// </summary>
+    public void EnableEnemy()
+    {
+        aggroTrigger.EnemyTriggerActivated += EnableEnemyAggro;
+        foreach (ICustomEnabler entity in GetComponentsInChildren<ICustomEnabler>(true))
+        {
+            entity.EnableEntity();
+        }
+    }
+
+    /// <summary>
+    /// Calls the DisableEntity method on all enemy scripts with ICustomDisabler
+    /// </summary>
+    public void DisableEnemy()
+    {
+        aggroTrigger.EnemyTriggerActivated -= EnableEnemyAggro;
+        foreach (ICustomDisabler entity in GetComponentsInChildren<ICustomDisabler>(true))
+        {
+            entity.DisableEntity();
+        }
+        SetInMeleeArea(false);
+        SetInRangedArea(false);
+        StopAllCoroutines();
+    }
+
+    /// <summary>
+    /// Aggro's the enemy and then disables this behavior for the rest of its runtime
+    /// </summary>
+    /// <param name="obj"></param>
     private void EnableEnemyAggro(PlayerController obj)
     {
         Debug.Log(gameObject.name + " is aggro'd");
@@ -66,6 +103,7 @@ public class Enemy : MonoBehaviour
                 break;
             case BaseEnemyScriptable.EnemyType.SingleShooter:
             case BaseEnemyScriptable.EnemyType.ConeShooter:
+                attackBehavior.InitiateAttack();
                 StartCoroutine(RepeatedlyCheckShooterRange());
                 break;
             case BaseEnemyScriptable.EnemyType.Melee:
@@ -80,6 +118,9 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Disables trigger behavior on MonoBehavior disable
+    /// </summary>
     private void OnDisable()
     {
         aggroTrigger.EnemyTriggerActivated -= EnableEnemyAggro;
@@ -96,7 +137,7 @@ public class Enemy : MonoBehaviour
         }
         else if (inRangedRange)
         {
-            RangedZoneEntryBehaviors(true);
+            RangedZoneEntryBehaviors();
         }
         else if (inMeleeRange)
         {
@@ -105,7 +146,7 @@ public class Enemy : MonoBehaviour
     }
 
     /// <summary>
-    /// Temporal-based loop that only activates the next decision after a specified amount of time
+    /// Temporal-based infinite loop that only activates the next decision after a specified amount of time
     /// </summary>
     /// <returns></returns>
     private IEnumerator RepeatedlyCheckShooterRange() 
@@ -134,15 +175,22 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Public setter and trigger catcher for the entering and exiting of the player's ranged area
+    /// </summary>
+    /// <param name="value"></param>
     public void SetInRangedArea(bool value) 
     {
         inRangedRange = value;
         //If the player entered
         if(inRangedRange)
-            RangedZoneEntryBehaviors(false);
+            RangedZoneEntryBehaviors();
     }
 
-    private void RangedZoneEntryBehaviors(bool activateTimeBasedIntervalActions) 
+    /// <summary>
+    /// Method that decides what behaviors each enemy takes after ONLY entering the ranged zone
+    /// </summary>
+    private void RangedZoneEntryBehaviors() 
     {
         switch (enemyData.enemyType)
         {
@@ -164,6 +212,11 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Public setter and trigger catcher for the entering and exiting of the player's melee area
+    /// ; enemy will cease to be in ranged area if they are in melee area
+    /// </summary>
+    /// <param name="value"></param>
     public void SetInMeleeArea(bool value) 
     {
         inRangedRange = !value;
@@ -173,6 +226,10 @@ public class Enemy : MonoBehaviour
             MeleeZoneEntryBehaviors(false);
     }
 
+    /// <summary>
+    /// Method that decides what behaviors each enemy takes after ONLY entering the melee range
+    /// </summary>
+    /// <param name="activateTimeBasedIntervalActions"></param>
     private void MeleeZoneEntryBehaviors(bool activateTimeBasedIntervalActions) 
     {
         switch (enemyData.enemyType)
@@ -195,42 +252,6 @@ public class Enemy : MonoBehaviour
             default:
                 break;
         }
-    }
-
-    /// <summary>
-    /// Sends the enemyData variable to every script that has the IEntityDataReceiver interface
-    /// </summary>
-    void PropagateEnemyData() 
-    {
-        foreach (IEntityDataReceiver entity in GetComponentsInChildren<IEntityDataReceiver>(true))
-        {
-            entity.SetEntityData(enemyData);
-        }
-    }
-
-    /// <summary>
-    /// Calls the EnableEntity method on all enemy scripts with ICustomEnabler
-    /// </summary>
-    public void EnableEnemy() 
-    {
-        foreach (ICustomEnabler entity in GetComponentsInChildren<ICustomEnabler>(true))
-        {
-            entity.EnableEntity();
-        }
-    }
-
-    /// <summary>
-    /// Calls the DisableEntity method on all enemy scripts with ICustomDisabler
-    /// </summary>
-    public void DisableEnemy() 
-    {
-        foreach (ICustomDisabler entity in GetComponentsInChildren<ICustomDisabler>(true))
-        {
-            entity.DisableEntity();
-        }
-        SetInMeleeArea(false);
-        SetInRangedArea(false);
-        StopAllCoroutines();
     }
 
     /// <summary>

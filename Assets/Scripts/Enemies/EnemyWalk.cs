@@ -55,7 +55,6 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     /// </summary>
     public void EndPlayerSearch() 
     {
-        Debug.Log("Stopped Following Player");
         m_Agent.isStopped = true;
         if (walkingCoroutine != null) 
         {

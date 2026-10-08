@@ -414,7 +414,6 @@ public class PlayerController : MonoBehaviour
     private void RangedZoneHandler(Enemy enemy, bool enteredTrigger) 
     {
         _ = enemy;
-        Debug.Log("Entered? " + enteredTrigger);
         enemy.SetInRangedArea(enteredTrigger);
     }
 
