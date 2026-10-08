@@ -7,11 +7,15 @@
 */
 
 using UnityEngine;
-using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
-public class PinHolderSlot : Clickable
+public class PinHolderSlot : ControllerSupportedClickable
 {
+    [SerializeField]
+    protected Image Highlight;
     protected UpgradeMenuController controller;
+
+    public PinItemBehavior pin;
 
     /// <summary>
     /// sets any refs
@@ -29,6 +33,8 @@ public class PinHolderSlot : Clickable
     {
         pin.Parent = this;
         pin.transform.SetParent(transform);
+        pin.transform.position = transform.position;
+        this.pin = pin;
     }
 
     /// <summary>
@@ -37,5 +43,35 @@ public class PinHolderSlot : Clickable
     public virtual void UnequipPin()
     {
 
+    }
+
+    /// <summary>
+    /// Highlights when this is hovered over.
+    /// </summary>
+    public override void HoveredOver()
+    {
+        //if this is hovered over and has a pin in it, tell that pin to hover
+        if (pin != null && pin.Parent == this)
+        {
+            pin.HoveredOver();
+        }
+
+        Highlight.enabled = true;
+
+        
+    }
+
+    /// <summary>
+    /// unhighlights when focus is lost from this
+    /// </summary>
+    public override void UnHoveredOver()
+    {
+        //unhovers the pin too
+        if (pin != null)
+        {
+            pin.UnHoveredOver();
+        }
+
+        Highlight.enabled = false;
     }
 }

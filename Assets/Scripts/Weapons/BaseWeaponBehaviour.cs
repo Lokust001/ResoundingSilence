@@ -73,7 +73,8 @@ public class BaseWeaponBehaviour : MonoBehaviour
     virtual protected void Start()
     {
         ThisWeaponData = StaticDataManager.Instance.GetWeaponAtID(weaponDataID);
-
+        //TESTING ONLY
+        MidRunDataManager.Instance.EquipWeaponInSlot(0, ThisWeaponData);
         //tells the abilities to instantiate
         ThisWeaponData.GetAbilities();
         attackReady = true;

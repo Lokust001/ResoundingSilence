@@ -267,6 +267,11 @@ public class UIManager : BaseManager
     /// <returns></returns>
     public UiMenuType GetCurrentMenu()
     {
+        if (currentlyOpenedMenus == null || currentlyOpenedMenus.Count <= 0)
+        {
+            return UiMenuType.None;
+        }
+
         return currentlyOpenedMenus.Peek();
     }
 

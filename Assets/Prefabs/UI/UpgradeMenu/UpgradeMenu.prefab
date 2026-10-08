@@ -1104,6 +1104,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7996208998293756781}
   - component: {fileID: 7146239793647941094}
+  - component: {fileID: 3361153180672226787}
   m_Layer: 5
   m_Name: UpgradeMenu
   m_TagString: Untagged
@@ -1152,6 +1153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeMenuController
   menuType: 2
+  defaultSelectedGameobject: {fileID: 0}
   settings: 1
   gridContainer: {fileID: 5918980167002557550}
   tilePrefab: {fileID: 5580660156001477065, guid: 15d4b25de97586f49a51dc0d72f260ee, type: 3}
@@ -1169,7 +1171,7 @@ MonoBehaviour:
     height: 0
     width: 0
     rows: []
-  enableTestMode: 1
+  enableTestMode: 0
   testingGrids:
   - NumberOfGlyphRange: {x: 2, y: 4}
     attachedWeapon: {fileID: 0}
@@ -1189,7 +1191,20 @@ MonoBehaviour:
     - rowTiles: 00010100
     - rowTiles: 01010101
   DisableSwappingGrid: 1
+  inventorySlots: []
   CarriedPin: {fileID: 0}
+--- !u!114 &3361153180672226787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5111318637110734077}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2bc69216ab3f924a942168b67afeca0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeControllerSupportManager
 --- !u!1 &5690729563839567332
 GameObject:
   m_ObjectHideFlags: 0

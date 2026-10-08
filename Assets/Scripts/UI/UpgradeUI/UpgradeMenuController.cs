@@ -50,13 +50,13 @@ public class UpgradeMenuController : MenuBase
     [ShowIf(nameof(settings), ShownSettings.References)]
     private PinItemBehavior pinItemPrefab;
 
-    [SerializeField]
+   
     [ShowIf(nameof(settings), ShownSettings.References)]
-    private Transform inventory;
+    public Transform inventory;
 
-    [SerializeField]
+   
     [ShowIf(nameof(settings), ShownSettings.References)]
-    private ScrollRect inventoryScrollRect;
+    public ScrollRect inventoryScrollRect;
 
     [SerializeField]
     [ShowIf(nameof(settings), ShownSettings.References)]
@@ -100,7 +100,7 @@ public class UpgradeMenuController : MenuBase
     public List<UpgradeTileBehavior> tilesInGrid { get; private set; } = new();
 
     private List<PinItemBehavior> inventoryPins = new();
-    private List<InventoryPinHolder> inventorySlots = new();
+    public List<InventoryPinHolder> inventorySlots = new();
     private int gridHeight;
     private int gridWidth;
 
@@ -123,7 +123,7 @@ public class UpgradeMenuController : MenuBase
     public override void InitMenu()
     {
         base.InitMenu();
-
+        GetComponent<UpgradeControllerSupportManager>().InitSupportManager();
     }
 
     /// <summary>
@@ -131,7 +131,7 @@ public class UpgradeMenuController : MenuBase
     /// </summary>
     protected override void MenuOpenedSucessfully()
     {
-        base.MenuOpenedSucessfully();
+        
         PopulateInventory();
 
         if (MidRunDataManager.Instance.equippedWeapons.All(x => x == null))
@@ -146,6 +146,8 @@ public class UpgradeMenuController : MenuBase
         swapGridsButton.interactable = !DisableSwappingGrid;
         UIPublicEvents.UpgradeMenuOpened?.Invoke();
         UIPublicEvents.SetNewTooltipTextObject?.Invoke(tooltipTextObject);
+
+        base.MenuOpenedSucessfully();
     }
 
     /// <summary>
@@ -188,11 +190,12 @@ public class UpgradeMenuController : MenuBase
             InventoryPinHolder tempSlot = Instantiate(inventoryPinSlot, inventory);
 
             PinItemBehavior temp = Instantiate(pinItemPrefab, tempSlot.transform);
-
+            
             tempSlot.InitSlot(temp);
             temp.InitPin(pin, tempSlot);
             inventoryPins.Add(temp);
             inventorySlots.Add(tempSlot);
+            temp.transform.position = tempSlot.transform.position;
         }
     }
 
@@ -483,6 +486,7 @@ public class UpgradeMenuController : MenuBase
                 if (GridImLookingAt == currentlyEnabledGrid)
                 {
                     pinItem.transform.SetParent(pinItem.Parent.transform);
+                    pinItem.transform.position = pinItem.Parent.transform.position;
                     pinItem.gameObject.SetActive(true);
                 }
                 else
