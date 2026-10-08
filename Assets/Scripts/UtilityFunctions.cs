@@ -25,6 +25,7 @@ public static class UtilityFunctions
     public static List<T> GetAdjacentTiles<T>(Vector2Int coords,
                                               List<T> collection,
                                               int height, int width,
+                                              bool AnchoredTopLeft = true,
                                               bool countDiagonals = true)
     {
         List<T> temp = new();
@@ -33,7 +34,14 @@ public static class UtilityFunctions
 
         for (int i = 0; i < count; i++)
         {
-            temp.Add(GetTile(coords + GetDirectionGivenInt(countDiagonals ? i : i * 2), collection, height, width));
+            Vector2Int dir = GetDirectionGivenInt(countDiagonals ? i : i * 2);
+
+            if (AnchoredTopLeft)
+            {
+                dir.y = -dir.y;
+            }
+
+            temp.Add(GetTile(coords + dir, collection, height, width));
         }
         return temp;
     }
@@ -74,21 +82,21 @@ public static class UtilityFunctions
         switch (i)
         {
             case 0:
-                return new Vector2Int(0, -1);
+                return new Vector2Int(0, 1);
             case 1:
-                return new Vector2Int(1, -1);
+                return new Vector2Int(1, 1);
             case 2:
                 return new Vector2Int(1, 0);
             case 3:
-                return new Vector2Int(1, 1);
+                return new Vector2Int(1, -1);
             case 4:
-                return new Vector2Int(0, 1);
+                return new Vector2Int(0, -1);
             case 5:
-                return new Vector2Int(-1, 1);
+                return new Vector2Int(-1, -1);
             case 6:
                 return new Vector2Int(-1, 0);
             case 7:
-                return new Vector2Int(-1, -1);
+                return new Vector2Int(-1, 1);
             default:
                 throw new System.Exception($"Tried to get a direction that is out of bounds in the " +
                     $"switch statement: tried for direction {i}");

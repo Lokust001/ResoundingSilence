@@ -25,4 +25,18 @@ public class GlyphScriptable : BaseScriptableObject
     [Header("TEMPORARY - REPLACE WITH SPRITE WHEN I GET THEM")]
     [Tooltip("TEMPORARY - REPLACE WITH SPRITE WHEN I GET THEM")]
     public Color glyphColor;
+
+    public float GlyphChangeAmount;
+
+    public GlyphType Type;
+
+    public enum GlyphType
+    {
+        DoubleThisGlyph,
+        DoubleAdjacentGlyphs,
+        DamageBuff,
+        CooldownReduction,
+        HealthingReceived,
+        StatusEffect
+    }
 }
