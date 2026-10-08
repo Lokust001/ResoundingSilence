@@ -10,8 +10,6 @@ using NaughtyAttributes;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Splines;
-using UnityEngine.Tilemaps;
 
 [System.Serializable]
 public class UpgradeTileGrid
@@ -36,6 +34,7 @@ public class UpgradeTileGrid
 
     public List<PinScriptable> pins { get; private set; } = new();
 
+    public List<UpgradeTileData> AdajacencyTest { get; private set; } = new();
 
     /// <summary>
     /// subscride to the event
@@ -348,8 +347,8 @@ public class UpgradeTileGrid
     public int GetAdjacentBuff(UpgradeTileData tile)
     {
         int BuffAmount = 0;
-        List<UpgradeTileData> temp = UtilityFunctions.GetAdjacentTiles<UpgradeTileData>(tile.coords, grid, height, width);
-        foreach (var currentTile in temp)
+        AdajacencyTest = UtilityFunctions.GetAdjacentTiles<UpgradeTileData>(tile.coords, grid, height, width);
+        foreach (var currentTile in AdajacencyTest)
         {
             if (currentTile != null && currentTile.pin != null && tile.pin.Type == currentTile.pin.Type)
             {
