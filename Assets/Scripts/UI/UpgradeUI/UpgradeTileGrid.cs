@@ -226,8 +226,6 @@ public class UpgradeTileGrid
     /// </summary>
     public void SendDatatoWeapon(PinScriptable newpin)
     {
-        UpgradeTileData data = grid.FirstOrDefault(x  => x.pin == newpin);
-
         float damagebuff = 1.0f;
         float AttackSpeedBuff = 1.0f;
         float lifestealBuff = 1.0f;
@@ -344,7 +342,7 @@ public class UpgradeTileGrid
     /// </summary>
     /// <param name="tile"></param>
     /// <returns> % amount buff that revieved by the adjacent tiles</returns>
-    public int GetAdjacentBuff(UpgradeTileData tile)
+    public float GetAdjacentBuff(UpgradeTileData tile)
     {
         int BuffAmount = 0;
         AdajacencyTest = UtilityFunctions.GetAdjacentTiles<UpgradeTileData>(tile.coords, grid, height, width);
