@@ -40,6 +40,7 @@ public class UpgradeControllerSupportManager : MonoBehaviour
 
 
     #region setup and public events
+
     /// <summary>
     /// initializes this script
     /// </summary>
@@ -274,8 +275,6 @@ public class UpgradeControllerSupportManager : MonoBehaviour
 
     #region Selection
 
-
-
     /// <summary>
     /// deselects the object the player is holding
     /// </summary>
@@ -288,8 +287,6 @@ public class UpgradeControllerSupportManager : MonoBehaviour
         }
 
     }
-
-
 
     /// <summary>
     /// clicks on a pin
@@ -307,6 +304,9 @@ public class UpgradeControllerSupportManager : MonoBehaviour
 
     #region Grid
 
+    /// <summary>
+    /// Moves the player's cursor to the grid
+    /// </summary>
     private void MoveFocusToGrid()
     {
         currentSelectedItem.UnHoveredOver();
@@ -314,7 +314,7 @@ public class UpgradeControllerSupportManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Selects the last selected inventory pin.
+    /// Selects the last selected grid tile.
     /// </summary>
     /// <exception cref="System.Exception"></exception>
     public void SelectLastSelectedGridTile()
@@ -337,7 +337,7 @@ public class UpgradeControllerSupportManager : MonoBehaviour
     }
 
     /// <summary>
-    /// selects an inventory item
+    /// selects grid tile
     /// </summary>
     /// <param name="gridItem"></param>
     public void SelectGridItem(ControllerSupportedClickable gridItem)
@@ -347,10 +347,14 @@ public class UpgradeControllerSupportManager : MonoBehaviour
         currentSelectedItem.HoveredOver();
     }
 
+    /// <summary>
+    /// moves along an axis until it either returns an active grid tile or a null element (wall)
+    /// </summary>
+    /// <param name="startingTileInclusive"></param>
+    /// <param name="direction"></param>
+    /// <returns></returns>
     private UpgradeTileBehavior GetNextGridTile(UpgradeTileBehavior startingTileInclusive, int direction)
     {
-        //UpgradeTileBehavior nextTile = startingTileInclusive.adjacentTiles[direction];
-
         if (startingTileInclusive == null || startingTileInclusive.isActive)
         {
             return startingTileInclusive;
@@ -363,6 +367,9 @@ public class UpgradeControllerSupportManager : MonoBehaviour
 
     #region Inventory
 
+    /// <summary>
+    /// moves the player's cursor to the inventory
+    /// </summary>
     private void MoveFocusToInventory()
     {
         currentSelectedItem.UnHoveredOver();
@@ -407,6 +414,9 @@ public class UpgradeControllerSupportManager : MonoBehaviour
 
     #region Tarot
 
+    /// <summary>
+    /// moves the cursor to the tarot card section
+    /// </summary>
     private void MoveFocusToTarot()
     {
         currentSelectedItem.UnHoveredOver();
@@ -414,7 +424,7 @@ public class UpgradeControllerSupportManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Selects the last selected inventory pin.
+    /// Selects the last selected tarot card.
     /// </summary>
     /// <exception cref="System.Exception"></exception>
     public void SelectLastSelectedTarotTile()
@@ -437,7 +447,7 @@ public class UpgradeControllerSupportManager : MonoBehaviour
     }
 
     /// <summary>
-    /// selects an inventory item
+    /// selects a tarot card
     /// </summary>
     /// <param name="tarotCard"></param>
     public void SelectTarotCard(ControllerSupportedClickable tarotCard)

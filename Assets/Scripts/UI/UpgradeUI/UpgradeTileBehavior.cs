@@ -120,6 +120,10 @@ public class UpgradeTileBehavior : PinHolderSlot
         UIPublicEvents.PinChangedOnWeapon?.Invoke(null);
     }
 
+    /// <summary>
+    /// returns the neighbors of this tile. Returns as controllersupportclickables
+    /// </summary>
+    /// <returns></returns>
     public override List<ControllerSupportedClickable> getNeighbors()
     {
         List<ControllerSupportedClickable> returnList = new();
