@@ -26,12 +26,6 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     private MeshRenderer meshRenderer;
     private Rigidbody rigidbody;
 
-    private int s;
-    private void Awake()
-    {
-        s = LayerMask.NameToLayer("Player");
-    }
-
     /// <summary>
     /// Grabs necessary components and assigns enemyTransform to transform component
     /// </summary>
@@ -51,7 +45,7 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     /// <summary>
     /// Start searching for the player by un-constraining the nav mesh agent and moving towards the player
     /// </summary>
-    public void StartPlayerSearch() 
+    public void StartFollowingPlayer() 
     {
         walkingCoroutine = StartCoroutine(MoveTowardsPlayer());
     }
@@ -61,6 +55,7 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     /// </summary>
     public void EndPlayerSearch() 
     {
+        Debug.Log("Stopped Following Player");
         m_Agent.isStopped = true;
         if (walkingCoroutine != null) 
         {
@@ -115,8 +110,6 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     {
         if (collision.gameObject.TryGetComponent<PlayerController>(out PlayerController player))
         {
-            //Debug.Log("Enemy collided player layer #: " + s);
-            Debug.Log(Physics.GetIgnoreLayerCollision(s, gameObject.layer));
             if (enemyAttack.IsEnemyCurrentlyCharging())
             {
                 Vector3 pushDirection = player.transform.position - transform.position;

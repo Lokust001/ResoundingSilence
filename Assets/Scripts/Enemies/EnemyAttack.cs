@@ -23,12 +23,10 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
     [SerializeField]
     private GameObject attackIndicatorArea;
 
-    [SerializeField]
-    private string ignoreLayerTurnoff;
-
     private SphereCollider sphereTrigger;
     private CapsuleCollider chargingCapCollider;
     private EnemyWalk enemyMovement;
+    private Enemy baseEnemyBehavior;
     private Transform playerTransform;
     private Vector3 fireBulletDirection;
     private Coroutine activeATKorCooldown;
@@ -37,6 +35,7 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
     private IEnumerator queuedMeleeAttack;
 
     private bool inAttackRange;
+    private bool isAggro;
 
     private BaseEnemyScriptable enemyData;
     /// <summary>
@@ -46,6 +45,7 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
     {
         sphereTrigger = GetComponent<SphereCollider>();
         enemyMovement = GetComponentInParent<EnemyWalk>();
+        baseEnemyBehavior = GetComponentInParent<Enemy>();
         chargingCapCollider = GetComponent<CapsuleCollider>();
     }
 
@@ -56,7 +56,7 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
     {
         foreach (var trigger in onTriggerEnterObjects) 
         {
-            trigger.ChildTriggerActivated += HandleVariousAttackTriggers;
+            trigger.EnemyTriggerActivated += HandleVariousAttackTriggers;
         }
     }
 
@@ -67,7 +67,7 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
     {
         foreach (var trigger in onTriggerEnterObjects)
         {
-            trigger.ChildTriggerActivated -= HandleVariousAttackTriggers;
+            trigger.EnemyTriggerActivated -= HandleVariousAttackTriggers;
         }
     }
 
@@ -76,25 +76,20 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
     /// (can be changed in the future)
     /// </summary>
     /// <param name="other"></param>
-    private void HandleVariousAttackTriggers(Collider other) 
+    private void HandleVariousAttackTriggers(PlayerController player) 
     {
-        var player = other.GetComponent<PlayerController>();
         player.TakeDamage();
     }
 
     /// <summary>
-    /// Stop seeking behavior if a player is found, and initiates attack
+    /// Start following the player when they enter aggro range
     /// </summary>
     /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
-        if (other.GetComponent<PlayerController>()) 
+        if (other.GetComponent<PlayerController>())
         {
-            enemyMovement.EndPlayerSearch();
-            inAttackRange = true;
             playerTransform = other.transform;
-            InitiateAttack();
-
         }
     }
 
@@ -102,20 +97,20 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
     /// Mark that the player is no longer in attack range
     /// </summary>
     /// <param name="other"></param>
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.GetComponent<PlayerController>())
-        {
-            inAttackRange = false;
-        }
-    }
+    //private void OnTriggerExit(Collider other)
+    //{
+    //    if (other.GetComponent<PlayerController>())
+    //    {
+    //        inAttackRange = false;
+    //    }
+    //}
 
-    
+
 
     /// <summary>
     /// Method to handle the different types of attacks that various enemies can do or different enemy types in general alongside priming cooldowns
     /// </summary>
-    private void InitiateAttack() 
+    public void InitiateAttack() 
     {
         //If there is already a cooldown or ability active, don't start another one
         if (activeATKorCooldown != null) return;
@@ -144,6 +139,11 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
         activeATKorCooldown ??= StartCoroutine(AttackCooldownCoroutine());
     }
 
+    public void CustomStartCooldown() 
+    {
+        StartCoroutine(AttackCooldownCoroutine());
+    }
+
 
     /// <summary>
     /// Universal coroutine method called that handles cooldowns or stationary logic after an attack for each enemy.
@@ -157,19 +157,14 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
         activeATKorCooldown = null;
         Debug.Log("Ended Cooldown");
 
-        //If player is not in attack range, start searching for it
-        if (!inAttackRange)
+        if (baseEnemyBehavior.GetTestAlternateBehavior()) 
         {
-            Debug.Log("Not in range, starting search");
-            enemyMovement.StartPlayerSearch();
+            Debug.Log("May or may not be in range and attacking");
+            InitiateAttack();
+            yield break;
         }
 
-        //Otherwise, initiate another attack
-        else 
-        {
-            Debug.Log("Still in range, initiating attack");
-            InitiateAttack();
-        }
+        baseEnemyBehavior.NextEnemyAction();
     }
 
     /// <summary>
@@ -353,6 +348,12 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
         attackProjectilePrefab.SetActive(false);
         meleeAtkTransform.localPosition = initialAOEOffsetPosition;
     }
+
+    public bool IsEnemyOnCooldown() 
+    {
+        return activeATKorCooldown != null;
+    }
+
     /// <summary>
     /// Helper method for ChargingEnemies, indicates if they are actively running down their charged attack
     /// </summary>

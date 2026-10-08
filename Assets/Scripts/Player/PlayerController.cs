@@ -64,6 +64,7 @@ public class PlayerController : MonoBehaviour
         InputPublicEvents.MovePressed += PlayerInputStarted;
         InputPublicEvents.MoveReleased += PlayerInputEnded;
         InputPublicEvents.DashPressed += PlayerDashPressed;
+        TempOnEnable();
     }
 
     /// <summary>
@@ -74,6 +75,7 @@ public class PlayerController : MonoBehaviour
         InputPublicEvents.MovePressed -= PlayerInputStarted;
         InputPublicEvents.MoveReleased -= PlayerInputEnded;
         InputPublicEvents.DashPressed -= PlayerDashPressed;
+        TempOnDisable();
     }
 
     /// <summary>
@@ -371,7 +373,7 @@ public class PlayerController : MonoBehaviour
             rigidbody.MovePosition(knockbackDelta);
 
 
-            //Debug.Log("\tDistance: " + distance + " \tSpeed: " + dynamicDeltaSpeed + " \tTime: " + timer);
+            Debug.Log("\tDistance: " + distance + " \tSpeed: " + dynamicDeltaSpeed + " \tTime: " + timer);
 
         }
         
@@ -381,5 +383,35 @@ public class PlayerController : MonoBehaviour
         //Let player move again
         RestartPlayerMovementAndInput();
         knockbackCoroutine = null;
+    }
+
+    [SerializeField]
+    private TriggerObjects meleeRangeTrigger;
+    [SerializeField]
+    private TriggerObjects rangedRangeTrigger;
+
+    private void TempOnEnable() 
+    {
+        meleeRangeTrigger.PlayerTriggerActivated += MeleeZoneHandler;
+        rangedRangeTrigger.PlayerTriggerActivated += RangedZoneHandler;
+    }
+
+    private void TempOnDisable() 
+    {
+        meleeRangeTrigger.PlayerTriggerActivated -= MeleeZoneHandler;
+        rangedRangeTrigger.PlayerTriggerActivated -= RangedZoneHandler;
+
+    }
+
+    private void MeleeZoneHandler(Enemy enemy, bool enteredTrigger) 
+    {
+        _ = enemy;
+        enemy.SetInMeleeZone(enteredTrigger);
+    }
+
+    private void RangedZoneHandler(Enemy enemy, bool enteredTrigger) 
+    {
+        _ = enemy;
+        enemy.SetInRangedZone(enteredTrigger);
     }
 }

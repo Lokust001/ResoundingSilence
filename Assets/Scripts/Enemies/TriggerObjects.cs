@@ -9,7 +9,11 @@ using UnityEngine;
 
 public class TriggerObjects : MonoBehaviour
 {
-    public event Action<Collider> ChildTriggerActivated;
+    [SerializeField]
+    private Color triggerShapeColor;
+
+    public event Action<PlayerController> EnemyTriggerActivated;
+    public event Action<Enemy, bool> PlayerTriggerActivated;
 
     /// <summary>
     /// Propagates its OnTriggerEnter event onto other listeners attached to ChildTriggerActivated
@@ -17,9 +21,32 @@ public class TriggerObjects : MonoBehaviour
     /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent<PlayerController>(out PlayerController player)) 
+        if (other.TryGetComponent<PlayerController>(out var player)) 
         {
-            ChildTriggerActivated?.Invoke(other);
+            EnemyTriggerActivated?.Invoke(player);
         }
+        else if (other.TryGetComponent<Enemy>(out var enemy)) 
+        {
+            //Debug.Log(gameObject.name + " entered by: " + other.name);
+            PlayerTriggerActivated?.Invoke(enemy, true);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.TryGetComponent<PlayerController>(out var player)) 
+        {
+            EnemyTriggerActivated?.Invoke(player);
+        }
+        else if (other.TryGetComponent<Enemy>(out var enemy))
+        {
+            PlayerTriggerActivated?.Invoke(enemy, false);
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = triggerShapeColor;
+        Gizmos.DrawWireSphere(transform.position, GetComponent<SphereCollider>().radius);
     }
 }

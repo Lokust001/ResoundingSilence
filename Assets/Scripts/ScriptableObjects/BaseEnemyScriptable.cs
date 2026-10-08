@@ -23,7 +23,7 @@ public class BaseEnemyScriptable : BaseScriptableObject
     /// Checks if this enemy needs to show/display shooter variables
     /// </summary>
     /// <returns></returns>
-    private bool isShooter()
+    public bool isShooter()
     {
         return enemyType == EnemyType.SingleShooter || enemyType == EnemyType.ConeShooter;
     }
@@ -31,9 +31,18 @@ public class BaseEnemyScriptable : BaseScriptableObject
     /// Checks if this enemy needs to show/display melee variables
     /// </summary>
     /// <returns></returns>
-    private bool isMelee()
+    public bool isMelee()
     {
         return enemyType == EnemyType.Melee || enemyType == EnemyType.ChargingMelee;
+    }
+
+    /// <summary>
+    /// Checks if this enemy can retreat and show the variables to do so
+    /// </summary>
+    /// <returns></returns>
+    private bool canRetreat() 
+    {
+        return enemyType == EnemyType.BuffEnemy || enemyType == EnemyType.SingleShooter || enemyType == EnemyType.ConeShooter;
     }
     [Header("Enemy Type (Required)")]
     [SerializeField]
@@ -50,6 +59,11 @@ public class BaseEnemyScriptable : BaseScriptableObject
     public int enemyATKDmg;
 
     public float timeBetweenAttacks;
+
+    [ShowIf(nameof(canRetreat))]
+    public float retreatDistance;
+    [ShowIf(nameof(canRetreat))]
+    public float retreatSpeed;
 
     //Buff Enemies modify these values
     [HideInInspector]
@@ -72,6 +86,10 @@ public class BaseEnemyScriptable : BaseScriptableObject
 
     [ShowIf(nameof(isShooter))]
     public GameObject bulletPrefab;
+
+    [ShowIf(nameof(isShooter))]
+    [Header("Alternate Shooter Behavior")]
+    public float timeBetweenRangeChecks;
 
     #endregion
 
@@ -130,10 +148,6 @@ public class BaseEnemyScriptable : BaseScriptableObject
     [ShowIf(nameof(enemyType), EnemyType.BuffEnemy), Range(1, 100)]
     [SerializeField]
     private int retreatHealthPercent;
-    [ShowIf(nameof(enemyType), EnemyType.BuffEnemy)]
-    public float retreatDistance;
-    [ShowIf(nameof(enemyType), EnemyType.BuffEnemy)]
-    public float retreatSpeed;
 
     [ShowIf(nameof(enemyType), EnemyType.BuffEnemy), Range(1, 100)]
     public int allyATKIncreasePercent;

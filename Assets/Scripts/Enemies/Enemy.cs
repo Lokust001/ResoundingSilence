@@ -1,48 +1,174 @@
 /* Author: Dalsten Yan
  * Last Modified: 9/28/26
- * Summary: Container script that holds & shares the enemyData instance and stats
+ * Summary: Supervising enemy script that decides non-physics behaviors & shares enemyData among other scripts
  * TODO: More as needed
  */
 
 using NaughtyAttributes;
-using Unity.VisualScripting;
+using System.Collections;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    [SerializeField]
+    private TriggerObjects aggroTrigger;
 
     [SerializeField]
     private bool testWithoutSpawner;
 
     [SerializeField]
+    private bool testAlternateShooterBehavior;
+
+    [SerializeField]
     private BaseEnemyScriptable enemyData;
+
+    private EnemyAttack attackBehavior;
+    private EnemyWalk movementBeahvior;
 
     [SerializeField, Header("Debug Variables")]
     private int dmgToTake;
+
+    private bool inMeleeRange;
+    private bool inRangedRange;
+
+    private bool firstAction;
 
     /// <summary>
     /// Creates a copy of the scriptable object not tied to the inspector, then propagates it other scripts
     /// </summary>
     void Awake()
     {
+        firstAction = false;
+        attackBehavior = GetComponentInChildren<EnemyAttack>();
+        movementBeahvior = GetComponentInChildren<EnemyWalk>();
         enemyData = enemyData.CreateNonRefCopy<BaseEnemyScriptable>();
         PropagateEnemyData();
         if(testWithoutSpawner)
             EnableEnemy();
     }
 
+    private void OnEnable()
+    {
+        if(testAlternateShooterBehavior)
+            aggroTrigger.EnemyTriggerActivated += EnableEnemyAggro;
+    }
+
+    private void EnableEnemyAggro(PlayerController obj)
+    {
+        aggroTrigger.EnemyTriggerActivated -= EnableEnemyAggro;
+        StartCoroutine(RepeatedlyCheckRange());
+        attackBehavior.CustomStartCooldown();
+
+    }
+
+    private void OnDisable()
+    {
+        if (testAlternateShooterBehavior)
+            aggroTrigger.EnemyTriggerActivated -= EnableEnemyAggro;
+    }
+
+    public void NextEnemyAction() 
+    {
+        if (!inRangedRange && !inMeleeRange)
+        {
+            OutOfRangeBehavior();
+        }
+        else if (inRangedRange)
+        {
+            RangedZoneAction();
+        }
+        else if (inMeleeRange)
+        {
+            MeleeZoneAction();
+        }
+    }
+
+    private IEnumerator RepeatedlyCheckRange() 
+    {
+        yield return new WaitForSeconds(enemyData.timeBetweenRangeChecks);
+        NextEnemyAction();
+        StartCoroutine(RepeatedlyCheckRange());
+    }
+
     /// <summary>
-    /// Dictates what first action the enemy should take when it is enabled
+    /// Dictates what first action the enemy should take when it is not near the player
     /// </summary>
-    private void EnemyStartBehavior() 
+    private void OutOfRangeBehavior() 
     {
         switch (enemyData.enemyType)
         {
+            case BaseEnemyScriptable.EnemyType.None:
+                Debug.LogError("Invalid EnemyType entered Zone!");
+                break;
             case BaseEnemyScriptable.EnemyType.BuffEnemy:
                 GetComponentInChildren<EnemyBuff>(true).AttemptBuffingAllies();
                 break;
             default:
-                GetComponent<EnemyWalk>().StartPlayerSearch();
+                movementBeahvior.StartFollowingPlayer();
+                break;
+        }
+    }
+
+    public bool GetTestAlternateBehavior() 
+    {
+        return testAlternateShooterBehavior;
+    }
+
+    public void SetInRangedZone(bool value) 
+    {
+        inRangedRange = value;
+        if (!testAlternateShooterBehavior && !attackBehavior.IsEnemyOnCooldown()) 
+        {
+            NextEnemyAction();
+        }
+    }
+
+    private void RangedZoneAction() 
+    {
+        switch (enemyData.enemyType)
+        {
+            case BaseEnemyScriptable.EnemyType.None:
+                Debug.LogError("Invalid EnemyType entered Zone!");
+                break;
+            case BaseEnemyScriptable.EnemyType.SingleShooter:
+            case BaseEnemyScriptable.EnemyType.ConeShooter:
+                movementBeahvior.EndPlayerSearch();
+                if (!testAlternateShooterBehavior)
+                    attackBehavior.InitiateAttack();
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void SetInMeleeZone(bool value) 
+    {
+        inRangedRange = !value;
+        inMeleeRange = value;
+        if (!testAlternateShooterBehavior && !attackBehavior.IsEnemyOnCooldown())
+        {
+            NextEnemyAction();
+        }
+
+    }
+
+    private void MeleeZoneAction() 
+    {
+        switch (enemyData.enemyType)
+        {
+            case BaseEnemyScriptable.EnemyType.None:
+                Debug.LogError("Invalid EnemyType entered Zone!");
+                break;
+            case BaseEnemyScriptable.EnemyType.SingleShooter:
+            case BaseEnemyScriptable.EnemyType.ConeShooter:
+                movementBeahvior.EndPlayerSearch();
+                StartCoroutine(movementBeahvior.MoveAwayFromPlayer());
+                break;
+            case BaseEnemyScriptable.EnemyType.Melee:
+            case BaseEnemyScriptable.EnemyType.ChargingMelee:
+                attackBehavior.InitiateAttack();
+                break;
+            default:
                 break;
         }
     }
@@ -67,7 +193,9 @@ public class Enemy : MonoBehaviour
         {
             entity.EnableEntity();
         }
-        EnemyStartBehavior();
+        if(!testAlternateShooterBehavior)
+            OutOfRangeBehavior();
+        
     }
 
     /// <summary>
@@ -79,6 +207,8 @@ public class Enemy : MonoBehaviour
         {
             entity.DisableEntity();
         }
+        SetInMeleeZone(false);
+        SetInRangedZone(false);
     }
 
     /// <summary>
