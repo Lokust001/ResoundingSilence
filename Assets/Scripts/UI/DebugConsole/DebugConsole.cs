@@ -29,6 +29,9 @@ public class DebugConsole : MonoBehaviour
     [SerializeField]GameObject playerInstance;
     [SerializeField]GameObject cameraInstance;
 
+    /// <summary>
+    /// runs through with what was inputted into the text field and runs the command that was typed
+    /// </summary>
     public void CallFunction()
     {
         string Command = inputs.text.ToLower();
@@ -97,12 +100,20 @@ public class DebugConsole : MonoBehaviour
     }
 
 
+    /// <summary>
+    /// adds the line of text after
+    /// </summary>
+    /// <param name="line"></param>
     private void AppendConsoleLine(string line)
     {
         textArea.text = textArea.text + "\n" + line;
         StartCoroutine(ScrollToBottomNextFrame());
     }
 
+    /// <summary>
+    /// used later if we want to make the debug console scrollable
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator ScrollToBottomNextFrame()
     {
         yield return null;
@@ -117,10 +128,18 @@ public class DebugConsole : MonoBehaviour
         logScrollRect.verticalNormalizedPosition = 0f;
     }
 
+    /// <summary>
+    /// changes the player's speed
+    /// </summary>
+    /// <param name="Speed"></param>
     private void PlayerSpeed(float Speed)
     {
         playerInstance.GetComponent<PlayerController>().moveSpeed = Speed;
     }
+
+    /// <summary>
+    /// toggles weather the player can take damage or not
+    /// </summary>
     private void GodMode()
     {
         godToggle = !godToggle;
