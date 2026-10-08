@@ -192,18 +192,20 @@ public class UpgradeMenuController : MenuBase
     /// </summary>
     private void PopulateInventory()
     {
-        //replace with a system that checks if it sees any you already have soon
         foreach (PinScriptable pin in MidRunDataManager.Instance.pinInventory)
         {
-            InventoryPinHolder tempSlot = Instantiate(inventoryPinSlot, inventory);
+            if (inventoryPins.Find(x => x.pinData == pin) == null)
+            {
+                InventoryPinHolder tempSlot = Instantiate(inventoryPinSlot, inventory);
 
-            PinItemBehavior temp = Instantiate(pinItemPrefab, tempSlot.transform);
+                PinItemBehavior temp = Instantiate(pinItemPrefab, tempSlot.transform);
 
-            tempSlot.InitSlot(temp);
-            temp.InitPin(pin, tempSlot);
-            inventoryPins.Add(temp);
-            inventorySlots.Add(tempSlot);
-            temp.transform.position = tempSlot.transform.position;
+                tempSlot.InitSlot(temp);
+                temp.InitPin(pin, tempSlot);
+                inventoryPins.Add(temp);
+                inventorySlots.Add(tempSlot);
+                temp.transform.position = tempSlot.transform.position;
+            }
         }
     }
 
