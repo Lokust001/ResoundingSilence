@@ -50,9 +50,9 @@ public class UpgradeTileBehavior : PinHolderSlot
     private void GridInitialized()
     {
         adjacentTiles = UtilityFunctions.GetAdjacentTiles<UpgradeTileBehavior>(coords, 
-            controller.tilesInGrid.ToList(), 
-            controller.currentlyEnabledGrid.width, 
-            controller.currentlyEnabledGrid.height);
+            controller.tilesInGrid.ToList(),
+             controller.currentlyEnabledGrid.height,
+            controller.currentlyEnabledGrid.width);
        
     }
 

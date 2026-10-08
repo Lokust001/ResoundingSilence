@@ -14,6 +14,7 @@ public class UpgradeTileData
 
     public bool isActive;
 
+    public bool GlyphActive = false;
     public GlyphScriptable glyph {  get; private set; }
 
     public PinScriptable pin {  get; private set; }
