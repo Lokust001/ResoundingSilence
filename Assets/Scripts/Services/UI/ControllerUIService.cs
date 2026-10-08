@@ -16,6 +16,11 @@ public class ControllerUIService : BaseService
 
     private GameObject defaultSelectedButton;
 
+
+    /// <summary>
+    /// Initializes the service
+    /// </summary>
+    /// <returns></returns>
     public override async Awaitable InitService()
     {
         await base.InitService();
@@ -32,6 +37,10 @@ public class ControllerUIService : BaseService
         await SetupPublicEvents();
     }
 
+    /// <summary>
+    /// Turns on the public events for turning on and off controller
+    /// </summary>
+    /// <returns></returns>
     private async Awaitable SetupPublicEvents()
     {
         InputPublicEvents.ControllerEnabled += SetEventSystemSelectedObjToDefault;
@@ -39,12 +48,19 @@ public class ControllerUIService : BaseService
         await Task.CompletedTask;
     }
 
+    /// <summary>
+    /// turns off the publicv events for turning on and off controller
+    /// </summary>
     private void OnDestroy()
     {
         InputPublicEvents.ControllerEnabled -= SetEventSystemSelectedObjToDefault;
         InputPublicEvents.KeyboardMouseEnabled -= DeselectUI;
     }
 
+    /// <summary>
+    /// Turns off the currently selected ui
+    /// </summary>
+    /// <exception cref="System.Exception"></exception>
     private void DeselectUI()
     {
         if (InputManager.Instance.ControllerIsEnabled)
@@ -72,11 +88,19 @@ public class ControllerUIService : BaseService
 
     }
 
+    /// <summary>
+    /// sets the new default object
+    /// </summary>
+    /// <param name="selectedObj"></param>
     public void SetDefaultSelectedGameobject(GameObject selectedObj)
     {
         defaultSelectedButton = selectedObj;
     }
 
+    /// <summary>
+    /// selects the current default object
+    /// </summary>
+    /// <exception cref="System.Exception"></exception>
     public void SetEventSystemSelectedObjToDefault()
     {
         if (!InputManager.Instance.ControllerIsEnabled)
