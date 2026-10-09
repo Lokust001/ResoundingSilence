@@ -16,8 +16,6 @@ public class PinItemBehavior : ControllerSupportedClickable
     private CanvasGroup raycastBlocker;
     private Image pinSprite;
 
-    private bool currentlyPickedUp;
-
     public PinScriptable pinData;
 
     public PinHolderSlot Parent;
@@ -81,7 +79,6 @@ public class PinItemBehavior : ControllerSupportedClickable
         raycastBlocker.blocksRaycasts = false;
         pinSprite.raycastTarget = false;
         UnHoveredOver();
-        currentlyPickedUp = true;
 
         if (!InputManager.Instance.ControllerIsEnabled)
         {
@@ -105,7 +102,6 @@ public class PinItemBehavior : ControllerSupportedClickable
     {
         raycastBlocker.blocksRaycasts = true;
         pinSprite.raycastTarget = true;
-        currentlyPickedUp = false;
         UnHoveredOver();
         InputPublicEvents.MouseMoved -= Teleport;
         UIPublicEvents.UpdateCarriedPinPosition -= Teleport;

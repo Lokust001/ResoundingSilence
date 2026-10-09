@@ -509,6 +509,10 @@ public class InputManager : BaseManager
 
     #region UpgradeMenu Input Handling Functions
 
+    /// <summary>
+    /// cancels holding the pin
+    /// </summary>
+    /// <param name="obj"></param>
     private void DropHoldingPin_started(InputAction.CallbackContext obj)
     {
         InputPublicEvents.DropPin?.Invoke();
@@ -524,6 +528,10 @@ public class InputManager : BaseManager
         Debug.Log("Pin Selected");
     }
 
+    /// <summary>
+    /// drops the pin when the player lets go of the mouse
+    /// </summary>
+    /// <param name="obj"></param>
     private void SelectPin_canceled(InputAction.CallbackContext obj)
     {
         if (!ControllerIsEnabled)

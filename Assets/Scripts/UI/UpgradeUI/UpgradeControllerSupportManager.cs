@@ -361,6 +361,9 @@ public class UpgradeControllerSupportManager : MonoBehaviour
        
     }
 
+    /// <summary>
+    /// move the currently carried pin to the top right of the selected object
+    /// </summary>
     public void MoveCarriedPin()
     {
         //if this has a listener, throw the public event
@@ -376,6 +379,10 @@ public class UpgradeControllerSupportManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// changes the selected object to be a specific tile
+    /// </summary>
+    /// <param name="slot"></param>
     private void SelectSpecificTile(PinHolderSlot slot)
     {
         if (currentSelectedItem != null)

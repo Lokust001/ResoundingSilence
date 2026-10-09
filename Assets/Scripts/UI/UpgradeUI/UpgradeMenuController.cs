@@ -180,6 +180,8 @@ public class UpgradeMenuController : MenuBase
         UIPublicEvents.PinPickedUp += SetCarriedPin;
         InputPublicEvents.PinReleased += DropHeldPin;
         InputPublicEvents.DropPin += ReturnPinToItsTile;
+        InputPublicEvents.ControllerEnabled += ReturnPinToItsTile;
+        InputPublicEvents.KeyboardMouseEnabled += ReturnPinToItsTile;
     }
 
     /// <summary>
@@ -190,6 +192,9 @@ public class UpgradeMenuController : MenuBase
         base.TearDownPublicEvents();
         UIPublicEvents.PinPickedUp -= SetCarriedPin;
         InputPublicEvents.PinReleased -= DropHeldPin;
+        InputPublicEvents.DropPin -= ReturnPinToItsTile;
+        InputPublicEvents.ControllerEnabled -= ReturnPinToItsTile;
+        InputPublicEvents.KeyboardMouseEnabled -= ReturnPinToItsTile;
     }
 
     /// <summary>
@@ -562,7 +567,7 @@ public class UpgradeMenuController : MenuBase
         pin.StopPinMoving();
         tile.SetNewPinInTile(pin);
         ToggleInventoryScrollability(true);
-        UIPublicEvents.SelectSpecificTile(tile);
+        UIPublicEvents.SelectSpecificTile?.Invoke(tile);
     }
 
     /// <summary>
@@ -573,6 +578,10 @@ public class UpgradeMenuController : MenuBase
         PlacePinInTile(CarriedPin, CarriedPin.Owner);
     }
 
+    /// <summary>
+    /// places a pin back on the tile it was from
+    /// used (mostly) for controller
+    /// </summary>
     private void ReturnPinToItsTile()
     {
         if (CarriedPin != null)
