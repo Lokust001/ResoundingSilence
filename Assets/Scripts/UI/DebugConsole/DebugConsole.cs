@@ -50,6 +50,7 @@ public class DebugConsole : MonoBehaviour
     private bool freezeToggle = false;*/
 
     private PlayerController playerInstance;
+    private MapGenerator mapGenInstance;
     private GameObject cameraInstance;
 
     [SerializeField]
@@ -80,6 +81,10 @@ public class DebugConsole : MonoBehaviour
         {
             playerInstance = FindAnyObjectByType<PlayerController>();
         }
+        if(mapGenInstance == null)
+        {
+            mapGenInstance = FindAnyObjectByType<MapGenerator>();
+        }
         ClearConsole();
     }
 
@@ -101,10 +106,12 @@ public class DebugConsole : MonoBehaviour
 
         if (Command == "help")
         {
-            AppendConsoleLine($"<color=#{ColorUtility.ToHtmlStringRGB(inputColor)}>{Command}</color>");
+            AppendConsoleLine(Command, inputColor);
             AppendConsoleLine("God Mode: god");
             AppendConsoleLine($"Set Player's Speed to Default ({playerInstance.defaultSpeed}): speed");
             AppendConsoleLine($"Change Players Speed: speed <Speed Value>");
+            AppendConsoleLine($"Change Map Section: ChangeIsland <island index (or current)> <layout index>");
+            AppendConsoleLine($"Reset Map: MapReset");
             FinishCommand();
             return;
         }
@@ -114,8 +121,8 @@ public class DebugConsole : MonoBehaviour
         if (Command == "god")
         {
             GodMode();
-            AppendConsoleLine($"<color=#{ColorUtility.ToHtmlStringRGB(inputColor)}>{Command}</color>");
-            AppendConsoleLine($"<color=#{ColorUtility.ToHtmlStringRGB(commandCompletedColor)}>Godmode: {godToggle}</color>");
+            AppendConsoleLine(Command, inputColor);
+            AppendConsoleLine($"Godmode: {godToggle}", commandCompletedColor);
             FinishCommand();
             return;
         }
@@ -125,9 +132,9 @@ public class DebugConsole : MonoBehaviour
         {
             if (Command.Equals("speed default") || Command.Equals("speed"))
             {
-                AppendConsoleLine($"<color=#{ColorUtility.ToHtmlStringRGB(inputColor)}>{Command}</color>");
+                AppendConsoleLine(Command, inputColor);
                 float defaultSpeed = playerInstance.defaultSpeed;
-                AppendConsoleLine($"<color=#{ColorUtility.ToHtmlStringRGB(commandCompletedColor)}>Speed set to default: {defaultSpeed}</color>");
+                AppendConsoleLine($"Speed set to default: {defaultSpeed}", commandCompletedColor);
 
                 if (Command.Equals("speed"))
                 {
@@ -144,21 +151,122 @@ public class DebugConsole : MonoBehaviour
                 int Temp;
                 if (int.TryParse(Command.Substring(6, Command.Length - 6), out Temp))
                 {
-                    AppendConsoleLine($"<color=#{ColorUtility.ToHtmlStringRGB(inputColor)}>{Command}</color>");
-                    AppendConsoleLine($"<color=#{ColorUtility.ToHtmlStringRGB(commandCompletedColor)}>Speed set to: {Temp}</color>");
+                    AppendConsoleLine(Command, inputColor);
+                    AppendConsoleLine($"Speed set to: {Temp}", commandCompletedColor);
                     PlayerSpeed(Temp);
                 }
                 else
                 {
-                    AppendConsoleLine($"<color=#{ColorUtility.ToHtmlStringRGB(incorrectInputColor)}>{Command}\nPlease put a number after the command</color>");
+                    AppendConsoleLine($"{Command} \nPlease put a number after the command</color>", incorrectInputColor);
                 }
             }
             FinishCommand();
             return;
         }
 
-        AppendConsoleLine($"<color=#{ColorUtility.ToHtmlStringRGB(incorrectInputColor)}>{Command}" +
-            $"</color>\n<color=orange>No command found, use Help for a list of all commands.</color>");
+        if(Command.StartsWith("changeisland") || Command.StartsWith("ci"))
+        {
+            string postCommand = "";
+            if (Command.StartsWith("changeisland"))
+            {
+                postCommand = Command.Substring(12);
+            }
+            else
+            {
+                postCommand = Command.Substring(3);
+            }
+            int TempIsland;
+            if (postCommand.StartsWith("current") || postCommand.StartsWith("cur"))
+            {
+                int closestIndex = -1;
+                float closestDistance = Mathf.Infinity;
+                int i = 0;
+                foreach (GameObject island in mapGenInstance.islands)
+                {
+                    float distance = Vector3.Distance(playerInstance.gameObject.transform.position, island.transform.position);
+                    if (closestDistance > distance)
+                    {
+                        closestIndex = i;
+                        closestDistance = distance;
+                    }
+                    i++;
+                }
+
+                if (postCommand.StartsWith("current"))
+                {
+                    postCommand = postCommand.Substring(7);
+                }
+                else
+                {
+                    postCommand = postCommand.Substring(3);
+                }
+
+                if(postCommand.StartsWith(" "))
+                {
+                    postCommand = postCommand.Substring(1);
+                }
+
+                int Temp;
+                if (postCommand.Equals("") || postCommand.Equals(" "))
+                {
+                    mapGenInstance.SwitchIsland(closestIndex);
+                    AppendConsoleLine(Command, inputColor);
+                    AppendConsoleLine($"Island {closestIndex} Has switched layouts", commandCompletedColor);
+                    return;
+                }
+                else if (int.TryParse(Command, out Temp))
+                {
+                    mapGenInstance.SwitchIsland(closestIndex, Temp);
+                    AppendConsoleLine(Command, inputColor);
+                    AppendConsoleLine($"Island {closestIndex} Has switched to layout {Temp}", commandCompletedColor);
+                    return;
+                }
+                else
+                {
+                    AppendConsoleLine($"{Command} \nPlease put a number after the command</color>", incorrectInputColor);
+                    return;
+                }
+            }
+            else if (int.TryParse(postCommand.Substring(0, 1), out TempIsland))
+            {
+                int Temp;
+                postCommand = postCommand.Substring(1);
+                if (postCommand.StartsWith(" "))
+                {
+                    postCommand = postCommand.Substring(1);
+                }
+                if (postCommand.StartsWith("") || postCommand.Equals(" "))
+                {
+                    mapGenInstance.SwitchIsland(TempIsland);
+                    AppendConsoleLine(Command, inputColor);
+                    AppendConsoleLine($"Island {TempIsland} Has switched layouts", commandCompletedColor);
+                    return;
+                }
+                else if(int.TryParse(Command, out Temp))
+                {
+                     mapGenInstance.SwitchIsland(TempIsland, Temp);
+                    AppendConsoleLine(Command, inputColor);
+                    AppendConsoleLine($"Island {TempIsland} Has switched to layout {Temp}", commandCompletedColor);
+                    return;
+                }
+            }
+            else
+            {
+                AppendConsoleLine($"{Command} \nPlease put a number after the command</color>", incorrectInputColor);
+            }
+
+        }
+
+        if(Command.StartsWith("mapreset") || Command.StartsWith("mr"))
+        {
+            mapGenInstance.DeleteIslands();
+            AppendConsoleLine(Command, inputColor);
+            AppendConsoleLine($"Map Has Been Reset", commandCompletedColor);
+            mapGenInstance.spawnMap();
+        }
+
+        AppendConsoleLine(Command, incorrectInputColor);
+        AppendConsoleLine($"No command found, use Help for a list of all commands.", Color.orange);
         FinishCommand();
         Debug.LogWarning("no command found found for " + Command);
 
@@ -166,7 +274,7 @@ public class DebugConsole : MonoBehaviour
 
     private void FinishCommand()
     {
-        AppendConsoleLine($"<color=#{ColorUtility.ToHtmlStringRGB(newCommandBreakColor)}>----------------------</color>");
+        AppendConsoleLine($"----------------------", newCommandBreakColor);
     }
 
 
@@ -174,13 +282,17 @@ public class DebugConsole : MonoBehaviour
     /// adds the line of text after
     /// </summary>
     /// <param name="line"></param>
-    private void AppendConsoleLine(string line)
+    private void AppendConsoleLine(string line, Color TextColor = default)
     {
+        if(TextColor == default)
+        {
+            TextColor = Color.white;
+        }
         if (textArea.text != string.Empty)
         {
             textArea.text += $"\n";
         }
-        textArea.text += line;
+        textArea.text += $"<color=#{ColorUtility.ToHtmlStringRGB(TextColor)}>{line}</color>";
         
         StartCoroutine(ScrollToBottomNextFrame());
     }
