@@ -26,12 +26,6 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     private MeshRenderer meshRenderer;
     private Rigidbody rigidbody;
 
-    private int s;
-    private void Awake()
-    {
-        s = LayerMask.NameToLayer("Player");
-    }
-
     /// <summary>
     /// Grabs necessary components and assigns enemyTransform to transform component
     /// </summary>
@@ -51,9 +45,9 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     /// <summary>
     /// Start searching for the player by un-constraining the nav mesh agent and moving towards the player
     /// </summary>
-    public void StartPlayerSearch() 
+    public void StartFollowingPlayer() 
     {
-        walkingCoroutine = StartCoroutine(MoveTowardsPlayer());
+        walkingCoroutine ??= StartCoroutine(MoveTowardsPlayer());
     }
 
     /// <summary>
@@ -65,8 +59,8 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
         if (walkingCoroutine != null) 
         {
             StopCoroutine(walkingCoroutine);
+            walkingCoroutine = null;
         }
-        walkingCoroutine = null;
     }
 
     /// <summary>
@@ -88,7 +82,7 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
         float distanceToGoal = (chargeDestination - enemyTransform.position).sqrMagnitude;
 
         //Make the rigidbody on the enemy temporarily kinematic to avoid letting it be interrupted by the player
-        rigidbody.isKinematic = true;
+        //rigidbody.isKinematic = true;
 
         //While there is still a significant gap or distance between the enemy and its charge destination,
         //calculate its current distance from its goal, move the enemy towards the goal by a factor of its chargeSpeedForce,
@@ -102,7 +96,7 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
         }
 
         //Restore properties and velocity
-        rigidbody.isKinematic = false;
+        //rigidbody.isKinematic = false;
         rigidbody.linearVelocity = rigidbody.angularVelocity = Vector3.zero;
         
     }
@@ -115,8 +109,6 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     {
         if (collision.gameObject.TryGetComponent<PlayerController>(out PlayerController player))
         {
-            //Debug.Log("Enemy collided player layer #: " + s);
-            Debug.Log(Physics.GetIgnoreLayerCollision(s, gameObject.layer));
             if (enemyAttack.IsEnemyCurrentlyCharging())
             {
                 Vector3 pushDirection = player.transform.position - transform.position;
