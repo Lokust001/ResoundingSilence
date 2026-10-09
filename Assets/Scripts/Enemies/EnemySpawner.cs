@@ -158,7 +158,6 @@ public class EnemySpawner : MonoBehaviour
         foreach (var enemy in calculatedEnemyPool)
         {
             Enemy createdEnemy = Instantiate(enemy, transform.position, Quaternion.identity).GetComponent<Enemy>();
-            createdEnemy.DisableEnemy();
             createdEnemy.destroyCancellationToken.Register(() =>
             //Inner Method that removes the destroyed enemy from the list,
             //then starts a timer for the next generation interval

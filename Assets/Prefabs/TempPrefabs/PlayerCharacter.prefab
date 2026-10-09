@@ -140,6 +140,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61c56b37c8341874b9ba8c100c614046, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  defaultSpeed: 0
   moveSpeed: 15
   playerHealth: 5
   playerDamage: 0
@@ -147,6 +148,18 @@ MonoBehaviour:
   - Enemies
   - EnemyProjectile
   invincibilityDuration: 5
+  dashRange: 0
+  dashDuration: 0
+  dashCooldown: 0
+  totalDashes: 0
+  chainDashWindow: 0
+  ignoreWhileInvincible:
+    serializedVersion: 2
+    m_Bits: 0
+  healingPotency: 0
+  InGodMode: 0
+  canDash: 0
+  chainDashing: 0
   meleeRangeTrigger: {fileID: 6671346383346383798}
   rangedRangeTrigger: {fileID: 2137933208230713367}
 --- !u!136 &2029719042621437843
@@ -245,13 +258,13 @@ SphereCollider:
     m_Bits: 1024
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8192
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 3
+  m_Radius: 4
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &6671346383346383798
 MonoBehaviour:
@@ -277,7 +290,7 @@ GameObject:
   - component: {fileID: 4597244977887869256}
   - component: {fileID: 7893032319778801210}
   - component: {fileID: 2137933208230713367}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RangedArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -312,13 +325,13 @@ SphereCollider:
     m_Bits: 1024
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8192
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 6
+  m_Radius: 8
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &2137933208230713367
 MonoBehaviour:
