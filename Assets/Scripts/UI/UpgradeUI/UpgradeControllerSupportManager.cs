@@ -417,6 +417,7 @@ public class UpgradeControllerSupportManager : MonoBehaviour
 
         currentFocus = FocusType.Grid;
         SelectLastSelectedGridTile();
+        MoveCarriedPin();
     }
 
     /// <summary>
@@ -484,7 +485,9 @@ public class UpgradeControllerSupportManager : MonoBehaviour
         }
         
         currentFocus = FocusType.Inventory;
+        
         SelectLastSelectedInventoryPin();
+        MoveCarriedPin();
     }
 
     /// <summary>
@@ -537,6 +540,7 @@ public class UpgradeControllerSupportManager : MonoBehaviour
 
         currentFocus = FocusType.Tarot;
         SelectLastSelectedTarotTile();
+        MoveCarriedPin();
     }
 
     /// <summary>
