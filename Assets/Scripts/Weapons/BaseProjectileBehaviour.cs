@@ -74,7 +74,7 @@ public class BaseProjectileBehaviour : MonoBehaviour
 
             if(hasLifesteal)
             {
-                int healValue = Mathf.CeilToInt(myDamage * ConvertToPercentage(weaponRef.lifestealAmount));
+                int healValue = Mathf.CeilToInt(myDamage * ConvertToPercentage(weaponRef.LifestealAmount[pierceDamageIndex]));
 
                 //TODO Replace with heal player
                 FindAnyObjectByType<DummyPlayerBehaviour>().Heal(healValue);
@@ -86,8 +86,8 @@ public class BaseProjectileBehaviour : MonoBehaviour
                 Debug.Log(Mathf.CeilToInt(baseDamage * ConvertToPercentage(weaponRef.PierceDamageFalloff[pierceDamageIndex])));
 
                 myDamage = myDamage - Mathf.CeilToInt(baseDamage * ConvertToPercentage(weaponRef.PierceDamageFalloff[pierceDamageIndex]))
-                    >= weaponRef.MinPierceDamage ? myDamage - Mathf.CeilToInt(baseDamage * ConvertToPercentage(weaponRef.PierceDamageFalloff[pierceDamageIndex]))
-                    : weaponRef.MinPierceDamage;
+                    >= weaponRef.MinPierceDamage[pierceDamageIndex] ? myDamage - Mathf.CeilToInt(baseDamage * ConvertToPercentage(weaponRef.PierceDamageFalloff[pierceDamageIndex]))
+                    : weaponRef.MinPierceDamage[pierceDamageIndex];
 
                 myLifetime -= (baseLifetime * ConvertToPercentage(weaponRef.PierceLifetimeFalloff[pierceLifetimeIndex]));
 

@@ -1,12 +1,13 @@
 /******************************************************************************
  * Author: Brad Dixon
  * Contributors:
- * Last Modified: 9/29/2026
- * Brief: Weapon architecture that all weapons inherit
+ * Last Modified: 10/09/2026
+ * Brief: Calls the specific weapon attack
  * TODO:
  * ***************************************************************************/
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using NaughtyAttributes;
 
 public class BaseWeaponBehaviour : MonoBehaviour
@@ -23,6 +24,10 @@ public class BaseWeaponBehaviour : MonoBehaviour
     public BaseWeaponScriptable ThisWeaponData;
     [SerializeField] protected int weaponDataID;
     [SerializeField] protected LayerMask groundLayerMask;
+
+    [SerializeField] protected Animator weaponAnimator;
+    [SerializeField] protected List<Animation> attackAnimations = new List<Animation>();
+    [SerializeField] protected int comboIndex;
 
     [Header("Base Ability Variables"), HorizontalLine(height: 4, EColor.Red)]
     [SerializeField] protected AbilitySettings abilitySettings;
@@ -78,6 +83,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
         //tells the abilities to instantiate
         ThisWeaponData.GetAbilities();
         attackReady = true;
+        comboIndex = 0;
 
         if(!abilityOneReady)
         {
@@ -115,7 +121,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
     }
 
     /// <summary>
-    /// Updates whether or not the player is holding the attack button
+    /// Determines if whether or not the player casts an ability or attacks with the weapon
     /// </summary>
     protected void PlayerAttacking()
     {
@@ -142,12 +148,18 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// </summary>
     protected void GetMousPos(Vector2 pos)
     {
+        Plane p = new Plane(Vector3.up, Camera.main.transform.rotation.x);
         Ray ray = Camera.main.ScreenPointToRay(pos);
 
-        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundLayerMask))
+        if(p.Raycast(ray, out float hit))
         {
-            mousePos = hit.point - transform.position;
+            mousePos = ray.GetPoint(hit) - transform.position;
         }
+
+        //if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundLayerMask))
+        //{
+        //    mousePos = hit.point - transform.position;
+        //}
     }
 
     /// <summary>
@@ -219,7 +231,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// </summary>
     virtual protected void Attack()
     {
-        throw new System.Exception("Forgot to add attack functionality.");
+        weaponAnimator.Play("Base Layer." + attackAnimations[comboIndex].name);
     }
 
     /// <summary>

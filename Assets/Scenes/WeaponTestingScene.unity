@@ -346,6 +346,67 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9751edccd1c0c234481fa8ee84bbdee1, type: 3}
+--- !u!1 &623344075
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 623344077}
+  - component: {fileID: 623344076}
+  m_Layer: 0
+  m_Name: Scythe
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &623344076
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 623344075}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e56a22827e974e4dbb2a80110bf0a5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BaseMeleeWeaponBehaviour
+  ThisWeaponData: {fileID: 0}
+  weaponDataID: 0
+  groundLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  weaponAnimator: {fileID: 0}
+  attackAnimations: []
+  comboIndex: 0
+  abilitySettings: 0
+  abilityOneReady: 0
+  abilityOneCooldown: 0
+  abilityOneEndLag: 0
+  abilityOneRange: 0
+  abilityTwoReady: 0
+  abilityTwoCooldown: 0
+  abilityTwoEndLag: 0
+  abilityTwoRange: 0
+--- !u!4 &623344077
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 623344075}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.26561, y: -0.6, z: 1.03923}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &666973704
 GameObject:
   m_ObjectHideFlags: 0
@@ -889,6 +950,67 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1900383280
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1900383282}
+  - component: {fileID: 1900383281}
+  m_Layer: 0
+  m_Name: TestWeapon
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &1900383281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1900383280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 579420d72e9042b4bad5d8251cab5b62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BaseWeaponBehaviour
+  ThisWeaponData: {fileID: 0}
+  weaponDataID: 0
+  groundLayerMask:
+    serializedVersion: 2
+    m_Bits: 512
+  weaponAnimator: {fileID: 0}
+  attackAnimations: []
+  comboIndex: 0
+  abilitySettings: 0
+  abilityOneReady: 0
+  abilityOneCooldown: 0
+  abilityOneEndLag: 0
+  abilityOneRange: 0
+  abilityTwoReady: 0
+  abilityTwoCooldown: 0
+  abilityTwoEndLag: 0
+  abilityTwoRange: 0
+--- !u!4 &1900383282
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1900383280}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.06706, y: -0.6, z: 1.03923}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1988099944
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1090,3 +1212,5 @@ SceneRoots:
   - {fileID: 16344779}
   - {fileID: 1988099944}
   - {fileID: 294760476}
+  - {fileID: 623344077}
+  - {fileID: 1900383282}

@@ -27,29 +27,38 @@ MonoBehaviour:
     - rowTiles: 0000000100
     - rowTiles: 0101010101
     - rowTiles: 0000000100
+    playerController: {fileID: 0}
   WeaponName: 
-  WeaponDamage: 0a000000
+  WeaponDamage: 28000000
   BaseWeaponDamage: 28000000
   AttackCooldown:
-  - 0.5
+  - 1.1
   BaseAttackCooldown:
   - 1.1
-  ProjectileSpeed:
-  - 30
-  ProjectileLifetime:
-  - 2
-  MovementSlowdown:
-  - 0
-  HasPierce: 1
-  PierceDamageFalloff:
-  - 20
-  PierceLifetimeFalloff:
-  - 0
-  PierceAmount: 04000000
-  MinPierceDamage: 0
+  MovementSpeedChange: []
+  BaseMovementSpeedChange: []
+  PlayerDisplacement: []
+  BasePlayerDisplacement: []
+  AttackBursts: 
+  BaseAttackBursts: 
   HasLifesteal: 0
-  BaseLifestealAmount: 1
-  lifestealAmount: 1
+  BaseLifestealAmount: []
+  LifestealAmount: []
+  ProjectileSpeed: []
+  BaseProjectileSpeed:
+  - 5
+  ProjectileLifetime: []
+  BaseProjectileLifetime:
+  - 3
+  HasPierce: 0
+  PierceDamageFalloff: []
+  BasePierceDamageFalloff: []
+  PierceLifetimeFalloff: []
+  BasePierceLifetimeFalloff: []
+  PierceAmount: 
+  BasePierceAmount: 
+  MinPierceDamage: 
+  BaseMinPierceDamage: 
   DecayDamage: 0
   MaxDecayStacks: 0
   DecayDelay: 0

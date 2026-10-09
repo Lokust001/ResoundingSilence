@@ -1,9 +1,9 @@
 /*
 * Author: Tyler
 * Contributors: Brad Dixon, Brenden
-* Last Modified: 10/08/2026
+* Last Modified: 10/09/2026
 * Summary: This is the base scriptable object for all weapon scriptable objects.
-*          Handles the data for the weapons.
+*          Handles the data for the weapons. Acts as a tool to make any kind of weapon.
 * To Do:   Add more variables as needed. Change status effects as needed.
 */
 
@@ -95,9 +95,17 @@ public class BaseWeaponScriptable : BaseScriptableObject
     public List<float> MovementSpeedChange = new List<float>();
 
     [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
-    [Tooltip("How much attacking should change the player's move speed by. Use negative values to make player slower." +
+    [Tooltip("How much attacking should change the player's move speed by. Use negative values to make player slower. " +
         "Is a list in case the weapon's combo attacks should change the player's speed by a different amount.")]
     public List<float> BaseMovementSpeedChange = new List<float>();
+
+    [HideInInspector]
+    public List<Vector2> PlayerDisplacement = new List<Vector2>();
+
+    [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
+    [Tooltip("The direction, and by how much, the player should be moved by when attacking. " +
+        "Is a list in case the weapon's combo attacks should change the player's speed by a different amount.")]
+    public List<Vector2> BasePlayerDisplacement = new List<Vector2>();
 
     [HideInInspector]
     public List<int> AttackBursts = new List<int>();
@@ -115,7 +123,7 @@ public class BaseWeaponScriptable : BaseScriptableObject
     public List<float> BaseLifestealAmount = new List<float>();
 
     [HideInInspector]
-    public List<float> lifestealAmount = new List<float>();
+    public List<float> LifestealAmount = new List<float>();
 
     #endregion
 
@@ -360,13 +368,14 @@ public class BaseWeaponScriptable : BaseScriptableObject
     {
         WeaponDamage = BaseWeaponDamage.ToList();
         AttackCooldown = BaseAttackCooldown.ToList();
+        MovementSpeedChange = BaseMovementSpeedChange.ToList();
+        PlayerDisplacement = BasePlayerDisplacement.ToList();
+        LifestealAmount = BaseLifestealAmount.ToList();
         ProjectileSpeed = BaseProjectileSpeed.ToList();
         ProjectileLifetime = BaseProjectileLifetime.ToList();
-        MovementSpeedChange = BaseMovementSpeedChange.ToList();
         PierceDamageFalloff = BasePierceDamageFalloff.ToList();
         PierceLifetimeFalloff = BasePierceLifetimeFalloff.ToList();
         PierceAmount = BasePierceAmount.ToList();
-        lifestealAmount = BaseLifestealAmount.ToList();
         upgradeGrid.attachedWeapon = this;
     }
 
@@ -402,7 +411,7 @@ public class BaseWeaponScriptable : BaseScriptableObject
     {
         for (int i = 0; i < AttackCooldown.Count; i++)
         {
-            lifestealAmount[i] = BaseLifestealAmount[i] * lifestealPercent;
+            LifestealAmount[i] = BaseLifestealAmount[i] * lifestealPercent;
         }
     }
 }
