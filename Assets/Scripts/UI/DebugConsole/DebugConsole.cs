@@ -181,56 +181,71 @@ public class DebugConsole : MonoBehaviour
                 int i = 0;
                 foreach (GameObject island in mapGenInstance.islands)
                 {
-                    if (closestDistance > Vector3.Distance(playerInstance.gameObject.transform.position, island.transform.position))
+                    float distance = Vector3.Distance(playerInstance.gameObject.transform.position, island.transform.position);
+                    if (closestDistance > distance)
                     {
                         closestIndex = i;
-                        closestDistance = Vector3.Distance(playerInstance.gameObject.transform.position, island.transform.position);
+                        closestDistance = distance;
                     }
                     i++;
                 }
 
                 if (postCommand.StartsWith("current"))
                 {
-                    postCommand = postCommand.Substring(8);
+                    postCommand = postCommand.Substring(7);
                 }
                 else
                 {
-                    postCommand = postCommand.Substring(4);
+                    postCommand = postCommand.Substring(3);
+                }
+
+                if(postCommand.StartsWith(" "))
+                {
+                    postCommand = postCommand.Substring(1);
                 }
 
                 int Temp;
-                if (postCommand.Equals("") || postCommand.StartsWith(" "))
+                if (postCommand.Equals("") || postCommand.Equals(" "))
                 {
                     mapGenInstance.SwitchIsland(closestIndex);
                     AppendConsoleLine(Command, inputColor);
                     AppendConsoleLine($"Island {closestIndex} Has switched layouts", commandCompletedColor);
+                    return;
                 }
                 else if (int.TryParse(Command, out Temp))
                 {
                     mapGenInstance.SwitchIsland(closestIndex, Temp);
                     AppendConsoleLine(Command, inputColor);
                     AppendConsoleLine($"Island {closestIndex} Has switched to layout {Temp}", commandCompletedColor);
+                    return;
                 }
                 else
                 {
                     AppendConsoleLine($"{Command} \nPlease put a number after the command</color>", incorrectInputColor);
+                    return;
                 }
             }
             else if (int.TryParse(postCommand.Substring(0, 1), out TempIsland))
             {
                 int Temp;
-                postCommand = postCommand.Substring(2);
-                if(postCommand.StartsWith("") || postCommand.StartsWith(" "))
+                postCommand = postCommand.Substring(1);
+                if (postCommand.StartsWith(" "))
+                {
+                    postCommand = postCommand.Substring(1);
+                }
+                if (postCommand.StartsWith("") || postCommand.Equals(" "))
                 {
                     mapGenInstance.SwitchIsland(TempIsland);
                     AppendConsoleLine(Command, inputColor);
                     AppendConsoleLine($"Island {TempIsland} Has switched layouts", commandCompletedColor);
+                    return;
                 }
                 else if(int.TryParse(Command, out Temp))
                 {
                      mapGenInstance.SwitchIsland(TempIsland, Temp);
                     AppendConsoleLine(Command, inputColor);
                     AppendConsoleLine($"Island {TempIsland} Has switched to layout {Temp}", commandCompletedColor);
+                    return;
                 }
             }
             else

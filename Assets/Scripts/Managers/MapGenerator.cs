@@ -198,6 +198,7 @@ public class MapGenerator : MonoBehaviour
         {
             layout = Random.Range(0,Island.Spawner.prefabs.Count);
         }
+        Destroy(islands[IslandNumber]);
         islands[IslandNumber] = Island.Spawner.SpawnSingleIsland(Island.SpawnPoint, layout);
     }
 }
