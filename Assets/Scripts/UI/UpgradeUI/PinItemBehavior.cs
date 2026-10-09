@@ -78,8 +78,20 @@ public class PinItemBehavior : ControllerSupportedClickable
     {
         raycastBlocker.blocksRaycasts = false;
         pinSprite.raycastTarget = false;
-        FollowMouse(InputManager.Instance.CurrentMousePosition);
-        InputPublicEvents.MouseMoved += FollowMouse;
+        UnHoveredOver();
+
+        if (!InputManager.Instance.ControllerIsEnabled)
+        {
+            Teleport(InputManager.Instance.CurrentMousePosition);
+            InputPublicEvents.MouseMoved += Teleport;
+        }
+        else
+        {
+            
+            UIPublicEvents.UpdateCarriedPinPosition += Teleport;
+            FindAnyObjectByType<UpgradeControllerSupportManager>().MoveCarriedPin();
+        }
+        
 
     }
 
@@ -90,7 +102,9 @@ public class PinItemBehavior : ControllerSupportedClickable
     {
         raycastBlocker.blocksRaycasts = true;
         pinSprite.raycastTarget = true;
-        InputPublicEvents.MouseMoved -= FollowMouse;
+        UnHoveredOver();
+        InputPublicEvents.MouseMoved -= Teleport;
+        UIPublicEvents.UpdateCarriedPinPosition -= Teleport;
     }
 
     /// <summary>
@@ -98,16 +112,16 @@ public class PinItemBehavior : ControllerSupportedClickable
     /// </summary>
     private void OnDisable()
     {
-        InputPublicEvents.MouseMoved -= FollowMouse;
+        InputPublicEvents.MouseMoved -= Teleport;
     }
 
     /// <summary>
     /// follows the mouse's position
     /// </summary>
-    /// <param name="mousePos"></param>
-    private void FollowMouse(Vector2 mousePos)
+    /// <param name="teleportCoords"></param>
+    private void Teleport(Vector2 teleportCoords)
     {
-        transform.position = mousePos;
+        transform.position = teleportCoords;
     }
 
     /// <summary>
