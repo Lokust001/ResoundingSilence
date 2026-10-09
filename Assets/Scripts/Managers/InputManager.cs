@@ -60,6 +60,8 @@ public class InputManager : BaseManager
     private InputAction MousePosition;
 
     private InputAction MoveSelectedObject;
+
+    private InputAction DropHoldingPin;
     #endregion
 
     #region Setup
@@ -246,6 +248,7 @@ public class InputManager : BaseManager
         pause = pInput.currentActionMap.FindAction("Pause");
         swapWeapon = pInput.currentActionMap.FindAction("SwapWeapon");
         ToggleDebugConsole = pInput.currentActionMap.FindAction("ToggleDebugConsole");
+        
 
 
         move.performed += Move_performed;
@@ -272,9 +275,13 @@ public class InputManager : BaseManager
         swapWeapon.started += SwapWeapon_started;
 
         ToggleDebugConsole.started += ToggleDebugConsole_started;
+
+        
     }
 
     
+
+
 
     /// <summary>
     /// enables the upgrade menu public events
@@ -291,6 +298,7 @@ public class InputManager : BaseManager
         MousePosition = pInput.currentActionMap.FindAction("MousePosition");
         MoveSelectedObject = pInput.currentActionMap.FindAction("Move");
         ToggleDebugConsole = pInput.currentActionMap.FindAction("ToggleDebugConsole");
+        DropHoldingPin = pInput.currentActionMap.FindAction("CancelHoldingItem");
 
         ToggleUpgradeMenuInUpgradeMenu.started += ToggleUpgradeMenuInUpgradeMenu_started;
         SwapFocusToGrid.started += SwapFocusToGrid_started;
@@ -304,6 +312,7 @@ public class InputManager : BaseManager
         MoveSelectedObject.performed += Aim_performed;
         ToggleDebugConsole.started += ToggleDebugConsole_started;
         MoveSelectedObject.canceled += MoveSelectedObject_canceled;
+        DropHoldingPin.started += DropHoldingPin_started;
     }
 
     
@@ -333,6 +342,7 @@ public class InputManager : BaseManager
         dash.started -= Dash_started;
 
         toggleUpgradeMenuInMidRun.started -= ToggleUpgradeMenu_started;
+        
     }
 
     /// <summary>
@@ -349,6 +359,7 @@ public class InputManager : BaseManager
         SelectPin.started -= SelectPin_started;
         SelectPin.canceled -= SelectPin_canceled;
         MousePosition.performed -= Aim_performed;
+        DropHoldingPin.started -= DropHoldingPin_started;
     }
 
 
@@ -498,6 +509,11 @@ public class InputManager : BaseManager
 
     #region UpgradeMenu Input Handling Functions
 
+    private void DropHoldingPin_started(InputAction.CallbackContext obj)
+    {
+        InputPublicEvents.DropPin?.Invoke();
+    }
+
     /// <summary>
     /// calls the public event that 'clicks' on the currently selected pin
     /// </summary>
@@ -510,7 +526,11 @@ public class InputManager : BaseManager
 
     private void SelectPin_canceled(InputAction.CallbackContext obj)
     {
-        InputPublicEvents.PinReleased?.Invoke();
+        if (!ControllerIsEnabled)
+        {
+            InputPublicEvents.PinReleased?.Invoke();
+        }
+        
     }
 
 
