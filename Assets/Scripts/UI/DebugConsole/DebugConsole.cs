@@ -101,7 +101,7 @@ public class DebugConsole : MonoBehaviour
 
         if (Command == "help")
         {
-            AppendConsoleLine($"<color=#{ColorUtility.ToHtmlStringRGB(inputColor)}>{Command}</color>");
+            AppendConsoleLine(Command, inputColor);
             AppendConsoleLine("God Mode: god");
             AppendConsoleLine($"Set Player's Speed to Default ({playerInstance.defaultSpeed}): speed");
             AppendConsoleLine($"Change Players Speed: speed <Speed Value>");
@@ -114,8 +114,8 @@ public class DebugConsole : MonoBehaviour
         if (Command == "god")
         {
             GodMode();
-            AppendConsoleLine($"<color=#{ColorUtility.ToHtmlStringRGB(inputColor)}>{Command}</color>");
-            AppendConsoleLine($"<color=#{ColorUtility.ToHtmlStringRGB(commandCompletedColor)}>Godmode: {godToggle}</color>");
+            AppendConsoleLine(Command, inputColor);
+            AppendConsoleLine($"Godmode: {godToggle}", commandCompletedColor);
             FinishCommand();
             return;
         }
@@ -125,9 +125,9 @@ public class DebugConsole : MonoBehaviour
         {
             if (Command.Equals("speed default") || Command.Equals("speed"))
             {
-                AppendConsoleLine($"<color=#{ColorUtility.ToHtmlStringRGB(inputColor)}>{Command}</color>");
+                AppendConsoleLine(Command, inputColor);
                 float defaultSpeed = playerInstance.defaultSpeed;
-                AppendConsoleLine($"<color=#{ColorUtility.ToHtmlStringRGB(commandCompletedColor)}>Speed set to default: {defaultSpeed}</color>");
+                AppendConsoleLine($"Speed set to default: {defaultSpeed}", commandCompletedColor);
 
                 if (Command.Equals("speed"))
                 {
@@ -144,21 +144,21 @@ public class DebugConsole : MonoBehaviour
                 int Temp;
                 if (int.TryParse(Command.Substring(6, Command.Length - 6), out Temp))
                 {
-                    AppendConsoleLine($"<color=#{ColorUtility.ToHtmlStringRGB(inputColor)}>{Command}</color>");
-                    AppendConsoleLine($"<color=#{ColorUtility.ToHtmlStringRGB(commandCompletedColor)}>Speed set to: {Temp}</color>");
+                    AppendConsoleLine(Command, inputColor);
+                    AppendConsoleLine($"Speed set to: {Temp}", commandCompletedColor);
                     PlayerSpeed(Temp);
                 }
                 else
                 {
-                    AppendConsoleLine($"<color=#{ColorUtility.ToHtmlStringRGB(incorrectInputColor)}>{Command}\nPlease put a number after the command</color>");
+                    AppendConsoleLine($"{Command} \nPlease put a number after the command</color>", incorrectInputColor);
                 }
             }
             FinishCommand();
             return;
         }
 
-        AppendConsoleLine($"<color=#{ColorUtility.ToHtmlStringRGB(incorrectInputColor)}>{Command}" +
-            $"</color>\n<color=orange>No command found, use Help for a list of all commands.</color>");
+        AppendConsoleLine(Command, incorrectInputColor);
+        AppendConsoleLine($"No command found, use Help for a list of all commands.", Color.orange);
         FinishCommand();
         Debug.LogWarning("no command found found for " + Command);
 
@@ -166,7 +166,7 @@ public class DebugConsole : MonoBehaviour
 
     private void FinishCommand()
     {
-        AppendConsoleLine($"<color=#{ColorUtility.ToHtmlStringRGB(newCommandBreakColor)}>----------------------</color>");
+        AppendConsoleLine($"----------------------", newCommandBreakColor);
     }
 
 
@@ -174,13 +174,17 @@ public class DebugConsole : MonoBehaviour
     /// adds the line of text after
     /// </summary>
     /// <param name="line"></param>
-    private void AppendConsoleLine(string line)
+    private void AppendConsoleLine(string line, Color TextColor = default)
     {
+        if(TextColor == default)
+        {
+            TextColor = Color.white;
+        }
         if (textArea.text != string.Empty)
         {
             textArea.text += $"\n";
         }
-        textArea.text += line;
+        textArea.text += $"<color=#{ColorUtility.ToHtmlStringRGB(TextColor)}>{line}</color>";
         
         StartCoroutine(ScrollToBottomNextFrame());
     }
