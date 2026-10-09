@@ -110,6 +110,8 @@ public class DebugConsole : MonoBehaviour
             AppendConsoleLine("God Mode: god");
             AppendConsoleLine($"Set Player's Speed to Default ({playerInstance.defaultSpeed}): speed");
             AppendConsoleLine($"Change Players Speed: speed <Speed Value>");
+            AppendConsoleLine($"Change Map Section: ChangeIsland <island index (or current)> <layout index>");
+            AppendConsoleLine($"Reset Map: MapReset");
             FinishCommand();
             return;
         }
