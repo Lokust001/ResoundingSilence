@@ -5,29 +5,83 @@
 * Summary: The debug console and all the code that comes with it
 * To Do:   The Debug console SpreadSheet
 */
+using NaughtyAttributes;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class DebugConsole : MonoBehaviour
 {
-    [SerializeField] TMPro.TMP_InputField inputs;
-    [SerializeField] TMPro.TMP_Text textArea;
-    [SerializeField] ScrollRect logScrollRect;
-    [SerializeField] GameObject[] enemies;
+    private enum ShownSettings
+    {
+        None,
+        Refs,
+        Colors
+    }
 
-    [SerializeField] GameObject freeCamPrefab;
+    [SerializeField]
+    private ShownSettings settings;
+
+    [SerializeField]
+    [ShowIf(nameof(settings), ShownSettings.Refs)]
+    TMPro.TMP_InputField inputs;
+
+    [SerializeField]
+    [ShowIf(nameof(settings), ShownSettings.Refs)]
+    TMPro.TMP_Text textArea;
+
+    [ShowIf(nameof(settings), ShownSettings.Refs)]
+    [SerializeField] 
+    ScrollRect logScrollRect;
+
+    
+    //private GameObject[] enemies;
+
+    /*[ShowIf(nameof(settings), ShownSettings.Refs]
+    [SerializeField] 
+    GameObject freeCamPrefab;
     public GameObject FreeCamInstance;
     [SerializeField] GameObject detachCamPrefab;
-    public GameObject DetachCamInstance;
+    public GameObject DetachCamInstance;*/
 
-    private bool noClipToggle = false;
+    //private bool noClipToggle = false;
     private bool godToggle = false;
-    private bool cameraToggle = false;
-    private bool freezeToggle = false;
+    /*private bool cameraToggle = false;
+    private bool freezeToggle = false;*/
 
-    [SerializeField]GameObject playerInstance;
-    [SerializeField]GameObject cameraInstance;
+    private PlayerController playerInstance;
+    private GameObject cameraInstance;
+
+    [SerializeField]
+    [ShowIf(nameof(settings), ShownSettings.Colors)]
+    private Color inputColor;
+
+    [SerializeField]
+    [ShowIf(nameof(settings), ShownSettings.Colors)]
+    private Color incorrectInputColor;
+
+    [SerializeField]
+    [ShowIf(nameof(settings), ShownSettings.Colors)]
+    private Color commandCompletedColor;
+
+    [SerializeField]
+    [ShowIf(nameof(settings), ShownSettings.Colors)]
+    private Color newCommandBreakColor;
+
+
+
+    /// <summary>
+    /// called when the debug console opens up
+    /// </summary>
+    public void OpenDebugConsole()
+    {
+        inputs.ActivateInputField();
+        if (playerInstance == null)
+        {
+            playerInstance = FindAnyObjectByType<PlayerController>();
+        }
+        ClearConsole();
+    }
 
     /// <summary>
     /// runs through with what was inputted into the text field and runs the command that was typed
@@ -47,10 +101,11 @@ public class DebugConsole : MonoBehaviour
 
         if (Command == "help")
         {
-            AppendConsoleLine(
-                Command + "\nGod Mode: god\n" +
-                "Change Players Speed: speed <Speed Value(or \"default\")>"
-            );
+            AppendConsoleLine($"<color=#{ColorUtility.ToHtmlStringRGB(inputColor)}>{Command}</color>");
+            AppendConsoleLine("God Mode: god");
+            AppendConsoleLine($"Set Player's Speed to Default ({playerInstance.defaultSpeed}): speed");
+            AppendConsoleLine($"Change Players Speed: speed <Speed Value>");
+            FinishCommand();
             return;
         }
 
@@ -59,44 +114,59 @@ public class DebugConsole : MonoBehaviour
         if (Command == "god")
         {
             GodMode();
-            AppendConsoleLine(Command + " " + godToggle);
+            AppendConsoleLine($"<color=#{ColorUtility.ToHtmlStringRGB(inputColor)}>{Command}</color>");
+            AppendConsoleLine($"<color=#{ColorUtility.ToHtmlStringRGB(commandCompletedColor)}>Godmode: {godToggle}</color>");
+            FinishCommand();
             return;
         }
 
         // player speed
         if (Command.StartsWith("speed"))
         {
-            if (Command.Equals("speed default"))
+            if (Command.Equals("speed default") || Command.Equals("speed"))
             {
-                float defaultSpeed = playerInstance.GetComponent<PlayerController>().defaultSpeed;
-                AppendConsoleLine(Command + " ~ Speed set to default: " + defaultSpeed);
+                AppendConsoleLine($"<color=#{ColorUtility.ToHtmlStringRGB(inputColor)}>{Command}</color>");
+                float defaultSpeed = playerInstance.defaultSpeed;
+                AppendConsoleLine($"<color=#{ColorUtility.ToHtmlStringRGB(commandCompletedColor)}>Speed set to default: {defaultSpeed}</color>");
+
+                if (Command.Equals("speed"))
+                {
+                    AppendConsoleLine("You can also set the player's speed to a specific number by typing 'speed <x>'");
+                }
+
                 PlayerSpeed(defaultSpeed);
+                FinishCommand();
                 return;
             }
 
-            if (Command.Length >= 7)
+            if (Command.Length >= 6)
             {
                 int Temp;
                 if (int.TryParse(Command.Substring(6, Command.Length - 6), out Temp))
                 {
-                    AppendConsoleLine(Command + "~ Speed set to: " + Temp);
+                    AppendConsoleLine($"<color=#{ColorUtility.ToHtmlStringRGB(inputColor)}>{Command}</color>");
+                    AppendConsoleLine($"<color=#{ColorUtility.ToHtmlStringRGB(commandCompletedColor)}>Speed set to: {Temp}</color>");
                     PlayerSpeed(Temp);
                 }
                 else
                 {
-                    AppendConsoleLine(Command + " Please put a number after the command");
+                    AppendConsoleLine($"<color=#{ColorUtility.ToHtmlStringRGB(incorrectInputColor)}>{Command}\nPlease put a number after the command</color>");
                 }
             }
-            else
-            {
-                AppendConsoleLine(Command + " Please put the speed number (or \"default\") after the command");
-            }
+            FinishCommand();
             return;
         }
 
-        AppendConsoleLine(Command + " No command found, use Help for all commands");
+        AppendConsoleLine($"<color=#{ColorUtility.ToHtmlStringRGB(incorrectInputColor)}>{Command}" +
+            $"</color>\n<color=orange>No command found, use Help for a list of all commands.</color>");
+        FinishCommand();
         Debug.LogWarning("no command found found for " + Command);
 
+    }
+
+    private void FinishCommand()
+    {
+        AppendConsoleLine($"<color=#{ColorUtility.ToHtmlStringRGB(newCommandBreakColor)}>----------------------</color>");
     }
 
 
@@ -106,7 +176,12 @@ public class DebugConsole : MonoBehaviour
     /// <param name="line"></param>
     private void AppendConsoleLine(string line)
     {
-        textArea.text = textArea.text + "\n" + line;
+        if (textArea.text != string.Empty)
+        {
+            textArea.text += $"\n";
+        }
+        textArea.text += line;
+        
         StartCoroutine(ScrollToBottomNextFrame());
     }
 
@@ -117,15 +192,13 @@ public class DebugConsole : MonoBehaviour
     private IEnumerator ScrollToBottomNextFrame()
     {
         yield return null;
-
-        if (logScrollRect == null)
+        logScrollRect.verticalNormalizedPosition = 0;
+/*        if (logScrollRect == null)
             yield break;
 
-        Canvas.ForceUpdateCanvases();
-        if (logScrollRect.content != null)
-            LayoutRebuilder.ForceRebuildLayoutImmediate(logScrollRect.content);
+        Canvas.ForceUpdateCanvases();*/
 
-        logScrollRect.verticalNormalizedPosition = 0f;
+        
     }
 
     /// <summary>
@@ -133,8 +206,8 @@ public class DebugConsole : MonoBehaviour
     /// </summary>
     /// <param name="Speed"></param>
     private void PlayerSpeed(float Speed)
-    {
-        playerInstance.GetComponent<PlayerController>().moveSpeed = Speed;
+    { 
+        playerInstance.moveSpeed = Speed;
     }
 
     /// <summary>
@@ -143,6 +216,14 @@ public class DebugConsole : MonoBehaviour
     private void GodMode()
     {
         godToggle = !godToggle;
-        playerInstance.GetComponent<PlayerController>().InGodMode = godToggle;
+        playerInstance.InGodMode = godToggle;
+    }
+
+    /// <summary>
+    /// clears the text box
+    /// </summary>
+    private void ClearConsole()
+    {
+        textArea.text = "";
     }
 }
