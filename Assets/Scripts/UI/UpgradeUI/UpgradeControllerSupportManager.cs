@@ -400,6 +400,8 @@ public class UpgradeControllerSupportManager : MonoBehaviour
             currentFocus = FocusType.Inventory;
             SelectInventoryItem(inv);
         }
+
+        MoveCarriedPin();
     }
     #endregion
 

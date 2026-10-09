@@ -445,6 +445,11 @@ public class UpgradeMenuController : MenuBase
         else if (target is InventoryPinHolder inventorySlot)
         {
             ReturnCarriedPinToInventory();
+            if (inventorySlot.pin.Parent == inventorySlot)
+            {
+                PickUpPin(inventorySlot.pin);
+            }
+            UIPublicEvents.SelectSpecificTile?.Invoke(inventorySlot);
         }
 
     }
