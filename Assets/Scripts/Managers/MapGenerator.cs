@@ -178,4 +178,26 @@ public class MapGenerator : MonoBehaviour
             BuffSpots.Remove(BuffSpots[spawnPoint]);
         }
     }
+
+    public void DeleteIslands()
+    {
+        ShopSpots.Clear();
+        BuffSpots.Clear();
+        ObjectiveSpots.Clear();
+        foreach(GameObject island in islands)
+        {
+            Destroy(island);
+        }
+        islands.Clear();
+    }
+
+    public void SwitchIsland(int IslandNumber, int layout = -1)
+    {
+        IslandData Island = islands[IslandNumber].GetComponent<IslandData>();
+        if(layout < 0)
+        {
+            layout = Random.Range(0,Island.Spawner.prefabs.Count);
+        }
+        islands[IslandNumber] = Island.Spawner.SpawnSingleIsland(Island.SpawnPoint, layout);
+    }
 }

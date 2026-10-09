@@ -223,6 +223,11 @@ public class DebugConsole : MonoBehaviour
         playerInstance.InGodMode = godToggle;
     }
 
+    public void ChangeIslandLayout(int IslandNumber, int LayoutNumber)
+    {
+
+    }
+
     /// <summary>
     /// clears the text box
     /// </summary>

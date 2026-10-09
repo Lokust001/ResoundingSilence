@@ -19,6 +19,8 @@ public class IslandData : MonoBehaviour
     [SerializeField] private int howManySpawnPoints;
     public List<GameObject> ActiveEnemySpawnPoints;
     public GameObject realFastTravel;
+    public MapSectionSpawner Spawner;
+    public GameObject SpawnPoint;
 
     /// <summary>
     /// This is for later use when get get fast travel in
