@@ -25,6 +25,7 @@ public class InputManager : BaseManager
     public bool ControllerIsEnabled;
 
     private PlayerInput pInput;
+    private InputAction ToggleDebugConsole;
 
     #region Mid Run InputActions
     private InputAction move;
@@ -244,6 +245,7 @@ public class InputManager : BaseManager
         toggleUpgradeMenuInMidRun = pInput.currentActionMap.FindAction("ToggleUpgradeMenu");
         pause = pInput.currentActionMap.FindAction("Pause");
         swapWeapon = pInput.currentActionMap.FindAction("SwapWeapon");
+        ToggleDebugConsole = pInput.currentActionMap.FindAction("ToggleDebugConsole");
 
 
         move.performed += Move_performed;
@@ -268,7 +270,11 @@ public class InputManager : BaseManager
         pause.started += Pause_started;
 
         swapWeapon.started += SwapWeapon_started;
+
+        ToggleDebugConsole.started += ToggleDebugConsole_started;
     }
+
+    
 
     /// <summary>
     /// enables the upgrade menu public events
@@ -284,6 +290,7 @@ public class InputManager : BaseManager
         SelectPin = pInput.currentActionMap.FindAction("SelectPin");
         MousePosition = pInput.currentActionMap.FindAction("MousePosition");
         MoveSelectedObject = pInput.currentActionMap.FindAction("Move");
+        ToggleDebugConsole = pInput.currentActionMap.FindAction("ToggleDebugConsole");
 
         ToggleUpgradeMenuInUpgradeMenu.started += ToggleUpgradeMenuInUpgradeMenu_started;
         SwapFocusToGrid.started += SwapFocusToGrid_started;
@@ -295,6 +302,7 @@ public class InputManager : BaseManager
         SelectPin.canceled += SelectPin_canceled;
         MousePosition.performed += Aim_performed;
         MoveSelectedObject.performed += Aim_performed;
+        ToggleDebugConsole.started += ToggleDebugConsole_started;
         MoveSelectedObject.canceled += MoveSelectedObject_canceled;
     }
 
@@ -563,4 +571,13 @@ public class InputManager : BaseManager
 
 
     #endregion
+
+    /// <summary>
+    /// throws the event to turn on and off the debug console
+    /// </summary>
+    /// <param name="obj"></param>
+    private void ToggleDebugConsole_started(InputAction.CallbackContext obj)
+    {
+        InputPublicEvents.ToggleDebugConsole?.Invoke();
+    }
 }

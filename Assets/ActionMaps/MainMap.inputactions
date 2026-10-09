@@ -105,6 +105,16 @@
                     "interactions": "",
                     "initialStateCheck": false,
                     "priority": 0
+                },
+                {
+                    "name": "ToggleDebugConsole",
+                    "type": "Button",
+                    "id": "3e6e650b-6c2c-46ae-bc4a-85e0fc6d9b9e",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
                 }
             ],
             "bindings": [
@@ -393,6 +403,17 @@
                     "action": "SwapWeapon",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7dc23552-7bdf-467d-90b0-0a7e5934b920",
+                    "path": "<Keyboard>/backquote",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";KeyboardMouse",
+                    "action": "ToggleDebugConsole",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -488,6 +509,16 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true,
+                    "priority": 0
+                },
+                {
+                    "name": "ToggleDebugConsole",
+                    "type": "Button",
+                    "id": "e5c0c045-b8a0-4750-8b4a-4c450b206069",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
                     "priority": 0
                 }
             ],
@@ -656,6 +687,17 @@
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "b6d036b3-ea87-43f3-b06e-164c8d1508eb",
+                    "path": "<Keyboard>/backquote",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";KeyboardMouse",
+                    "action": "ToggleDebugConsole",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }
