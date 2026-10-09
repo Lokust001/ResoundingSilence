@@ -211,9 +211,6 @@ public class InputManager : BaseManager
 
         DisableUpgradeMenuPublicEvents();
         EnableMidRunPublicEvents();
-
-        Debug.Log("mid run enabled");
-
     }
 
     /// <summary>
@@ -227,8 +224,6 @@ public class InputManager : BaseManager
 
         DisableMidRunPublicEvents();
         EnableUpgradeMenuPublicEvents();
-
-        Debug.Log("upgrade menu enabled");
     }
 
     /// <summary>
@@ -411,7 +406,6 @@ public class InputManager : BaseManager
     private void Interact_started(InputAction.CallbackContext obj)
     {
         InputPublicEvents.InteractPressed?.Invoke();
-        Debug.Log("Interact pressed");
     }
 
     /// <summary>
@@ -525,7 +519,6 @@ public class InputManager : BaseManager
     private void SelectPin_started(InputAction.CallbackContext obj)
     {
         InputPublicEvents.SelectPin?.Invoke();
-        Debug.Log("Pin Selected");
     }
 
     /// <summary>

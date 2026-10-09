@@ -167,6 +167,7 @@ public class UpgradeMenuController : MenuBase
     /// </summary>
     protected override void CloseMenu()
     {
+        ReturnPinToItsTile();
         UIPublicEvents.UpgradeMenuClosed?.Invoke();
         base.CloseMenu();
     }
