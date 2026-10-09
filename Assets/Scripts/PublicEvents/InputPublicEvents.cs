@@ -15,6 +15,8 @@ public static class InputPublicEvents
     public static Action ControllerEnabled;
     public static Action KeyboardMouseEnabled;
 
+    public static Action ToggleDebugConsole;
+
     #region MidRun
     public static Action<Vector2> MouseMoved;
     public static Action<Vector2> PlayerAimed;
