@@ -50,6 +50,7 @@ public class DebugConsole : MonoBehaviour
     private bool freezeToggle = false;*/
 
     private PlayerController playerInstance;
+    private MapGenerator mapGenInstance;
     private GameObject cameraInstance;
 
     [SerializeField]
@@ -79,6 +80,10 @@ public class DebugConsole : MonoBehaviour
         if (playerInstance == null)
         {
             playerInstance = FindAnyObjectByType<PlayerController>();
+        }
+        if(mapGenInstance == null)
+        {
+            mapGenInstance = FindAnyObjectByType<MapGenerator>();
         }
         ClearConsole();
     }
@@ -157,6 +162,92 @@ public class DebugConsole : MonoBehaviour
             return;
         }
 
+        if(Command.StartsWith("changeisland") || Command.StartsWith("ci"))
+        {
+            string postCommand = "";
+            if (Command.StartsWith("changeisland"))
+            {
+                postCommand = Command.Substring(12);
+            }
+            else
+            {
+                postCommand = Command.Substring(3);
+            }
+            int TempIsland;
+            if (postCommand.StartsWith("current") || postCommand.StartsWith("cur"))
+            {
+                int closestIndex = -1;
+                float closestDistance = Mathf.Infinity;
+                int i = 0;
+                foreach (GameObject island in mapGenInstance.islands)
+                {
+                    if (closestDistance > Vector3.Distance(playerInstance.gameObject.transform.position, island.transform.position))
+                    {
+                        closestIndex = i;
+                        closestDistance = Vector3.Distance(playerInstance.gameObject.transform.position, island.transform.position);
+                    }
+                    i++;
+                }
+
+                if (postCommand.StartsWith("current"))
+                {
+                    postCommand = postCommand.Substring(8);
+                }
+                else
+                {
+                    postCommand = postCommand.Substring(4);
+                }
+
+                int Temp;
+                if (postCommand.Equals("") || postCommand.StartsWith(" "))
+                {
+                    mapGenInstance.SwitchIsland(closestIndex);
+                    AppendConsoleLine(Command, inputColor);
+                    AppendConsoleLine($"Island {closestIndex} Has switched layouts", commandCompletedColor);
+                }
+                else if (int.TryParse(Command, out Temp))
+                {
+                    mapGenInstance.SwitchIsland(closestIndex, Temp);
+                    AppendConsoleLine(Command, inputColor);
+                    AppendConsoleLine($"Island {closestIndex} Has switched to layout {Temp}", commandCompletedColor);
+                }
+                else
+                {
+                    AppendConsoleLine($"{Command} \nPlease put a number after the command</color>", incorrectInputColor);
+                }
+            }
+            else if (int.TryParse(postCommand.Substring(0, 1), out TempIsland))
+            {
+                int Temp;
+                postCommand = postCommand.Substring(2);
+                if(postCommand.StartsWith("") || postCommand.StartsWith(" "))
+                {
+                    mapGenInstance.SwitchIsland(TempIsland);
+                    AppendConsoleLine(Command, inputColor);
+                    AppendConsoleLine($"Island {TempIsland} Has switched layouts", commandCompletedColor);
+                }
+                else if(int.TryParse(Command, out Temp))
+                {
+                     mapGenInstance.SwitchIsland(TempIsland, Temp);
+                    AppendConsoleLine(Command, inputColor);
+                    AppendConsoleLine($"Island {TempIsland} Has switched to layout {Temp}", commandCompletedColor);
+                }
+            }
+            else
+            {
+                AppendConsoleLine($"{Command} \nPlease put a number after the command</color>", incorrectInputColor);
+            }
+
+        }
+
+        if(Command.StartsWith("mapreset") || Command.StartsWith("mr"))
+        {
+            mapGenInstance.DeleteIslands();
+            AppendConsoleLine(Command, inputColor);
+            AppendConsoleLine($"Map Has Been Reset", commandCompletedColor);
+            mapGenInstance.spawnMap();
+        }
+
         AppendConsoleLine(Command, incorrectInputColor);
         AppendConsoleLine($"No command found, use Help for a list of all commands.", Color.orange);
         FinishCommand();
@@ -221,11 +312,6 @@ public class DebugConsole : MonoBehaviour
     {
         godToggle = !godToggle;
         playerInstance.InGodMode = godToggle;
-    }
-
-    public void ChangeIslandLayout(int IslandNumber, int LayoutNumber)
-    {
-
     }
 
     /// <summary>

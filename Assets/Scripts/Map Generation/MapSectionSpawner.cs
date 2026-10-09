@@ -6,7 +6,6 @@
 * To Do:   N/A
 */
 using System.Collections.Generic;
-using System.Drawing;
 using UnityEngine;
 
 public class MapSectionSpawner : MonoBehaviour

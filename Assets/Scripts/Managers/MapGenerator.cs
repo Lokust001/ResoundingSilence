@@ -11,7 +11,7 @@ using UnityEngine;
 public class MapGenerator : MonoBehaviour
 {
     [SerializeField] List<MapSectionSpawner> Spawners;
-    private List<GameObject> islands = new List<GameObject>();
+    [HideInInspector] public List<GameObject> islands = new List<GameObject>();
     private List<GameObject> ObjectiveSpots = new List<GameObject>();
     private List<GameObject> ShopSpots = new List<GameObject>();
     private List<GameObject> BuffSpots = new List<GameObject>();
