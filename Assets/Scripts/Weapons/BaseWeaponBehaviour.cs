@@ -26,7 +26,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
     [SerializeField] protected LayerMask groundLayerMask;
 
     [SerializeField] protected Animator weaponAnimator;
-    [SerializeField] protected List<Animation> attackAnimations = new List<Animation>();
+    [SerializeField] protected List<AnimationClip> attackAnimations = new List<AnimationClip>();
     [SerializeField] protected int comboIndex;
 
     [Header("Base Ability Variables"), HorizontalLine(height: 4, EColor.Red)]
@@ -155,11 +155,6 @@ public class BaseWeaponBehaviour : MonoBehaviour
         {
             mousePos = ray.GetPoint(hit) - transform.position;
         }
-
-        //if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundLayerMask))
-        //{
-        //    mousePos = hit.point - transform.position;
-        //}
     }
 
     /// <summary>
@@ -231,7 +226,22 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// </summary>
     virtual protected void Attack()
     {
-        weaponAnimator.Play("Base Layer." + attackAnimations[comboIndex].name);
+        ++comboIndex;
+        weaponAnimator.Play("Base Layer." + attackAnimations[comboIndex - 1].name);
+    }
+
+    /// <summary>
+    /// Called by animation event to spawn projectile during attack animation
+    /// </summary>
+    public void SpawnProjectile()
+    {
+        Debug.Log(comboIndex);
+        Vector3 bulletDir = mousePos;
+        bulletDir.y = 0;
+
+        GameObject spawnedProjectile = Instantiate(ThisWeaponData.Projectiles[comboIndex - 1], transform.position, Quaternion.LookRotation(bulletDir.normalized, Vector3.up));
+        spawnedProjectile.GetComponent<BaseProjectileBehaviour>().SetData(ThisWeaponData);
+        spawnedProjectile.GetComponent<Rigidbody>().linearVelocity = bulletDir.normalized * ThisWeaponData.ProjectileSpeed[comboIndex - 1];
     }
 
     /// <summary>
@@ -241,6 +251,10 @@ public class BaseWeaponBehaviour : MonoBehaviour
     virtual protected IEnumerator AttackDelay()
     {
         yield return new WaitForSeconds(ThisWeaponData.AttackCooldown[0]);
+        if(comboIndex >= attackAnimations.Count)
+        {
+            comboIndex = 0;
+        }
         attackReady = true;
     }
 

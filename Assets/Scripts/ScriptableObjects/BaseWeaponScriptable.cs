@@ -128,6 +128,14 @@ public class BaseWeaponScriptable : BaseScriptableObject
     #endregion
 
     #region Ranged Variables
+
+    [HideInInspector]
+    public List<GameObject> Projectiles = new List<GameObject>();
+
+    [ShowIf(nameof(RangedWeaponSettings))]
+    [Tooltip("What kind of projectile the weapon fires. A list in case the weapon can fire multiple types of projectiles.")]
+    public List<GameObject> BaseProjectiles = new List<GameObject>();
+
     [HideInInspector]
     public List<float> ProjectileSpeed = new List<float>();
 
@@ -371,6 +379,7 @@ public class BaseWeaponScriptable : BaseScriptableObject
         MovementSpeedChange = BaseMovementSpeedChange.ToList();
         PlayerDisplacement = BasePlayerDisplacement.ToList();
         LifestealAmount = BaseLifestealAmount.ToList();
+        Projectiles = BaseProjectiles.ToList();
         ProjectileSpeed = BaseProjectileSpeed.ToList();
         ProjectileLifetime = BaseProjectileLifetime.ToList();
         PierceDamageFalloff = BasePierceDamageFalloff.ToList();
