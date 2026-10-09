@@ -420,12 +420,21 @@ public class PlayerController : MonoBehaviour
         knockbackCoroutine = null;
     }
 
+    /// <summary>
+    /// Handles logic when an enemy enters their designated melee zone
+    /// </summary>
+    /// <param name="enemy"></param>
+    /// <param name="enteredTrigger"></param>
     private void MeleeZoneHandler(Enemy enemy, bool enteredTrigger) 
     {
         _ = enemy;
         enemy.SetInMeleeArea(enteredTrigger);
     }
-
+    /// <summary>
+    /// Handles logic when an enemy enters their designated ranged zone
+    /// </summary>
+    /// <param name="enemy"></param>
+    /// <param name="enteredTrigger"></param>
     private void RangedZoneHandler(Enemy enemy, bool enteredTrigger) 
     {
         _ = enemy;

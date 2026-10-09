@@ -43,6 +43,9 @@ public class TriggerObjects : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Draws a wiresphere for visualization and differentiaion purposes when the object is selected in the scene
+    /// </summary>
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = triggerShapeColor;
