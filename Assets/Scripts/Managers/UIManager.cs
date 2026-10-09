@@ -7,6 +7,7 @@
 * To Do:   N/A
 */
 
+using NaughtyAttributes;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -23,6 +24,13 @@ public class UIManager : BaseManager
     [SerializeField]
     private List<MenuBase> menuPrefabs = new List<MenuBase>();
 
+    [SerializeField]
+    private bool EnableDebugConsole;
+
+    [SerializeField]
+    [ShowIf(nameof(EnableDebugConsole))]
+    private DebugConsole DebugConsolePrefab;
+
     #endregion
 
     #region Private
@@ -34,6 +42,8 @@ public class UIManager : BaseManager
     public static UIManager Instance;
 
     private Stack<UiMenuType> currentlyOpenedMenus = new Stack<UiMenuType>();
+
+    private GameObject debugConsole;
 
     #endregion
 
@@ -114,6 +124,7 @@ public class UIManager : BaseManager
         GenericPublicEvents.AllManagersInitialized += GameStarted;
         UIPublicEvents.UpdateUIManagerStack += UpdateUiManagerStack;
         InputPublicEvents.ToggleUpgradeMenuPressed += ToggleUpgradeMenu;
+        InputPublicEvents.ToggleDebugConsole += ToggleDebugConsole;
 
         await Task.CompletedTask;
     }
@@ -126,6 +137,7 @@ public class UIManager : BaseManager
         GenericPublicEvents.AllManagersInitialized -= GameStarted;
         UIPublicEvents.UpdateUIManagerStack -= UpdateUiManagerStack;
         InputPublicEvents.ToggleUpgradeMenuPressed -= ToggleUpgradeMenu;
+        InputPublicEvents.ToggleDebugConsole -= ToggleDebugConsole;
     }
 
     #endregion
@@ -138,6 +150,31 @@ public class UIManager : BaseManager
     private void GameStarted()
     {
         UpdateUiManagerStack(UiMenuType.MainMenu);
+    }
+
+    /// <summary>
+    /// turns on and off the debug console
+    /// </summary>
+    private void ToggleDebugConsole()
+    {
+        if (!EnableDebugConsole)
+        {
+            return;
+        }
+
+        if (debugConsole == null)
+        {
+            debugConsole = Instantiate(DebugConsolePrefab, mainCanvas.transform).gameObject;
+        }
+        else
+        {
+            debugConsole.SetActive(!debugConsole.activeInHierarchy);
+        }
+
+        if (debugConsole.activeInHierarchy)
+        {
+            debugConsole.GetComponent<DebugConsole>().OpenDebugConsole();
+        }
     }
 
     /// <summary>
@@ -178,9 +215,6 @@ public class UIManager : BaseManager
         {
             throw new System.Exception($"Tried to open a menu with type {menuType}");
         }
-
-        /*//hide the menus that are open rn
-        UIPublicEvents.HideOpenMenus?.Invoke();*/
 
         //updates the stack with the newest menu type
         currentlyOpenedMenus.Push(menuType);
