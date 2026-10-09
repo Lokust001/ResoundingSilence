@@ -129,7 +129,7 @@ public class Enemy : MonoBehaviour
     /// <summary>
     /// The nth decision that the enemy takes, dictated by which range it is currently present in
     /// </summary>
-    public void NextEnemyAction() 
+    public void NextEnemyAction(bool coroutineActions) 
     {
         if (!inRangedRange && !inMeleeRange)
         {
@@ -137,11 +137,11 @@ public class Enemy : MonoBehaviour
         }
         else if (inRangedRange)
         {
-            RangedZoneEntryBehaviors();
+            RangedZoneEntryBehaviors(coroutineActions);
         }
         else if (inMeleeRange)
         {
-            MeleeZoneEntryBehaviors(true);
+            MeleeZoneEntryBehaviors(coroutineActions);
         }
     }
 
@@ -151,7 +151,7 @@ public class Enemy : MonoBehaviour
     /// <returns></returns>
     private IEnumerator RepeatedlyCheckShooterRange() 
     {
-        NextEnemyAction();
+        NextEnemyAction(true);
         yield return new WaitForSeconds(enemyData.timeBetweenRangeChecks);
         StartCoroutine(RepeatedlyCheckShooterRange());
     }
@@ -184,13 +184,13 @@ public class Enemy : MonoBehaviour
         inRangedRange = value;
         //If the player entered
         if(inRangedRange)
-            RangedZoneEntryBehaviors();
+            RangedZoneEntryBehaviors(false);
     }
 
     /// <summary>
     /// Method that decides what behaviors each enemy takes after ONLY entering the ranged zone
     /// </summary>
-    private void RangedZoneEntryBehaviors() 
+    private void RangedZoneEntryBehaviors(bool activateTimeBasedIntervalActions) 
     {
         switch (enemyData.enemyType)
         {
@@ -204,8 +204,8 @@ public class Enemy : MonoBehaviour
                 break;
             case BaseEnemyScriptable.EnemyType.Melee:
             case BaseEnemyScriptable.EnemyType.ChargingMelee:
-                //if(activateTimeBasedIntervalActions)
-                //    movementBeahvior.StartFollowingPlayer();
+                if (activateTimeBasedIntervalActions)
+                    movementBeahvior.StartFollowingPlayer();
                 break;
             default:
                 break;

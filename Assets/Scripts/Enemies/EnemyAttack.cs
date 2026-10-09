@@ -40,6 +40,7 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
     /// </summary>
     private void InitializeVariables() 
     {
+        playerTransform = FindAnyObjectByType<PlayerController>().transform;
         sphereTrigger = GetComponent<SphereCollider>();
         enemyMovement = GetComponentInParent<EnemyWalk>();
         baseEnemyBehavior = GetComponentInParent<Enemy>();
@@ -76,18 +77,6 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
     private void HandleVariousAttackTriggers(PlayerController player) 
     {
         player.TakeDamage();
-    }
-
-    /// <summary>
-    /// Start following the player when they enter aggro range
-    /// </summary>
-    /// <param name="other"></param>
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.GetComponent<PlayerController>())
-        {
-            playerTransform = other.transform;
-        }
     }
 
     /// <summary>
@@ -151,7 +140,7 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
                 break;
             case EnemyType.Melee:
             case EnemyType.ChargingMelee:
-                baseEnemyBehavior.NextEnemyAction();
+                baseEnemyBehavior.NextEnemyAction(true);
                 break;
             case EnemyType.BuffEnemy:
                 break;

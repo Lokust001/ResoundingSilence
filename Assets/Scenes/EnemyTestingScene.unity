@@ -1716,10 +1716,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7656435456646436074, guid: c997b49616c1d7143ab65d2e1030d2d5, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7977584514592697262, guid: c997b49616c1d7143ab65d2e1030d2d5, type: 3}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8615946223696209456, guid: c997b49616c1d7143ab65d2e1030d2d5, type: 3}
+      propertyPath: m_AutoBraking
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -1802,7 +1806,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4702969501886654196, guid: c0d50ddd8b4eb7549be9cb919c0ce9e2, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6671150271787766830, guid: c0d50ddd8b4eb7549be9cb919c0ce9e2, type: 3}
+      propertyPath: m_Speed
+      value: 3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6671150271787766830, guid: c0d50ddd8b4eb7549be9cb919c0ce9e2, type: 3}
+      propertyPath: m_AutoBraking
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7092008797246986826, guid: c0d50ddd8b4eb7549be9cb919c0ce9e2, type: 3}
       propertyPath: testWithoutSpawner
@@ -1969,7 +1981,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2480801942194616687, guid: b57876c786fb44e4e87718b98dcf4f9b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -6.31
       objectReference: {fileID: 0}
     - target: {fileID: 2480801942194616687, guid: b57876c786fb44e4e87718b98dcf4f9b, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2022,6 +2034,10 @@ PrefabInstance:
     - target: {fileID: 4536795594365591932, guid: b57876c786fb44e4e87718b98dcf4f9b, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5064756254410111760, guid: b57876c786fb44e4e87718b98dcf4f9b, type: 3}
+      propertyPath: defaultSpeed
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5064756254410111760, guid: b57876c786fb44e4e87718b98dcf4f9b, type: 3}
       propertyPath: minimumKnockbackSpeed

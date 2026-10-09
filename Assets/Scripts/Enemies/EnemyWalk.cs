@@ -82,7 +82,7 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
         float distanceToGoal = (chargeDestination - enemyTransform.position).sqrMagnitude;
 
         //Make the rigidbody on the enemy temporarily kinematic to avoid letting it be interrupted by the player
-        rigidbody.isKinematic = true;
+        //rigidbody.isKinematic = true;
 
         //While there is still a significant gap or distance between the enemy and its charge destination,
         //calculate its current distance from its goal, move the enemy towards the goal by a factor of its chargeSpeedForce,
@@ -96,7 +96,7 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
         }
 
         //Restore properties and velocity
-        rigidbody.isKinematic = false;
+        //rigidbody.isKinematic = false;
         rigidbody.linearVelocity = rigidbody.angularVelocity = Vector3.zero;
         
     }

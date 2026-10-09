@@ -140,6 +140,14 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
+    /// Sets the linearVelocity to 0 to stop physics from affecting the player without setting isKinematic to true
+    /// </summary>
+    private void NegateAllForces() 
+    {
+        rigidbody.linearVelocity = Vector3.zero;
+    }
+
+    /// <summary>
     /// Checks that the player is able to dash
     /// </summary>
     private void PlayerDashPressed()
@@ -370,6 +378,9 @@ public class PlayerController : MonoBehaviour
         //The maximum speed the will initially be applied to the player
         float maximumKnockbackSpeed = 2 * linearUniformKnockbackSpeed;
 
+        //Nullify the insane force that would've otherwise been applied by the enemy
+        NegateAllForces();
+
         //For the duration of knockback,
         //Incrementally move the player towards the destination distance while dynamically calculating its speed on every FixedUpdate tick
         //The dynamic speed allows for the player to be initially fast, then slow down
@@ -395,11 +406,12 @@ public class PlayerController : MonoBehaviour
             Vector3 knockbackDelta = Vector3.MoveTowards(playerTransform.position, knockbackDestination, dynamicDeltaSpeed * fixedUpdateTick);
             rigidbody.MovePosition(knockbackDelta);
 
-
-            Debug.Log("\tDistance: " + distance + " \tSpeed: " + dynamicDeltaSpeed + " \tTime: " + timer);
+            //Debug.Log("\tDistance: " + distance + " \tSpeed: " + dynamicDeltaSpeed + " \tTime: " + timer);
 
         }
-        
+        //Nullify once more the insane force that would've otherwise been applied by the enemy
+        NegateAllForces();
+
         //The final move for 100% accuracy
         rigidbody.MovePosition(knockbackDestination);
 
