@@ -1,3 +1,12 @@
+/*
+* Author: Tyler
+* Contributors:
+* Last Modified: 10/7/2026
+* Summary: This service spawns in a new map when the level starts. 
+* NOTE: May be obsolete - the map generator may take this over but idk
+* To Do:   N/A
+*/
+
 using UnityEngine;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -32,6 +41,10 @@ public class MapManager : BaseManager
         await SetUpPublicEvents();
     }
 
+    /// <summary>
+    /// subscribes to the needed public events
+    /// </summary>
+    /// <returns></returns>
     private async Awaitable SetUpPublicEvents()
     {
         GenericPublicEvents.AllManagersInitialized += SpawnMapLayout;
@@ -39,11 +52,17 @@ public class MapManager : BaseManager
         await Task.CompletedTask;
     }
 
+    /// <summary>
+    /// unsubscribes from the public events
+    /// </summary>
     private void OnDestroy()
     {
         GenericPublicEvents.AllManagersInitialized -= SpawnMapLayout;
     }
 
+    /// <summary>
+    /// spawns in a map
+    /// </summary>
     private void SpawnMapLayout()
     {
         int rand = Random.Range(0, maps.Count);

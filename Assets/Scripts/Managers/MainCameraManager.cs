@@ -1,3 +1,11 @@
+/*
+* Author: Tyler
+* Contributors:
+* Last Modified: 10/7/2026
+* Summary: This service controls the main camera
+* To Do:   N/A
+*/
+
 using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -16,6 +24,10 @@ public class MainCameraManager : BaseManager
     private bool FollowPlayer;
     private Coroutine followingCoroutine;
 
+    /// <summary>
+    /// initializes the manager
+    /// </summary>
+    /// <returns></returns>
     public async override Awaitable InitManager()
     {
         await base.InitManager();
@@ -33,6 +45,10 @@ public class MainCameraManager : BaseManager
         await SpawnCamera();
     }
 
+    /// <summary>
+    /// spawns in the camera object and sets the offset
+    /// </summary>
+    /// <returns></returns>
     private async Awaitable SpawnCamera()
     {
         camInstance = Instantiate(mainCam, transform);
@@ -40,6 +56,10 @@ public class MainCameraManager : BaseManager
         await Task.CompletedTask;
     }
 
+    /// <summary>
+    /// enables the public events
+    /// </summary>
+    /// <returns></returns>
     private async Awaitable SetUpPublicEvents()
     {
         GenericPublicEvents.PlayerSpawnedIn += AttachCamToPlayer;
@@ -47,6 +67,19 @@ public class MainCameraManager : BaseManager
         await Task.CompletedTask;
     }
 
+    /// <summary>
+    /// unsubscribes from public events
+    /// </summary>
+    private void OnDestroy()
+    {
+        GenericPublicEvents.PlayerSpawnedIn -= AttachCamToPlayer;
+    }
+
+    /// <summary>
+    /// sets the camera to move with the player
+    /// </summary>
+    /// <param name="player"></param>
+    /// <exception cref="System.Exception"></exception>
     private void AttachCamToPlayer(PlayerController player)
     {
         if (player == null)
@@ -62,6 +95,10 @@ public class MainCameraManager : BaseManager
         }
     }
 
+    /// <summary>
+    /// actually moves the camera to follow the player
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator CamFollowPlayer()
     {
         FollowPlayer = true;
