@@ -126,6 +126,7 @@ public class UIManager : BaseManager
         InputPublicEvents.ToggleUpgradeMenuPressed += ToggleUpgradeMenu;
         InputPublicEvents.ToggleDebugConsole += ToggleDebugConsole;
         UIPublicEvents.CurrentMenuClosed += CloseCurrentMenus;
+        InputPublicEvents.PausePressed += TogglePauseMenu;
 
         await Task.CompletedTask;
     }
@@ -140,6 +141,7 @@ public class UIManager : BaseManager
         InputPublicEvents.ToggleUpgradeMenuPressed -= ToggleUpgradeMenu;
         InputPublicEvents.ToggleDebugConsole -= ToggleDebugConsole;
         UIPublicEvents.CurrentMenuClosed -= CloseCurrentMenus;
+        InputPublicEvents.PausePressed -= TogglePauseMenu;
     }
 
     #endregion
@@ -152,6 +154,19 @@ public class UIManager : BaseManager
     private void GameStarted()
     {
         UpdateUiManagerStack(UiMenuType.MainMenu);
+    }
+
+    private void TogglePauseMenu()
+    {
+        //can only open pause menu from in game
+        if (currentlyOpenedMenus.Peek() == UiMenuType.PlayerHUD)
+        {
+            UpdateUiManagerStack(UiMenuType.Pause);
+        }
+        else if (currentlyOpenedMenus.Peek() == UiMenuType.Pause)
+        {
+            CloseCurrentMenus();
+        }
     }
 
     /// <summary>
