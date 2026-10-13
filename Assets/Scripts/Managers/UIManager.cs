@@ -125,6 +125,7 @@ public class UIManager : BaseManager
         UIPublicEvents.UpdateUIManagerStack += UpdateUiManagerStack;
         InputPublicEvents.ToggleUpgradeMenuPressed += ToggleUpgradeMenu;
         InputPublicEvents.ToggleDebugConsole += ToggleDebugConsole;
+        UIPublicEvents.CurrentMenuClosed += CloseCurrentMenus;
 
         await Task.CompletedTask;
     }
@@ -138,6 +139,7 @@ public class UIManager : BaseManager
         UIPublicEvents.UpdateUIManagerStack -= UpdateUiManagerStack;
         InputPublicEvents.ToggleUpgradeMenuPressed -= ToggleUpgradeMenu;
         InputPublicEvents.ToggleDebugConsole -= ToggleDebugConsole;
+        UIPublicEvents.CurrentMenuClosed -= CloseCurrentMenus;
     }
 
     #endregion
@@ -321,7 +323,10 @@ public class UIManager : BaseManager
         }
 
         return (currentlyOpenedMenus.Peek() == UiMenuType.MainMenu ||
-                currentlyOpenedMenus.Peek() == UiMenuType.UpgradeMenu);
+                currentlyOpenedMenus.Peek() == UiMenuType.UpgradeMenu ||
+                currentlyOpenedMenus.Peek() == UiMenuType.Settings || 
+                currentlyOpenedMenus.Peek() == UiMenuType.Pause || 
+                currentlyOpenedMenus.Peek() == UiMenuType.Tarot);
     }
 
     #endregion
@@ -332,5 +337,8 @@ public enum UiMenuType
     None,
     MainMenu,
     UpgradeMenu,
-    PlayerHUD
+    PlayerHUD,
+    Settings,
+    Pause,
+    Tarot
 }

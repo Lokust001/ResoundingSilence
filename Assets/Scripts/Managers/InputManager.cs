@@ -18,6 +18,8 @@ public class InputManager : BaseManager
     public const string MidRunInputString = "MidRun";
     public const string UpgradeMenuInputString = "UpgradeMenu";
 
+    public const string SettingsMenuInputString = "SettingsMenu";
+
     public static InputManager Instance;
 
     public Vector2 CurrentMousePosition;
@@ -64,6 +66,18 @@ public class InputManager : BaseManager
     private InputAction DropHoldingPin;
     #endregion
 
+    #region SettingsMenu
+
+    private InputAction settingsCancel;
+
+    private InputAction settingsSave;
+
+    private InputAction settingsMoveTabLeft;
+
+    private InputAction settingsMoveRight;
+
+    #endregion
+
     #region Setup
     /// <summary>
     /// initializes the player inputs
@@ -97,7 +111,7 @@ public class InputManager : BaseManager
         pInput.currentActionMap.Enable();
 
 
-        
+
         EnableEvergreenPublicEvents();
         //sets up the individual input actions
         EnableMidRunPublicEvents();
@@ -105,7 +119,7 @@ public class InputManager : BaseManager
         await Task.CompletedTask;
     }
 
-    
+
 
     /// <summary>
     /// enables the evergreen public events
@@ -146,7 +160,7 @@ public class InputManager : BaseManager
         {
             DisableUpgradeMenuPublicEvents();
         }
-        
+
     }
 
     #endregion
@@ -185,7 +199,7 @@ public class InputManager : BaseManager
         Cursor.lockState = CursorLockMode.Locked;
         InputPublicEvents.ControllerEnabled?.Invoke();
     }
-    
+
     /// <summary>
     /// throws an event when the keyboard and mouse become enabled
     /// </summary>
@@ -205,12 +219,11 @@ public class InputManager : BaseManager
     /// </summary>
     public void SwapActionMapToMidRun()
     {
-        pInput.currentActionMap.Disable();
-        pInput.SwitchCurrentActionMap(MidRunInputString);
-        pInput.currentActionMap.Enable();
+        SwapActionMap(MidRunInputString);
 
         DisableUpgradeMenuPublicEvents();
         EnableMidRunPublicEvents();
+        DisableSettingsMenuPublicEvents();
     }
 
     /// <summary>
@@ -218,12 +231,59 @@ public class InputManager : BaseManager
     /// </summary>
     public void SwapActionMapToUpgradeMenu()
     {
-        pInput.currentActionMap.Disable();
-        pInput.SwitchCurrentActionMap(UpgradeMenuInputString);
-        pInput.currentActionMap.Enable();
+        SwapActionMap(UpgradeMenuInputString);
 
         DisableMidRunPublicEvents();
         EnableUpgradeMenuPublicEvents();
+        DisableSettingsMenuPublicEvents();
+    }
+
+    public void SwapActionMapToSettingsMenu()
+    {
+        SwapActionMap(SettingsMenuInputString);
+        DisableMidRunPublicEvents();
+        DisableUpgradeMenuPublicEvents();
+        EnableSettingsMenuPublicEvents();
+    }
+
+    private void SwapActionMap(string mapToSwapTo)
+    {
+        pInput.currentActionMap.Disable();
+        pInput.SwitchCurrentActionMap(mapToSwapTo);
+        pInput.currentActionMap.Enable();
+
+    }
+
+    private void EnableSettingsMenuPublicEvents()
+    {
+        settingsCancel = pInput.currentActionMap.FindAction("Back");
+        settingsSave = pInput.currentActionMap.FindAction("Save Settings");
+        settingsMoveRight = pInput.currentActionMap.FindAction("MoveSelectedTabRight");
+        settingsMoveRight = pInput.currentActionMap.FindAction("MoveSelectedTabLeft");
+
+        settingsCancel.started += SettingsCancel_started;
+        settingsSave.started += SettingsSave_started;
+
+        settingsMoveRight.started += SettingsMoveRight_started;
+
+        settingsMoveTabLeft.started += SettingsMoveTabLeft_started;
+    }
+
+    
+
+    private void DisableSettingsMenuPublicEvents()
+    {
+        if (settingsCancel == null)
+        {
+            return;
+        }
+
+        settingsCancel.started -= SettingsCancel_started;
+        settingsSave.started -= SettingsSave_started;
+
+        settingsMoveRight.started -= SettingsMoveRight_started;
+
+        settingsMoveTabLeft.started -= SettingsMoveTabLeft_started;
     }
 
     /// <summary>
@@ -590,6 +650,30 @@ public class InputManager : BaseManager
     }
 
 
+
+    #endregion
+
+    #region SettingsMenuSettings
+
+    private void SettingsMoveTabLeft_started(InputAction.CallbackContext obj)
+    {
+        InputPublicEvents.SettingsMoveTabLeft?.Invoke();
+    }
+
+    private void SettingsMoveRight_started(InputAction.CallbackContext obj)
+    {
+        InputPublicEvents.SettingsMoveTabRight?.Invoke();
+    }
+
+    private void SettingsSave_started(InputAction.CallbackContext obj)
+    {
+        InputPublicEvents.SettingsSave?.Invoke();
+    }
+
+    private void SettingsCancel_started(InputAction.CallbackContext obj)
+    {
+        InputPublicEvents.SettingsBack?.Invoke();
+    }
 
     #endregion
 
