@@ -156,6 +156,9 @@ public class UIManager : BaseManager
         UpdateUiManagerStack(UiMenuType.MainMenu);
     }
 
+    /// <summary>
+    /// Enables and disables the pause menu
+    /// </summary>
     private void TogglePauseMenu()
     {
         //can only open pause menu from in game
