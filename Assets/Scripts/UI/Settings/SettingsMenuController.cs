@@ -1,3 +1,11 @@
+/*
+* Author: Tyler
+* Contributors:
+* Last Modified:10/13/2026
+* Summary: This service controls settings menu. may be broken up in the future depending on what the settings are
+* To Do:   N/A
+*/
+
 using NaughtyAttributes;
 using System.Collections.Generic;
 using UnityEngine;
@@ -33,12 +41,19 @@ public class SettingsMenuController : MenuBase
 
     #region MenuSettings
 
+    /// <summary>
+    /// returns all showings to default
+    /// </summary>
     protected override void MenuOpenedSucessfully()
     {
         UIPublicEvents.SettingsMenuOpened?.Invoke();
         SwitchTab(0);
     }
 
+
+    /// <summary>
+    /// subscribes to public events
+    /// </summary>
     protected override void SetUpPublicEvents()
     {
         base.SetUpPublicEvents();
@@ -46,6 +61,9 @@ public class SettingsMenuController : MenuBase
         InputPublicEvents.SettingsMoveTabRight += MoveTabRight;
     }
 
+    /// <summary>
+    /// unsubscribes from public events
+    /// </summary>
     protected override void OnDestroy()
     {
         base.OnDestroy();
@@ -53,6 +71,9 @@ public class SettingsMenuController : MenuBase
         InputPublicEvents.SettingsMoveTabRight -= MoveTabRight;
     }
 
+    /// <summary>
+    /// triggers when the menu closed
+    /// </summary>
     protected override void CloseMenu()
     {
         UIPublicEvents.SettingsMenuClosed?.Invoke();
@@ -61,11 +82,18 @@ public class SettingsMenuController : MenuBase
 
     }
 
+    /// <summary>
+    /// Closes the menu
+    /// </summary>
     public void TriggerCloseMenu()
     {
         UIPublicEvents.CurrentMenuClosed?.Invoke();
     }
 
+    /// <summary>
+    /// Changes the currently showing settings tab
+    /// </summary>
+    /// <param name="i"></param>
     public void SwitchTab(int i)
     {
         if (i < 0 || i >= settingsPages.Count || i >= topOfSettingsPages.Count)
@@ -85,6 +113,9 @@ public class SettingsMenuController : MenuBase
         currentlySelectedTab = i;
     }
     
+    /// <summary>
+    /// Switches the current showing settings tab one to the left
+    /// </summary>
     private void MoveTabLeft()
     {
         if (currentlySelectedTab <= 0)
@@ -97,6 +128,9 @@ public class SettingsMenuController : MenuBase
         }
     }
 
+    /// <summary>
+    /// switches the current showing tab one to the right
+    /// </summary>
     private void MoveTabRight()
     {
         if (currentlySelectedTab >= settingsPages.Count)

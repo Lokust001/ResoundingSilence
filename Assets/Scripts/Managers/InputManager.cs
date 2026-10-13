@@ -238,6 +238,9 @@ public class InputManager : BaseManager
         DisableSettingsMenuPublicEvents();
     }
 
+    /// <summary>
+    /// swaps the action map to the settings menu
+    /// </summary>
     public void SwapActionMapToSettingsMenu()
     {
         SwapActionMap(SettingsMenuInputString);
@@ -246,6 +249,10 @@ public class InputManager : BaseManager
         EnableSettingsMenuPublicEvents();
     }
 
+    /// <summary>
+    /// swaps what action map is active
+    /// </summary>
+    /// <param name="mapToSwapTo"></param>
     private void SwapActionMap(string mapToSwapTo)
     {
         pInput.currentActionMap.Disable();
@@ -254,6 +261,9 @@ public class InputManager : BaseManager
 
     }
 
+    /// <summary>
+    /// enables the settings menu events
+    /// </summary>
     private void EnableSettingsMenuPublicEvents()
     {
         settingsCancel = pInput.currentActionMap.FindAction("Back");
@@ -270,7 +280,9 @@ public class InputManager : BaseManager
     }
 
     
-
+    /// <summary>
+    /// disables the settings menu events
+    /// </summary>
     private void DisableSettingsMenuPublicEvents()
     {
         if (settingsCancel == null)
@@ -655,21 +667,37 @@ public class InputManager : BaseManager
 
     #region SettingsMenuSettings
 
+    /// <summary>
+    /// moves the tab left
+    /// </summary>
+    /// <param name="obj"></param>
     private void SettingsMoveTabLeft_started(InputAction.CallbackContext obj)
     {
         InputPublicEvents.SettingsMoveTabLeft?.Invoke();
     }
 
+    /// <summary>
+    /// moves the tab right
+    /// </summary>
+    /// <param name="obj"></param>
     private void SettingsMoveRight_started(InputAction.CallbackContext obj)
     {
         InputPublicEvents.SettingsMoveTabRight?.Invoke();
     }
 
+    /// <summary>
+    /// Save the settings
+    /// </summary>
+    /// <param name="obj"></param>
     private void SettingsSave_started(InputAction.CallbackContext obj)
     {
         InputPublicEvents.SettingsSave?.Invoke();
     }
 
+    /// <summary>
+    /// close the settings menu
+    /// </summary>
+    /// <param name="obj"></param>
     private void SettingsCancel_started(InputAction.CallbackContext obj)
     {
         InputPublicEvents.SettingsBack?.Invoke();

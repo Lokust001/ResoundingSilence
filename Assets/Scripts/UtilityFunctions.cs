@@ -190,6 +190,14 @@ public static class UtilityFunctions
 
     #region Scroll Rect Stuff
 
+    /// <summary>
+    /// Returns a position in world space based on the relation of the selected object and the pos of the scrollrect and content rect
+    /// </summary>
+    /// <param name="ScrollRect"></param>
+    /// <param name="SelectedObject"></param>
+    /// <param name="ContentObject"></param>
+    /// <returns></returns>
+    /// <exception cref="System.Exception"></exception>
     public static Vector2 GetNewScrollRectAnchoredPos(RectTransform ScrollRect, RectTransform SelectedObject, RectTransform ContentObject)
     {
         if (ScrollRect == null)
