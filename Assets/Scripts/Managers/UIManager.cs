@@ -121,7 +121,12 @@ public class UIManager : BaseManager
     /// <returns></returns>
     private async Awaitable SetupPublicEvents()
     {
-        GenericPublicEvents.AllManagersInitialized += GoToMainMenu;
+        if (!AppManager.Instance.EnableTestingMode)
+        {
+            GenericPublicEvents.AllManagersInitialized += GoToMainMenu;
+        }
+
+       
         UIPublicEvents.UpdateUIManagerStack += UpdateUiManagerStack;
         InputPublicEvents.ToggleUpgradeMenuPressed += ToggleUpgradeMenu;
         InputPublicEvents.ToggleDebugConsole += ToggleDebugConsole;
