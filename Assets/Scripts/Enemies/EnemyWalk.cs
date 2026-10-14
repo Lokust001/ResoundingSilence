@@ -10,8 +10,8 @@ using UnityEngine.AI;
 
 public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICustomDisabler
 {
-    private NavMeshAgent m_Agent;
-    private GameObject m_GameObject;
+    private NavMeshAgent navMeshAgent;
+    private GameObject playerReference;
 
     private Coroutine walkingCoroutine;
     
@@ -31,8 +31,8 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     /// </summary>
     private void InitializeVariables() 
     {
-        m_Agent = GetComponent<NavMeshAgent>();
-        m_GameObject = FindAnyObjectByType<PlayerController>().gameObject;
+        navMeshAgent = GetComponent<NavMeshAgent>();
+        playerReference = FindAnyObjectByType<PlayerController>().gameObject;
         enemyAttack = GetComponentInChildren<EnemyAttack>();
         enemyBuff = GetComponentInChildren<EnemyBuff>();
         capsuleCollider = GetComponent<CapsuleCollider>();
@@ -55,7 +55,7 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     /// </summary>
     public void EndPlayerSearch() 
     {
-        m_Agent.isStopped = true;
+        navMeshAgent.isStopped = true;
         if (walkingCoroutine != null) 
         {
             StopCoroutine(walkingCoroutine);
@@ -127,10 +127,10 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     private IEnumerator MoveTowardsPlayer() 
     {
         Debug.Log("Following Player");
-        m_Agent.isStopped = false;
+        navMeshAgent.isStopped = false;
         while (true) 
         {
-            m_Agent.destination = m_GameObject.transform.position;
+            navMeshAgent.destination = playerReference.transform.position;
             yield return new WaitForFixedUpdate();
         }
     }
@@ -141,23 +141,29 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     /// <returns></returns>
     public IEnumerator MoveAwayFromPlayer() 
     {
-        Transform playerTransform = FindAnyObjectByType<PlayerController>().transform;
+
+        //USE NAVMESH DESTINATION INSTEAD
+        Transform playerTransform = playerReference.transform;
         Vector3 directionToPlayer = (enemyTransform.position - playerTransform.position).normalized;
         directionToPlayer.y = 0;
 
         Vector3 retreatPosition = enemyTransform.position + (directionToPlayer * enemyData.retreatDistance);
+        navMeshAgent.destination = retreatPosition;
+        navMeshAgent.isStopped = false;
 
-        float retreatSpeed = enemyData.retreatSpeed;
-        float distance = Vector3.Distance(enemyTransform.position, retreatPosition);
+        float distance = navMeshAgent.remainingDistance - navMeshAgent.stoppingDistance;
 
 
         while (distance > 0) 
         {
-            enemyTransform.position = Vector3.MoveTowards(enemyTransform.position, retreatPosition, retreatSpeed * Time.fixedDeltaTime);
-            distance = Vector3.Distance(enemyTransform.position, retreatPosition);
+            //enemyTransform.position = Vector3.MoveTowards(enemyTransform.position, retreatPosition, retreatSpeed * Time.fixedDeltaTime);
+            distance = navMeshAgent.remainingDistance - navMeshAgent.stoppingDistance;
+            Debug.Log(distance);
             yield return new WaitForFixedUpdate();
         }
-        
+
+        navMeshAgent.isStopped = true;
+
     }
 
     /// <summary>

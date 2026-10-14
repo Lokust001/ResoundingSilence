@@ -28,11 +28,14 @@ public class Enemy : MonoBehaviour
     private bool inMeleeRange;
     private bool inRangedRange;
 
+    YieldInstruction actionInterval;
+
     /// <summary>
     /// Creates a copy of the scriptable object not tied to the inspector, then propagates it other scripts
     /// </summary>
     void Awake()
     {
+        actionInterval = new WaitForSeconds(enemyData.timeBetweenRangeChecks);
         attackBehavior = GetComponentInChildren<EnemyAttack>();
         movementBeahvior = GetComponentInChildren<EnemyWalk>();
         enemyData = enemyData.CreateNonRefCopy<BaseEnemyScriptable>();
@@ -146,14 +149,30 @@ public class Enemy : MonoBehaviour
     }
 
     /// <summary>
-    /// Temporal-based infinite loop that only activates the next decision after a specified amount of time
+    /// Infinite loop that suspends actions for either user-specified intervals or priority actions
     /// </summary>
     /// <returns></returns>
     private IEnumerator RepeatedlyCheckShooterRange() 
     {
-        NextEnemyAction(true);
-        yield return new WaitForSeconds(enemyData.timeBetweenRangeChecks);
-        StartCoroutine(RepeatedlyCheckShooterRange());
+        while (true)
+        {
+            NextEnemyAction(true);
+            yield return actionInterval;
+        }
+    }
+
+    /// <summary>
+    /// Temporarily switch the default actionInterval to a new priority action
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator SwitchYieldInterval(YieldInstruction instruction) 
+    {
+        //Set the action interval for the repeat shooter range to resolve first
+        actionInterval = instruction;
+
+        //Delay so that the stack resolves and it moves onto the yielding action
+        yield return null;
+        actionInterval = new WaitForSeconds(enemyData.timeBetweenRangeChecks);
     }
 
     /// <summary>
@@ -241,8 +260,11 @@ public class Enemy : MonoBehaviour
             case BaseEnemyScriptable.EnemyType.ConeShooter:
                 movementBeahvior.EndPlayerSearch();
                 //Only do this if a time-based check has passed via RepeatedlyCheckShooterRange
-                if(activateTimeBasedIntervalActions)
-                    StartCoroutine(movementBeahvior.MoveAwayFromPlayer());
+                if (activateTimeBasedIntervalActions) 
+                {
+                    Coroutine startedAction = StartCoroutine(movementBeahvior.MoveAwayFromPlayer());
+                    StartCoroutine(SwitchYieldInterval(startedAction));
+                }
                 break;
             case BaseEnemyScriptable.EnemyType.Melee:
             case BaseEnemyScriptable.EnemyType.ChargingMelee:

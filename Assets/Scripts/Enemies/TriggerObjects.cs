@@ -53,6 +53,6 @@ public class TriggerObjects : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = triggerShapeColor;
-        Gizmos.DrawWireSphere(transform.position, GetComponent<SphereCollider>().radius * transform.parent.localScale.y);
+        Gizmos.DrawWireSphere(transform.position, GetComponent<SphereCollider>().radius * transform.root.localScale.y);
     }
 }
