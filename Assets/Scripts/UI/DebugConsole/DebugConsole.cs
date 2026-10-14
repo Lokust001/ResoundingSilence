@@ -234,7 +234,7 @@ public class DebugConsole : MonoBehaviour
                     return;
                 }
             }
-            else if (int.TryParse(postCommand.Substring(0, 1), out TempIsland))
+            else if (postCommand.Length != 0 && int.TryParse(postCommand.Substring(0, 1), out TempIsland))
             {
                 int Temp;
                 postCommand = postCommand.Substring(1);
