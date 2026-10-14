@@ -219,7 +219,7 @@ public class DebugConsole : MonoBehaviour
                 }
 
                 int Temp;
-                if (postCommand.Equals("") || postCommand.Equals(" "))
+                if (postCommand == null || postCommand.Equals("") || postCommand.Equals(" "))
                 {
                     mapGenInstance.SwitchIsland(closestIndex);
                     AppendConsoleLine(Command, inputColor);
