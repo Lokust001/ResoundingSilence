@@ -18,6 +18,8 @@ public class InputManager : BaseManager
     public const string MidRunInputString = "MidRun";
     public const string UpgradeMenuInputString = "UpgradeMenu";
 
+    public const string SettingsMenuInputString = "SettingsMenu";
+
     public static InputManager Instance;
 
     public Vector2 CurrentMousePosition;
@@ -64,6 +66,18 @@ public class InputManager : BaseManager
     private InputAction DropHoldingPin;
     #endregion
 
+    #region SettingsMenu
+
+    private InputAction settingsCancel;
+
+    private InputAction settingsSave;
+
+    private InputAction settingsMoveTabLeft;
+
+    private InputAction settingsMoveRight;
+
+    #endregion
+
     #region Setup
     /// <summary>
     /// initializes the player inputs
@@ -97,7 +111,7 @@ public class InputManager : BaseManager
         pInput.currentActionMap.Enable();
 
 
-        
+
         EnableEvergreenPublicEvents();
         //sets up the individual input actions
         EnableMidRunPublicEvents();
@@ -105,7 +119,7 @@ public class InputManager : BaseManager
         await Task.CompletedTask;
     }
 
-    
+
 
     /// <summary>
     /// enables the evergreen public events
@@ -146,7 +160,7 @@ public class InputManager : BaseManager
         {
             DisableUpgradeMenuPublicEvents();
         }
-        
+
     }
 
     #endregion
@@ -185,7 +199,7 @@ public class InputManager : BaseManager
         Cursor.lockState = CursorLockMode.Locked;
         InputPublicEvents.ControllerEnabled?.Invoke();
     }
-    
+
     /// <summary>
     /// throws an event when the keyboard and mouse become enabled
     /// </summary>
@@ -205,12 +219,11 @@ public class InputManager : BaseManager
     /// </summary>
     public void SwapActionMapToMidRun()
     {
-        pInput.currentActionMap.Disable();
-        pInput.SwitchCurrentActionMap(MidRunInputString);
-        pInput.currentActionMap.Enable();
+        SwapActionMap(MidRunInputString);
 
         DisableUpgradeMenuPublicEvents();
         EnableMidRunPublicEvents();
+        DisableSettingsMenuPublicEvents();
     }
 
     /// <summary>
@@ -218,12 +231,71 @@ public class InputManager : BaseManager
     /// </summary>
     public void SwapActionMapToUpgradeMenu()
     {
-        pInput.currentActionMap.Disable();
-        pInput.SwitchCurrentActionMap(UpgradeMenuInputString);
-        pInput.currentActionMap.Enable();
+        SwapActionMap(UpgradeMenuInputString);
 
         DisableMidRunPublicEvents();
         EnableUpgradeMenuPublicEvents();
+        DisableSettingsMenuPublicEvents();
+    }
+
+    /// <summary>
+    /// swaps the action map to the settings menu
+    /// </summary>
+    public void SwapActionMapToSettingsMenu()
+    {
+        SwapActionMap(SettingsMenuInputString);
+        DisableMidRunPublicEvents();
+        DisableUpgradeMenuPublicEvents();
+        EnableSettingsMenuPublicEvents();
+    }
+
+    /// <summary>
+    /// swaps what action map is active
+    /// </summary>
+    /// <param name="mapToSwapTo"></param>
+    private void SwapActionMap(string mapToSwapTo)
+    {
+        pInput.currentActionMap.Disable();
+        pInput.SwitchCurrentActionMap(mapToSwapTo);
+        pInput.currentActionMap.Enable();
+
+    }
+
+    /// <summary>
+    /// enables the settings menu events
+    /// </summary>
+    private void EnableSettingsMenuPublicEvents()
+    {
+        settingsCancel = pInput.currentActionMap.FindAction("Back");
+        settingsSave = pInput.currentActionMap.FindAction("Save Settings");
+        settingsMoveRight = pInput.currentActionMap.FindAction("MoveSelectedTabRight");
+        settingsMoveRight = pInput.currentActionMap.FindAction("MoveSelectedTabLeft");
+
+        settingsCancel.started += SettingsCancel_started;
+        settingsSave.started += SettingsSave_started;
+
+        settingsMoveRight.started += SettingsMoveRight_started;
+
+        settingsMoveTabLeft.started += SettingsMoveTabLeft_started;
+    }
+
+    
+    /// <summary>
+    /// disables the settings menu events
+    /// </summary>
+    private void DisableSettingsMenuPublicEvents()
+    {
+        if (settingsCancel == null)
+        {
+            return;
+        }
+
+        settingsCancel.started -= SettingsCancel_started;
+        settingsSave.started -= SettingsSave_started;
+
+        settingsMoveRight.started -= SettingsMoveRight_started;
+
+        settingsMoveTabLeft.started -= SettingsMoveTabLeft_started;
     }
 
     /// <summary>
@@ -590,6 +662,46 @@ public class InputManager : BaseManager
     }
 
 
+
+    #endregion
+
+    #region SettingsMenuSettings
+
+    /// <summary>
+    /// moves the tab left
+    /// </summary>
+    /// <param name="obj"></param>
+    private void SettingsMoveTabLeft_started(InputAction.CallbackContext obj)
+    {
+        InputPublicEvents.SettingsMoveTabLeft?.Invoke();
+    }
+
+    /// <summary>
+    /// moves the tab right
+    /// </summary>
+    /// <param name="obj"></param>
+    private void SettingsMoveRight_started(InputAction.CallbackContext obj)
+    {
+        InputPublicEvents.SettingsMoveTabRight?.Invoke();
+    }
+
+    /// <summary>
+    /// Save the settings
+    /// </summary>
+    /// <param name="obj"></param>
+    private void SettingsSave_started(InputAction.CallbackContext obj)
+    {
+        InputPublicEvents.SettingsSave?.Invoke();
+    }
+
+    /// <summary>
+    /// close the settings menu
+    /// </summary>
+    /// <param name="obj"></param>
+    private void SettingsCancel_started(InputAction.CallbackContext obj)
+    {
+        InputPublicEvents.SettingsBack?.Invoke();
+    }
 
     #endregion
 

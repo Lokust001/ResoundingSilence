@@ -41,6 +41,7 @@ public class MainMenuController : MenuBase
     public void ToggleSettings()
     {
         Debug.Log("Toggling Settings");
+        UIPublicEvents.UpdateUIManagerStack?.Invoke(UiMenuType.Settings);
     }
 
     /// <summary>

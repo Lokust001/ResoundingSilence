@@ -121,10 +121,13 @@ public class UIManager : BaseManager
     /// <returns></returns>
     private async Awaitable SetupPublicEvents()
     {
-        GenericPublicEvents.AllManagersInitialized += GameStarted;
+        GenericPublicEvents.AllManagersInitialized += GoToMainMenu;
         UIPublicEvents.UpdateUIManagerStack += UpdateUiManagerStack;
         InputPublicEvents.ToggleUpgradeMenuPressed += ToggleUpgradeMenu;
         InputPublicEvents.ToggleDebugConsole += ToggleDebugConsole;
+        UIPublicEvents.CurrentMenuClosed += CloseCurrentMenus;
+        InputPublicEvents.PausePressed += TogglePauseMenu;
+        GenericPublicEvents.ReturnToMainMenu += GoToMainMenu;
 
         await Task.CompletedTask;
     }
@@ -134,10 +137,13 @@ public class UIManager : BaseManager
     /// </summary>
     private void OnDestroy()
     {
-        GenericPublicEvents.AllManagersInitialized -= GameStarted;
+        GenericPublicEvents.AllManagersInitialized -= GoToMainMenu;
         UIPublicEvents.UpdateUIManagerStack -= UpdateUiManagerStack;
         InputPublicEvents.ToggleUpgradeMenuPressed -= ToggleUpgradeMenu;
         InputPublicEvents.ToggleDebugConsole -= ToggleDebugConsole;
+        UIPublicEvents.CurrentMenuClosed -= CloseCurrentMenus;
+        InputPublicEvents.PausePressed -= TogglePauseMenu;
+        GenericPublicEvents.ReturnToMainMenu -= GoToMainMenu;
     }
 
     #endregion
@@ -147,9 +153,29 @@ public class UIManager : BaseManager
     /// <summary>
     /// opens the main menu once all managers are initialized
     /// </summary>
-    private void GameStarted()
+    private void GoToMainMenu()
     {
+        if (currentlyOpenedMenus.Count > 0)
+        {
+            currentlyOpenedMenus.Clear();
+        }
         UpdateUiManagerStack(UiMenuType.MainMenu);
+    }
+
+    /// <summary>
+    /// Enables and disables the pause menu
+    /// </summary>
+    private void TogglePauseMenu()
+    {
+        //can only open pause menu from in game
+        if (currentlyOpenedMenus.Peek() == UiMenuType.PlayerHUD)
+        {
+            UpdateUiManagerStack(UiMenuType.Pause);
+        }
+        else if (currentlyOpenedMenus.Peek() == UiMenuType.Pause)
+        {
+            CloseCurrentMenus();
+        }
     }
 
     /// <summary>
@@ -321,7 +347,10 @@ public class UIManager : BaseManager
         }
 
         return (currentlyOpenedMenus.Peek() == UiMenuType.MainMenu ||
-                currentlyOpenedMenus.Peek() == UiMenuType.UpgradeMenu);
+                currentlyOpenedMenus.Peek() == UiMenuType.UpgradeMenu ||
+                currentlyOpenedMenus.Peek() == UiMenuType.Settings || 
+                currentlyOpenedMenus.Peek() == UiMenuType.Pause || 
+                currentlyOpenedMenus.Peek() == UiMenuType.Tarot);
     }
 
     #endregion
@@ -332,5 +361,8 @@ public enum UiMenuType
     None,
     MainMenu,
     UpgradeMenu,
-    PlayerHUD
+    PlayerHUD,
+    Settings,
+    Pause,
+    Tarot
 }

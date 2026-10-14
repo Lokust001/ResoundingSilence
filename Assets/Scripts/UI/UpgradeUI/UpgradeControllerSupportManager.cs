@@ -49,6 +49,10 @@ public class UpgradeControllerSupportManager : MonoBehaviour
 
     private Vector2 currentMoveDirection;
 
+    private RectTransform inventoryContentRect;
+    private RectTransform inventoryScrollRect;
+   
+
 
     #region setup and public events
 
@@ -216,7 +220,22 @@ public class UpgradeControllerSupportManager : MonoBehaviour
             {
                 DeselectCurrentObject();
                 SelectInventoryItem(invSlot);
-                CheckIfInventoryScrollNeedsUpdating();
+                
+                if (inventoryContentRect == null)
+                {
+                    inventoryContentRect = menu.inventory.GetComponent<RectTransform>();
+                }
+
+                if (inventoryScrollRect == null)
+                {
+                    inventoryScrollRect = menu.inventoryScrollRect.GetComponent<RectTransform>();
+                }
+
+                inventoryContentRect.anchoredPosition = UtilityFunctions.GetNewScrollRectAnchoredPos(
+                    inventoryScrollRect,
+                    currentSelectedItem.GetComponent<RectTransform>(),
+                    inventoryContentRect
+                    );
             }
 
             else if (target is UpgradeTileBehavior origTile)
@@ -279,37 +298,6 @@ public class UpgradeControllerSupportManager : MonoBehaviour
         }
         isOnMoveCooldown = false;
 
-    }
-
-    /// <summary>
-    /// updates the inventory scroll rect based on where the selected object is
-    /// </summary>
-    /// <exception cref="System.Exception"></exception>
-    private void CheckIfInventoryScrollNeedsUpdating()
-    {
-        RectTransform scrollRect = menu.inventoryScrollRect.GetComponent<RectTransform>();
-        if (scrollRect == null)
-        {
-            throw new System.Exception("Scroll rect doesnt have a rect transform");
-        }
-
-        RectTransform selRect = currentSelectedItem.GetComponent<RectTransform>();
-        RectTransform contentRect = menu.inventory.GetComponent<RectTransform>();
-
-        float SelYPos = Mathf.Abs(selRect.anchoredPosition.y) + selRect.rect.height;
-        float scrollViewMinY = contentRect.anchoredPosition.y;
-        float scrollViewMaxY = contentRect.anchoredPosition.y + scrollRect.rect.height;
-
-        //move scroll rect to fit with the selected object. 
-        if (SelYPos > scrollViewMaxY)
-        {
-            float newY = SelYPos - scrollRect.rect.height;
-            contentRect.anchoredPosition = new Vector2(contentRect.anchoredPosition.x, newY);
-        }
-        else if (Mathf.Abs(selRect.anchoredPosition.y) < scrollViewMinY)
-        {
-            contentRect.anchoredPosition = new Vector2(contentRect.anchoredPosition.x, Mathf.Abs(selRect.anchoredPosition.y) - 100);
-        }
     }
 
     #endregion
