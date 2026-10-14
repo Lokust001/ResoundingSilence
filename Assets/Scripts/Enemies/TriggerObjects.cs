@@ -16,7 +16,7 @@ public class TriggerObjects : MonoBehaviour
     public event Action<Enemy, bool> PlayerTriggerActivated;
 
     /// <summary>
-    /// Propagates its OnTriggerEnter event onto other listeners attached to ChildTriggerActivated
+    /// Propagates its OnTriggerEnter event onto other listeners attached to ChildTriggerActivated or PlayerTriggerActivated
     /// </summary>
     /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
@@ -31,6 +31,10 @@ public class TriggerObjects : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Propagates its OnTriggerExit event onto other listeners attached to ChildTriggertActivated or PlayerTriggerActivated
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerExit(Collider other)
     {
         if (other.TryGetComponent<PlayerController>(out var player)) 
@@ -49,6 +53,6 @@ public class TriggerObjects : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = triggerShapeColor;
-        Gizmos.DrawWireSphere(transform.position, GetComponent<SphereCollider>().radius);
+        Gizmos.DrawWireSphere(transform.position, GetComponent<SphereCollider>().radius * transform.parent.localScale.y);
     }
 }
