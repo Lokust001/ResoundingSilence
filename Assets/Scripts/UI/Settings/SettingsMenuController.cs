@@ -104,7 +104,7 @@ public class SettingsMenuController : MenuBase
         settingsPages[i].SetActive(true);
         EventSystem.current.SetSelectedGameObject(topOfSettingsPages[i].gameObject);
 
-        if (previousSettingsPage != null)
+        if (previousSettingsPage != null && previousSettingsPage != settingsPages[i])
         {
             previousSettingsPage.SetActive(false);
         }
