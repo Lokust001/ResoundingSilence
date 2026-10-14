@@ -61,4 +61,16 @@ public static class InputPublicEvents
     public static Action DropPin;
 
     #endregion
+
+    #region Settings Menu
+
+    public static Action SettingsBack;
+
+    public static Action SettingsSave;
+
+    public static Action SettingsMoveTabLeft;
+
+    public static Action SettingsMoveTabRight;
+
+    #endregion
 }
