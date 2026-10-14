@@ -348,7 +348,12 @@ public class UIManager : BaseManager
     {
         if (currentlyOpenedMenus.Count <= 0)
         {
-            return false;
+            if (AppManager.Instance.EnableTestingMode)
+            {
+                return false;
+            }
+
+            throw new System.Exception("No menus opened");
         }
 
         return (currentlyOpenedMenus.Peek() == UiMenuType.MainMenu ||
