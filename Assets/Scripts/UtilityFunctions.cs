@@ -8,10 +8,13 @@
 
 using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public static class UtilityFunctions
 {
+    #region Adjacency
+
     /// <summary>
     /// Returns a list of all adjacent tiles of a given coordinate in a given list
     /// </summary>
@@ -182,5 +185,44 @@ public static class UtilityFunctions
 
         return GetTile(coords.x + (coords.y * width), collection);
     }
+
+    #endregion
+
+    #region Scroll Rect Stuff
+
+    /// <summary>
+    /// Returns a position in world space based on the relation of the selected object and the pos of the scrollrect and content rect
+    /// </summary>
+    /// <param name="ScrollRect"></param>
+    /// <param name="SelectedObject"></param>
+    /// <param name="ContentObject"></param>
+    /// <returns></returns>
+    /// <exception cref="System.Exception"></exception>
+    public static Vector2 GetNewScrollRectAnchoredPos(RectTransform ScrollRect, RectTransform SelectedObject, RectTransform ContentObject)
+    {
+        if (ScrollRect == null)
+        {
+            throw new System.Exception("Scroll rect doesnt have a rect transform");
+        }
+        float SelYPos = Mathf.Abs(SelectedObject.anchoredPosition.y) + SelectedObject.rect.height;
+        float scrollViewMinY = ContentObject.anchoredPosition.y;
+        float scrollViewMaxY = ContentObject.anchoredPosition.y + ScrollRect.rect.height;
+
+        //move scroll rect to fit with the selected object. 
+        if (SelYPos > scrollViewMaxY)
+        {
+            float newY = SelYPos - ScrollRect.rect.height;
+            return new Vector2(ContentObject.anchoredPosition.x, newY);
+        }
+        else if (Mathf.Abs(SelectedObject.anchoredPosition.y) < scrollViewMinY)
+        {
+            return new Vector2(ContentObject.anchoredPosition.x, Mathf.Abs(SelectedObject.anchoredPosition.y) - 100);
+        }
+
+        
+        return ContentObject.anchoredPosition;
+    }
+
+    #endregion
 }
 

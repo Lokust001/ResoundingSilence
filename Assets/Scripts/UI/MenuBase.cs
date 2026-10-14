@@ -50,7 +50,7 @@ public class MenuBase : MonoBehaviour
 
         if (UIManager.Instance.GetCurrentMenu() != menuType)
         {
-            gameObject.SetActive(false);
+            CloseMenu();
             return;
         }
 
