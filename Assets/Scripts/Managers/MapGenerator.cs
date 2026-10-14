@@ -181,6 +181,9 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// wipes all the islands that are spawned
+    /// </summary>
     public void DeleteIslands()
     {
         ShopSpots.Clear();
@@ -193,6 +196,11 @@ public class MapGenerator : MonoBehaviour
         islands.Clear();
     }
 
+    /// <summary>
+    /// changes a specific island and what is spawned there
+    /// </summary>
+    /// <param name="IslandNumber"></param>
+    /// <param name="layout"></param>
     public void SwitchIsland(int IslandNumber, int layout = -1)
     {
         IslandData Island = islands[IslandNumber].GetComponent<IslandData>();

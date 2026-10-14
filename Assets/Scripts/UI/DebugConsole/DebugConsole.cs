@@ -216,6 +216,7 @@ public class DebugConsole : MonoBehaviour
                     mapGenInstance.SwitchIsland(closestIndex);
                     AppendConsoleLine(Command, inputColor);
                     AppendConsoleLine($"Island {closestIndex} Has switched layouts", commandCompletedColor);
+                    FinishCommand();
                     return;
                 }
                 else if (int.TryParse(Command, out Temp))
@@ -223,11 +224,13 @@ public class DebugConsole : MonoBehaviour
                     mapGenInstance.SwitchIsland(closestIndex, Temp);
                     AppendConsoleLine(Command, inputColor);
                     AppendConsoleLine($"Island {closestIndex} Has switched to layout {Temp}", commandCompletedColor);
+                    FinishCommand();
                     return;
                 }
                 else
                 {
                     AppendConsoleLine($"{Command} \nPlease put a number after the command</color>", incorrectInputColor);
+                    FinishCommand();
                     return;
                 }
             }
@@ -244,6 +247,7 @@ public class DebugConsole : MonoBehaviour
                     mapGenInstance.SwitchIsland(TempIsland);
                     AppendConsoleLine(Command, inputColor);
                     AppendConsoleLine($"Island {TempIsland} Has switched layouts", commandCompletedColor);
+                    FinishCommand();
                     return;
                 }
                 else if(int.TryParse(Command, out Temp))
@@ -251,6 +255,7 @@ public class DebugConsole : MonoBehaviour
                      mapGenInstance.SwitchIsland(TempIsland, Temp);
                     AppendConsoleLine(Command, inputColor);
                     AppendConsoleLine($"Island {TempIsland} Has switched to layout {Temp}", commandCompletedColor);
+                    FinishCommand();
                     return;
                 }
             }
@@ -267,6 +272,7 @@ public class DebugConsole : MonoBehaviour
             AppendConsoleLine(Command, inputColor);
             AppendConsoleLine($"Map Has Been Reset", commandCompletedColor);
             mapGenInstance.spawnMap();
+            FinishCommand();
             return;
         }
 
@@ -277,6 +283,9 @@ public class DebugConsole : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// adds a line to break up commands
+    /// </summary>
     private void FinishCommand()
     {
         AppendConsoleLine($"----------------------", newCommandBreakColor);

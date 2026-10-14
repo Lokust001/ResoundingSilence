@@ -40,6 +40,12 @@ public class MapSectionSpawner : MonoBehaviour
         return worldpoints;
     }
 
+    /// <summary>
+    /// spawn in a single island used for the debug console to be able to test stuff
+    /// </summary>
+    /// <param name="SpawnPoint"></param>
+    /// <param name="Layout"></param>
+    /// <returns></returns>
     public GameObject SpawnSingleIsland(GameObject SpawnPoint, int Layout)
     {
         GameObject temp = Instantiate(prefabs[Layout], SpawnPoint.transform.position, SpawnPoint.transform.rotation);
