@@ -108,7 +108,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4a75311c003ac24d8d07e273d723f03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  aggroTrigger: {fileID: 4797947975541090536}
+  aggroTrigger: {fileID: 948327582028595367}
   testWithoutSpawner: 0
   enemyData: {fileID: 0}
   dmgToTake: 10
@@ -207,7 +207,7 @@ GameObject:
   - component: {fileID: 4662121894226173022}
   - component: {fileID: 5437595391178199074}
   - component: {fileID: 173922961431659772}
-  - component: {fileID: 4797947975541090536}
+  - component: {fileID: 948327582028595367}
   m_Layer: 0
   m_Name: BecomeAggroZone
   m_TagString: Untagged
@@ -267,7 +267,7 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 10
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4797947975541090536
+--- !u!114 &948327582028595367
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -279,4 +279,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6725d744f418194b805c2aba199566f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TriggerObjects
-  triggerShapeColor: {r: 1, g: 0, b: 0.015302181, a: 1}
+  triggerShapeColor: {r: 1, g: 0.534598, b: 0, a: 1}
