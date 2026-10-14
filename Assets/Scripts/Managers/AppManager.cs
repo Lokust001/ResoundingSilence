@@ -20,14 +20,14 @@ public class AppManager : MonoBehaviour
 
     public static AppManager Instance;
 
+    public bool EnableTestingMode;
+
     /// <summary>
     /// try to spawn everything in
     /// </summary>
     /// <exception cref="System.Exception"></exception>
     private async void Awake()
     {
-
-
         if (Instance == null)
         {
             Instance = this;
