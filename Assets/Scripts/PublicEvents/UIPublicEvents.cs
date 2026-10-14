@@ -25,6 +25,12 @@ public static class UIPublicEvents
     public static Action UpgradeMenuClosed;
     public static Action UpgradeGridInitialized;
 
+    public static Action<Vector2> UpdateCarriedPinPosition;
+
+    public static Action NewPinPlacedInTile;
+
+    public static Action<PinHolderSlot> SelectSpecificTile;
+
     public static Action<PinItemBehavior> PinPickedUp;
 
     public static Action<PinScriptable> PinChangedOnWeapon;

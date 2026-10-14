@@ -115,7 +115,7 @@ public class UpgradeTileBehavior : PinHolderSlot
     public override void UnequipPin()
     {
         base.UnequipPin();
-        
+        pin = null;
         tileData.SetPin(null);
         UIPublicEvents.PinChangedOnWeapon?.Invoke(null);
     }

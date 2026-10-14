@@ -116,7 +116,7 @@ public class ControllerUIService : BaseService
         //add to this if statement for every menu i have to make custom controller supp for
         if (UIManager.Instance.GetCurrentMenu() == UiMenuType.UpgradeMenu)
         {
-            FindAnyObjectByType<UpgradeControllerSupportManager>().SelectLastSelectedInventoryPin();
+            FindAnyObjectByType<UpgradeControllerSupportManager>().MoveFocusToInventory();
         }
         else
         {

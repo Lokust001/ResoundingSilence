@@ -112,8 +112,11 @@ public class UpgradeMenuController : MenuBase
 
     [HideInInspector]
     public PinItemBehavior CarriedPin;
+    private UpgradeTileBehavior pinsTile;
 
     private List<PinItemBehavior> pinsOnNonEnabledGrids = new();
+
+    private UpgradeControllerSupportManager supportManager;
 
     #endregion
 
@@ -127,7 +130,8 @@ public class UpgradeMenuController : MenuBase
     public override void InitMenu()
     {
         base.InitMenu();
-        GetComponent<UpgradeControllerSupportManager>().InitSupportManager();
+        supportManager = GetComponent<UpgradeControllerSupportManager>();
+        supportManager.InitSupportManager();
     }
 
     /// <summary>
@@ -163,6 +167,7 @@ public class UpgradeMenuController : MenuBase
     /// </summary>
     protected override void CloseMenu()
     {
+        ReturnPinToItsTile();
         UIPublicEvents.UpgradeMenuClosed?.Invoke();
         base.CloseMenu();
     }
@@ -175,6 +180,9 @@ public class UpgradeMenuController : MenuBase
         base.SetUpPublicEvents();
         UIPublicEvents.PinPickedUp += SetCarriedPin;
         InputPublicEvents.PinReleased += DropHeldPin;
+        InputPublicEvents.DropPin += ReturnPinToItsTile;
+        InputPublicEvents.ControllerEnabled += ReturnPinToItsTile;
+        InputPublicEvents.KeyboardMouseEnabled += ReturnPinToItsTile;
     }
 
     /// <summary>
@@ -185,6 +193,9 @@ public class UpgradeMenuController : MenuBase
         base.TearDownPublicEvents();
         UIPublicEvents.PinPickedUp -= SetCarriedPin;
         InputPublicEvents.PinReleased -= DropHeldPin;
+        InputPublicEvents.DropPin -= ReturnPinToItsTile;
+        InputPublicEvents.ControllerEnabled -= ReturnPinToItsTile;
+        InputPublicEvents.KeyboardMouseEnabled -= ReturnPinToItsTile;
     }
 
     /// <summary>
@@ -304,8 +315,6 @@ public class UpgradeMenuController : MenuBase
     /// <param name="item"></param>
     private void SetCarriedPin(PinItemBehavior item)
     {
-
-
         //places the currently held pin in the tile of the pin you want to pick up
         if (CarriedPin != null)
         {
@@ -379,69 +388,71 @@ public class UpgradeMenuController : MenuBase
             return;
         }
 
-        //check to see if the pin is over a tile
-        PointerEventData tempEventData = new(EventSystem.current);
-        tempEventData.position = CarriedPin.transform.position;
+        PinHolderSlot target = null;
 
-        List<RaycastResult> raycastResults = new();
-
-        EventSystem.current.RaycastAll(tempEventData, raycastResults);
-
-        //if we hit anything
-        if (raycastResults.Count > 0)
+        if (InputManager.Instance.ControllerIsEnabled)
         {
-            //if we hit a tile, place whatever we are carrying in that tile
-            if (raycastResults[0].gameObject.GetComponent<UpgradeTileBehavior>() != null)
+            if (supportManager.currentSelectedItem is PinHolderSlot slot)
             {
-                PlacePinInTile(CarriedPin, raycastResults[0].gameObject.GetComponent<UpgradeTileBehavior>());
-                return;
+                target = slot;
             }
-
-            //otherwise if we hit a pin
-            else if (raycastResults[0].gameObject.GetComponent<PinItemBehavior>() != null)
-            {
-                PinItemBehavior pinInSlot = raycastResults[0].gameObject.GetComponent<PinItemBehavior>();
-                PinHolderSlot tile = pinInSlot.Parent;
-
-                //send that pin back to inventory
-                PlacePinInTile(pinInSlot, pinInSlot.Owner);
-
-                //try to place our carried pin where we found the new one
-                if (tile != null)
-                {
-                    //throw the pin back to the inventory or the tile the old one belonged to
-                    if (tile is UpgradeTileBehavior)
-                    {
-                        PlacePinInTile(CarriedPin, tile);
-                        return;
-                    }
-                    else
-                    {
-                        ReturnCarriedPinToInventory();
-                        return;
-                    }
-                }
-            }
-
-            //lastly, if we hit an empty inventory slot, return the pin to the inventory
-            else if (raycastResults[0].gameObject.GetComponent<InventoryPinHolder>() != null)
-            {
-                ReturnCarriedPinToInventory();
-                return;
-            }
-        }
-        //at this point in the func we know we hit nothing with the raycast
-        //   or we hit a pin with no parent (which should be impossible)
-
-        //throw the pin back to the inventory or the tile it belongs to
-        if (CarriedPin.Parent == null)
-        {
-            ReturnCarriedPinToInventory();
         }
         else
         {
-            PlacePinInTile(CarriedPin, CarriedPin.Parent);
+            //check to see if the pin is over a tile
+            PointerEventData tempEventData = new(EventSystem.current);
+            tempEventData.position = CarriedPin.transform.position;
+
+            List<RaycastResult> raycastResults = new();
+
+            EventSystem.current.RaycastAll(tempEventData, raycastResults);
+
+            if (raycastResults.Count > 0)
+            {
+                if (raycastResults[0].gameObject.GetComponent<PinItemBehavior>() != null)
+                {
+                    target = raycastResults[0].gameObject.GetComponent<PinItemBehavior>().Parent;
+                }
+                else
+                {
+                    target = raycastResults[0].gameObject.GetComponent<PinHolderSlot>();
+                }
+                
+            }
         }
+
+        if (target == null)
+        {
+            if (CarriedPin.Parent == null)
+            {
+                ReturnCarriedPinToInventory();
+            }
+            else
+            {
+                PlacePinInTile(CarriedPin, CarriedPin.Parent);
+            }
+            return;
+        }
+
+        //if we hit a tile, place whatever we are carrying in that tile
+        if (target is UpgradeTileBehavior tile)
+        {
+            if (tile.pin != null)
+            {
+                PlacePinInTile(target.pin, target.pin.Owner);
+            }
+            PlacePinInTile(CarriedPin, tile);
+        }
+        else if (target is InventoryPinHolder inventorySlot)
+        {
+            ReturnCarriedPinToInventory();
+            if (inventorySlot.pin.Parent == inventorySlot)
+            {
+                PickUpPin(inventorySlot.pin);
+            }
+            UIPublicEvents.SelectSpecificTile?.Invoke(inventorySlot);
+        }
+
     }
 
     #endregion
@@ -460,6 +471,7 @@ public class UpgradeMenuController : MenuBase
 
         if (CarriedPin.Parent is UpgradeTileBehavior tile)
         {
+            pinsTile = tile;
             tile.UnequipPin();
         }
 
@@ -548,6 +560,7 @@ public class UpgradeMenuController : MenuBase
         if (CarriedPin == pin)
         {
             CarriedPin = null;
+            pinsTile = null;
         }
 
         //if its on a tile, unequip it from that tile
@@ -560,6 +573,7 @@ public class UpgradeMenuController : MenuBase
         pin.StopPinMoving();
         tile.SetNewPinInTile(pin);
         ToggleInventoryScrollability(true);
+        UIPublicEvents.SelectSpecificTile?.Invoke(tile);
     }
 
     /// <summary>
@@ -568,6 +582,26 @@ public class UpgradeMenuController : MenuBase
     public void ReturnCarriedPinToInventory()
     {
         PlacePinInTile(CarriedPin, CarriedPin.Owner);
+    }
+
+    /// <summary>
+    /// places a pin back on the tile it was from
+    /// used (mostly) for controller
+    /// </summary>
+    private void ReturnPinToItsTile()
+    {
+        if (CarriedPin != null)
+        {
+            if (pinsTile == null)
+            {
+                ReturnCarriedPinToInventory();
+            }
+            else
+            {
+                PlacePinInTile(CarriedPin, pinsTile);
+            }
+        }
+        
     }
 
     #endregion

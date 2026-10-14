@@ -58,5 +58,7 @@ public static class InputPublicEvents
 
     public static Action AimCancelled;
 
+    public static Action DropPin;
+
     #endregion
 }

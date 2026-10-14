@@ -13,8 +13,19 @@ using UnityEngine;
 
 public class UpgradeControllerSupportManager : MonoBehaviour
 {
+    private enum FocusType
+    {
+        None,
+        Inventory,
+        Grid,
+        Tarot
+    }
+
+    private FocusType currentFocus;
     private UpgradeMenuController menu;
-    private ControllerSupportedClickable currentSelectedItem;
+
+    [HideInInspector]
+    public ControllerSupportedClickable currentSelectedItem;
 
     private ControllerSupportedClickable prevSelectedInventorySlot;
 
@@ -80,6 +91,7 @@ public class UpgradeControllerSupportManager : MonoBehaviour
         InputPublicEvents.SwapFocusToInventory += MoveFocusToInventory;
         InputPublicEvents.SwapFocusToGrid += MoveFocusToGrid;
         InputPublicEvents.SwapFocusToTarot += MoveFocusToTarot;
+        UIPublicEvents.SelectSpecificTile += SelectSpecificTile;
     }
 
     /// <summary>
@@ -92,6 +104,7 @@ public class UpgradeControllerSupportManager : MonoBehaviour
         InputPublicEvents.AimCancelled -= PlayerStoppedMoving;
         InputPublicEvents.SwapFocusToInventory -= MoveFocusToInventory;
         InputPublicEvents.SwapFocusToGrid -= MoveFocusToGrid;
+        UIPublicEvents.SelectSpecificTile -= SelectSpecificTile;
         InputPublicEvents.SwapFocusToTarot -= MoveFocusToTarot;
     }
 
@@ -166,24 +179,47 @@ public class UpgradeControllerSupportManager : MonoBehaviour
             Vector2Int dir = new Vector2Int(Mathf.RoundToInt(currentMoveDirection.x), Mathf.RoundToInt(currentMoveDirection.y));
             int indexedDirection = UtilityFunctions.ConvertVecIntToIntDirection(dir);
 
+            ControllerSupportedClickable target = testingList[indexedDirection];
 
-            if (testingList[indexedDirection] == null)
+            if (target == null)
             {
-                yield return null;
-                continue;
+                //if we are in the inventory and move right
+                if (currentFocus == FocusType.Inventory && indexedDirection == 2)
+                {
+                    MoveFocusToGrid();
+                }
+                else if (currentFocus == FocusType.Grid)
+                {
+                    if (indexedDirection == 6)
+                    {
+                        MoveFocusToInventory();
+                    }
+                    if (indexedDirection == 4)
+                    {
+                        MoveFocusToTarot();
+                    }
+                }
+                else if (currentFocus == FocusType.Tarot)
+                {
+                    if (indexedDirection == 0 || indexedDirection == 1)
+                    {
+                        MoveFocusToGrid();
+                    }
+                    if (indexedDirection == 7)
+                    {
+                        MoveFocusToInventory();
+                    }
+                }
             }
             //different behavior based on what we are
-            if (testingList[indexedDirection] is InventoryPinHolder invSlot)
+            else if (target is InventoryPinHolder invSlot)
             {
                 DeselectCurrentObject();
                 SelectInventoryItem(invSlot);
                 CheckIfInventoryScrollNeedsUpdating();
-
-                yield return null;
-                continue;
             }
 
-            if (testingList[indexedDirection] is UpgradeTileBehavior origTile)
+            else if (target is UpgradeTileBehavior origTile)
             {
                 if (origTile.isActive)
                 {
@@ -195,26 +231,31 @@ public class UpgradeControllerSupportManager : MonoBehaviour
 
                 if (NextGridTileInDirection == null)
                 {
-                    yield return null;
-                    continue;
+                    if (indexedDirection == 6)
+                    {
+                        MoveFocusToInventory();
+                    }
+                    if (indexedDirection == 4)
+                    {
+                        MoveFocusToTarot();
+                    }
                 }
                 else
                 {
                     DeselectCurrentObject();
                     SelectGridItem(NextGridTileInDirection);
                 }
-
-                yield return null;
-                continue;
             }
 
-            if (testingList[indexedDirection] is UpgradeMenuTarotCardUI tarot)
+            else if (target is UpgradeMenuTarotCardUI tarot)
             {
                 DeselectCurrentObject();
                 SelectTarotCard(tarot);
-                yield return null;
-                continue;
             }
+
+            MoveCarriedPin();
+
+
 
             yield return null;
         }
@@ -289,17 +330,79 @@ public class UpgradeControllerSupportManager : MonoBehaviour
     }
 
     /// <summary>
-    /// clicks on a pin
-    /// currently disabled
+    /// clicks on a pin - either places it or picks it up
     /// </summary>
     private void PinSelected()
     {
-        /*if (currentSelectedItem != null)
+        if (currentSelectedItem == null || currentFocus == FocusType.Tarot)
         {
-            currentSelectedItem.ClickedOn();
-        }*/
+            return;
+        }
+
+        if (menu.CarriedPin == null)
+        {
+            if (currentSelectedItem is PinHolderSlot slot)
+            {
+                if (slot.pin != null && slot.pin.Parent == slot)
+                {
+                    slot.pin.ClickedOn();
+                }
+                else
+                {
+                    currentSelectedItem.ClickedOn();
+                    MoveCarriedPin();
+                }
+            }
+        }
+        else
+        {
+            InputPublicEvents.PinReleased?.Invoke();
+        }
+       
     }
 
+    /// <summary>
+    /// move the currently carried pin to the top right of the selected object
+    /// </summary>
+    public void MoveCarriedPin()
+    {
+        //if this has a listener, throw the public event
+        if (UIPublicEvents.UpdateCarriedPinPosition != null)
+        {
+            Vector3[] Corners = new Vector3[4];
+            currentSelectedItem.GetComponent<RectTransform>().GetWorldCorners(Corners);
+            //Rect currentSelRect = currentSelectedItem.GetComponent<RectTransform>().rect;
+
+            UIPublicEvents.UpdateCarriedPinPosition?.Invoke(
+                new Vector2(Corners[2].x,
+                            Corners[2].y));
+        }
+    }
+
+    /// <summary>
+    /// changes the selected object to be a specific tile
+    /// </summary>
+    /// <param name="slot"></param>
+    private void SelectSpecificTile(PinHolderSlot slot)
+    {
+        if (currentSelectedItem != null)
+        {
+            currentSelectedItem.UnHoveredOver();
+        }
+
+        if (slot is UpgradeTileBehavior tile)
+        {
+            currentFocus = FocusType.Grid;
+            SelectGridItem(tile);
+        }
+        if (slot is InventoryPinHolder inv)
+        {
+            currentFocus = FocusType.Inventory;
+            SelectInventoryItem(inv);
+        }
+
+        MoveCarriedPin();
+    }
     #endregion
 
     #region Grid
@@ -309,8 +412,14 @@ public class UpgradeControllerSupportManager : MonoBehaviour
     /// </summary>
     private void MoveFocusToGrid()
     {
-        currentSelectedItem.UnHoveredOver();
+        if (currentSelectedItem != null)
+        {
+            currentSelectedItem.UnHoveredOver();
+        }
+
+        currentFocus = FocusType.Grid;
         SelectLastSelectedGridTile();
+        MoveCarriedPin();
     }
 
     /// <summary>
@@ -370,10 +479,17 @@ public class UpgradeControllerSupportManager : MonoBehaviour
     /// <summary>
     /// moves the player's cursor to the inventory
     /// </summary>
-    private void MoveFocusToInventory()
+    public void MoveFocusToInventory()
     {
-        currentSelectedItem.UnHoveredOver();
+        if (currentSelectedItem != null)
+        {
+            currentSelectedItem.UnHoveredOver();
+        }
+        
+        currentFocus = FocusType.Inventory;
+        
         SelectLastSelectedInventoryPin();
+        MoveCarriedPin();
     }
 
     /// <summary>
@@ -419,8 +535,14 @@ public class UpgradeControllerSupportManager : MonoBehaviour
     /// </summary>
     private void MoveFocusToTarot()
     {
-        currentSelectedItem.UnHoveredOver();
+        if (currentSelectedItem != null)
+        {
+            currentSelectedItem.UnHoveredOver();
+        }
+
+        currentFocus = FocusType.Tarot;
         SelectLastSelectedTarotTile();
+        MoveCarriedPin();
     }
 
     /// <summary>
