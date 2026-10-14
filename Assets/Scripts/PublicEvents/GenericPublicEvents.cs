@@ -17,4 +17,6 @@ public static class GenericPublicEvents
     public static Action StartGamePressed;
 
     public static Action<PlayerController> PlayerSpawnedIn;
+
+    public static Action ReturnToMainMenu;
 }
