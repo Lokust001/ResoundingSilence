@@ -121,7 +121,12 @@ public class UIManager : BaseManager
     /// <returns></returns>
     private async Awaitable SetupPublicEvents()
     {
-        GenericPublicEvents.AllManagersInitialized += GoToMainMenu;
+        if (!AppManager.Instance.EnableTestingMode)
+        {
+            GenericPublicEvents.AllManagersInitialized += GoToMainMenu;
+        }
+
+       
         UIPublicEvents.UpdateUIManagerStack += UpdateUiManagerStack;
         InputPublicEvents.ToggleUpgradeMenuPressed += ToggleUpgradeMenu;
         InputPublicEvents.ToggleDebugConsole += ToggleDebugConsole;
@@ -343,7 +348,12 @@ public class UIManager : BaseManager
     {
         if (currentlyOpenedMenus.Count <= 0)
         {
-            throw new System.Exception("Tried to check if in full screen - currently opened menus has no items in it");
+            if (AppManager.Instance.EnableTestingMode)
+            {
+                return false;
+            }
+
+            throw new System.Exception("No menus opened");
         }
 
         return (currentlyOpenedMenus.Peek() == UiMenuType.MainMenu ||
