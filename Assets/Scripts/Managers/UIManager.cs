@@ -348,7 +348,7 @@ public class UIManager : BaseManager
     {
         if (currentlyOpenedMenus.Count <= 0)
         {
-            throw new System.Exception("Tried to check if in full screen - currently opened menus has no items in it");
+            return false;
         }
 
         return (currentlyOpenedMenus.Peek() == UiMenuType.MainMenu ||
