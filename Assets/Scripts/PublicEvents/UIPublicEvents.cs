@@ -18,6 +18,7 @@ public static class UIPublicEvents
 
     public static Action<UiMenuType> UpdateUIManagerStack;
 
+    public static Action CurrentMenuClosed;
 
     #region UpgradeMenu
 
@@ -47,6 +48,14 @@ public static class UIPublicEvents
     #region Tooltips
 
     public static Action<TMP_Text> SetNewTooltipTextObject;
+
+    #endregion
+
+    #region SettingsMenu
+
+    public static Action SettingsMenuOpened;
+
+    public static Action SettingsMenuClosed;
 
     #endregion
 }
