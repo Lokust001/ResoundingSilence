@@ -180,7 +180,7 @@ public class DebugConsole : MonoBehaviour
                 postCommand = postCommand.Substring(1);
             }
             int TempIsland;
-            if (postCommand.StartsWith("current") || postCommand.StartsWith("cur"))
+            if (postCommand.Length != 0 || postCommand.StartsWith("current") || postCommand.StartsWith("cur"))
             {
                 int closestIndex = -1;
                 float closestDistance = Mathf.Infinity;
@@ -196,6 +196,14 @@ public class DebugConsole : MonoBehaviour
                     i++;
                 }
 
+                if (postCommand.Length != 0)
+                {
+                    mapGenInstance.SwitchIsland(closestIndex);
+                    AppendConsoleLine(Command, inputColor);
+                    AppendConsoleLine($"Island {closestIndex} Has switched layouts", commandCompletedColor);
+                    FinishCommand();
+                    return;
+                }
                 if (postCommand.StartsWith("current"))
                 {
                     postCommand = postCommand.Substring(7);
@@ -234,7 +242,7 @@ public class DebugConsole : MonoBehaviour
                     return;
                 }
             }
-            else if (postCommand.Length != 0 && int.TryParse(postCommand.Substring(0, 1), out TempIsland))
+            else if (int.TryParse(postCommand.Substring(0, 1), out TempIsland))
             {
                 int Temp;
                 postCommand = postCommand.Substring(1);
