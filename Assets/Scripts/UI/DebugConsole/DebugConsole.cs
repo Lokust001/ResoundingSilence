@@ -173,7 +173,11 @@ public class DebugConsole : MonoBehaviour
             }
             else
             {
-                postCommand = Command.Substring(3);
+                postCommand = Command.Substring(2);
+            }
+            if (postCommand.StartsWith(" "))
+            {
+                postCommand = postCommand.Substring(1);
             }
             int TempIsland;
             if (postCommand.StartsWith("current") || postCommand.StartsWith("cur"))
@@ -263,6 +267,7 @@ public class DebugConsole : MonoBehaviour
             AppendConsoleLine(Command, inputColor);
             AppendConsoleLine($"Map Has Been Reset", commandCompletedColor);
             mapGenInstance.spawnMap();
+            return;
         }
 
         AppendConsoleLine(Command, incorrectInputColor);
