@@ -18,6 +18,8 @@ public class PauseMenuController : MenuBase
     [SerializeField]
     private Button QuitConfirmCancelButton;
 
+    private GameObject lastSel;
+
     /// <summary>
     /// triggers when the menu opens sucessfully
     /// </summary>
@@ -55,12 +57,19 @@ public class PauseMenuController : MenuBase
 
         if (temp)
         {
+            lastSel = EventSystem.current.currentSelectedGameObject;
             EventSystem.current.SetSelectedGameObject(QuitConfirmCancelButton.gameObject);
         }
         else
         {
-            EventSystem.current.SetSelectedGameObject(defaultSelectedGameobject);
+            if (lastSel == null)
+            {
+                lastSel = defaultSelectedGameobject;
+            }
+            EventSystem.current.SetSelectedGameObject(lastSel);
         }
+
+        
     }
 
     /// <summary>
