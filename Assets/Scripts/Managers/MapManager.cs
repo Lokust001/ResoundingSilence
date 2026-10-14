@@ -47,7 +47,11 @@ public class MapManager : BaseManager
     /// <returns></returns>
     private async Awaitable SetUpPublicEvents()
     {
-        GenericPublicEvents.AllManagersInitialized += SpawnMapLayout;
+        if (!AppManager.Instance.EnableTestingMode)
+        {
+            GenericPublicEvents.AllManagersInitialized += SpawnMapLayout;
+        }
+        
 
         await Task.CompletedTask;
     }

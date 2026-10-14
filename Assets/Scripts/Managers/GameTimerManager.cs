@@ -45,7 +45,10 @@ public class GameTimerManager : BaseManager
         }
         else { Destroy(this); }
 
-        GenericPublicEvents.AllManagersInitialized += StartOrResumeGameTime;
+        if (!AppManager.Instance.EnableTestingMode)
+        {
+            GenericPublicEvents.AllManagersInitialized += StartOrResumeGameTime;
+        }
 
         await Task.CompletedTask;
     }
