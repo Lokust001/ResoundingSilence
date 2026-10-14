@@ -50,9 +50,10 @@ public class PauseMenuController : MenuBase
     /// </summary>
     public void ToggleQuit()
     {
-        QuitConfirmPopup.SetActive(!QuitConfirmPopup.activeInHierarchy);
+        bool temp = !QuitConfirmPopup.activeInHierarchy;
+        QuitConfirmPopup.SetActive(temp);
 
-        if (QuitConfirmPopup.activeInHierarchy)
+        if (temp)
         {
             EventSystem.current.SetSelectedGameObject(QuitConfirmCancelButton.gameObject);
         }
