@@ -180,7 +180,7 @@ public class DebugConsole : MonoBehaviour
                 postCommand = postCommand.Substring(1);
             }
             int TempIsland;
-            if (postCommand.Length != 0 || postCommand.StartsWith("current") || postCommand.StartsWith("cur"))
+            if (postCommand == null || postCommand.Length == 0 || postCommand.StartsWith("current") || postCommand.StartsWith("cur"))
             {
                 int closestIndex = -1;
                 float closestDistance = Mathf.Infinity;
@@ -196,7 +196,7 @@ public class DebugConsole : MonoBehaviour
                     i++;
                 }
 
-                if (postCommand.Length != 0)
+                if (postCommand == null || postCommand.Length == 0)
                 {
                     mapGenInstance.SwitchIsland(closestIndex);
                     AppendConsoleLine(Command, inputColor);
