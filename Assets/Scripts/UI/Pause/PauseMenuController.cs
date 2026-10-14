@@ -63,10 +63,10 @@ public class PauseMenuController : MenuBase
     }
 
     /// <summary>
-    /// QUits the app
+    /// Quits the app
     /// </summary>
     public void ConfirmQuit()
     {
-        Application.Quit();
+        GenericPublicEvents.ReturnToMainMenu?.Invoke();
     }
 }
