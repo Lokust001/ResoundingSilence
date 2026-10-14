@@ -15,6 +15,8 @@ public class MapGenerator : MonoBehaviour
     private List<GameObject> ObjectiveSpots = new List<GameObject>();
     private List<GameObject> ShopSpots = new List<GameObject>();
     private List<GameObject> BuffSpots = new List<GameObject>();
+
+    public Transform PlayerSpawnpoint;
     [SerializeField] private GameObject shopPrefab;
     [SerializeField] private int shopAmount;
     [SerializeField] private GameObject chestPrefab;
