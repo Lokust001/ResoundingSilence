@@ -157,27 +157,29 @@ public class Enemy : MonoBehaviour
     /// <returns></returns>
     private IEnumerator RepeatedlyCheckShooterRange() 
     {
+        int i = 0;
         while (true) 
         {
             NextEnemyAction(true);
             yield return actionInterval;
+            i++;
+            Debug.Log("Looped " + i + " times");
         }
         
     }
 
     /// <summary>
-    /// Temporarily switch the default actionInterval to a new priority action
+    /// Temporarily halt behavior loop to start a new priority action
     /// </summary>
     /// <returns></returns>
     private IEnumerator SwitchYieldInterval(YieldInstruction yieldInstruction) 
     {
-        //Set the action interval for the repeat shooter range to resolve first
-        actionInterval = yieldInstruction;
-        
-        //Delay so that the stack resolves and it moves onto the yielding action
-        yield return null;
-        Debug.Log("Instruction Returned");
-        actionInterval = new WaitForSeconds(enemyData.timeBetweenAttacks);
+        //Stop the behavior loop first
+        StopCoroutine(behaviorLoop);
+        //Wait for priority action to finish
+        yield return yieldInstruction;
+        //Restart behavior loop
+        behaviorLoop = StartCoroutine(RepeatedlyCheckShooterRange());
     }
 
     /// <summary>

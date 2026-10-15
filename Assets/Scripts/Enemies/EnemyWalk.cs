@@ -151,13 +151,14 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
         float accuracy = enemyData.retreatAccuracyThreshold;
         while (distance > accuracy) 
         {
+            navMeshAgent.destination = retreatPosition;
             distance = Vector3.Distance(enemyTransform.position, retreatPosition);
             yield return new WaitForFixedUpdate();
         }
 
         enemyTransform.position = retreatPosition;
         navMeshAgent.isStopped = true;
-
+        Debug.Log("Finished Retreat");
     }
 
     /// <summary>
