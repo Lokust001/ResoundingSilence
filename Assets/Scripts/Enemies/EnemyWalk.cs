@@ -139,8 +139,6 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     /// <returns></returns>
     public IEnumerator MoveAwayFromPlayer() 
     {
-        Debug.Log("STARTED RETREATING");
-
         Transform playerTransform = playerReference.transform;
         Vector3 directionToPlayer = (enemyTransform.position - playerTransform.position).normalized;
         directionToPlayer.y = 0;
@@ -154,7 +152,6 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
         while (distance > accuracy) 
         {
             distance = Vector3.Distance(enemyTransform.position, retreatPosition);
-            Debug.Log(distance);
             yield return new WaitForFixedUpdate();
         }
 

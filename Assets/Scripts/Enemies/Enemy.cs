@@ -31,7 +31,7 @@ public class Enemy : MonoBehaviour
     YieldInstruction actionInterval;
 
     private Coroutine behaviorLoop;
-    private Coroutine switchedLoop;
+
 
     /// <summary>
     /// Creates a copy of the scriptable object not tied to the inspector, then propagates it other scripts
@@ -157,12 +157,10 @@ public class Enemy : MonoBehaviour
     /// <returns></returns>
     private IEnumerator RepeatedlyCheckShooterRange() 
     {
-        Debug.Log("Loop Started");
         while (true) 
         {
             NextEnemyAction(true);
-            yield return new WaitForSeconds(enemyData.timeBetweenAttacks);
-            Debug.Log("ACTION INTERVAL FINISHED!");
+            yield return actionInterval;
         }
         
     }
@@ -171,20 +169,15 @@ public class Enemy : MonoBehaviour
     /// Temporarily switch the default actionInterval to a new priority action
     /// </summary>
     /// <returns></returns>
-    private IEnumerator SwitchYieldInterval() 
+    private IEnumerator SwitchYieldInterval(YieldInstruction yieldInstruction) 
     {
-        StopCoroutine(behaviorLoop);
         //Set the action interval for the repeat shooter range to resolve first
-        Debug.Log("Instruction Switched");
-
-
+        actionInterval = yieldInstruction;
+        
         //Delay so that the stack resolves and it moves onto the yielding action
-        yield return StartCoroutine(movementBeahvior.MoveAwayFromPlayer());
-        //actionInterval = new WaitForSeconds(enemyData.timeBetweenAttacks);
         yield return null;
         Debug.Log("Instruction Returned");
-        behaviorLoop = StartCoroutine(RepeatedlyCheckShooterRange());
-        switchedLoop = null;
+        actionInterval = new WaitForSeconds(enemyData.timeBetweenAttacks);
     }
 
     /// <summary>
@@ -274,7 +267,7 @@ public class Enemy : MonoBehaviour
                 //Only do this if a time-based check has passed via RepeatedlyCheckShooterRange
                 if (activateTimeBasedIntervalActions) 
                 {
-                    switchedLoop ??= StartCoroutine(SwitchYieldInterval());
+                    StartCoroutine(SwitchYieldInterval(StartCoroutine(movementBeahvior.MoveAwayFromPlayer())));
                 }
                 break;
             case BaseEnemyScriptable.EnemyType.Melee:
