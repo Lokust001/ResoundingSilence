@@ -63,10 +63,20 @@ public class MenuBase : MonoBehaviour
     /// 
     /// Designed to be at the bottom of the overridden function, not the top
     /// </summary>
-    protected virtual void CloseMenu()
+    private void CloseMenu()
+    {
+        if (gameObject.activeInHierarchy)
+        {
+            gameObject.SetActive(false);
+            MenuClosedSucessfully();
+        }
+        
+    }
+
+    protected virtual void MenuClosedSucessfully()
     {
         TearDownPublicEvents();
-        gameObject.SetActive(false);
+
     }
 
     /// <summary>
