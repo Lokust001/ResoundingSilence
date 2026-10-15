@@ -74,11 +74,11 @@ public class SettingsMenuController : MenuBase
     /// <summary>
     /// triggers when the menu closed
     /// </summary>
-    protected override void CloseMenu()
+    protected override void MenuClosedSucessfully()
     {
         UIPublicEvents.SettingsMenuClosed?.Invoke();
 
-        base.CloseMenu();
+        base.MenuClosedSucessfully();
 
     }
 

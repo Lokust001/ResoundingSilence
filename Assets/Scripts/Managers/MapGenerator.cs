@@ -11,7 +11,7 @@ using UnityEngine;
 public class MapGenerator : MonoBehaviour
 {
     [SerializeField] List<MapSectionSpawner> Spawners;
-    private List<GameObject> islands = new List<GameObject>();
+    [HideInInspector] public List<GameObject> islands = new List<GameObject>();
     private List<GameObject> ObjectiveSpots = new List<GameObject>();
     private List<GameObject> ShopSpots = new List<GameObject>();
     private List<GameObject> BuffSpots = new List<GameObject>();
@@ -179,5 +179,36 @@ public class MapGenerator : MonoBehaviour
             }
             BuffSpots.Remove(BuffSpots[spawnPoint]);
         }
+    }
+
+    /// <summary>
+    /// wipes all the islands that are spawned
+    /// </summary>
+    public void DeleteIslands()
+    {
+        ShopSpots.Clear();
+        BuffSpots.Clear();
+        ObjectiveSpots.Clear();
+        foreach(GameObject island in islands)
+        {
+            Destroy(island);
+        }
+        islands.Clear();
+    }
+
+    /// <summary>
+    /// changes a specific island and what is spawned there
+    /// </summary>
+    /// <param name="IslandNumber"></param>
+    /// <param name="layout"></param>
+    public void SwitchIsland(int IslandNumber, int layout = -1)
+    {
+        IslandData Island = islands[IslandNumber].GetComponent<IslandData>();
+        if(layout < 0)
+        {
+            layout = Random.Range(0,Island.Spawner.prefabs.Count);
+        }
+        Destroy(islands[IslandNumber]);
+        islands[IslandNumber] = Island.Spawner.SpawnSingleIsland(Island.SpawnPoint, layout);
     }
 }

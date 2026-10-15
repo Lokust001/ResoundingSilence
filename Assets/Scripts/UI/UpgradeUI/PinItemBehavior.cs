@@ -88,8 +88,8 @@ public class PinItemBehavior : ControllerSupportedClickable
         else
         {
             
-            UIPublicEvents.UpdateCarriedPinPosition += Teleport;
-            FindAnyObjectByType<UpgradeControllerSupportManager>().MoveCarriedPin();
+            UIPublicEvents.UpdateCarriedItemPosition += Teleport;
+            ControllerUIService.Instance.MoveCarriedItem();
         }
         
 
@@ -104,7 +104,7 @@ public class PinItemBehavior : ControllerSupportedClickable
         pinSprite.raycastTarget = true;
         UnHoveredOver();
         InputPublicEvents.MouseMoved -= Teleport;
-        UIPublicEvents.UpdateCarriedPinPosition -= Teleport;
+        UIPublicEvents.UpdateCarriedItemPosition -= Teleport;
     }
 
     /// <summary>
