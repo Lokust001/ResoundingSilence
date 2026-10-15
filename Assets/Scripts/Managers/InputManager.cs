@@ -303,7 +303,6 @@ public class InputManager : BaseManager
     /// </summary>
     private void EnableMidRunPublicEvents()
     {
-        Debug.Log("enabling mid run");
         //needs to be redone every time the action map changes
         move = pInput.currentActionMap.FindAction("Move");
         shoot = pInput.currentActionMap.FindAction("Shoot");
@@ -382,7 +381,6 @@ public class InputManager : BaseManager
     /// </summary>
     private void DisableMidRunPublicEvents()
     {
-        Debug.Log("disabling mid run");
         move.performed -= Move_performed;
         move.canceled -= Move_canceled;
         shoot.started -= Shoot_started;

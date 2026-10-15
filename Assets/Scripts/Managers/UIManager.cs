@@ -250,7 +250,6 @@ public class UIManager : BaseManager
 
         //updates the stack with the newest menu type
         currentlyOpenedMenus.Push(menuType);
-        Debug.Log(currentlyOpenedMenus.Peek());
 
         //opens all of the new menus
         OpenMenus();
@@ -311,7 +310,6 @@ public class UIManager : BaseManager
         //hide the menus that are open rn
         UIPublicEvents.HideOpenMenus?.Invoke();
         currentlyOpenedMenus.Pop();
-        Debug.Log(currentlyOpenedMenus.Peek());
         OpenMenus();
     }
 
