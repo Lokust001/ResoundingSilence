@@ -46,6 +46,7 @@ public class DebugConsole : MonoBehaviour
 
     //private bool noClipToggle = false;
     private bool godToggle = false;
+    private bool pivotToggle = false;
     /*private bool cameraToggle = false;
     private bool freezeToggle = false;*/
 
@@ -283,6 +284,24 @@ public class DebugConsole : MonoBehaviour
             FinishCommand();
             return;
         }
+
+        if(Command.StartsWith("pivotcam") || Command.StartsWith("pc"))
+        {
+            pivotToggle = !pivotToggle;
+            if (pivotToggle)
+            {
+                //playerInstance.pivot = true;
+            }
+            else
+            {
+                //playerInstance.pivot = false;
+            }
+            AppendConsoleLine(Command, inputColor);
+            AppendConsoleLine($"Pivot command: {pivotToggle}", commandCompletedColor);
+            FinishCommand();
+            return;
+        }
+
 
         AppendConsoleLine(Command, incorrectInputColor);
         AppendConsoleLine($"No command found, use Help for a list of all commands.", Color.orange);
