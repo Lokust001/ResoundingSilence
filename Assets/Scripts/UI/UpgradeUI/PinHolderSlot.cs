@@ -74,4 +74,12 @@ public class PinHolderSlot : ControllerSupportedClickable
 
         Highlight.enabled = false;
     }
+
+    public override void ClickedOn()
+    {
+        if (pin != null && pin.Parent == this)
+        {
+            pin.ClickedOn();
+        }
+    }
 }

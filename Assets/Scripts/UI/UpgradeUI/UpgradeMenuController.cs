@@ -10,11 +10,12 @@ using NaughtyAttributes;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UpgradeMenuController : MenuBase
+public class UpgradeMenuController : MenuControllerSupportBase
 {
     #region vars
 
@@ -107,31 +108,45 @@ public class UpgradeMenuController : MenuBase
 
     private int gridHeight;
     private int gridWidth;
-
-
-
-    [HideInInspector]
-    public PinItemBehavior CarriedPin;
     private UpgradeTileBehavior pinsTile;
 
     private List<PinItemBehavior> pinsOnNonEnabledGrids = new();
 
-    private UpgradeControllerSupportManager supportManager;
+    #endregion
 
+    #region Controller
+    private enum FocusType
+    {
+        None,
+        Inventory,
+        Grid,
+        Tarot
+    }
+
+    private FocusType currentFocus;
+
+    private ControllerSupportedClickable prevSelectedInventorySlot;
+
+    private ControllerSupportedClickable prevSelectedGridSlot;
+
+    private ControllerSupportedClickable prevSelectedTarotCard;
+
+    private RectTransform inventoryContentRect;
+
+    private RectTransform inventoryScrollRectTransform;
     #endregion
 
     #endregion
 
     #region Setup
 
-    /// <summary>
-    /// Initializes the grid
-    /// </summary>
-    public override void InitMenu()
+    private PinItemBehavior GetCarriedPin()
     {
-        base.InitMenu();
-        supportManager = GetComponent<UpgradeControllerSupportManager>();
-        supportManager.InitSupportManager();
+        if (carriedItem is PinItemBehavior pin)
+        {
+            return pin;
+        }
+        return null;
     }
 
     /// <summary>
@@ -183,6 +198,11 @@ public class UpgradeMenuController : MenuBase
         InputPublicEvents.DropPin += ReturnPinToItsTile;
         InputPublicEvents.ControllerEnabled += ReturnPinToItsTile;
         InputPublicEvents.KeyboardMouseEnabled += ReturnPinToItsTile;
+
+        InputPublicEvents.SwapFocusToInventory += MoveFocusToInventory;
+        InputPublicEvents.SwapFocusToGrid += MoveFocusToGrid;
+        InputPublicEvents.SwapFocusToTarot += MoveFocusToTarot;
+        UIPublicEvents.SelectSpecificTile += SelectSpecificTile;
     }
 
     /// <summary>
@@ -196,6 +216,11 @@ public class UpgradeMenuController : MenuBase
         InputPublicEvents.DropPin -= ReturnPinToItsTile;
         InputPublicEvents.ControllerEnabled -= ReturnPinToItsTile;
         InputPublicEvents.KeyboardMouseEnabled -= ReturnPinToItsTile;
+
+        InputPublicEvents.SwapFocusToInventory -= MoveFocusToInventory;
+        InputPublicEvents.SwapFocusToGrid -= MoveFocusToGrid;
+        UIPublicEvents.SelectSpecificTile -= SelectSpecificTile;
+        InputPublicEvents.SwapFocusToTarot -= MoveFocusToTarot;
     }
 
     /// <summary>
@@ -283,9 +308,10 @@ public class UpgradeMenuController : MenuBase
     /// </summary>
     public void SwapGrid()
     {
-        if (CarriedPin != null)
+
+        if (carriedItem != null)
         {
-            CarriedPin.StopPinMoving();
+            GetCarriedPin().StopPinMoving();
             ReturnCarriedPinToInventory();
         }
 
@@ -316,9 +342,10 @@ public class UpgradeMenuController : MenuBase
     private void SetCarriedPin(PinItemBehavior item)
     {
         //places the currently held pin in the tile of the pin you want to pick up
-        if (CarriedPin != null)
+        if (carriedItem != null)
         {
-            CarriedPin.StopPinMoving();
+            PinItemBehavior pin = GetCarriedPin();
+            pin.StopPinMoving();
 
             //if the new item is in the inventory
             if (item.Parent == item.Owner)
@@ -329,7 +356,7 @@ public class UpgradeMenuController : MenuBase
             else
             {
                 //set the current item to the tile of the new one
-                PlacePinInTile(CarriedPin, item.Parent);
+                PlacePinInTile(pin, item.Parent);
             }
         }
 
@@ -342,7 +369,7 @@ public class UpgradeMenuController : MenuBase
     /// <param name="item"></param>
     public void GrabPlacedPin(PinItemBehavior item)
     {
-        if (CarriedPin != null)
+        if (GetCarriedPin() != null)
         {
             ReturnCarriedPinToInventory();
         }
@@ -383,7 +410,7 @@ public class UpgradeMenuController : MenuBase
     private void DropHeldPin()
     {
         //quit out if youre not holding anything
-        if (CarriedPin == null)
+        if (GetCarriedPin() == null)
         {
             return;
         }
@@ -392,7 +419,7 @@ public class UpgradeMenuController : MenuBase
 
         if (InputManager.Instance.ControllerIsEnabled)
         {
-            if (supportManager.currentSelectedItem is PinHolderSlot slot)
+            if (ControllerUIService.Instance.currentlySelected is PinHolderSlot slot)
             {
                 target = slot;
             }
@@ -401,7 +428,7 @@ public class UpgradeMenuController : MenuBase
         {
             //check to see if the pin is over a tile
             PointerEventData tempEventData = new(EventSystem.current);
-            tempEventData.position = CarriedPin.transform.position;
+            tempEventData.position = carriedItem.transform.position;
 
             List<RaycastResult> raycastResults = new();
 
@@ -420,16 +447,18 @@ public class UpgradeMenuController : MenuBase
                 
             }
         }
+        PinItemBehavior pin = GetCarriedPin();
 
         if (target == null)
         {
-            if (CarriedPin.Parent == null)
+           
+            if (pin.Parent == null)
             {
                 ReturnCarriedPinToInventory();
             }
             else
             {
-                PlacePinInTile(CarriedPin, CarriedPin.Parent);
+                PlacePinInTile(pin, pin.Parent);
             }
             return;
         }
@@ -441,7 +470,7 @@ public class UpgradeMenuController : MenuBase
             {
                 PlacePinInTile(target.pin, target.pin.Owner);
             }
-            PlacePinInTile(CarriedPin, tile);
+            PlacePinInTile(pin, tile);
         }
         else if (target is InventoryPinHolder inventorySlot)
         {
@@ -467,21 +496,22 @@ public class UpgradeMenuController : MenuBase
     /// <param name="item"></param>
     private void PickUpPin(PinItemBehavior item)
     {
-        CarriedPin = item;
+        carriedItem = item;
+        PinItemBehavior pin = GetCarriedPin();
 
-        if (CarriedPin.Parent is UpgradeTileBehavior tile)
+        if (pin.Parent is UpgradeTileBehavior tile)
         {
             pinsTile = tile;
             tile.UnequipPin();
         }
 
-        CarriedPin.Parent = null;
+        pin.Parent = null;
 
 
 
-        CarriedPin.gameObject.SetActive(true);
-        CarriedPin.transform.SetParent(draggingParent);
-        CarriedPin.StartPinMoving();
+        pin.gameObject.SetActive(true);
+        pin.transform.SetParent(draggingParent);
+        pin.StartPinMoving();
 
         ToggleInventoryScrollability(false);
     }
@@ -557,9 +587,9 @@ public class UpgradeMenuController : MenuBase
         }
 
         //if we place the carried pin, we arent carrying it anymore
-        if (CarriedPin == pin)
+        if (carriedItem == pin)
         {
-            CarriedPin = null;
+            carriedItem = null;
             pinsTile = null;
         }
 
@@ -581,7 +611,8 @@ public class UpgradeMenuController : MenuBase
     /// </summary>
     public void ReturnCarriedPinToInventory()
     {
-        PlacePinInTile(CarriedPin, CarriedPin.Owner);
+        PinItemBehavior pin = GetCarriedPin();
+        PlacePinInTile(pin, pin.Owner);
     }
 
     /// <summary>
@@ -590,7 +621,7 @@ public class UpgradeMenuController : MenuBase
     /// </summary>
     private void ReturnPinToItsTile()
     {
-        if (CarriedPin != null)
+        if (carriedItem != null)
         {
             if (pinsTile == null)
             {
@@ -598,11 +629,298 @@ public class UpgradeMenuController : MenuBase
             }
             else
             {
-                PlacePinInTile(CarriedPin, pinsTile);
+                PinItemBehavior pin = GetCarriedPin();
+                PlacePinInTile(pin, pinsTile);
             }
         }
         
     }
+
+    #endregion
+
+    #region ControllerSupport
+
+
+    #region movement
+
+
+
+    public override void MoveSelectedItem(ControllerSupportedClickable target, int direction)
+    {
+        if (target == null)
+        {
+            //if we are in the inventory and move right
+            if (currentFocus == FocusType.Inventory && direction == 2)
+            {
+                MoveFocusToGrid();
+            }
+            else if (currentFocus == FocusType.Grid)
+            {
+                if (direction == 6)
+                {
+                    MoveFocusToInventory();
+                }
+                if (direction == 4)
+                {
+                    MoveFocusToTarot();
+                }
+            }
+            else if (currentFocus == FocusType.Tarot)
+            {
+                if (direction == 0 || direction == 1)
+                {
+                    MoveFocusToGrid();
+                }
+                if (direction == 7)
+                {
+                    MoveFocusToInventory();
+                }
+            }
+        }
+        //different behavior based on what we are
+        else if (target is InventoryPinHolder invSlot)
+        {
+            ControllerUIService.Instance.DeselectCurrentObject();
+            SelectInventoryItem(invSlot);
+
+            if (inventoryContentRect == null)
+            {
+                inventoryContentRect = inventory.GetComponent<RectTransform>();
+            }
+
+            if (inventoryScrollRectTransform == null)
+            {
+                inventoryScrollRectTransform = inventoryScrollRect.GetComponent<RectTransform>();
+            }
+
+            inventoryContentRect.anchoredPosition = UtilityFunctions.GetNewScrollRectAnchoredPos(
+                inventoryScrollRectTransform,
+                ControllerUIService.Instance.currentlySelected.GetComponent<RectTransform>(),
+                inventoryContentRect
+                );
+        }
+
+        else if (target is UpgradeTileBehavior origTile)
+        {
+            if (origTile.isActive)
+            {
+                ControllerUIService.Instance.DeselectCurrentObject();
+                SelectGridItem(origTile);
+            }
+
+            UpgradeTileBehavior NextGridTileInDirection = GetNextGridTile(origTile, direction);
+
+            if (NextGridTileInDirection == null)
+            {
+                if (direction == 6)
+                {
+                    MoveFocusToInventory();
+                }
+                if (direction == 4)
+                {
+                    MoveFocusToTarot();
+                }
+            }
+            else
+            {
+                ControllerUIService.Instance.DeselectCurrentObject();
+                SelectGridItem(NextGridTileInDirection);
+            }
+        }
+
+        else if (target is UpgradeMenuTarotCardUI tarot)
+        {
+            ControllerUIService.Instance.DeselectCurrentObject();
+            SelectTarotCard(tarot);
+        }
+    }
+
+
+
+    #endregion
+
+    #region Selection
+
+    public override void SelectDefault()
+    {
+        MoveFocusToInventory();
+    }
+
+    /// <summary>
+    /// changes the selected object to be a specific tile
+    /// </summary>
+    /// <param name="slot"></param>
+    private void SelectSpecificTile(PinHolderSlot slot)
+    {
+        if (slot is UpgradeTileBehavior tile)
+        {
+            currentFocus = FocusType.Grid;
+            SelectGridItem(tile);
+        }
+        if (slot is InventoryPinHolder inv)
+        {
+            currentFocus = FocusType.Inventory;
+            SelectInventoryItem(inv);
+        }
+
+        ControllerUIService.Instance.MoveCarriedItem();
+    }
+    #endregion
+
+    #region Grid
+
+    /// <summary>
+    /// Moves the player's cursor to the grid
+    /// </summary>
+    private void MoveFocusToGrid()
+    {
+        currentFocus = FocusType.Grid;
+        SelectLastSelectedGridTile();
+    }
+
+    /// <summary>
+    /// Selects the last selected grid tile.
+    /// </summary>
+    /// <exception cref="System.Exception"></exception>
+    public void SelectLastSelectedGridTile()
+    {
+        //if youve selected an inventory slot, selects that one
+        if (prevSelectedGridSlot != null)
+        {
+            SelectGridItem(prevSelectedGridSlot);
+            return;
+        }
+
+        UpgradeTileBehavior defaultGridPin = tilesInGrid.FirstOrDefault(x => x.isActive == true);
+
+        if (defaultGridPin == null)
+        {
+            throw new System.Exception("Grid has no active tiles");
+        }
+
+        SelectGridItem(defaultGridPin);
+    }
+
+    /// <summary>
+    /// selects grid tile
+    /// </summary>
+    /// <param name="gridItem"></param>
+    public void SelectGridItem(ControllerSupportedClickable gridItem)
+    {
+        prevSelectedGridSlot = gridItem;
+        ControllerUIService.Instance.SelectSpecficTile(gridItem);
+    }
+
+    /// <summary>
+    /// moves along an axis until it either returns an active grid tile or a null element (wall)
+    /// </summary>
+    /// <param name="startingTileInclusive"></param>
+    /// <param name="direction"></param>
+    /// <returns></returns>
+    private UpgradeTileBehavior GetNextGridTile(UpgradeTileBehavior startingTileInclusive, int direction)
+    {
+        if (startingTileInclusive == null || startingTileInclusive.isActive)
+        {
+            return startingTileInclusive;
+        }
+
+        return GetNextGridTile(startingTileInclusive.adjacentTiles[direction], direction);
+    }
+
+    #endregion
+
+    #region Inventory
+
+    /// <summary>
+    /// moves the player's cursor to the inventory
+    /// </summary>
+    public void MoveFocusToInventory()
+    {
+        currentFocus = FocusType.Inventory;
+
+        SelectLastSelectedInventoryPin();
+    }
+
+    /// <summary>
+    /// Selects the last selected inventory pin.
+    /// </summary>
+    /// <exception cref="System.Exception"></exception>
+    public void SelectLastSelectedInventoryPin()
+    {
+        //if youve selected an inventory slot, selects that one
+        if (prevSelectedInventorySlot != null)
+        {
+            SelectInventoryItem(prevSelectedInventorySlot);
+            return;
+        }
+
+        InventoryPinHolder defaultInventoryPin = inventorySlots[0];
+
+        if (defaultInventoryPin == null)
+        {
+            throw new System.Exception("Inventory is null");
+        }
+
+        SelectInventoryItem(defaultInventoryPin);
+    }
+
+    /// <summary>
+    /// selects an inventory item
+    /// </summary>
+    /// <param name="inventoryItem"></param>
+    public void SelectInventoryItem(ControllerSupportedClickable inventoryItem)
+    {
+        prevSelectedInventorySlot = inventoryItem;
+        ControllerUIService.Instance.SelectSpecficTile(inventoryItem);
+    }
+
+    #endregion
+
+    #region Tarot
+
+    /// <summary>
+    /// moves the cursor to the tarot card section
+    /// </summary>
+    private void MoveFocusToTarot()
+    {
+        currentFocus = FocusType.Tarot;
+        SelectLastSelectedTarotTile();
+    }
+
+    /// <summary>
+    /// Selects the last selected tarot card.
+    /// </summary>
+    /// <exception cref="System.Exception"></exception>
+    public void SelectLastSelectedTarotTile()
+    {
+        //if youve selected an inventory slot, selects that one
+        if (prevSelectedTarotCard != null)
+        {
+            SelectTarotCard(prevSelectedTarotCard);
+            return;
+        }
+
+        UpgradeMenuTarotCardUI defaultTarotCard = tarotSlots[0];
+
+        if (defaultTarotCard == null)
+        {
+            throw new System.Exception("Grid has no active tiles");
+        }
+
+        SelectTarotCard(defaultTarotCard);
+    }
+
+    /// <summary>
+    /// selects a tarot card
+    /// </summary>
+    /// <param name="tarotCard"></param>
+    public void SelectTarotCard(ControllerSupportedClickable tarotCard)
+    {
+        prevSelectedTarotCard = tarotCard;
+        ControllerUIService.Instance.SelectSpecficTile(tarotCard);
+    }
+
+    #endregion
 
     #endregion
 }
