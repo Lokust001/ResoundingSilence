@@ -28,12 +28,14 @@ public class InventoryPinHolder : PinHolderSlot
     /// </summary>
     public override void ClickedOn()
     {
+        
         if (pin.Parent != this)
         {
             controller.GrabPlacedPin(pin);
+            return;
         }
-        
 
+        base.ClickedOn();
     }
 
     /// <summary>
