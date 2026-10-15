@@ -41,6 +41,7 @@ public class UIManager : BaseManager
 
     public static UIManager Instance;
 
+    
     private Stack<UiMenuType> currentlyOpenedMenus = new Stack<UiMenuType>();
 
     private GameObject debugConsole;
@@ -309,7 +310,6 @@ public class UIManager : BaseManager
         //hide the menus that are open rn
         UIPublicEvents.HideOpenMenus?.Invoke();
         currentlyOpenedMenus.Pop();
-
         OpenMenus();
     }
 
