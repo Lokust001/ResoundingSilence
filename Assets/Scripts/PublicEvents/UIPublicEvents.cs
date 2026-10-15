@@ -26,7 +26,7 @@ public static class UIPublicEvents
     public static Action UpgradeMenuClosed;
     public static Action UpgradeGridInitialized;
 
-    public static Action<Vector2> UpdateCarriedPinPosition;
+    public static Action<Vector2> UpdateCarriedItemPosition;
 
     public static Action NewPinPlacedInTile;
 

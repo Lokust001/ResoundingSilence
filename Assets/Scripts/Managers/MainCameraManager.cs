@@ -53,6 +53,12 @@ public class MainCameraManager : BaseManager
     {
         camInstance = Instantiate(mainCam, transform);
         CamOffset = camInstance.transform.localPosition;
+
+        if (AppManager.Instance.EnableTestingMode && FindAnyObjectByType<PlayerController>() != null)
+        {
+            AttachCamToPlayer(FindAnyObjectByType<PlayerController>());
+        }
+
         await Task.CompletedTask;
     }
 
