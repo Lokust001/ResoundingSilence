@@ -63,7 +63,7 @@ public class BaseEnemyScriptable : BaseScriptableObject
     [ShowIf(nameof(canRetreat))]
     public float retreatDistance;
     [ShowIf(nameof(canRetreat))]
-    public float retreatSpeed;
+    public float retreatAccuracyThreshold;
 
     //Buff Enemies modify these values
     [HideInInspector]

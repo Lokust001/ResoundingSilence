@@ -1563,7 +1563,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7656435456646436074, guid: c997b49616c1d7143ab65d2e1030d2d5, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7977584514592697262, guid: c997b49616c1d7143ab65d2e1030d2d5, type: 3}
       propertyPath: m_IsActive
@@ -1734,11 +1734,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5736516835863566217, guid: 5da45a64348225d4a9797f03eb1360b3, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5930345297651180883, guid: 5da45a64348225d4a9797f03eb1360b3, type: 3}
       propertyPath: m_Speed
       value: 3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5930345297651180883, guid: 5da45a64348225d4a9797f03eb1360b3, type: 3}
+      propertyPath: m_StoppingDistance
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7832778028665744183, guid: 5da45a64348225d4a9797f03eb1360b3, type: 3}
       propertyPath: testWithoutSpawner

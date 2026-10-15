@@ -18,7 +18,6 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     private BaseEnemyScriptable enemyData;
 
     private EnemyAttack enemyAttack;
-    private EnemyBuff enemyBuff;
 
     Transform enemyTransform;
     CapsuleCollider capsuleCollider;
@@ -34,7 +33,6 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
         navMeshAgent = GetComponent<NavMeshAgent>();
         playerReference = FindAnyObjectByType<PlayerController>().gameObject;
         enemyAttack = GetComponentInChildren<EnemyAttack>();
-        enemyBuff = GetComponentInChildren<EnemyBuff>();
         capsuleCollider = GetComponent<CapsuleCollider>();
 
         meshRenderer = GetComponent<MeshRenderer>();
@@ -141,8 +139,8 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     /// <returns></returns>
     public IEnumerator MoveAwayFromPlayer() 
     {
+        Debug.Log("STARTED RETREATING");
 
-        //USE NAVMESH DESTINATION INSTEAD
         Transform playerTransform = playerReference.transform;
         Vector3 directionToPlayer = (enemyTransform.position - playerTransform.position).normalized;
         directionToPlayer.y = 0;
@@ -151,17 +149,16 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
         navMeshAgent.destination = retreatPosition;
         navMeshAgent.isStopped = false;
 
-        float distance = navMeshAgent.remainingDistance - navMeshAgent.stoppingDistance;
-
-
-        while (distance > 0) 
+        float distance = Vector3.Distance(enemyTransform.position, retreatPosition);
+        float accuracy = enemyData.retreatAccuracyThreshold;
+        while (distance > accuracy) 
         {
-            //enemyTransform.position = Vector3.MoveTowards(enemyTransform.position, retreatPosition, retreatSpeed * Time.fixedDeltaTime);
-            distance = navMeshAgent.remainingDistance - navMeshAgent.stoppingDistance;
+            distance = Vector3.Distance(enemyTransform.position, retreatPosition);
             Debug.Log(distance);
             yield return new WaitForFixedUpdate();
         }
 
+        enemyTransform.position = retreatPosition;
         navMeshAgent.isStopped = true;
 
     }
