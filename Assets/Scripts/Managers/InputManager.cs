@@ -222,8 +222,8 @@ public class InputManager : BaseManager
         SwapActionMap(MidRunInputString);
 
         DisableUpgradeMenuPublicEvents();
-        EnableMidRunPublicEvents();
         DisableSettingsMenuPublicEvents();
+        EnableMidRunPublicEvents();
     }
 
     /// <summary>
@@ -234,8 +234,8 @@ public class InputManager : BaseManager
         SwapActionMap(UpgradeMenuInputString);
 
         DisableMidRunPublicEvents();
-        EnableUpgradeMenuPublicEvents();
         DisableSettingsMenuPublicEvents();
+        EnableUpgradeMenuPublicEvents();
     }
 
     /// <summary>
@@ -320,27 +320,17 @@ public class InputManager : BaseManager
 
         move.performed += Move_performed;
         move.canceled += Move_canceled;
-
         shoot.started += Shoot_started;
         shoot.canceled += Shoot_canceled;
-
         interact.started += Interact_started;
         interact.canceled += Interact_canceled;
-
         aim.performed += Aim_performed;
-
         abilityOne.started += AbilityOne_started;
-
         abilityTwo.started += AbilityTwo_started;
-
         dash.started += Dash_started;
-
         toggleUpgradeMenuInMidRun.started += ToggleUpgradeMenu_started;
-
         pause.started += Pause_started;
-
         swapWeapon.started += SwapWeapon_started;
-
         ToggleDebugConsole.started += ToggleDebugConsole_started;
 
         
@@ -393,23 +383,18 @@ public class InputManager : BaseManager
     {
         move.performed -= Move_performed;
         move.canceled -= Move_canceled;
-
         shoot.started -= Shoot_started;
         shoot.canceled -= Shoot_canceled;
-
         interact.started -= Interact_started;
         interact.canceled -= Interact_canceled;
-
         aim.performed -= Aim_performed;
-
         abilityOne.started -= AbilityOne_started;
-
         abilityTwo.started -= AbilityTwo_started;
-
         dash.started -= Dash_started;
-
         toggleUpgradeMenuInMidRun.started -= ToggleUpgradeMenu_started;
-        
+        pause.started -= Pause_started;
+        swapWeapon.started -= SwapWeapon_started;
+        ToggleDebugConsole.started -= ToggleDebugConsole_started;
     }
 
     /// <summary>
@@ -426,6 +411,9 @@ public class InputManager : BaseManager
         SelectPin.started -= SelectPin_started;
         SelectPin.canceled -= SelectPin_canceled;
         MousePosition.performed -= Aim_performed;
+        MoveSelectedObject.performed -= Aim_performed;
+        ToggleDebugConsole.started -= ToggleDebugConsole_started;
+        MoveSelectedObject.canceled -= MoveSelectedObject_canceled;
         DropHoldingPin.started -= DropHoldingPin_started;
     }
 
