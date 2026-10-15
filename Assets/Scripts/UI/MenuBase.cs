@@ -73,6 +73,9 @@ public class MenuBase : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// triggers when the menu actually closes
+    /// </summary>
     protected virtual void MenuClosedSucessfully()
     {
         TearDownPublicEvents();
