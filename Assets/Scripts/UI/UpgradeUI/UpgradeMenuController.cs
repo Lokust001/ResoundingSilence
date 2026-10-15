@@ -140,13 +140,13 @@ public class UpgradeMenuController : MenuControllerSupportBase
 
     #region Setup
 
+    /// <summary>
+    /// Returns the carried item as a pin
+    /// </summary>
+    /// <returns></returns>
     private PinItemBehavior GetCarriedPin()
     {
-        if (carriedItem is PinItemBehavior pin)
-        {
-            return pin;
-        }
-        return null;
+        return carriedItem as PinItemBehavior;
     }
 
     /// <summary>
@@ -644,7 +644,11 @@ public class UpgradeMenuController : MenuControllerSupportBase
     #region movement
 
 
-
+    /// <summary>
+    /// moves the selected item to the right new item
+    /// </summary>
+    /// <param name="target"></param>
+    /// <param name="direction"></param>
     public override void MoveSelectedItem(ControllerSupportedClickable target, int direction)
     {
         if (target == null)
@@ -741,6 +745,9 @@ public class UpgradeMenuController : MenuControllerSupportBase
 
     #region Selection
 
+    /// <summary>
+    /// selects the default inventory pin as the default
+    /// </summary>
     public override void SelectDefault()
     {
         MoveFocusToInventory();

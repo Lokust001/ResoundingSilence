@@ -81,6 +81,10 @@ public class ControllerUIService : BaseService
     #endregion
 
     #region MenuOpened
+
+    /// <summary>
+    /// Checks to see if the right menus opened
+    /// </summary>
     private void NewMenuOpened()
     {
         if (!IsMenuUsingCustomControls())
@@ -93,6 +97,10 @@ public class ControllerUIService : BaseService
         controllerSupportMenu = FindAnyObjectByType<MenuControllerSupportBase>();
         EnableMenuControls();
     }
+    
+    /// <summary>
+    /// turns on the menu controls
+    /// </summary>
     private void EnableMenuControls()
     {
         InputPublicEvents.SelectPin += ClickOnSelected;
@@ -100,6 +108,9 @@ public class ControllerUIService : BaseService
         InputPublicEvents.AimCancelled += PlayerStoppedMoving;
     }
 
+    /// <summary>
+    /// turns off the menu controls
+    /// </summary>
     private void DisableMenuControls()
     {
         InputPublicEvents.SelectPin -= ClickOnSelected;
@@ -180,7 +191,10 @@ public class ControllerUIService : BaseService
         }
     }
 
-
+    /// <summary>
+    /// bool check to see if the menu is a special one
+    /// </summary>
+    /// <returns></returns>
     private bool IsMenuUsingCustomControls()
     {
         UiMenuType currentMenu = UIManager.Instance.GetCurrentMenu();
@@ -209,6 +223,9 @@ public class ControllerUIService : BaseService
         }
     }
 
+    /// <summary>
+    /// Clicks on the selected item
+    /// </summary>
     private void ClickOnSelected()
     {
         if (currentlySelected == null)
@@ -228,7 +245,10 @@ public class ControllerUIService : BaseService
         
     }
 
-
+    /// <summary>
+    /// Selects a specific tile
+    /// </summary>
+    /// <param name="tile"></param>
     public void SelectSpecficTile(ControllerSupportedClickable tile)
     {
         if (currentlySelected != null)
