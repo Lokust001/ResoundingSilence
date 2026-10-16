@@ -16,9 +16,9 @@ public class MainCameraManager : BaseManager
 
     [SerializeField]
     private Camera mainCam;
-    private Camera camInstance;
+    [HideInInspector] public Camera camInstance;
     
-    private Vector3 CamOffset;
+    [HideInInspector] public Vector3 CamOffset;
 
     private Transform player;
     private bool FollowPlayer;

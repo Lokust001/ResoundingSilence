@@ -53,6 +53,7 @@ public class DebugConsole : MonoBehaviour
     private PlayerController playerInstance;
     private MapGenerator mapGenInstance;
     private GameObject cameraInstance;
+    private PivotCamera PivotInstance;
 
     [SerializeField]
     [ShowIf(nameof(settings), ShownSettings.Colors)]
@@ -82,9 +83,13 @@ public class DebugConsole : MonoBehaviour
         {
             playerInstance = FindAnyObjectByType<PlayerController>();
         }
-        if(mapGenInstance == null)
+        if (mapGenInstance == null)
         {
             mapGenInstance = FindAnyObjectByType<MapGenerator>();
+        }
+        if (PivotInstance == null)
+        {
+            PivotInstance = FindAnyObjectByType<PivotCamera>();
         }
         ClearConsole();
     }
@@ -288,14 +293,8 @@ public class DebugConsole : MonoBehaviour
         if(Command.StartsWith("pivotcam") || Command.StartsWith("pc"))
         {
             pivotToggle = !pivotToggle;
-            if (pivotToggle)
-            {
-                //playerInstance.pivot = true;
-            }
-            else
-            {
-                //playerInstance.pivot = false;
-            }
+            //playerInstance.pivot = pivotToggle;
+            PivotInstance.isActive = pivotToggle;
             AppendConsoleLine(Command, inputColor);
             AppendConsoleLine($"Pivot command: {pivotToggle}", commandCompletedColor);
             FinishCommand();

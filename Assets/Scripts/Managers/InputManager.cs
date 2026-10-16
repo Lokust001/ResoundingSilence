@@ -330,8 +330,10 @@ public class InputManager : BaseManager
         aim.performed += Aim_performed;
 
         abilityOne.started += AbilityOne_started;
+        abilityOne.canceled += AbilityOne_canceled;
 
         abilityTwo.started += AbilityTwo_started;
+        abilityTwo.canceled += AbilityTwo_canceled;
 
         dash.started += Dash_started;
 
@@ -523,6 +525,24 @@ public class InputManager : BaseManager
     private void AbilityTwo_started(InputAction.CallbackContext obj)
     {
         InputPublicEvents.AbilityTwoPressed?.Invoke();
+    }
+
+    /// <summary>
+    /// Calls the public event for pressing the ability one button
+    /// </summary>
+    /// <param name="obj"></param>
+    private void AbilityOne_canceled(InputAction.CallbackContext obj)
+    {
+        InputPublicEvents.AbilityOneReleased?.Invoke();
+    }
+
+    /// <summary>
+    /// Calls the public event for pressing the ability two button
+    /// </summary>
+    /// <param name="obj"></param>
+    private void AbilityTwo_canceled(InputAction.CallbackContext obj)
+    {
+        InputPublicEvents.AbilityTwoReleased?.Invoke();
     }
 
     /// <summary>
