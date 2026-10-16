@@ -327,7 +327,7 @@ public class UpgradeTileGrid
     public void CheckGlyphs(PinScriptable newpin)
     {
         UpgradeTileData tile = grid.FirstOrDefault(x => x.pin == newpin);
-        if(tile.glyph != null && newpin.Type == tile.glyph.PinTypeToModify)
+        if(tile.glyph != null && newpin.Types[0] == tile.glyph.PinTypeToModify)
         {
             tile.GlyphActive = true;
         }
@@ -348,7 +348,7 @@ public class UpgradeTileGrid
         AdajacencyTest = UtilityFunctions.GetAdjacentTiles<UpgradeTileData>(tile.coords, grid, height, width);
         foreach (var currentTile in AdajacencyTest)
         {
-            if (currentTile != null && currentTile.pin != null && tile.pin.Type == currentTile.pin.Type)
+            if (currentTile != null && currentTile.pin != null && tile.pin.Types[0] == currentTile.pin.Types[0])
             {
                 BuffAmount += tile.pin.AdjacentTileScaling;
             }

@@ -6,6 +6,7 @@
 * To Do:   N/A
 */
 
+using System.Collections.Generic;
 using NaughtyAttributes;
 using UnityEngine;
 [CreateAssetMenu(fileName = "NewPin", menuName = "Scriptables/New Pin")]
@@ -36,7 +37,20 @@ public class PinScriptable : BaseScriptableObject
     [HorizontalLine(4, EColor.Indigo)]
     [Header("Pin Gameplay Values")]
     [Tooltip("The type of pin this is")]
-    public PinType Type;
+    public List<PinType> Types;
+
+    public List<PinType> AutoAdjacencyPinTypes;
+    public List<int> autoAdjacencyAmounts;
+
+    public List<PinType> NorthAdjacency;
+    public List<PinType> NorthEastAdjacency;
+    public List<PinType> EastAdjacency;
+    public List<PinType> SouthEastAdjacency;
+    public List<PinType> SouthAdjacency;
+    public List<PinType> SouthWestAdjacency;
+    public List<PinType> WestAdjacency;
+    public List<PinType> NorthWestAdjacency;
+    public bool ManualAdjacency;
 
     [Tooltip("This is numerical value for how much to modify in %")]
     public float ModifierNumber;
