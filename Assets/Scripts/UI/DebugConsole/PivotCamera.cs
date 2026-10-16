@@ -44,17 +44,21 @@ public class PivotCamera : MonoBehaviour
     }
 
     /// <summary>
-    /// Helper method to update PlayerVelocity based on user input
+    /// sets the input amount to how much the player is moving.
     /// </summary>
     /// <param name="moveDirection"></param>
     void PlayerInputStarted(Vector2 moveDirection)
     {
         inputs = moveDirection;
+        if (rise == 0 && CameraPivotInstance != null)
+        {
+            StopCoroutine(CameraPivotInstance);
+        }
         CameraPivotInstance = StartCoroutine(MoveCamera());
     }
 
     /// <summary>
-    /// Helper method to update PlayerVelocity based on user input
+    /// if no inputs are happening sets it to 0 and stops the coroutine if no other unputs are happening
     /// </summary>
     /// <param name="moveDirection"></param>
     void PlayerInputEnded()
@@ -66,18 +70,35 @@ public class PivotCamera : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// sets the raise vaule to -1 to lower the camera
+    /// </summary>
     void LowerCamera()
     {
         rise = -1;
+        if (rise == 0 && CameraPivotInstance != null)
+        {
+            StopCoroutine(CameraPivotInstance);
+        }
         CameraPivotInstance = StartCoroutine(MoveCamera());
     }
 
+    /// <summary>
+    /// sets the raise vaule to 1 to raise the camera 
+    /// </summary>
     void RaiseCamera()
     {
         rise = 1;
+        if (rise == 0 && CameraPivotInstance != null)
+        {
+            StopCoroutine(CameraPivotInstance);
+        }
         CameraPivotInstance = StartCoroutine(MoveCamera());
     }
 
+    /// <summary>
+    /// sets the raise to 0 and stops the coroutine if there is no other input happening
+    /// </summary>
     void noCameraZoom()
     {
         rise = 0;
