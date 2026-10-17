@@ -22,6 +22,9 @@ public class UpgradeTileBehavior : ItemHolderSlot
     public UpgradeTileData tileData;
     private UpgradeMenuController controller;
 
+    /// <summary>
+    /// sets a ref when it spawns in
+    /// </summary>
     private void Awake()
     {
         controller = GetComponentInParent<UpgradeMenuController>();

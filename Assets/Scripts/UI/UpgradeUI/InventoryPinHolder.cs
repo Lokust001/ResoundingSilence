@@ -13,6 +13,9 @@ public class InventoryPinHolder : ItemHolderSlot
     public PinScriptable pinData { get; private set; }
     protected UpgradeMenuController controller;
 
+    /// <summary>
+    /// grabs a ref in when it spawns in
+    /// </summary>
     protected virtual void Awake()
     {
         controller = GetComponentInParent<UpgradeMenuController>();

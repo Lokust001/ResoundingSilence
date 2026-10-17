@@ -1,6 +1,13 @@
+/*
+* Author: Tyler
+* Contributors:
+* Last Modified: 10/17/2026
+* Summary: This is the base of all the items that can be picked up and placed in custom ui menus
+* To Do:   N/A
+*/
+
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.Analytics.IAnalytic;
 
 public class CarriedItemBehavior : ControllerSupportedClickable
 {

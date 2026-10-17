@@ -1,4 +1,11 @@
-using UnityEditor;
+/*
+* Author: Tyler
+* Contributors:
+* Last Modified: 10/17/2026
+* Summary: This is the base of all the slots that can hold an item in the custom controller support menus
+* To Do:   N/A
+*/
+
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +17,10 @@ public class ItemHolderSlot : ControllerSupportedClickable
     [HideInInspector]
     public CarriedItemBehavior heldItem;
 
+    /// <summary>
+    /// initializes the slot
+    /// </summary>
+    /// <param name="item"></param>
     public virtual void InitSlot(CarriedItemBehavior item)
     {
         heldItem = item;
@@ -27,6 +38,9 @@ public class ItemHolderSlot : ControllerSupportedClickable
         heldItem = item;
     }
 
+    /// <summary>
+    /// Triggers when the mouse is hovering over this or the controller is selecting this
+    /// </summary>
     public override void HoveredOver()
     {
         base.HoveredOver();
@@ -39,6 +53,9 @@ public class ItemHolderSlot : ControllerSupportedClickable
         highlight.enabled = true;
     }
 
+    /// <summary>
+    /// triggers when the mouse leaves this or the controller unselects this
+    /// </summary>
     public override void UnHoveredOver()
     {
         base.UnHoveredOver();
@@ -51,6 +68,9 @@ public class ItemHolderSlot : ControllerSupportedClickable
         highlight.enabled = false;
     }
 
+    /// <summary>
+    /// triggers when the object is clicked on, either by controller or by mouse
+    /// </summary>
     public override void ClickedOn()
     {
         base.ClickedOn();

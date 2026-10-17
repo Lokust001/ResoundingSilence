@@ -103,7 +103,6 @@ public class ControllerUIService : BaseService
     /// </summary>
     private void EnableMenuControls()
     {
-        Debug.Log("enabled");
         InputPublicEvents.SelectPin += ClickOnSelected;
         InputPublicEvents.PlayerAimed += MoveSelectedObject;
         InputPublicEvents.AimCancelled += PlayerStoppedMoving;

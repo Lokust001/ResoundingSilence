@@ -54,7 +54,6 @@ public class MouseUIService : BaseService
     /// </summary>
     private void EnableMousePublicEvents()
     {
-        Debug.Log("subscribing");
         InputPublicEvents.MouseMoved += UpdateMousePos;
         InputPublicEvents.ShootPressed += Click;
         InputPublicEvents.SelectPin += Click;

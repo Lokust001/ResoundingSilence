@@ -40,12 +40,18 @@ public class MenuControllerSupportBase : MenuBase
 
     }
 
+    /// <summary>
+    /// Triggers when the menu is properly closed
+    /// </summary>
     protected override void MenuClosedSucessfully()
     {
         ReturnItemToItsTile();
         base.MenuClosedSucessfully();
     }
 
+    /// <summary>
+    /// sets up the public events for this object
+    /// </summary>
     protected override void SetUpPublicEvents()
     {
         base.SetUpPublicEvents();
@@ -56,6 +62,9 @@ public class MenuControllerSupportBase : MenuBase
         InputPublicEvents.KeyboardMouseEnabled += ReturnCarriedItemToInventory;
     }
 
+    /// <summary>
+    /// disables all of the public events for this script
+    /// </summary>
     protected override void TearDownPublicEvents()
     {
         base.TearDownPublicEvents();
@@ -196,8 +205,6 @@ public class MenuControllerSupportBase : MenuBase
             //if its not, swap the items
             PlaceItemInTile(carried, target);
         }
-
-        
     }
 
     #endregion
