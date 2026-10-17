@@ -45,9 +45,6 @@ public class MouseUIService : BaseService
     {
         InputPublicEvents.ControllerEnabled += DisableMousePublicEvents;
         InputPublicEvents.KeyboardMouseEnabled += EnableMousePublicEvents;
-
-        EnableMousePublicEvents();
-
         await Task.CompletedTask;
     }
 
@@ -57,6 +54,7 @@ public class MouseUIService : BaseService
     /// </summary>
     private void EnableMousePublicEvents()
     {
+        Debug.Log("subscribing");
         InputPublicEvents.MouseMoved += UpdateMousePos;
         InputPublicEvents.ShootPressed += Click;
         InputPublicEvents.SelectPin += Click;

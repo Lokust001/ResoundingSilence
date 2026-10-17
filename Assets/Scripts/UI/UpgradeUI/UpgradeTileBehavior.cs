@@ -12,7 +12,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class UpgradeTileBehavior : PinHolderSlot
+public class UpgradeTileBehavior : ItemHolderSlot
 {
     public bool isActive;
     public Vector2Int coords;
@@ -20,7 +20,12 @@ public class UpgradeTileBehavior : PinHolderSlot
     public List<UpgradeTileBehavior> adjacentTiles;
 
     public UpgradeTileData tileData;
+    private UpgradeMenuController controller;
 
+    private void Awake()
+    {
+        controller = GetComponentInParent<UpgradeMenuController>();
+    }
 
     #region Tile Generation
 
@@ -50,7 +55,7 @@ public class UpgradeTileBehavior : PinHolderSlot
     {
         adjacentTiles = UtilityFunctions.GetAdjacentTiles<UpgradeTileBehavior>(coords, 
             controller.tilesInGrid.ToList(),
-             controller.currentlyEnabledGrid.height,
+            controller.currentlyEnabledGrid.height,
             controller.currentlyEnabledGrid.width);
        
     }
@@ -101,21 +106,25 @@ public class UpgradeTileBehavior : PinHolderSlot
     /// sets the pin in this tile
     /// </summary>
     /// <param name="pin"></param>
-    public override void SetNewPinInTile(PinItemBehavior pin)
+    public override void SetNewItemInTile(CarriedItemBehavior item)
     {
-        base.SetNewPinInTile(pin);
+        base.SetNewItemInTile(item);
         
-        tileData.SetPin(pin.pinData);
-        UIPublicEvents.PinChangedOnWeapon?.Invoke(pin.pinData);
+        if (item is PinItemBehavior pin)
+        {
+            tileData.SetPin(pin.pinData);
+            UIPublicEvents.PinChangedOnWeapon?.Invoke(pin.pinData);
+        }
+        
     }
 
     /// <summary>
     /// function gets called whenever a pin becomes unequipped from a tile
     /// </summary>
-    public override void UnequipPin()
+    public override void UnequipItem()
     {
-        base.UnequipPin();
-        pin = null;
+        base.UnequipItem();
+        heldItem = null;
         tileData.SetPin(null);
         UIPublicEvents.PinChangedOnWeapon?.Invoke(null);
     }

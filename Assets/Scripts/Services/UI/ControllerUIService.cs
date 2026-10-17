@@ -95,7 +95,7 @@ public class ControllerUIService : BaseService
         }
 
         controllerSupportMenu = FindAnyObjectByType<MenuControllerSupportBase>();
-        EnableMenuControls();
+        
     }
     
     /// <summary>
@@ -103,6 +103,7 @@ public class ControllerUIService : BaseService
     /// </summary>
     private void EnableMenuControls()
     {
+        Debug.Log("enabled");
         InputPublicEvents.SelectPin += ClickOnSelected;
         InputPublicEvents.PlayerAimed += MoveSelectedObject;
         InputPublicEvents.AimCancelled += PlayerStoppedMoving;
@@ -145,6 +146,7 @@ public class ControllerUIService : BaseService
         //add to this if statement for every menu i have to make custom controller supp for
         if (IsMenuUsingCustomControls())
         {
+            DisableMenuControls();
             DeselectCurrentObject();
         }
         else
@@ -183,6 +185,7 @@ public class ControllerUIService : BaseService
         //add to this if statement for every menu i have to make custom controller supp for
         if (IsMenuUsingCustomControls())
         {
+            EnableMenuControls();
             controllerSupportMenu.SelectDefault();
         }
         else
