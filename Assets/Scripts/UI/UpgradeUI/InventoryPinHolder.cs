@@ -8,19 +8,32 @@
 
 using System.Collections.Generic;
 
-public class InventoryPinHolder : PinHolderSlot
+public class InventoryPinHolder : ItemHolderSlot
 {
     public PinScriptable pinData { get; private set; }
-    
+    protected UpgradeMenuController controller;
+
+    /// <summary>
+    /// grabs a ref in when it spawns in
+    /// </summary>
+    protected virtual void Awake()
+    {
+        controller = GetComponentInParent<UpgradeMenuController>();
+    }
 
     /// <summary>
     /// initializes the slot
     /// </summary>
     /// <param name="pin"></param>
-    public void InitSlot(PinItemBehavior pin)
+    public override void InitSlot(CarriedItemBehavior item)
     {
-        this.pin = pin;
-        pinData = pin.pinData;
+        base.InitSlot(item);
+
+        if (item is PinItemBehavior pin)
+        {
+            pinData = pin.pinData;
+        }
+        
     }
 
     /// <summary>
@@ -28,10 +41,9 @@ public class InventoryPinHolder : PinHolderSlot
     /// </summary>
     public override void ClickedOn()
     {
-        
-        if (pin.Parent != this)
+        if (heldItem.Parent != this)
         {
-            controller.GrabPlacedPin(pin);
+            controller.GrabPlacedItem(heldItem);
             return;
         }
 
