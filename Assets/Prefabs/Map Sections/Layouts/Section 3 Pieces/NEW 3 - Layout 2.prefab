@@ -24624,6 +24624,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2739769728841001601}
+  - component: {fileID: 7053331111991570918}
   m_Layer: 0
   m_Name: NEW 3 - Layout 2
   m_TagString: Untagged
@@ -24649,6 +24650,28 @@ Transform:
   - {fileID: 4027244146108145895}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7053331111991570918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1045663604746813131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc20d6186d7772b46b5ea5b29d980280, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::IslandData
+  ObjectiveSpawns: []
+  BuffSpawns: []
+  ShopSpawns: []
+  FastTravelPoints: []
+  enemySpawnPoints: []
+  howManySpawnPoints: 0
+  ActiveEnemySpawnPoints: []
+  realFastTravel: {fileID: 0}
+  Spawner: {fileID: 0}
+  SpawnPoint: {fileID: 0}
 --- !u!1 &1054622259894711243
 GameObject:
   m_ObjectHideFlags: 0
