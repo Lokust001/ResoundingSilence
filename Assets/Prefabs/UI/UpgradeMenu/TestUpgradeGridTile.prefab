@@ -166,13 +166,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b037a0bd8d0626846b1ecd220a41a541, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeTileBehavior
-  Highlight: {fileID: 5109487126474043157}
-  pin: {fileID: 0}
+  highlight: {fileID: 5109487126474043157}
+  heldItem: {fileID: 0}
   isActive: 0
   coords: {x: 0, y: 0}
   adjacentTiles: []
   tileData:
     isActive: 0
+    GlyphActive: 0
     coords: {x: -1, y: -1}
 --- !u!210 &1463184779817834947
 SortingGroup:
