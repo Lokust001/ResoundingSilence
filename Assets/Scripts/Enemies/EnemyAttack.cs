@@ -233,15 +233,16 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
 
         Transform enemyTransform = enemyMovement.transform;
 
+        //Changed 10/19/2026: Lock onto the player once
+        enemyTransform.LookAt(playerTransform);
+
         //Count-up timer to LERP for both the material and parent-scale
         while (countupTimer < goalTime) 
         {
             //Timer tick & associated time values
             countupTimer += Time.deltaTime;
             float tValue = countupTimer / goalTime;
-
-            //Lock-on to player direction while charging up
-            enemyTransform.LookAt(playerTransform);
+            
             //Transition between two colors/mats
             indicatorRenderer.material.Lerp(startMat, endMat, tValue);
             //Extend the visual attack indicator through the parent as it is the pivot point

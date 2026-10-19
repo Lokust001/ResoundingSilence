@@ -32,6 +32,8 @@ public class Enemy : MonoBehaviour
 
     private Coroutine behaviorLoop;
 
+    private Coroutine activeBehaviorChange;
+
 
     /// <summary>
     /// Creates a copy of the scriptable object not tied to the inspector, then propagates it other scripts
@@ -114,7 +116,7 @@ public class Enemy : MonoBehaviour
                 break;
             case BaseEnemyScriptable.EnemyType.Melee:
             case BaseEnemyScriptable.EnemyType.ChargingMelee:
-                movementBeahvior.StartFollowingPlayer();
+                movementBeahvior.FollowPlayer();
                 break;
             case BaseEnemyScriptable.EnemyType.BuffEnemy:
                 GetComponentInChildren<EnemyBuff>(true).AttemptBuffingAllies();
@@ -160,10 +162,10 @@ public class Enemy : MonoBehaviour
         int i = 0;
         while (true) 
         {
+            Debug.Log("Behavior Loop # [" + i +"]\t inRanged : " + inRangedRange + " Melee area: " + inMeleeRange);
             NextEnemyAction(true);
             yield return actionInterval;
             i++;
-            Debug.Log("Looped " + i + " times");
         }
         
     }
@@ -180,6 +182,8 @@ public class Enemy : MonoBehaviour
         yield return yieldInstruction;
         //Restart behavior loop
         behaviorLoop = StartCoroutine(RepeatedlyCheckShooterRange());
+        //Free up behavior change
+        activeBehaviorChange = null;
     }
 
     /// <summary>
@@ -192,11 +196,13 @@ public class Enemy : MonoBehaviour
             case BaseEnemyScriptable.EnemyType.None:
                 Debug.LogError("Invalid EnemyType entered Zone!");
                 break;
-            case BaseEnemyScriptable.EnemyType.BuffEnemy:
-                //Intentionally left blank to avoid default case
+            case BaseEnemyScriptable.EnemyType.Melee:
+            case BaseEnemyScriptable.EnemyType.ChargingMelee:
+                movementBeahvior.FollowPlayer();
                 break;
-            default:
-                movementBeahvior.StartFollowingPlayer();
+            case BaseEnemyScriptable.EnemyType.SingleShooter:
+            case BaseEnemyScriptable.EnemyType.ConeShooter:
+                movementBeahvior.StrafeTowardsPlayer();
                 break;
         }
     }
@@ -226,12 +232,12 @@ public class Enemy : MonoBehaviour
             case BaseEnemyScriptable.EnemyType.SingleShooter:
             case BaseEnemyScriptable.EnemyType.ConeShooter:
                 //Entry Behavior
-                movementBeahvior.EndPlayerSearch();
+                movementBeahvior.StopApproachingPlayer();
                 break;
             case BaseEnemyScriptable.EnemyType.Melee:
             case BaseEnemyScriptable.EnemyType.ChargingMelee:
                 if (activateTimeBasedIntervalActions)
-                    movementBeahvior.StartFollowingPlayer();
+                    movementBeahvior.FollowPlayer();
                 break;
             default:
                 break;
@@ -265,16 +271,18 @@ public class Enemy : MonoBehaviour
                 break;
             case BaseEnemyScriptable.EnemyType.SingleShooter:
             case BaseEnemyScriptable.EnemyType.ConeShooter:
-                movementBeahvior.EndPlayerSearch();
+                movementBeahvior.StopApproachingPlayer();
                 //Only do this if a time-based check has passed via RepeatedlyCheckShooterRange
                 if (activateTimeBasedIntervalActions) 
                 {
-                    StartCoroutine(SwitchYieldInterval(StartCoroutine(movementBeahvior.MoveAwayFromPlayer())));
+                    Debug.Log("Started retreating");
+                    StartCoroutine(movementBeahvior.RetreatWalking());
+                    //activeBehaviorChange ??= StartCoroutine(SwitchYieldInterval()));
                 }
                 break;
             case BaseEnemyScriptable.EnemyType.Melee:
             case BaseEnemyScriptable.EnemyType.ChargingMelee:
-                movementBeahvior.EndPlayerSearch();
+                movementBeahvior.StopApproachingPlayer();
                 attackBehavior.InitiateAttack();
                 break;
             default:
