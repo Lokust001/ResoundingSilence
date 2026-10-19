@@ -7,10 +7,14 @@
 */
 
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TarotItemBehavior : CarriedItemBehavior
 {
-
-
-    
+    public TarotScriptable data;
+    public void SetTarotData(TarotScriptable scriptable)
+    {
+        data = scriptable;
+        GetComponent<Image>().color = data.tempColor;
+    }
 }

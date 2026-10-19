@@ -11,13 +11,18 @@ using UnityEngine.UI;
 
 public class CarriedItemBehavior : ControllerSupportedClickable
 {
+    [HideInInspector]
     public ItemHolderSlot Parent;
+
+    [HideInInspector]
     public ItemHolderSlot Owner;
 
     [SerializeField]
     private Image Highlight;
     private CanvasGroup raycastBlocker;
     protected Image pinSprite;
+
+    public bool CanBePickedUp = true;
 
     /// <summary>
     /// sets a references
@@ -39,6 +44,7 @@ public class CarriedItemBehavior : ControllerSupportedClickable
         Owner = owner;
         raycastBlocker.blocksRaycasts = true;
         pinSprite.raycastTarget = true;
+        CanBePickedUp = true;
     }
 
     /// <summary>
@@ -55,7 +61,10 @@ public class CarriedItemBehavior : ControllerSupportedClickable
     /// </summary>
     public void ForcePickUpPin()
     {
-        UIPublicEvents.ItemPickedUp?.Invoke(this);
+        if (CanBePickedUp)
+        {
+            UIPublicEvents.ItemPickedUp?.Invoke(this);
+        }
     }
 
     /// <summary>

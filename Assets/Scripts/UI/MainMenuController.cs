@@ -20,8 +20,8 @@ public class MainMenuController : MenuBase
     /// </summary>
     public void StartGame()
     {
-        GenericPublicEvents.StartGamePressed?.Invoke();
-        UIPublicEvents.UpdateUIManagerStack?.Invoke(UiMenuType.PlayerHUD);
+        
+        UIPublicEvents.UpdateUIManagerStack?.Invoke(UiMenuType.Tarot);
     }
 
     /// <summary>

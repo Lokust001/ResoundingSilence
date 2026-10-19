@@ -58,4 +58,12 @@ public static class UIPublicEvents
     public static Action SettingsMenuClosed;
 
     #endregion
+
+    #region TarotMenu
+
+    public static Action TarotMenuOpened;
+
+    public static Action TarotMenuClosed;
+
+    #endregion
 }
