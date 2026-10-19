@@ -7,7 +7,6 @@
 */
 
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -134,7 +133,7 @@ public class MenuControllerSupportBase : MenuBase
         }
 
         ItemHolderSlot target = null;
-        
+
         //if on controller, grab the slot we are selecting
         if (InputManager.Instance.ControllerIsEnabled)
         {
@@ -201,9 +200,21 @@ public class MenuControllerSupportBase : MenuBase
         }
         else
         {
-            PickUpItem(targetItem);
-            //if its not, swap the items
+            //if the carried item came from its owner, return targetitem to its owner
+            if (itemsPrevTile == carried.Owner)
+            {
+                PlaceItemInTile(targetItem, targetItem.Owner);
+            }
+            else
+            {
+                PlaceItemInTile(targetItem, itemsPrevTile);
+            }
+
             PlaceItemInTile(carried, target);
+            /*
+                        PickUpItem(targetItem);
+                        //if its not, swap the items
+                        PlaceItemInTile(carried, target);*/
         }
     }
 
@@ -264,7 +275,7 @@ public class MenuControllerSupportBase : MenuBase
         item.Parent = tile;
         item.StopMoving();
         tile.SetNewItemInTile(item);
-        
+
         UIPublicEvents.SelectSpecificTile?.Invoke(tile);
     }
 
@@ -289,7 +300,7 @@ public class MenuControllerSupportBase : MenuBase
                 ReturnCarriedItemToInventory();
             }
             else
-            { 
+            {
                 PlaceItemInTile(carriedItem, itemsPrevTile);
             }
         }
