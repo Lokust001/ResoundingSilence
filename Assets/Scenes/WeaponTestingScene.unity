@@ -1087,6 +1087,34 @@ PrefabInstance:
       propertyPath: m_Name
       value: AppManager
       objectReference: {fileID: 0}
+    - target: {fileID: 8115366995451044989, guid: b7eeb5bceb3cd1b4e8219d77eec4669b, type: 3}
+      propertyPath: EnableTestingMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8115366995451044989, guid: b7eeb5bceb3cd1b4e8219d77eec4669b, type: 3}
+      propertyPath: managers.Array.size
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8115366995451044989, guid: b7eeb5bceb3cd1b4e8219d77eec4669b, type: 3}
+      propertyPath: 'managers.Array.data[2]'
+      value: 
+      objectReference: {fileID: 1919719274878455250, guid: e1c21b9cb411dc644b6d466b9e8d791e, type: 3}
+    - target: {fileID: 8115366995451044989, guid: b7eeb5bceb3cd1b4e8219d77eec4669b, type: 3}
+      propertyPath: 'managers.Array.data[3]'
+      value: 
+      objectReference: {fileID: 9198784876584551076, guid: b1bf8b70a1f95b24bb1dac797944174f, type: 3}
+    - target: {fileID: 8115366995451044989, guid: b7eeb5bceb3cd1b4e8219d77eec4669b, type: 3}
+      propertyPath: 'managers.Array.data[4]'
+      value: 
+      objectReference: {fileID: 4469732254627678330, guid: f1e2d46565d3a6743902eadb034a87f1, type: 3}
+    - target: {fileID: 8115366995451044989, guid: b7eeb5bceb3cd1b4e8219d77eec4669b, type: 3}
+      propertyPath: 'managers.Array.data[5]'
+      value: 
+      objectReference: {fileID: 5759010084462782852, guid: 77ee368df1d10a04bb5654e7140df605, type: 3}
+    - target: {fileID: 8115366995451044989, guid: b7eeb5bceb3cd1b4e8219d77eec4669b, type: 3}
+      propertyPath: 'managers.Array.data[6]'
+      value: 
+      objectReference: {fileID: 4881011912085633505, guid: 73fb9d509b4bdeb44b7f94f95c4c7a49, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1211,7 +1239,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8556073844088731136, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
       propertyPath: abilityOne
@@ -1219,7 +1247,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
       propertyPath: abilitySettings
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

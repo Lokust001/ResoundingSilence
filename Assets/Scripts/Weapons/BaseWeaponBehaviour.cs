@@ -1,7 +1,7 @@
 /******************************************************************************
  * Author: Brad Dixon
  * Contributors:
- * Last Modified: 10/09/2026
+ * Last Modified: 10/19/2026
  * Brief: Calls the specific weapon attack
  * TODO:
  * ***************************************************************************/
@@ -34,8 +34,12 @@ public class BaseWeaponBehaviour : MonoBehaviour
 
     protected Vector3 mousePos = Vector3.zero;
 
+    protected float currentAttackSpeed;
+
     protected bool isAttacking;
     protected bool attackReady;
+
+    bool burstAttacking;
 
     protected bool aimingAbilityOne;
     protected bool aimingAbilityTwo;
@@ -84,6 +88,9 @@ public class BaseWeaponBehaviour : MonoBehaviour
         ThisWeaponData.GetAbilities();
         attackReady = true;
         comboIndex = 0;
+
+        currentAttackSpeed = ThisWeaponData.AttackSpeed;
+        UpdateAttackSpeed();
 
         if(!abilityOneReady)
         {
@@ -213,12 +220,28 @@ public class BaseWeaponBehaviour : MonoBehaviour
             return;
         }
 
+        //Check if attack speed gets changed
+        if(currentAttackSpeed != ThisWeaponData.AttackSpeed)
+        {
+            Debug.Log("Changing attack speed");
+            currentAttackSpeed = ThisWeaponData.AttackSpeed;
+            UpdateAttackSpeed();
+        }
+
         if (isAttacking && attackReady)
         {
             Attack();
             attackReady = false;
             StartCoroutine(AttackDelay());
         }
+    }
+
+    /// <summary>
+    /// Updates the weapon's animation speed. Lets us make the attacks look faster or slower.
+    /// </summary>
+    protected void UpdateAttackSpeed()
+    {
+        weaponAnimator.speed = currentAttackSpeed;
     }
 
     /// <summary>
@@ -231,17 +254,39 @@ public class BaseWeaponBehaviour : MonoBehaviour
     }
 
     /// <summary>
+    /// Determines if a burst of attacks should be done all at once or if they should be done in order
+    /// </summary>
+    /// <returns></returns>
+    protected IEnumerator AttackBursts()
+    {
+        for(int i = 1; i < ThisWeaponData.AttackBursts[comboIndex - 1]; ++i)
+        {
+            yield return new WaitForSeconds(ThisWeaponData.TimeBetweenBursts[comboIndex - 1]);
+            SpawnProjectile();
+        }
+
+        burstAttacking = false;
+    }
+
+    /// <summary>
     /// Called by animation event to spawn projectile during attack animation
     /// </summary>
     public void SpawnProjectile()
     {
-        Debug.Log(comboIndex);
+        Debug.Log(comboIndex - 1);
         Vector3 bulletDir = mousePos;
         bulletDir.y = 0;
 
         GameObject spawnedProjectile = Instantiate(ThisWeaponData.Projectiles[comboIndex - 1], transform.position, Quaternion.LookRotation(bulletDir.normalized, Vector3.up));
         spawnedProjectile.GetComponent<BaseProjectileBehaviour>().SetData(ThisWeaponData);
         spawnedProjectile.GetComponent<Rigidbody>().linearVelocity = bulletDir.normalized * ThisWeaponData.ProjectileSpeed[comboIndex - 1];
+
+        //If the weapon has multiple bursts fire them
+        if(ThisWeaponData.AttackBursts[comboIndex - 1] > 1 && !burstAttacking)
+        {
+            burstAttacking = true;
+            StartCoroutine(AttackBursts());
+        }
     }
 
     /// <summary>

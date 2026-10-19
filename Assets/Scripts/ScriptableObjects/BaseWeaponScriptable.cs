@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors: Brad Dixon, Brenden
-* Last Modified: 10/09/2026
+* Last Modified: 10/19/2026
 * Summary: This is the base scriptable object for all weapon scriptable objects.
 *          Handles the data for the weapons. Acts as a tool to make any kind of weapon.
 * To Do:   Add more variables as needed. Change status effects as needed.
@@ -107,12 +107,23 @@ public class BaseWeaponScriptable : BaseScriptableObject
         "Is a list in case the weapon's combo attacks should change the player's speed by a different amount.")]
     public List<Vector2> BasePlayerDisplacement = new List<Vector2>();
 
+    //Defaults to 1 so the animation plays at normal speed.
+    [HideInInspector]
+    public float AttackSpeed = 1;
+
     [HideInInspector]
     public List<int> AttackBursts = new List<int>();
 
     [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
     [Tooltip("When making an attack, how many times the attack should occur. Is a list in case the weapon's combo attacks should cause different amount of bursts.")]
     public List<int> BaseAttackBursts = new List<int>();
+
+    [HideInInspector]
+    public List<float> TimeBetweenBursts = new List<float>();
+
+    [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
+    [Tooltip("How much time passes between each burst. Set to 0 for weapons that unleash a burst of attacks at once. Is a list in case you want different timings for combo attacks.")]
+    public List<float> BaseTimeBetweenBursts = new List<float>();
 
     [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
     [Tooltip("Whether or not a weapon has lifesteal.")]
@@ -376,8 +387,11 @@ public class BaseWeaponScriptable : BaseScriptableObject
     {
         WeaponDamage = BaseWeaponDamage.ToList();
         AttackCooldown = BaseAttackCooldown.ToList();
+        AttackSpeed = 1;
         MovementSpeedChange = BaseMovementSpeedChange.ToList();
         PlayerDisplacement = BasePlayerDisplacement.ToList();
+        AttackBursts = BaseAttackBursts.ToList();
+        TimeBetweenBursts = BaseTimeBetweenBursts.ToList();
         LifestealAmount = BaseLifestealAmount.ToList();
         Projectiles = BaseProjectiles.ToList();
         ProjectileSpeed = BaseProjectileSpeed.ToList();

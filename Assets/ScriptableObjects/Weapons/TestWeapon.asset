@@ -26,17 +26,27 @@ MonoBehaviour:
     rows: []
     playerController: {fileID: 0}
   WeaponName: Test Weapon
-  WeaponDamage: 
+  WeaponDamage: 0a000000
   BaseWeaponDamage: 0a000000
-  AttackCooldown: []
+  AttackCooldown:
+  - 1
   BaseAttackCooldown:
   - 1
-  MovementSpeedChange: []
-  BaseMovementSpeedChange: []
-  PlayerDisplacement: []
-  BasePlayerDisplacement: []
-  AttackBursts: 
-  BaseAttackBursts: 
+  MovementSpeedChange:
+  - 0
+  BaseMovementSpeedChange:
+  - 0
+  PlayerDisplacement:
+  - {x: 0, y: 0}
+  BasePlayerDisplacement:
+  - {x: 0, y: 0}
+  AttackSpeed: 1
+  AttackBursts: 02000000
+  BaseAttackBursts: 02000000
+  TimeBetweenBursts:
+  - 0.2
+  BaseTimeBetweenBursts:
+  - 0.2
   HasLifesteal: 0
   BaseLifestealAmount: []
   LifestealAmount: []
@@ -44,10 +54,12 @@ MonoBehaviour:
   - {fileID: 8805286060830696359, guid: f4083c9721c5aa04280c3f4b179ddf88, type: 3}
   BaseProjectiles:
   - {fileID: 8805286060830696359, guid: f4083c9721c5aa04280c3f4b179ddf88, type: 3}
-  ProjectileSpeed: []
+  ProjectileSpeed:
+  - 5
   BaseProjectileSpeed:
   - 5
-  ProjectileLifetime: []
+  ProjectileLifetime:
+  - 3
   BaseProjectileLifetime:
   - 3
   HasPierce: 0
