@@ -10,6 +10,7 @@ using NaughtyAttributes;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 [System.Serializable]
 public class UpgradeTileGrid
@@ -344,14 +345,34 @@ public class UpgradeTileGrid
     /// <returns> % amount buff that revieved by the adjacent tiles</returns>
     public float GetAdjacentBuff(UpgradeTileData tile)
     {
-        int BuffAmount = 0;
+        float BuffAmount = 0;
+        
         AdajacencyTest = UtilityFunctions.GetAdjacentTiles<UpgradeTileData>(tile.coords, grid, height, width);
-        foreach (var currentTile in AdajacencyTest)
+        if(AdajacencyTest != null)
         {
-            if (currentTile != null && currentTile.pin != null && tile.pin.Types[0] == currentTile.pin.Types[0])
-            {
+            if (AdajacencyTest[0] != null && tile.pin.NorthAdjacency != null && CheckAdjacency(tile.pin.NorthAdjacency, AdajacencyTest[0].pin.Types))
                 BuffAmount += tile.pin.AdjacentTileScaling;
-            }
+
+            if (AdajacencyTest[1] != null && tile.pin.NorthAdjacency != null && CheckAdjacency(tile.pin.NorthEastAdjacency, AdajacencyTest[1].pin.Types))
+                BuffAmount += tile.pin.AdjacentTileScaling;
+            
+            if (AdajacencyTest[2] != null && tile.pin.NorthAdjacency != null && CheckAdjacency(tile.pin.EastAdjacency, AdajacencyTest[2].pin.Types))
+                BuffAmount += tile.pin.AdjacentTileScaling;
+            
+            if (AdajacencyTest[3] != null && tile.pin.NorthAdjacency != null && CheckAdjacency(tile.pin.SouthEastAdjacency, AdajacencyTest[3].pin.Types))
+                BuffAmount += tile.pin.AdjacentTileScaling;
+            
+            if (AdajacencyTest[4] != null && tile.pin.NorthAdjacency != null && CheckAdjacency(tile.pin.SouthAdjacency, AdajacencyTest[4].pin.Types))
+                BuffAmount += tile.pin.AdjacentTileScaling;
+            
+            if (AdajacencyTest[5] != null && tile.pin.NorthAdjacency != null && CheckAdjacency(tile.pin.SouthWestAdjacency, AdajacencyTest[5].pin.Types))
+                BuffAmount += tile.pin.AdjacentTileScaling;
+            
+            if (AdajacencyTest[6] != null && tile.pin.NorthAdjacency != null && CheckAdjacency(tile.pin.WestAdjacency, AdajacencyTest[6].pin.Types))
+                BuffAmount += tile.pin.AdjacentTileScaling;
+            
+            if (AdajacencyTest[7] != null && tile.pin.NorthAdjacency != null && CheckAdjacency(tile.pin.NorthWestAdjacency, AdajacencyTest[7].pin.Types))
+                BuffAmount += tile.pin.AdjacentTileScaling;
         }
         return BuffAmount;
     }
@@ -369,6 +390,27 @@ public class UpgradeTileGrid
             if (currentTile != null && currentTile.GlyphActive && currentTile.glyph.Type == GlyphScriptable.GlyphType.DoubleAdjacentGlyphs)
             {
                 return true;
+            }
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// helper function to check if any of the allowed adjacenent types return true or false
+    /// </summary>
+    /// <param name="accepted"></param>
+    /// <param name="adjacentTypes"></param>
+    /// <returns></returns>
+    private bool CheckAdjacency(List<PinScriptable.PinType> accepted, List<PinScriptable.PinType> adjacentTypes)
+    {
+        foreach(PinScriptable.PinType tester in accepted)
+        {
+            foreach(PinScriptable.PinType type in adjacentTypes)
+            {
+                if(tester == type)
+                {
+                    return true;
+                }
             }
         }
         return false;

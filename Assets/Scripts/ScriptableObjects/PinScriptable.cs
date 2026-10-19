@@ -39,7 +39,10 @@ public class PinScriptable : BaseScriptableObject
     [Tooltip("The type of pin this is")]
     public List<PinType> Types;
 
+    [Tooltip("this is the types that can give an adjacent bonus")]
     public List<PinType> AutoAdjacencyPinTypes;
+
+    [Tooltip("This should add up to at least 8")]
     public List<int> autoAdjacencyAmounts;
 
     public List<PinType> NorthAdjacency;
@@ -68,4 +71,62 @@ public class PinScriptable : BaseScriptableObject
     [Header("TEMPORARY - REPLACE WITH SPRITE WHEN I GET THEM")]
     [Tooltip("TEMPORARY - REPLACE WITH SPRITE WHEN I GET THEM")]
     public Color pinColor;
+
+    /// <summary>
+    /// Will make the adjacency with how many of each type specified,needs to be called when the player picks up the pin
+    /// </summary>
+    public void AutoMakeAdjacency()
+    {
+        if (ManualAdjacency)
+            return;
+        int amountOfAdjacencyAmounts = 0;
+        foreach(int amount in autoAdjacencyAmounts)
+        {
+            amountOfAdjacencyAmounts += amount;
+        }
+
+        int startNumber = Random.Range(0, 8);
+        int loopedTimes = 0;
+        for(int i = startNumber; i < startNumber + 8; i++)
+        {
+            PinType thisType = PinType.none;
+            int existance = loopedTimes;
+            for(int j = 0; j < autoAdjacencyAmounts.Count; j++)
+            {
+                if(existance <= autoAdjacencyAmounts[j])
+                {
+                    thisType = AutoAdjacencyPinTypes[j];
+                    break;
+                }
+                existance -= autoAdjacencyAmounts[j];
+            }
+            switch(startNumber % 8)
+            {
+                case 0:
+                    NorthAdjacency.Add(thisType);
+                    continue;
+                case 1:
+                    NorthEastAdjacency.Add(thisType);
+                    continue;
+                case 2:
+                    EastAdjacency.Add(thisType);
+                    continue;
+                case 3:
+                    SouthEastAdjacency.Add(thisType);
+                    continue;
+                case 4:
+                    SouthAdjacency.Add(thisType);
+                    continue;
+                case 5:
+                    SouthWestAdjacency.Add(thisType);
+                    continue;
+                case 6:
+                    WestAdjacency.Add(thisType);
+                    continue;
+                case 7:
+                    NorthWestAdjacency.Add(thisType);
+                    continue;
+            }
+        }
+    }
 }
