@@ -52,6 +52,9 @@ public class BaseWeaponScriptable : BaseScriptableObject
         "Changing between the options changes what variables are shown in the inspector.")]
     private ShownSettings shownSettings;
 
+    [Tooltip("The layers of things this weapon can hit.")]
+    public LayerMask EnemyLayer;
+
     [ShowIf(nameof(shownSettings), ShownSettings.StatusEffects)]
     [SerializeField]
     [Tooltip("Changing this variable has no impact on gameplay.\n\nIt is purely a navigational tool." +
@@ -194,6 +197,22 @@ public class BaseWeaponScriptable : BaseScriptableObject
     [Tooltip("The minimum amount of damage the weapon can be decreased to from piercing. If <= 0, will just destroy when damage is 0. " +
         "Made as a list in case you want combo attacks to have varying minimum pierce damage.")]
     public List<int> BaseMinPierceDamage = new List<int>();
+
+    [ShowIf(nameof(RangedWeaponSettings))]
+    [Tooltip("Whether or not the projectile ricochets on hit.")]
+    public bool Ricochets;
+
+    [HideInInspector] public List<int> RicochetCount = new List<int>();
+
+    [ShowIf(EConditionOperator.And, nameof(RangedWeaponSettings), nameof(Ricochets))]
+    [Tooltip("How many times the projectile can ricochet.")]
+    public List<int> BaseRicochetCount = new List<int>();
+
+    [HideInInspector] public List<float> RicochetRange = new List<float>();
+
+    [ShowIf(EConditionOperator.And, nameof(RangedWeaponSettings), nameof(Ricochets))]
+    [Tooltip("How close enemies have to be for a ricochet to happen.s")]
+    public List<float> BaseRicochetRange = new List<float>();
     #endregion
 
     #endregion
@@ -399,6 +418,8 @@ public class BaseWeaponScriptable : BaseScriptableObject
         PierceDamageFalloff = BasePierceDamageFalloff.ToList();
         PierceLifetimeFalloff = BasePierceLifetimeFalloff.ToList();
         PierceAmount = BasePierceAmount.ToList();
+        RicochetCount = BaseRicochetCount.ToList();
+        RicochetRange = BaseRicochetRange.ToList();
         upgradeGrid.attachedWeapon = this;
     }
 

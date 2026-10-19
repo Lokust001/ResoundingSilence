@@ -17,6 +17,9 @@ MonoBehaviour:
   PresetTooltip: 
   weaponType: 1
   shownSettings: 2
+  EnemyLayer:
+    serializedVersion: 2
+    m_Bits: 1024
   effectType: 0
   upgradeGrid:
     NumberOfGlyphRange: {x: 0, y: 0}
@@ -71,6 +74,12 @@ MonoBehaviour:
   BasePierceAmount: 
   MinPierceDamage: 
   BaseMinPierceDamage: 
+  Ricochets: 1
+  RicochetCount: 
+  BaseRicochetCount: 05000000
+  RicochetRange: []
+  BaseRicochetRange:
+  - 10
   DecayDamage: 0
   MaxDecayStacks: 0
   DecayDelay: 0
