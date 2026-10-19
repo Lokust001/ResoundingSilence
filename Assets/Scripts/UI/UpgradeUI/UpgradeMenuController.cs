@@ -141,15 +141,6 @@ public class UpgradeMenuController : MenuControllerSupportBase
     #region Setup
 
     /// <summary>
-    /// Returns the carried item as a pin
-    /// </summary>
-    /// <returns></returns>
-    private PinItemBehavior GetCarriedPin()
-    {
-        return carriedItem as PinItemBehavior;
-    }
-
-    /// <summary>
     /// Populates everything once the menu is opened.
     /// </summary>
     protected override void MenuOpenedSucessfully()
@@ -182,9 +173,9 @@ public class UpgradeMenuController : MenuControllerSupportBase
     /// </summary>
     protected override void MenuClosedSucessfully()
     {
-        ReturnPinToItsTile();
-        UIPublicEvents.UpgradeMenuClosed?.Invoke();
         base.MenuClosedSucessfully();
+        UIPublicEvents.UpgradeMenuClosed?.Invoke();
+        
     }
 
     /// <summary>
@@ -193,11 +184,6 @@ public class UpgradeMenuController : MenuControllerSupportBase
     protected override void SetUpPublicEvents()
     {
         base.SetUpPublicEvents();
-        UIPublicEvents.PinPickedUp += SetCarriedPin;
-        InputPublicEvents.PinReleased += DropHeldPin;
-        InputPublicEvents.DropPin += ReturnPinToItsTile;
-        InputPublicEvents.ControllerEnabled += ReturnPinToItsTile;
-        InputPublicEvents.KeyboardMouseEnabled += ReturnPinToItsTile;
 
         InputPublicEvents.SwapFocusToInventory += MoveFocusToInventory;
         InputPublicEvents.SwapFocusToGrid += MoveFocusToGrid;
@@ -211,11 +197,6 @@ public class UpgradeMenuController : MenuControllerSupportBase
     protected override void TearDownPublicEvents()
     {
         base.TearDownPublicEvents();
-        UIPublicEvents.PinPickedUp -= SetCarriedPin;
-        InputPublicEvents.PinReleased -= DropHeldPin;
-        InputPublicEvents.DropPin -= ReturnPinToItsTile;
-        InputPublicEvents.ControllerEnabled -= ReturnPinToItsTile;
-        InputPublicEvents.KeyboardMouseEnabled -= ReturnPinToItsTile;
 
         InputPublicEvents.SwapFocusToInventory -= MoveFocusToInventory;
         InputPublicEvents.SwapFocusToGrid -= MoveFocusToGrid;
@@ -224,7 +205,7 @@ public class UpgradeMenuController : MenuControllerSupportBase
     }
 
     /// <summary>
-    /// placeholder for future. TODO: make the thing
+    /// populates the inventory with pins
     /// </summary>
     private void PopulateInventory()
     {
@@ -237,7 +218,8 @@ public class UpgradeMenuController : MenuControllerSupportBase
                 PinItemBehavior temp = Instantiate(pinItemPrefab, tempSlot.transform);
 
                 tempSlot.InitSlot(temp);
-                temp.InitPin(pin, tempSlot);
+                temp.InitItem(tempSlot);
+                temp.InitSetPinData(pin);
                 inventoryPins.Add(temp);
                 inventorySlots.Add(tempSlot);
                 temp.transform.position = tempSlot.transform.position;
@@ -311,8 +293,8 @@ public class UpgradeMenuController : MenuControllerSupportBase
 
         if (carriedItem != null)
         {
-            GetCarriedPin().StopPinMoving();
-            ReturnCarriedPinToInventory();
+            carriedItem.StopMoving();
+            ReturnCarriedItemToInventory();
         }
 
         if (enableTestMode)
@@ -331,188 +313,15 @@ public class UpgradeMenuController : MenuControllerSupportBase
 
     #endregion
 
-    #region Input Handling
-
-    #region Picking up
-
-    /// <summary>
-    /// called from trying to pick up an item - not called from an empty tile
-    /// </summary>
-    /// <param name="item"></param>
-    private void SetCarriedPin(PinItemBehavior item)
-    {
-        //places the currently held pin in the tile of the pin you want to pick up
-        if (carriedItem != null)
-        {
-            PinItemBehavior pin = GetCarriedPin();
-            pin.StopPinMoving();
-
-            //if the new item is in the inventory
-            if (item.Parent == item.Owner)
-            {
-                //set the current item to its owner
-                ReturnCarriedPinToInventory();
-            }
-            else
-            {
-                //set the current item to the tile of the new one
-                PlacePinInTile(pin, item.Parent);
-            }
-        }
-
-        PickUpPin(item);
-    }
-
-    /// <summary>
-    /// grabs a pin from the empty inventory button
-    /// </summary>
-    /// <param name="item"></param>
-    public void GrabPlacedPin(PinItemBehavior item)
-    {
-        if (GetCarriedPin() != null)
-        {
-            ReturnCarriedPinToInventory();
-        }
-
-        //unequip pins properly
-        if (pinsOnNonEnabledGrids.Contains(item))
-        {
-            //I LOVE LINQ
-            //grabs the tile that the item is attached to 
-
-            //grabs all the tiles in all the grids that are disabled
-            List<UpgradeTileData> nonEnabledGrids = testingGrids.Where(x => x != currentlyEnabledGrid).SelectMany(x => x.grid).ToList();
-
-            //grabs all the tiles that have pins on them, then grabs the specific tile that has the pin.
-            UpgradeTileData tilePinIsEquippedTo = nonEnabledGrids.Where(x => x.pin != null).FirstOrDefault(x => x.pin == item.pinData);
-
-            if (tilePinIsEquippedTo == null)
-            {
-                throw new System.Exception("PinsNotOnEnabledGrids has some issues with resetting");
-            }
-
-            //replace with the proper way to remove a pin given the tile data eventually
-            tilePinIsEquippedTo.SetPin(null);
-            item.Parent = null;
-            pinsOnNonEnabledGrids.Remove(item);
-
-        }
-        PickUpPin(item);
-    }
-
-    #endregion
-
-    #region Cancelling
-
-    /// <summary>
-    /// drops the pin that the player is holding
-    /// </summary>
-    private void DropHeldPin()
-    {
-        //quit out if youre not holding anything
-        if (GetCarriedPin() == null)
-        {
-            return;
-        }
-
-        PinHolderSlot target = null;
-
-        if (InputManager.Instance.ControllerIsEnabled)
-        {
-            if (ControllerUIService.Instance.currentlySelected is PinHolderSlot slot)
-            {
-                target = slot;
-            }
-        }
-        else
-        {
-            //check to see if the pin is over a tile
-            PointerEventData tempEventData = new(EventSystem.current);
-            tempEventData.position = carriedItem.transform.position;
-
-            List<RaycastResult> raycastResults = new();
-
-            EventSystem.current.RaycastAll(tempEventData, raycastResults);
-
-            if (raycastResults.Count > 0)
-            {
-                if (raycastResults[0].gameObject.GetComponent<PinItemBehavior>() != null)
-                {
-                    target = raycastResults[0].gameObject.GetComponent<PinItemBehavior>().Parent;
-                }
-                else
-                {
-                    target = raycastResults[0].gameObject.GetComponent<PinHolderSlot>();
-                }
-                
-            }
-        }
-        PinItemBehavior pin = GetCarriedPin();
-
-        if (target == null)
-        {
-           
-            if (pin.Parent == null)
-            {
-                ReturnCarriedPinToInventory();
-            }
-            else
-            {
-                PlacePinInTile(pin, pin.Parent);
-            }
-            return;
-        }
-
-        //if we hit a tile, place whatever we are carrying in that tile
-        if (target is UpgradeTileBehavior tile)
-        {
-            if (tile.pin != null)
-            {
-                PlacePinInTile(target.pin, target.pin.Owner);
-            }
-            PlacePinInTile(pin, tile);
-        }
-        else if (target is InventoryPinHolder inventorySlot)
-        {
-            ReturnCarriedPinToInventory();
-            if (inventorySlot.pin.Parent == inventorySlot)
-            {
-                PickUpPin(inventorySlot.pin);
-            }
-            UIPublicEvents.SelectSpecificTile?.Invoke(inventorySlot);
-        }
-
-    }
-
-    #endregion
-
-    #endregion
-
     #region Misc
 
     /// <summary>
     /// sets the item as the new carried pin
     /// </summary>
     /// <param name="item"></param>
-    private void PickUpPin(PinItemBehavior item)
+    protected override void PickUpItem(CarriedItemBehavior item)
     {
-        carriedItem = item;
-        PinItemBehavior pin = GetCarriedPin();
-
-        if (pin.Parent is UpgradeTileBehavior tile)
-        {
-            pinsTile = tile;
-            tile.UnequipPin();
-        }
-
-        pin.Parent = null;
-
-
-
-        pin.gameObject.SetActive(true);
-        pin.transform.SetParent(draggingParent);
-        pin.StartPinMoving();
-
+        base.PickUpItem(item);
         ToggleInventoryScrollability(false);
     }
 
@@ -567,43 +376,17 @@ public class UpgradeMenuController : MenuControllerSupportBase
 
     #endregion
 
-    #region Placing pins in tile
+    /*#region Placing pins in tile
 
     /// <summary>
     /// places a specific pin in. Tile = null means it will return to the inventory
     /// </summary>
     /// <param name="pin"></param>
     /// <param name="tile">null = return to inventory</param>
-    public void PlacePinInTile(PinItemBehavior pin, PinHolderSlot tile = null)
+    public override void PlaceItemInTile(CarriedItemBehavior pin, ItemHolderSlot tile = null)
     {
-        if (pin == null)
-        {
-            return;
-        }
-
-        if (tile == null)
-        {
-            tile = pin.Owner;
-        }
-
-        //if we place the carried pin, we arent carrying it anymore
-        if (carriedItem == pin)
-        {
-            carriedItem = null;
-            pinsTile = null;
-        }
-
-        //if its on a tile, unequip it from that tile
-        if (pin.Parent != null && pin.Parent != pin.Owner)
-        {
-            pin.Parent.UnequipPin();
-        }
-
-        pin.Parent = tile;
-        pin.StopPinMoving();
-        tile.SetNewPinInTile(pin);
+        base.PlaceItemInTile(pin, tile);
         ToggleInventoryScrollability(true);
-        UIPublicEvents.SelectSpecificTile?.Invoke(tile);
     }
 
     /// <summary>
@@ -612,7 +395,7 @@ public class UpgradeMenuController : MenuControllerSupportBase
     public void ReturnCarriedPinToInventory()
     {
         PinItemBehavior pin = GetCarriedPin();
-        PlacePinInTile(pin, pin.Owner);
+        PlaceItemInTile(pin, pin.Owner);
     }
 
     /// <summary>
@@ -630,13 +413,13 @@ public class UpgradeMenuController : MenuControllerSupportBase
             else
             {
                 PinItemBehavior pin = GetCarriedPin();
-                PlacePinInTile(pin, pinsTile);
+                PlaceItemInTile(pin, pinsTile);
             }
         }
         
     }
 
-    #endregion
+    #endregion*/
 
     #region ControllerSupport
 
@@ -757,7 +540,7 @@ public class UpgradeMenuController : MenuControllerSupportBase
     /// changes the selected object to be a specific tile
     /// </summary>
     /// <param name="slot"></param>
-    private void SelectSpecificTile(PinHolderSlot slot)
+    private void SelectSpecificTile(ItemHolderSlot slot)
     {
         if (slot is UpgradeTileBehavior tile)
         {

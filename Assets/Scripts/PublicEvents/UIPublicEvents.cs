@@ -30,9 +30,9 @@ public static class UIPublicEvents
 
     public static Action NewPinPlacedInTile;
 
-    public static Action<PinHolderSlot> SelectSpecificTile;
+    public static Action<ItemHolderSlot> SelectSpecificTile;
 
-    public static Action<PinItemBehavior> PinPickedUp;
+    public static Action<CarriedItemBehavior> ItemPickedUp;
 
     public static Action<PinScriptable> PinChangedOnWeapon;
 
