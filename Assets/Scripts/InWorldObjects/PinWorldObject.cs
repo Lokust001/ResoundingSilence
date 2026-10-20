@@ -1,19 +1,27 @@
+using System.Collections;
 using UnityEngine;
 
 public class PinWorldObject : MonoBehaviour
 {
-
     public PinScriptable pin;
+    public float Speed;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Start()
     {
-        
+        StartCoroutine(FlyToPlayer());
     }
 
-    // Update is called once per frame
-    void Update()
+    private IEnumerator FlyToPlayer()
     {
-        
+        Vector3.MoveTowards(transform.position, GameObject.FindAnyObjectByType<PlayerController>().gameObject.transform.position, Speed);
+        yield return new WaitForEndOfFrame();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.tag == "player")
+        {
+            MidRunDataManager.Instance.AddPinToInventory(pin);
+        }
     }
 }
