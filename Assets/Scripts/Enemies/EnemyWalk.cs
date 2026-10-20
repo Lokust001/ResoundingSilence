@@ -10,15 +10,14 @@ using UnityEngine.AI;
 
 public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICustomDisabler
 {
-    private NavMeshAgent m_Agent;
-    private GameObject m_GameObject;
+    private NavMeshAgent navMeshAgent;
+    private GameObject playerReference;
 
     private Coroutine walkingCoroutine;
     
     private BaseEnemyScriptable enemyData;
 
     private EnemyAttack enemyAttack;
-    private EnemyBuff enemyBuff;
 
     Transform enemyTransform;
     CapsuleCollider capsuleCollider;
@@ -26,21 +25,14 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     private MeshRenderer meshRenderer;
     private Rigidbody rigidbody;
 
-    private int s;
-    private void Awake()
-    {
-        s = LayerMask.NameToLayer("Player");
-    }
-
     /// <summary>
     /// Grabs necessary components and assigns enemyTransform to transform component
     /// </summary>
     private void InitializeVariables() 
     {
-        m_Agent = GetComponent<NavMeshAgent>();
-        m_GameObject = FindAnyObjectByType<PlayerController>().gameObject;
+        navMeshAgent = GetComponent<NavMeshAgent>();
+        playerReference = FindAnyObjectByType<PlayerController>().gameObject;
         enemyAttack = GetComponentInChildren<EnemyAttack>();
-        enemyBuff = GetComponentInChildren<EnemyBuff>();
         capsuleCollider = GetComponent<CapsuleCollider>();
 
         meshRenderer = GetComponent<MeshRenderer>();
@@ -51,9 +43,9 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     /// <summary>
     /// Start searching for the player by un-constraining the nav mesh agent and moving towards the player
     /// </summary>
-    public void StartPlayerSearch() 
+    public void StartFollowingPlayer() 
     {
-        walkingCoroutine = StartCoroutine(MoveTowardsPlayer());
+        walkingCoroutine ??= StartCoroutine(MoveTowardsPlayer());
     }
 
     /// <summary>
@@ -61,12 +53,12 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     /// </summary>
     public void EndPlayerSearch() 
     {
-        m_Agent.isStopped = true;
+        navMeshAgent.isStopped = true;
         if (walkingCoroutine != null) 
         {
             StopCoroutine(walkingCoroutine);
+            walkingCoroutine = null;
         }
-        walkingCoroutine = null;
     }
 
     /// <summary>
@@ -88,7 +80,7 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
         float distanceToGoal = (chargeDestination - enemyTransform.position).sqrMagnitude;
 
         //Make the rigidbody on the enemy temporarily kinematic to avoid letting it be interrupted by the player
-        rigidbody.isKinematic = true;
+        //rigidbody.isKinematic = true;
 
         //While there is still a significant gap or distance between the enemy and its charge destination,
         //calculate its current distance from its goal, move the enemy towards the goal by a factor of its chargeSpeedForce,
@@ -102,7 +94,7 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
         }
 
         //Restore properties and velocity
-        rigidbody.isKinematic = false;
+        //rigidbody.isKinematic = false;
         rigidbody.linearVelocity = rigidbody.angularVelocity = Vector3.zero;
         
     }
@@ -115,8 +107,6 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     {
         if (collision.gameObject.TryGetComponent<PlayerController>(out PlayerController player))
         {
-            //Debug.Log("Enemy collided player layer #: " + s);
-            Debug.Log(Physics.GetIgnoreLayerCollision(s, gameObject.layer));
             if (enemyAttack.IsEnemyCurrentlyCharging())
             {
                 Vector3 pushDirection = player.transform.position - transform.position;
@@ -135,10 +125,10 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     private IEnumerator MoveTowardsPlayer() 
     {
         Debug.Log("Following Player");
-        m_Agent.isStopped = false;
+        navMeshAgent.isStopped = false;
         while (true) 
         {
-            m_Agent.destination = m_GameObject.transform.position;
+            navMeshAgent.destination = playerReference.transform.position;
             yield return new WaitForFixedUpdate();
         }
     }
@@ -149,23 +139,34 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     /// <returns></returns>
     public IEnumerator MoveAwayFromPlayer() 
     {
-        Transform playerTransform = FindAnyObjectByType<PlayerController>().transform;
+        Transform playerTransform = playerReference.transform;
         Vector3 directionToPlayer = (enemyTransform.position - playerTransform.position).normalized;
         directionToPlayer.y = 0;
 
         Vector3 retreatPosition = enemyTransform.position + (directionToPlayer * enemyData.retreatDistance);
+        navMeshAgent.destination = retreatPosition;
+        navMeshAgent.isStopped = false;
 
-        float retreatSpeed = enemyData.retreatSpeed;
         float distance = Vector3.Distance(enemyTransform.position, retreatPosition);
+        float accuracy = enemyData.retreatAccuracyThreshold;
+        Vector3 prevPos;
 
-
-        while (distance > 0) 
+        while (distance > accuracy) 
         {
-            enemyTransform.position = Vector3.MoveTowards(enemyTransform.position, retreatPosition, retreatSpeed * Time.fixedDeltaTime);
+            prevPos = enemyTransform.position;
             distance = Vector3.Distance(enemyTransform.position, retreatPosition);
             yield return new WaitForFixedUpdate();
+            if (prevPos == enemyTransform.position) 
+            {
+                Debug.Log("Stuck");
+                navMeshAgent.ResetPath();
+                navMeshAgent.SetDestination(retreatPosition);
+            }
         }
-        
+
+        enemyTransform.position = retreatPosition;
+        navMeshAgent.isStopped = true;
+        Debug.Log("Finished Retreat");
     }
 
     /// <summary>

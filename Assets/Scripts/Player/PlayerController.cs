@@ -61,6 +61,11 @@ public class PlayerController : MonoBehaviour
     
     int currentDash;
 
+    [SerializeField]
+    private TriggerObjects meleeRangeTrigger;
+    [SerializeField]
+    private TriggerObjects rangedRangeTrigger;
+
     #endregion
 
     #region Unity Methods
@@ -73,6 +78,9 @@ public class PlayerController : MonoBehaviour
         InputPublicEvents.MovePressed += PlayerInputStarted;
         InputPublicEvents.MoveReleased += PlayerInputEnded;
         InputPublicEvents.DashPressed += PlayerDashPressed;
+
+        meleeRangeTrigger.PlayerTriggerActivated += MeleeZoneHandler;
+        rangedRangeTrigger.PlayerTriggerActivated += RangedZoneHandler;
     }
 
     /// <summary>
@@ -83,6 +91,9 @@ public class PlayerController : MonoBehaviour
         InputPublicEvents.MovePressed -= PlayerInputStarted;
         InputPublicEvents.MoveReleased -= PlayerInputEnded;
         InputPublicEvents.DashPressed -= PlayerDashPressed;
+
+        meleeRangeTrigger.PlayerTriggerActivated -= MeleeZoneHandler;
+        rangedRangeTrigger.PlayerTriggerActivated -= RangedZoneHandler;
     }
 
     /// <summary>
@@ -126,6 +137,14 @@ public class PlayerController : MonoBehaviour
     {
         playerVelocity.x = 0;
         playerVelocity.z = 0;
+    }
+
+    /// <summary>
+    /// Sets the linearVelocity to 0 to stop physics from affecting the player without setting isKinematic to true
+    /// </summary>
+    private void NegateAllForces() 
+    {
+        rigidbody.linearVelocity = Vector3.zero;
     }
 
     /// <summary>
@@ -359,6 +378,9 @@ public class PlayerController : MonoBehaviour
         //The maximum speed the will initially be applied to the player
         float maximumKnockbackSpeed = 2 * linearUniformKnockbackSpeed;
 
+        //Nullify the insane force that would've otherwise been applied by the enemy
+        NegateAllForces();
+
         //For the duration of knockback,
         //Incrementally move the player towards the destination distance while dynamically calculating its speed on every FixedUpdate tick
         //The dynamic speed allows for the player to be initially fast, then slow down
@@ -384,17 +406,39 @@ public class PlayerController : MonoBehaviour
             Vector3 knockbackDelta = Vector3.MoveTowards(playerTransform.position, knockbackDestination, dynamicDeltaSpeed * fixedUpdateTick);
             rigidbody.MovePosition(knockbackDelta);
 
-
             //Debug.Log("\tDistance: " + distance + " \tSpeed: " + dynamicDeltaSpeed + " \tTime: " + timer);
 
         }
-        
+        //Nullify once more the insane force that would've otherwise been applied by the enemy
+        NegateAllForces();
+
         //The final move for 100% accuracy
         rigidbody.MovePosition(knockbackDestination);
 
         //Let player move again
         RestartPlayerMovementAndInput();
         knockbackCoroutine = null;
+    }
+
+    /// <summary>
+    /// Handles logic when an enemy enters their designated melee zone
+    /// </summary>
+    /// <param name="enemy"></param>
+    /// <param name="enteredTrigger"></param>
+    private void MeleeZoneHandler(Enemy enemy, bool enteredTrigger) 
+    {
+        _ = enemy;
+        enemy.SetInMeleeArea(enteredTrigger);
+    }
+    /// <summary>
+    /// Handles logic when an enemy enters their designated ranged zone
+    /// </summary>
+    /// <param name="enemy"></param>
+    /// <param name="enteredTrigger"></param>
+    private void RangedZoneHandler(Enemy enemy, bool enteredTrigger) 
+    {
+        _ = enemy;
+        enemy.SetInRangedArea(enteredTrigger);
     }
 
     /// <summary>
