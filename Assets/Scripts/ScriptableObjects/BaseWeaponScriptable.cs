@@ -80,30 +80,26 @@ public class BaseWeaponScriptable : BaseScriptableObject
     #region Weapon
 
     #region General Variables
-    [HideInInspector]
-    public List<int> WeaponDamage = new List<int>();
+    [HideInInspector] public List<int> WeaponDamage = new List<int>();
 
     [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
     [Tooltip("How much damage the weapon does. Is a list in case the weapon has multiple hits in a combo.")]
     public List<int> BaseWeaponDamage = new List<int>();
 
-    [HideInInspector]
-    public List<float> AttackCooldown = new List<float>();
+    [HideInInspector] public List<float> AttackCooldown = new List<float>();
 
     [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
     [Tooltip("How much damage the weapon does. Is a list in case the weapon has multiple hits in a combo.")]
     public List<float> BaseAttackCooldown = new List<float>();
 
-    [HideInInspector]
-    public List<float> MovementSpeedChange = new List<float>();
+    [HideInInspector] public List<float> MovementSpeedChange = new List<float>();
 
     [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
     [Tooltip("How much attacking should change the player's move speed by. Use negative values to make player slower. " +
         "Is a list in case the weapon's combo attacks should change the player's speed by a different amount.")]
     public List<float> BaseMovementSpeedChange = new List<float>();
 
-    [HideInInspector]
-    public List<Vector2> PlayerDisplacement = new List<Vector2>();
+    [HideInInspector]  public List<Vector2> PlayerDisplacement = new List<Vector2>();
 
     [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
     [Tooltip("The direction, and by how much, the player should be moved by when attacking. " +
@@ -111,18 +107,15 @@ public class BaseWeaponScriptable : BaseScriptableObject
     public List<Vector2> BasePlayerDisplacement = new List<Vector2>();
 
     //Defaults to 1 so the animation plays at normal speed.
-    [HideInInspector]
-    public float AttackSpeed = 1;
+    [HideInInspector] public float AttackSpeed = 1;
 
-    [HideInInspector]
-    public List<int> AttackBursts = new List<int>();
+    [HideInInspector] public List<int> AttackBursts = new List<int>();
 
     [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
     [Tooltip("When making an attack, how many times the attack should occur. Is a list in case the weapon's combo attacks should cause different amount of bursts.")]
     public List<int> BaseAttackBursts = new List<int>();
 
-    [HideInInspector]
-    public List<float> TimeBetweenBursts = new List<float>();
+    [HideInInspector] public List<float> TimeBetweenBursts = new List<float>();
 
     [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
     [Tooltip("How much time passes between each burst. Set to 0 for weapons that unleash a burst of attacks at once. Is a list in case you want different timings for combo attacks.")]
@@ -136,8 +129,39 @@ public class BaseWeaponScriptable : BaseScriptableObject
     [Tooltip("How much lifesteal a weapon has. Made as a list in case you want combo attacks to have multiple life steal values.")]
     public List<float> BaseLifestealAmount = new List<float>();
 
-    [HideInInspector]
-    public List<float> LifestealAmount = new List<float>();
+    [HideInInspector] public List<float> LifestealAmount = new List<float>();
+
+    [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
+    [Tooltip("If the weapon has an AOE attack attached.")]
+    public bool HasAOEAttack;
+
+    [ShowIf(nameof(WeaponAOE))]
+    [Tooltip("What the weapon's AOE looks like. List in case we want multiple different kinds.")]
+    public List<GameObject> WeaponAOEs = new List<GameObject>();
+
+    [HideInInspector] public List<int> MaxAOEDamage = new List<int>();
+
+    [ShowIf(nameof(WeaponAOE))]
+    [Tooltip("The most amount of damage the AOE can do.")]
+    List<int> BaseMaxAOEDamage = new List<int>();
+
+    [HideInInspector] List<int> MinAOEDamage = new List<int>();
+
+    [ShowIf(nameof(WeaponAOE))]
+    [Tooltip("The minimum amount of damage the AOE can do.")]
+    List<int> BaseMinAOEDamage = new List<int>();
+
+    [HideInInspector] List<float> AOESize = new List<float>();
+
+    [ShowIf(nameof(WeaponAOE))]
+    [Tooltip("How big the AOE is.")]
+    List<float> BaseAOESize = new List<float>();
+
+    [HideInInspector] List<float> AOEDelay = new List<float>();
+
+    [ShowIf(nameof(WeaponAOE))]
+    [Tooltip("How much of a delay there is before the AOE goes off. 0 is instant.")]
+    List<float> BaseAOEDelay = new List<float>();
 
     #endregion
 
@@ -336,6 +360,7 @@ public class BaseWeaponScriptable : BaseScriptableObject
     }
     #endregion
 
+    #region CustomBools
     /// <summary>
     /// Custom bool for multiple enum values
     /// </summary>
@@ -352,6 +377,15 @@ public class BaseWeaponScriptable : BaseScriptableObject
     private bool WeaponLifeSteal()
     {
         return shownSettings == ShownSettings.BaseWeaponData && HasLifesteal;
+    }
+
+    /// <summary>
+    /// Custom bool to show if AOE attack is selected
+    /// </summary>
+    /// <returns></returns>
+    private bool WeaponAOE()
+    {
+        return shownSettings == ShownSettings.BaseWeaponData && HasAOEAttack;
     }
 
     /// <summary>
@@ -398,6 +432,7 @@ public class BaseWeaponScriptable : BaseScriptableObject
     {
         return shownSettings == ShownSettings.StatusEffects && effectType == EffectType.Burn;
     }
+    #endregion
 
     /// <summary>
     /// Sets weapon variables to its base values
@@ -412,6 +447,10 @@ public class BaseWeaponScriptable : BaseScriptableObject
         AttackBursts = BaseAttackBursts.ToList();
         TimeBetweenBursts = BaseTimeBetweenBursts.ToList();
         LifestealAmount = BaseLifestealAmount.ToList();
+        MaxAOEDamage = BaseMaxAOEDamage.ToList();
+        MinAOEDamage = BaseMinAOEDamage.ToList();
+        AOESize = BaseAOESize.ToList();
+        AOEDelay = BaseAOEDelay.ToList();
         Projectiles = BaseProjectiles.ToList();
         ProjectileSpeed = BaseProjectileSpeed.ToList();
         ProjectileLifetime = BaseProjectileLifetime.ToList();

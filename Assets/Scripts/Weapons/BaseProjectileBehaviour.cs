@@ -233,6 +233,19 @@ public class BaseProjectileBehaviour : MonoBehaviour
     }
 
     /// <summary>
+    /// Creates an AOE at the designated location.
+    /// </summary>
+    public void SpawnAOE(int cIndex = 0)
+    {
+        if (cIndex == -1)
+        {
+            cIndex = Random.Range(0, weaponRef.WeaponAOEs.Count);
+        }
+
+        GameObject spawnedAOE = Instantiate(weaponRef.WeaponAOEs[cIndex]);
+    }
+
+    /// <summary>
     /// Converts the inspector variable to it's percentage value if it isn't already a percent
     /// </summary>
     /// <param name="value"></param>
