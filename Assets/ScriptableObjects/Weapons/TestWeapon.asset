@@ -53,6 +53,25 @@ MonoBehaviour:
   HasLifesteal: 0
   BaseLifestealAmount: []
   LifestealAmount: []
+  HasAOEAttack: 1
+  WeaponAOEs:
+  - {fileID: 8331598681187886128, guid: 5a04e87396e53b04db15f79cf4c87a37, type: 3}
+  AOEDamage: 
+  BaseAOEDamage: 0a000000
+  AOESize:
+  - 1
+  BaseAOESize:
+  - 5
+  AOEDuration:
+  - 0
+  BaseAOEDuration:
+  - 2
+  AOEDamageTicks: 
+  BaseAOEDamageTicks: 05000000
+  AOEDelay:
+  - 0
+  BaseAOEDelay:
+  - 0
   Projectiles:
   - {fileID: 8805286060830696359, guid: f4083c9721c5aa04280c3f4b179ddf88, type: 3}
   BaseProjectiles:
@@ -74,10 +93,11 @@ MonoBehaviour:
   BasePierceAmount: 
   MinPierceDamage: 
   BaseMinPierceDamage: 
-  Ricochets: 1
-  RicochetCount: 
+  Ricochets: 0
+  RicochetCount: 05000000
   BaseRicochetCount: 05000000
-  RicochetRange: []
+  RicochetRange:
+  - 10
   BaseRicochetRange:
   - 10
   DecayDamage: 0

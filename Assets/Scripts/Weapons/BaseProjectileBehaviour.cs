@@ -1,7 +1,7 @@
 /******************************************************************************
  * Author: Brad Dixon
  * Contributors:
- * Last Modified: 10/19/2026
+ * Last Modified: 10/20/2026
  * Brief: Handles projectile collision and lifetime
  * TODO:
  * ***************************************************************************/
@@ -116,14 +116,15 @@ public class BaseProjectileBehaviour : MonoBehaviour
                 pierceDamageIndex = pierceDamageIndex + 1 < weaponRef.PierceDamageFalloff.Count ? ++pierceDamageIndex : pierceDamageIndex;
                 pierceLifetimeIndex = pierceLifetimeIndex + 1 < weaponRef.PierceLifetimeFalloff.Count ? ++pierceLifetimeIndex : pierceLifetimeIndex;
             }
-            else if(!weaponRef.Ricochets)
-            {
-                Destroy(this.gameObject);
-            }
 
             if(weaponRef.Ricochets)
             {
                 RicochetProjectile(other.gameObject);
+            }
+
+            if(weaponRef.HasAOEAttack)
+            {
+                SpawnAOE(other.ClosestPoint(transform.position));
             }
         }
         else
@@ -235,14 +236,15 @@ public class BaseProjectileBehaviour : MonoBehaviour
     /// <summary>
     /// Creates an AOE at the designated location.
     /// </summary>
-    public void SpawnAOE(int cIndex = 0)
+    public void SpawnAOE(Vector3 spawnPos)
     {
-        if (cIndex == -1)
-        {
-            cIndex = Random.Range(0, weaponRef.WeaponAOEs.Count);
-        }
+        //if (cIndex == -1)
+        //{
+        //    cIndex = Random.Range(0, weaponRef.WeaponAOEs.Count);
+        //}
 
-        GameObject spawnedAOE = Instantiate(weaponRef.WeaponAOEs[cIndex]);
+        GameObject spawnedAOE = Instantiate(weaponRef.WeaponAOEs[comboIndex], spawnPos, Quaternion.identity);
+        spawnedAOE.GetComponent<BaseAOEBehaviour>().SetReference(weaponRef, comboIndex);
     }
 
     /// <summary>

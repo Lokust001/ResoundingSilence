@@ -139,29 +139,35 @@ public class BaseWeaponScriptable : BaseScriptableObject
     [Tooltip("What the weapon's AOE looks like. List in case we want multiple different kinds.")]
     public List<GameObject> WeaponAOEs = new List<GameObject>();
 
-    [HideInInspector] public List<int> MaxAOEDamage = new List<int>();
+    [HideInInspector] public List<int> AOEDamage = new List<int>();
 
     [ShowIf(nameof(WeaponAOE))]
     [Tooltip("The most amount of damage the AOE can do.")]
-    List<int> BaseMaxAOEDamage = new List<int>();
+    public List<int> BaseAOEDamage = new List<int>();
 
-    [HideInInspector] List<int> MinAOEDamage = new List<int>();
-
-    [ShowIf(nameof(WeaponAOE))]
-    [Tooltip("The minimum amount of damage the AOE can do.")]
-    List<int> BaseMinAOEDamage = new List<int>();
-
-    [HideInInspector] List<float> AOESize = new List<float>();
+    [HideInInspector] public List<float> AOESize = new List<float>();
 
     [ShowIf(nameof(WeaponAOE))]
     [Tooltip("How big the AOE is.")]
-    List<float> BaseAOESize = new List<float>();
+    public List<float> BaseAOESize = new List<float>();
 
-    [HideInInspector] List<float> AOEDelay = new List<float>();
+    [HideInInspector] public List<float> AOEDuration = new List<float>();
+
+    [ShowIf(nameof(WeaponAOE))]
+    [Tooltip("How long the AOE lasts.")]
+    public List<float> BaseAOEDuration = new List<float>();
+
+    [HideInInspector] public List<int> AOEDamageTicks = new List<int>();
+
+    [ShowIf(nameof(WeaponAOE))]
+    [Tooltip("How many times the AOE should damage.")]
+    public List<int> BaseAOEDamageTicks = new List<int>();
+
+    [HideInInspector] public List<float> AOEDelay = new List<float>();
 
     [ShowIf(nameof(WeaponAOE))]
     [Tooltip("How much of a delay there is before the AOE goes off. 0 is instant.")]
-    List<float> BaseAOEDelay = new List<float>();
+    public List<float> BaseAOEDelay = new List<float>();
 
     #endregion
 
@@ -447,9 +453,10 @@ public class BaseWeaponScriptable : BaseScriptableObject
         AttackBursts = BaseAttackBursts.ToList();
         TimeBetweenBursts = BaseTimeBetweenBursts.ToList();
         LifestealAmount = BaseLifestealAmount.ToList();
-        MaxAOEDamage = BaseMaxAOEDamage.ToList();
-        MinAOEDamage = BaseMinAOEDamage.ToList();
+        AOEDamage = BaseAOEDamage.ToList();
         AOESize = BaseAOESize.ToList();
+        AOEDuration = BaseAOEDuration.ToList();
+        AOEDamageTicks = BaseAOEDamageTicks.ToList();
         AOEDelay = BaseAOEDelay.ToList();
         Projectiles = BaseProjectiles.ToList();
         ProjectileSpeed = BaseProjectileSpeed.ToList();
