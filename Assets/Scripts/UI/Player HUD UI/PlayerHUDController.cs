@@ -139,6 +139,11 @@ public class PlayerHUDController : MenuBase
         healthBarSlider.fillAmount = currentHealth / maxHealthValue;
     }
 
+    /// <summary>
+    /// Updates the players exp bar
+    /// </summary>
+    /// <param name="currentExp"></param>
+    /// <param name="maxExp"></param>
     private void UpdatePlayerEXPBarValue(float currentExp, float maxExp = -1)
     {
         if (maxExp >= 0)
