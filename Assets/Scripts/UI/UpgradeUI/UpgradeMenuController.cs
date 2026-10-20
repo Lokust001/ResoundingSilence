@@ -376,51 +376,6 @@ public class UpgradeMenuController : MenuControllerSupportBase
 
     #endregion
 
-    /*#region Placing pins in tile
-
-    /// <summary>
-    /// places a specific pin in. Tile = null means it will return to the inventory
-    /// </summary>
-    /// <param name="pin"></param>
-    /// <param name="tile">null = return to inventory</param>
-    public override void PlaceItemInTile(CarriedItemBehavior pin, ItemHolderSlot tile = null)
-    {
-        base.PlaceItemInTile(pin, tile);
-        ToggleInventoryScrollability(true);
-    }
-
-    /// <summary>
-    /// Shorthand function for returning the currently carried pin back to its inventory slot
-    /// </summary>
-    public void ReturnCarriedPinToInventory()
-    {
-        PinItemBehavior pin = GetCarriedPin();
-        PlaceItemInTile(pin, pin.Owner);
-    }
-
-    /// <summary>
-    /// places a pin back on the tile it was from
-    /// used (mostly) for controller
-    /// </summary>
-    private void ReturnPinToItsTile()
-    {
-        if (carriedItem != null)
-        {
-            if (pinsTile == null)
-            {
-                ReturnCarriedPinToInventory();
-            }
-            else
-            {
-                PinItemBehavior pin = GetCarriedPin();
-                PlaceItemInTile(pin, pinsTile);
-            }
-        }
-        
-    }
-
-    #endregion*/
-
     #region ControllerSupport
 
 

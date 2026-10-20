@@ -304,7 +304,6 @@ public class MenuControllerSupportBase : MenuBase
                 PlaceItemInTile(carriedItem, itemsPrevTile);
             }
         }
-
     }
 
     #endregion

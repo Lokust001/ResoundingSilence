@@ -17,4 +17,13 @@ public class TarotItemBehavior : CarriedItemBehavior
         data = scriptable;
         GetComponent<Image>().color = data.tempColor;
     }
+
+    /// <summary>
+    /// requests a tooltip when this becomes hovered over
+    /// </summary>
+    public override void HoveredOver()
+    {
+        base.HoveredOver();
+        TooltipUIService.Instance.RequestTooltip(data);
+    }
 }

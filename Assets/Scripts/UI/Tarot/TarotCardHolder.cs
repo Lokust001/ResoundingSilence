@@ -6,6 +6,7 @@
 * To Do:   N/A
 */
 
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,16 +17,31 @@ public class TarotCardHolder : ItemHolderSlot
     public TarotScriptable ownedCard;
     private bool slotIsUnlocked = false;
 
+    private List<ControllerSupportedClickable> neighbors;
+
+    private TarotCardController controller;
+
+    /// <summary>
+    /// sets up the right public events
+    /// </summary>
     private void Awake()
     {
         UIPublicEvents.TarotMenuOpened += TarotMenuOpened;
+        controller = FindAnyObjectByType<TarotCardController>();
     }
 
+    /// <summary>
+    /// dismantles the right public events
+    /// </summary>
     private void OnDestroy()
     {
         UIPublicEvents.TarotMenuOpened -= TarotMenuOpened;
     }
 
+    /// <summary>
+    /// initializes this slot as an inventory slot
+    /// </summary>
+    /// <param name="cardToOwn"></param>
     public void SetInventorySlot(TarotScriptable cardToOwn)
     {
         ownedCard = cardToOwn;
@@ -46,6 +62,9 @@ public class TarotCardHolder : ItemHolderSlot
         }
     }
 
+    /// <summary>
+    /// unlocks this inventory slot
+    /// </summary>
     public void UnlockSlot()
     {
         if (heldItem != null)
@@ -61,6 +80,9 @@ public class TarotCardHolder : ItemHolderSlot
         
     }
 
+    /// <summary>
+    /// if the player unlocked this slot's tarot card in between runs, this will unlock it
+    /// </summary>
     private void TarotMenuOpened()
     {
 
@@ -70,5 +92,28 @@ public class TarotCardHolder : ItemHolderSlot
         }
     }
 
-    
+    /// <summary>
+    /// returns a list of this slot's neighbors
+    /// </summary>
+    /// <returns></returns>
+    public override List<ControllerSupportedClickable> getNeighbors()
+    {
+        if (neighbors == null || neighbors.Count <= 0)
+        {
+            neighbors = new();
+
+            List<TarotCardHolder> tempList = UtilityFunctions.GetAdjacentTiles<TarotCardHolder>(
+                controller.tarotInventorySlots.IndexOf(this),
+                controller.tarotInventorySlots,
+                controller.inventoryHeight,
+                controller.inventoryWidth);
+
+            for(int i = 0; i < tempList.Count; i++) 
+            {
+                neighbors.Add(tempList[i]);
+            }
+        }
+
+        return neighbors;
+    }
 }
