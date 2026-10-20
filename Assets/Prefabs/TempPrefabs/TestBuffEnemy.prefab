@@ -4831,7 +4831,7 @@ PrefabInstance:
     - target: {fileID: 8424250619371523661, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: aggroTrigger
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1538420289414581598}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 0}
@@ -4841,6 +4841,17 @@ PrefabInstance:
       addedObject: {fileID: 5593266958274668656}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+--- !u!114 &1538420289414581598 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 948327582028595367, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+  m_PrefabInstance: {fileID: 1761105312175771129}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6725d744f418194b805c2aba199566f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TriggerObjects
 --- !u!4 &3482437095151650198 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2892623662654031983, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
