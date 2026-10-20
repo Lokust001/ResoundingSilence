@@ -6,16 +6,17 @@
 * To Do:   N/A
 */
 
-using NaughtyAttributes;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using NaughtyAttributes;
 using UnityEngine;
 
 public class MidRunDataManager : BaseManager
 {
     public static MidRunDataManager Instance;
 
-    
+    public int Money;
+
+    public List<PinScriptable> PinScriptableObjects { get; private set; } = new();
 
     public List<PinScriptable> pinInventory { get; private set; } = new();
 
@@ -67,7 +68,7 @@ public class MidRunDataManager : BaseManager
         {
             Debug.Log("Tried to remove a pin at an invalid id");
             return null;
-            
+
         }
 
         PinScriptable tempPin = pinInventory[id];
@@ -89,7 +90,7 @@ public class MidRunDataManager : BaseManager
         }
 
         return RemovePinFromInventory(pinInventory.IndexOf(pin));
-        
+
     }
 
     /// <summary>
@@ -143,5 +144,15 @@ public class MidRunDataManager : BaseManager
         equippedWeapons.Clear();
         equippedWeapons.Add(null);
         equippedWeapons.Add(null);
+    }
+
+
+    /// <summary>
+    /// currently just picks a random PinScriptable to be set, can be swiched to add other types of randomness like legendary pins or if certain drops would be specifically a vitality pin, temp for the time being
+    /// </summary>
+    /// <returns></returns>
+    public PinScriptable PickDroppedPin()
+    {
+        return PinScriptableObjects[Random.Range(0, PinScriptableObjects.Count)];
     }
 }
