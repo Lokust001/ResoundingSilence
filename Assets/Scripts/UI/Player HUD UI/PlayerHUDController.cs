@@ -54,7 +54,7 @@ public class PlayerHUDController : MenuBase
         UpdatePlayerHealthBarValue(currentPlayerHealth);
     }
 
-    [Button("Testing Take one damage")]
+    [Button("Testing gain one exp")]
     private void GainOneExp()
     {
         currentPlayerExp++;
