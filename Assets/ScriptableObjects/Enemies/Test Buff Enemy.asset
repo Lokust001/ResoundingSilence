@@ -20,10 +20,7 @@ MonoBehaviour:
   enemyHealth: 10
   enemyATKDmg: 5
   timeBetweenAttacks: 9
-  maxVariabilityDestinationAttempts: 100
-  approachDestinationVariabilityDegrees: 0
-  retreatDestinationVariabilityDegrees: 0
-  retreatDistance: 3
+  retreatDistance: 8
   retreatAccuracyThreshold: 0.05
   atkBoostFactor: 0
   dmgReductionFactor: 0
@@ -41,7 +38,7 @@ MonoBehaviour:
   chargeDestinationAccuracy: 0
   playerHitKnockbackDuration: 0
   playerHitKnockbackDistance: 0
-  buffChargeDuration: 5
-  retreatHealthPercent: 15
+  buffChargeDuration: 6
+  retreatHealthPercent: 25
   allyATKIncreasePercent: 20
-  allyReducedDmgPercent: 30
+  allyReducedDmgPercent: 25
