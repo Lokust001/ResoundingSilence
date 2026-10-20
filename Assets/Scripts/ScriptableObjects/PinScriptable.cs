@@ -39,20 +39,19 @@ public class PinScriptable : BaseScriptableObject
     [Tooltip("The type of pin this is")]
     public List<PinType> Types;
 
-    [Tooltip("this is the types that can give an adjacent bonus")]
+    [HideIf("ManualAdjacency"),Tooltip("this is the types that can give an adjacent bonus")]
     public List<PinType> AutoAdjacencyPinTypes;
-
-    [Tooltip("This should add up to at least 8")]
+    [HideIf("ManualAdjacency"), Tooltip("This should add up to at least 8")]
     public List<int> autoAdjacencyAmounts;
 
-    public List<PinType> NorthAdjacency;
-    public List<PinType> NorthEastAdjacency;
-    public List<PinType> EastAdjacency;
-    public List<PinType> SouthEastAdjacency;
-    public List<PinType> SouthAdjacency;
-    public List<PinType> SouthWestAdjacency;
-    public List<PinType> WestAdjacency;
-    public List<PinType> NorthWestAdjacency;
+    [ShowIf("ManualAdjacency")] public List<PinType> NorthAdjacency;
+    [ShowIf("ManualAdjacency")] public List<PinType> NorthEastAdjacency;
+    [ShowIf("ManualAdjacency")] public List<PinType> EastAdjacency;
+    [ShowIf("ManualAdjacency")] public List<PinType> SouthEastAdjacency;
+    [ShowIf("ManualAdjacency")] public List<PinType> SouthAdjacency;
+    [ShowIf("ManualAdjacency")] public List<PinType> SouthWestAdjacency;
+    [ShowIf("ManualAdjacency")] public List<PinType> WestAdjacency;
+    [ShowIf("ManualAdjacency")] public List<PinType> NorthWestAdjacency;
     public bool ManualAdjacency;
 
     [Tooltip("This is numerical value for how much to modify in %")]
@@ -72,6 +71,12 @@ public class PinScriptable : BaseScriptableObject
     [Tooltip("TEMPORARY - REPLACE WITH SPRITE WHEN I GET THEM")]
     public Color pinColor;
 
+    [Button]
+    private void TestAuto()
+    {
+        AutoMakeAdjacency();
+    }
+
     /// <summary>
     /// Will make the adjacency with how many of each type specified,needs to be called when the player picks up the pin
     /// </summary>
@@ -79,6 +84,14 @@ public class PinScriptable : BaseScriptableObject
     {
         if (ManualAdjacency)
             return;
+        NorthAdjacency.Clear();
+        NorthEastAdjacency.Clear();
+        EastAdjacency.Clear();
+        SouthEastAdjacency.Clear();
+        SouthAdjacency.Clear();
+        SouthWestAdjacency.Clear();
+        WestAdjacency.Clear();
+        NorthWestAdjacency.Clear();
         int amountOfAdjacencyAmounts = 0;
         foreach(int amount in autoAdjacencyAmounts)
         {
@@ -87,20 +100,21 @@ public class PinScriptable : BaseScriptableObject
 
         int startNumber = Random.Range(0, 8);
         int loopedTimes = 0;
-        for(int i = startNumber; i < startNumber + 8; i++)
+        for(int i = startNumber; i < startNumber + amountOfAdjacencyAmounts; i++)
         {
             PinType thisType = PinType.none;
             int existance = loopedTimes;
             for(int j = 0; j < autoAdjacencyAmounts.Count; j++)
             {
-                if(existance <= autoAdjacencyAmounts[j])
+                if(existance < autoAdjacencyAmounts[j])
                 {
                     thisType = AutoAdjacencyPinTypes[j];
                     break;
                 }
                 existance -= autoAdjacencyAmounts[j];
             }
-            switch(startNumber % 8)
+            loopedTimes++;
+            switch(i % 8)
             {
                 case 0:
                     NorthAdjacency.Add(thisType);
