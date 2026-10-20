@@ -133,7 +133,7 @@ public class PinScriptable : BaseScriptableObject
             int location = i;
             if (Across)
             {
-                location = location - (amountOfAdjacencyAmounts - 8) / 2;
+                location = location - Mathf.FloorToInt((amountOfAdjacencyAmounts - 8) / 2);
             }
             loopedTimes++;
             switch (location % 8)
