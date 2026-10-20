@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9047105267405323918}
   - component: {fileID: 6605506462136351334}
+  - component: {fileID: 3654263039476248698}
   m_Layer: 0
   m_Name: MainCameraManager
   m_TagString: Untagged
@@ -46,3 +47,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MainCameraManager
   services: []
   mainCam: {fileID: 6191614438658595152, guid: 4097e26eba1664e4d91aa30cc4d6d262, type: 3}
+  camInstance: {fileID: 0}
+  CamOffset: {x: 0, y: 0, z: 0}
+--- !u!114 &3654263039476248698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6085026911517571592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7e122543879c1d4b8907c2217a1294f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PivotCamera
+  isActive: 0
+  CameraManager: {fileID: 6605506462136351334}
+  camera: {fileID: 0}
+  cameraLookOffset: {fileID: 0}
+  speed: 0.25
