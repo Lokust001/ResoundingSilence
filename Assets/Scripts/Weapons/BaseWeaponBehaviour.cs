@@ -41,6 +41,8 @@ public class BaseWeaponBehaviour : MonoBehaviour
 
     bool burstAttacking;
 
+    [SerializeField] List<Collider> meleeHitboxes = new List<Collider>();
+
     protected bool aimingAbilityOne;
     protected bool aimingAbilityTwo;
 
@@ -286,6 +288,25 @@ public class BaseWeaponBehaviour : MonoBehaviour
         {
             burstAttacking = true;
             StartCoroutine(AttackBursts());
+        }
+    }
+
+    /// <summary>
+    /// Called by an animation event to see if a melee swing hit anything
+    /// </summary>
+    public void MeleeSwing()
+    {
+        foreach(Collider c in meleeHitboxes)
+        {
+            if(c.enabled)
+            {
+                Collider[] targets = Physics.OverlapBox(c.bounds.center, c.bounds.extents, Quaternion.identity, ThisWeaponData.EnemyLayer);
+
+                foreach (Collider t in targets)
+                {
+                    Debug.Log(t.name + " took " + ThisWeaponData.WeaponDamage[comboIndex - 1] + " damage!");
+                }
+            }
         }
     }
 
