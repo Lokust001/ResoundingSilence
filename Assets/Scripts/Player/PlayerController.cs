@@ -274,19 +274,20 @@ public class PlayerController : MonoBehaviour
     /// <param name="knockbackInfo"></param>
     public void TakeDamage((Vector3 knockbackDistance, float kbDuration)? knockbackInfo = null)
     {
-        if(InGodMode)
-        {
-            //If the player is already damaged/invicible at the moment
-            if (dmgCoroutine != null)
-                return;
+        if (InGodMode)
+            return;
+        
+        //If the player is already damaged/invicible at the moment
+        if (dmgCoroutine != null)
+            return;
 
-            //Start a damage/invincibility couroutine
-            dmgCoroutine ??= StartCoroutine(PlayerInvincibilityFrames());
+        //Start a damage/invincibility couroutine
+        dmgCoroutine ??= StartCoroutine(PlayerInvincibilityFrames());
 
-            //If there is knockback data and there is no knockback coroutine active 
-            if (knockbackInfo.HasValue)
-                knockbackCoroutine ??= StartCoroutine(TakePlayerKnockback(knockbackInfo.Value));
-        }
+        //If there is knockback data and there is no knockback coroutine active 
+        if (knockbackInfo.HasValue)
+            knockbackCoroutine ??= StartCoroutine(TakePlayerKnockback(knockbackInfo.Value));
+        
     }
 
     /// <summary>

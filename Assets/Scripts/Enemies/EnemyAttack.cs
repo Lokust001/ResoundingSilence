@@ -140,7 +140,7 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
                 break;
             case EnemyType.Melee:
             case EnemyType.ChargingMelee:
-                baseEnemyBehavior.NextEnemyAction(true);
+                baseEnemyBehavior.NextEnemyAction();
                 break;
             case EnemyType.BuffEnemy:
                 break;
@@ -231,7 +231,8 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
         Material startMat = enemyData.earlyChargeMaterial;
         Material endMat = enemyData.endChargeMaterial;
 
-        Transform enemyTransform = enemyMovement.transform;
+        //Changed 10/19/2026: Lock onto the player once
+        enemyMovement.transform.LookAt(playerTransform);
 
         //Count-up timer to LERP for both the material and parent-scale
         while (countupTimer < goalTime) 
@@ -239,9 +240,7 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
             //Timer tick & associated time values
             countupTimer += Time.deltaTime;
             float tValue = countupTimer / goalTime;
-
-            //Lock-on to player direction while charging up
-            enemyTransform.LookAt(playerTransform);
+            
             //Transition between two colors/mats
             indicatorRenderer.material.Lerp(startMat, endMat, tValue);
             //Extend the visual attack indicator through the parent as it is the pivot point

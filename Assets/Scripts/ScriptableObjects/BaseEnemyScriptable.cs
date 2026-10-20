@@ -23,7 +23,7 @@ public class BaseEnemyScriptable : BaseScriptableObject
     /// Checks if this enemy needs to show/display shooter variables
     /// </summary>
     /// <returns></returns>
-    public bool isShooter()
+    public bool IsShooter()
     {
         return enemyType == EnemyType.SingleShooter || enemyType == EnemyType.ConeShooter;
     }
@@ -31,7 +31,7 @@ public class BaseEnemyScriptable : BaseScriptableObject
     /// Checks if this enemy needs to show/display melee variables
     /// </summary>
     /// <returns></returns>
-    public bool isMelee()
+    public bool IsMelee()
     {
         return enemyType == EnemyType.Melee || enemyType == EnemyType.ChargingMelee;
     }
@@ -40,10 +40,29 @@ public class BaseEnemyScriptable : BaseScriptableObject
     /// Checks if this enemy can retreat and show the variables to do so
     /// </summary>
     /// <returns></returns>
-    private bool canRetreat() 
+    private bool CanRetreat() 
     {
         return enemyType == EnemyType.BuffEnemy || enemyType == EnemyType.SingleShooter || enemyType == EnemyType.ConeShooter;
     }
+
+    /// <summary>
+    /// Checks if this enemy approaches the player from different angles
+    /// </summary>
+    /// <returns></returns>
+    private bool CanApproachPlayer() 
+    {
+        return IsShooter() || IsMelee();
+    }
+
+    /// <summary>
+    /// Checks if this enemy either approaches or retreats
+    /// </summary>
+    /// <returns></returns>
+    private bool HasMovementVariability() 
+    {
+        return CanRetreat() || CanApproachPlayer();
+    }
+
     [Header("Enemy Type (Required)")]
     [SerializeField]
     public EnemyType enemyType;
@@ -60,9 +79,20 @@ public class BaseEnemyScriptable : BaseScriptableObject
 
     public float timeBetweenAttacks;
 
-    [ShowIf(nameof(canRetreat))]
+    [Header("Dynamic Movement Attributes")]
+    [ShowIf(nameof(HasMovementVariability))]
+    public int maxVariabilityDestinationAttempts;
+
+    [Tooltip("The spread in degrees that the enemy could randomly consider as a destination when approaching the player. " +
+        "The coverage starts at the front (0 degrees) and spreads out evenly on both sides to cover the full degrees specified")]
+    [ShowIf(nameof(CanApproachPlayer))]
+    public int approachDestinationVariabilityDegrees;
+    [ShowIf(nameof(CanRetreat))]
+    public int retreatDestinationVariabilityDegrees;
+
+    [ShowIf(nameof(CanRetreat))]
     public float retreatDistance;
-    [ShowIf(nameof(canRetreat))]
+    [ShowIf(nameof(CanRetreat))]
     public float retreatAccuracyThreshold;
 
     //Buff Enemies modify these values
@@ -74,21 +104,19 @@ public class BaseEnemyScriptable : BaseScriptableObject
 
     #region Shooter & ConeShooter Variables
 
-    [Header("Shooter Enemy Attributes")]
-    [ShowIf(nameof(isShooter))]
+    [ShowIf(nameof(IsShooter))]
     [Header("Shooter Enemy Attributes")]
     [Tooltip("How fast the bullet travels in units/second")]
     public float bulletTravelSpeed;
 
-    [ShowIf(nameof(isShooter))]
+    [ShowIf(nameof(IsShooter))]
     [Tooltip("How long the bullet lasts after being fired")]
     public float bulletLife;
 
-    [ShowIf(nameof(isShooter))]
+    [ShowIf(nameof(IsShooter))]
     public GameObject bulletPrefab;
 
-    [ShowIf(nameof(isShooter))]
-    [Header("Alternate Shooter Behavior")]
+    [ShowIf(nameof(IsShooter))]
     public float timeBetweenRangeChecks;
 
     #endregion
@@ -109,11 +137,11 @@ public class BaseEnemyScriptable : BaseScriptableObject
     #region Melee & ChargingMelee Variables
 
     [Header("Melee Enemy Attributes")]
-    [ShowIf(nameof(isMelee))]
+    [ShowIf(nameof(IsMelee))]
     [Tooltip("How fast the bullet travels in units/second")]
     public float attackChargeDuration;
 
-    [ShowIf(nameof(isMelee))]
+    [ShowIf(nameof(IsMelee))]
     [Tooltip("The materials/colors that will be used for the charge-up attack. " +
         "The attack indicator will linearly interlpolate (transition) between the two colors")]
     public Material earlyChargeMaterial, endChargeMaterial;
