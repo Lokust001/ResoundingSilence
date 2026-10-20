@@ -28,12 +28,9 @@ public class Enemy : MonoBehaviour
     private bool inMeleeRange;
     private bool inRangedRange;
 
-    YieldInstruction actionInterval;
+    private bool allowNonImmediateBehavior;
 
-    private Coroutine behaviorLoop;
-
-    private Coroutine activeBehaviorChange;
-
+    private YieldInstruction actionInterval;
 
     /// <summary>
     /// Creates a copy of the scriptable object not tied to the inspector, then propagates it other scripts
@@ -112,7 +109,7 @@ public class Enemy : MonoBehaviour
             case BaseEnemyScriptable.EnemyType.SingleShooter:
             case BaseEnemyScriptable.EnemyType.ConeShooter:
                 attackBehavior.InitiateAttack();
-                behaviorLoop = StartCoroutine(RepeatedlyCheckShooterRange());
+                StartCoroutine(RepeatedlyCheckShooterRange());
                 break;
             case BaseEnemyScriptable.EnemyType.Melee:
             case BaseEnemyScriptable.EnemyType.ChargingMelee:
@@ -137,7 +134,7 @@ public class Enemy : MonoBehaviour
     /// <summary>
     /// The nth decision that the enemy takes, dictated by which range it is currently present in
     /// </summary>
-    public void NextEnemyAction(bool coroutineActions) 
+    public void NextEnemyAction() 
     {
         if (!inRangedRange && !inMeleeRange)
         {
@@ -145,11 +142,11 @@ public class Enemy : MonoBehaviour
         }
         else if (inRangedRange)
         {
-            RangedZoneEntryBehaviors(coroutineActions);
+            RangedZoneEntryBehaviors();
         }
         else if (inMeleeRange)
         {
-            MeleeZoneEntryBehaviors(coroutineActions);
+            MeleeZoneEntryBehaviors();
         }
     }
 
@@ -162,28 +159,15 @@ public class Enemy : MonoBehaviour
         int i = 0;
         while (true) 
         {
-            Debug.Log("Behavior Loop # [" + i +"]\t inRanged : " + inRangedRange + " Melee area: " + inMeleeRange);
-            NextEnemyAction(true);
+            //[Uncomment for debug]
+            //Debug.Log("Behavior Loop # [" + i +"]\t inRanged : " + inRangedRange + " Melee area: " + inMeleeRange);
+            allowNonImmediateBehavior = true;
+            NextEnemyAction();
+            allowNonImmediateBehavior = false;
             yield return actionInterval;
             i++;
         }
         
-    }
-
-    /// <summary>
-    /// Temporarily halt behavior loop to start a new priority action
-    /// </summary>
-    /// <returns></returns>
-    private IEnumerator SwitchYieldInterval(YieldInstruction yieldInstruction) 
-    {
-        //Stop the behavior loop first
-        StopCoroutine(behaviorLoop);
-        //Wait for priority action to finish
-        yield return yieldInstruction;
-        //Restart behavior loop
-        behaviorLoop = StartCoroutine(RepeatedlyCheckShooterRange());
-        //Free up behavior change
-        activeBehaviorChange = null;
     }
 
     /// <summary>
@@ -216,13 +200,13 @@ public class Enemy : MonoBehaviour
         inRangedRange = value;
         //If the player entered
         if(inRangedRange)
-            RangedZoneEntryBehaviors(false);
+            RangedZoneEntryBehaviors();
     }
 
     /// <summary>
     /// Method that decides what behaviors each enemy takes after ONLY entering the ranged zone
     /// </summary>
-    private void RangedZoneEntryBehaviors(bool activateTimeBasedIntervalActions) 
+    private void RangedZoneEntryBehaviors() 
     {
         switch (enemyData.enemyType)
         {
@@ -231,13 +215,15 @@ public class Enemy : MonoBehaviour
                 break;
             case BaseEnemyScriptable.EnemyType.SingleShooter:
             case BaseEnemyScriptable.EnemyType.ConeShooter:
-                //Entry Behavior
                 movementBeahvior.StopApproachingPlayer();
                 break;
             case BaseEnemyScriptable.EnemyType.Melee:
             case BaseEnemyScriptable.EnemyType.ChargingMelee:
-                if (activateTimeBasedIntervalActions)
+                if (allowNonImmediateBehavior) 
+                {
+                    allowNonImmediateBehavior = false;
                     movementBeahvior.FollowPlayer();
+                }
                 break;
             default:
                 break;
@@ -255,14 +241,14 @@ public class Enemy : MonoBehaviour
         inMeleeRange = value;
         //If the player entered
         if (inMeleeRange)
-            MeleeZoneEntryBehaviors(false);
+            MeleeZoneEntryBehaviors();
     }
 
     /// <summary>
     /// Method that decides what behaviors each enemy takes after ONLY entering the melee range
     /// </summary>
-    /// <param name="activateTimeBasedIntervalActions"></param>
-    private void MeleeZoneEntryBehaviors(bool activateTimeBasedIntervalActions) 
+    /// <param name="activateNotImmediateActions"></param>
+    private void MeleeZoneEntryBehaviors() 
     {
         switch (enemyData.enemyType)
         {
@@ -273,11 +259,10 @@ public class Enemy : MonoBehaviour
             case BaseEnemyScriptable.EnemyType.ConeShooter:
                 movementBeahvior.StopApproachingPlayer();
                 //Only do this if a time-based check has passed via RepeatedlyCheckShooterRange
-                if (activateTimeBasedIntervalActions) 
+                if (allowNonImmediateBehavior) 
                 {
-                    Debug.Log("Started retreating");
+                    allowNonImmediateBehavior = false;
                     StartCoroutine(movementBeahvior.RetreatWalking());
-                    //activeBehaviorChange ??= StartCoroutine(SwitchYieldInterval()));
                 }
                 break;
             case BaseEnemyScriptable.EnemyType.Melee:

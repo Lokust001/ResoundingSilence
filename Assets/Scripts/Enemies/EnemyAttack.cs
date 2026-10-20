@@ -140,7 +140,7 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
                 break;
             case EnemyType.Melee:
             case EnemyType.ChargingMelee:
-                baseEnemyBehavior.NextEnemyAction(true);
+                baseEnemyBehavior.NextEnemyAction();
                 break;
             case EnemyType.BuffEnemy:
                 break;
@@ -231,10 +231,8 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
         Material startMat = enemyData.earlyChargeMaterial;
         Material endMat = enemyData.endChargeMaterial;
 
-        Transform enemyTransform = enemyMovement.transform;
-
         //Changed 10/19/2026: Lock onto the player once
-        enemyTransform.LookAt(playerTransform);
+        enemyMovement.transform.LookAt(playerTransform);
 
         //Count-up timer to LERP for both the material and parent-scale
         while (countupTimer < goalTime) 

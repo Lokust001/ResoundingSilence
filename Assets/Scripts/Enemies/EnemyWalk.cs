@@ -190,8 +190,9 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
             Vector3 offsetFromPlayer = playerReference.transform.position - transform.position;
             Vector3 rotatedOffset = Quaternion.Euler(0, currentApproachAngleOffset, 0) * offsetFromPlayer * playerOffsetScaler;
             finalGoal = transform.position + rotatedOffset;
-            
-            Debug.Log("Location Calculation attempt #" + (attempts + 1)+ ": Rotated movement destination by " + currentApproachAngleOffset + " degrees");
+
+            //[Uncomment for debug]
+            //Debug.Log("Location Calculation attempt #" + (attempts + 1)+ ": Rotated movement destination by " + currentApproachAngleOffset + " degrees");
 
             //Checks the destination to see if it is a valid navmesh location
             validLocation = NavMesh.SamplePosition(finalGoal, out _, capsuleCollider.height, LayerMask.NameToLayer("Ground"));
@@ -199,14 +200,11 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
             if (attempts >= enemyData.maxVariabilityDestinationAttempts) 
             {
                 Debug.LogWarning("Warning! " + gameObject.name + " failed to calculate a valid movement location");
+                finalGoal = transform.position;
                 break;
             }
         }
 
-        //Multiply final goal by retreat distance if enemy is retreating (otherwise little movement will happen)
-
-        Debug.Break();
-        Debug.Log(finalGoal);
         return finalGoal;
     }
 
