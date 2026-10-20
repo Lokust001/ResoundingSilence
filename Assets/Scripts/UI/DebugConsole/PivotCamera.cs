@@ -1,7 +1,5 @@
 using System.Collections;
-using UnityEditor.Timeline.Actions;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class PivotCamera : MonoBehaviour
 {
@@ -64,7 +62,7 @@ public class PivotCamera : MonoBehaviour
     void PlayerInputEnded()
     {
         inputs = Vector2.zero;
-        if(rise == 0 && CameraPivotInstance != null)
+        if (rise == 0 && CameraPivotInstance != null)
         {
             StopCoroutine(CameraPivotInstance);
         }
@@ -115,9 +113,9 @@ public class PivotCamera : MonoBehaviour
     private IEnumerator MoveCamera()
     {
         while (isActive)
-        { 
+        {
             MoveCamera(inputs, rise);
-            
+
             yield return new WaitForFixedUpdate();
 
         }
@@ -134,7 +132,7 @@ public class PivotCamera : MonoBehaviour
         {
             camera = CameraManager.camInstance.gameObject;
         }
-        if(cameraLookOffset == null)
+        if (cameraLookOffset == null)
         {
             cameraLookOffset = GameObject.Find("CameraLookOffset").transform;
         }
