@@ -17,10 +17,18 @@ public class PlayerHUDController : MenuBase
     private List<CooldownUIController> cooldownUIElements;
 
     [SerializeField]
-    private Slider healthBarSlider;
+    private Image healthBarSlider;
+
+    [SerializeField]
+    private Image expBarSlider;
 
     [SerializeField]
     private float maxHealthValue = 5;
+
+    [SerializeField]
+    private float maxEXPValue = 5;
+
+    private float currentPlayerExp;
 
     [SerializeField]
     private float currentPlayerHealth;
@@ -46,6 +54,13 @@ public class PlayerHUDController : MenuBase
         UpdatePlayerHealthBarValue(currentPlayerHealth);
     }
 
+    [Button("Testing gain one exp")]
+    private void GainOneExp()
+    {
+        currentPlayerExp++;
+        UpdatePlayerEXPBarValue(currentPlayerExp);
+    }
+
     /// <summary>
     /// subscribes to the needed public events
     /// </summary>
@@ -57,6 +72,7 @@ public class PlayerHUDController : MenuBase
         InputPublicEvents.ShootPressed += ImmediatelyRefreshAllCooldowns;
 
         currentPlayerHealth = maxHealthValue;
+        currentPlayerExp = 0;
     }
 
     /// <summary>
@@ -120,7 +136,22 @@ public class PlayerHUDController : MenuBase
             maxHealthValue = MaxHealth;
         }
 
-        healthBarSlider.value = currentHealth / maxHealthValue;
+        healthBarSlider.fillAmount = currentHealth / maxHealthValue;
+    }
+
+    /// <summary>
+    /// Updates the players exp bar
+    /// </summary>
+    /// <param name="currentExp"></param>
+    /// <param name="maxExp"></param>
+    private void UpdatePlayerEXPBarValue(float currentExp, float maxExp = -1)
+    {
+        if (maxExp >= 0)
+        {
+            maxEXPValue = maxExp;
+        }
+
+        expBarSlider.fillAmount = currentExp / maxEXPValue;
     }
     #endregion
     #endregion
