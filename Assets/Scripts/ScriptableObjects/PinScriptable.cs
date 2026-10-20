@@ -39,7 +39,7 @@ public class PinScriptable : BaseScriptableObject
     [Tooltip("The type of pin this is")]
     public List<PinType> Types;
 
-    [HideIf("ManualAdjacency"),Tooltip("this is the types that can give an adjacent bonus")]
+    [HideIf("ManualAdjacency"), Tooltip("this is the types that can give an adjacent bonus")]
     public List<PinType> AutoAdjacencyPinTypes;
     [HideIf("ManualAdjacency"), Tooltip("This should add up to at least 8")]
     public List<int> autoAdjacencyAmounts;
@@ -71,6 +71,9 @@ public class PinScriptable : BaseScriptableObject
     [Tooltip("TEMPORARY - REPLACE WITH SPRITE WHEN I GET THEM")]
     public Color pinColor;
 
+    /// <summary>
+    /// just a button to test the auto adjacency
+    /// </summary>
     [Button]
     private void TestAuto()
     {
@@ -93,28 +96,47 @@ public class PinScriptable : BaseScriptableObject
         WestAdjacency.Clear();
         NorthWestAdjacency.Clear();
         int amountOfAdjacencyAmounts = 0;
-        foreach(int amount in autoAdjacencyAmounts)
+        foreach (int amount in autoAdjacencyAmounts)
         {
             amountOfAdjacencyAmounts += amount;
         }
 
         int startNumber = Random.Range(0, 8);
+        bool Across = false;
+        bool AcrossCheckRun = false;
         int loopedTimes = 0;
-        for(int i = startNumber; i < startNumber + amountOfAdjacencyAmounts; i++)
+        for (int i = startNumber; i < startNumber + amountOfAdjacencyAmounts; i++)
         {
             PinType thisType = PinType.none;
             int existance = loopedTimes;
-            for(int j = 0; j < autoAdjacencyAmounts.Count; j++)
+            for (int j = 0; j < autoAdjacencyAmounts.Count; j++)
             {
-                if(existance < autoAdjacencyAmounts[j])
+                if (existance < autoAdjacencyAmounts[j])
                 {
                     thisType = AutoAdjacencyPinTypes[j];
                     break;
                 }
                 existance -= autoAdjacencyAmounts[j];
             }
+            if (amountOfAdjacencyAmounts >= 10 && thisType != AutoAdjacencyPinTypes[0] && !AcrossCheckRun)
+            {
+                if (Random.Range(0, 2) == 0)
+                {
+                    Across = true;
+                }
+                else
+                {
+                    Across = false;
+                }
+                AcrossCheckRun = true;
+            }
+            int location = i;
+            if (Across)
+            {
+                location--;
+            }
             loopedTimes++;
-            switch(i % 8)
+            switch (location % 8)
             {
                 case 0:
                     NorthAdjacency.Add(thisType);
