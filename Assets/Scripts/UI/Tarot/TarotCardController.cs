@@ -13,7 +13,7 @@ using TMPro;
 
 public class TarotCardController : MenuControllerSupportBase
 {
-    private enum focus
+    public enum focus
     {
         None,
         Inventory,
@@ -25,6 +25,9 @@ public class TarotCardController : MenuControllerSupportBase
     public int inventoryHeight;
     public int inventoryWidth;
 
+    public int equippedHeight;
+    public int equippedWidth;
+
     public List<TarotCardHolder> tarotInventorySlots = new();
 
     public List<TarotCardHolder> equippedSlots = new();
@@ -34,6 +37,15 @@ public class TarotCardController : MenuControllerSupportBase
 
     [SerializeField]
     private TarotItemBehavior tarotItemPrefab;
+
+    private TarotCardHolder prevSelectedInventory;
+    private TarotCardHolder prevSelectedEquipped;
+
+    [SerializeField]
+    private GeneralButtons readyButton;
+
+    [SerializeField]
+    private GeneralButtons backButton;
 
     /// <summary>
     /// initializes the menu
@@ -78,9 +90,10 @@ public class TarotCardController : MenuControllerSupportBase
     /// </summary>
     protected override void MenuOpenedSucessfully()
     {
+        UIPublicEvents.SetNewTooltipTextObject?.Invoke(tooltipText);
         base.MenuOpenedSucessfully();
         UIPublicEvents.TarotMenuOpened?.Invoke();
-        UIPublicEvents.SetNewTooltipTextObject?.Invoke(tooltipText);
+        
     }
 
     /// <summary>
@@ -107,6 +120,8 @@ public class TarotCardController : MenuControllerSupportBase
     public override void SelectDefault()
     {
         ControllerUIService.Instance.SelectSpecficTile(tarotInventorySlots[0]);
+        SwapCurrentFocus(focus.Inventory);
+        prevSelectedInventory = ControllerUIService.Instance.currentlySelected as TarotCardHolder;
     }
 
     /// <summary>
@@ -177,9 +192,95 @@ public class TarotCardController : MenuControllerSupportBase
     {
         if (target == null)
         {
+            if (currentFocus == focus.EquippedSlots && (direction == 5 || direction == 6 || direction == 7))
+            {
+                SelectDefaultItemInFocus(focus.Inventory);
+                return;
+            }
+            if (currentFocus == focus.EquippedSlots && (0 < direction && direction < 5))
+            {
+                ControllerUIService.Instance.SelectSpecficTile(readyButton);
+                return;
+            }
+
+            if (currentFocus == focus.Inventory && (direction == 1 || direction == 2 || direction == 3))
+            {
+                SelectDefaultItemInFocus(focus.EquippedSlots);
+                return;
+            }
+
+            if (currentFocus == focus.Inventory && direction == 0)
+            {
+                ControllerUIService.Instance.SelectSpecficTile(backButton);
+                return;
+            }
+
             return;
         }
 
+        if (target is not TarotCardHolder)
+        {
+            ControllerUIService.Instance.SelectSpecficTile(target);
+            return;
+        }
+
+        TarotCardHolder slot = target as TarotCardHolder;
         ControllerUIService.Instance.SelectSpecficTile(target);
+        if (slot.ownedCard != null)
+        {
+            prevSelectedInventory = slot;
+        }
+        else
+        {
+            prevSelectedEquipped = slot;
+        }
+
+    }
+
+    public void SelectDefaultItemInFocus(focus type = focus.None)
+    {
+        if (type == focus.None)
+        {
+            type = currentFocus;
+        }
+
+        switch (type)
+        {
+            case focus.None:
+                throw new System.Exception("currentfocus is none");
+            case focus.Inventory:
+
+                if (prevSelectedInventory == null)
+                {
+                    prevSelectedInventory = tarotInventorySlots[0];
+                }
+                ControllerUIService.Instance.SelectSpecficTile(prevSelectedInventory);
+                SwapCurrentFocus(focus.Inventory);
+
+                break;
+            case focus.EquippedSlots:
+
+                if (prevSelectedEquipped == null)
+                {
+                    prevSelectedEquipped = equippedSlots[0];
+                }
+                ControllerUIService.Instance.SelectSpecficTile(prevSelectedEquipped);
+                SwapCurrentFocus(focus.EquippedSlots);
+                break;
+            default:
+                throw new System.Exception("currentfocus is out of bounds of the enum");
+        }
+    }
+
+    protected override void PickUpItem(CarriedItemBehavior item)
+    {
+        if (item is TarotItemBehavior tarot)
+        {
+            if (!tarot.data.isUnlocked)
+            {
+                return;
+            }
+        }
+        base.PickUpItem(item);
     }
 }

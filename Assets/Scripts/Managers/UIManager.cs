@@ -161,11 +161,15 @@ public class UIManager : BaseManager
     /// </summary>
     private void GoToMainMenu()
     {
+        
         if (currentlyOpenedMenus.Count > 0)
         {
+            //hide the menus that are open rn
+            UIPublicEvents.HideOpenMenus?.Invoke();
             currentlyOpenedMenus.Clear();
         }
-        UpdateUiManagerStack(UiMenuType.MainMenu);
+        
+        UpdateUiManagerStack(UiMenuType.MainMenu); 
     }
 
     /// <summary>

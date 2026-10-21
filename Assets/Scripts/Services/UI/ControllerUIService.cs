@@ -189,7 +189,14 @@ public class ControllerUIService : BaseService
         }
         else
         {
-            EventSystem.current.SetSelectedGameObject(defaultSelectedButton);
+            EventSystem current = EventSystem.current;
+
+            current.enabled = false;
+            current.sendNavigationEvents = false;
+            current.SetSelectedGameObject(null);
+            current.SetSelectedGameObject(defaultSelectedButton);
+            current.sendNavigationEvents = true;
+            current.enabled = true;
         }
     }
 

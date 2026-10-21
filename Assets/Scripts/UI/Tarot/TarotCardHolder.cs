@@ -102,11 +102,26 @@ public class TarotCardHolder : ItemHolderSlot
         {
             neighbors = new();
 
-            List<TarotCardHolder> tempList = UtilityFunctions.GetAdjacentTiles<TarotCardHolder>(
+            List<TarotCardHolder> tempList = new();
+
+            if (ownedCard != null)
+            {
+                tempList = UtilityFunctions.GetAdjacentTiles<TarotCardHolder>(
                 controller.tarotInventorySlots.IndexOf(this),
                 controller.tarotInventorySlots,
                 controller.inventoryHeight,
                 controller.inventoryWidth);
+            }
+            else
+            {
+                tempList = UtilityFunctions.GetAdjacentTiles<TarotCardHolder>(
+                controller.equippedSlots.IndexOf(this),
+                controller.equippedSlots,
+                controller.equippedHeight,
+                controller.equippedWidth);
+            }
+
+            
 
             for(int i = 0; i < tempList.Count; i++) 
             {

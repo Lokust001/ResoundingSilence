@@ -26,4 +26,12 @@ public class TarotItemBehavior : CarriedItemBehavior
         base.HoveredOver();
         TooltipUIService.Instance.RequestTooltip(data);
     }
+
+    public override void ClickedOn()
+    {
+        if (data.isUnlocked)
+        {
+            base.ClickedOn();
+        }
+    }
 }
