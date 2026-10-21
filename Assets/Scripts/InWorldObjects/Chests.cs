@@ -1,3 +1,10 @@
+/*
+* Author: Brenden
+* Contributors:
+* Last Modified: 10/21/2026
+* Summary: Chest Objects around the world that the player can interact with
+* To Do:   N/A
+*/
 using UnityEngine;
 
 public class Chests : MonoBehaviour

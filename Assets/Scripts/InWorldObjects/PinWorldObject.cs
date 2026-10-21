@@ -1,6 +1,12 @@
+/*
+* Author: Brenden
+* Contributors:
+* Last Modified: 10/21/2026
+* Summary: what the pin has when it spawns in and flys to the player for collection
+* To Do:   N/A
+*/
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SubsystemsImplementation;
 
 public class PinWorldObject : MonoBehaviour
 {
@@ -45,7 +51,7 @@ public class PinWorldObject : MonoBehaviour
     /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.layer == LayerMask.NameToLayer("Player") && other.name != "RangedArea")
+        if (other.gameObject.layer == LayerMask.NameToLayer("Player") && other.name != "RangedArea")
         {
             MidRunDataManager.Instance.AddPinToInventory(pin);
             Destroy(this.gameObject);
