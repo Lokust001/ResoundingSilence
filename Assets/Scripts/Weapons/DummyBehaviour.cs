@@ -9,7 +9,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using TMPro;
 
-public class DummyBehaviour : MonoBehaviour
+public class DummyBehaviour : Enemy
 {
     [Tooltip("Only used with moving dummies.")]
     [SerializeField] List<Vector3> pathPoints = new List<Vector3>();

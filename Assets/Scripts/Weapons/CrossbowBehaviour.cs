@@ -1,7 +1,7 @@
 /******************************************************************************
  * Author: Brad Dixon
  * Contributors:
- * Last Modified: 10/06/2026
+ * Last Modified: 10/21/2026
  * Brief: Handles the crossbow's basic attacks and abilities.
  * TODO: In the inspector, update the layer masks to include enemy layers
  * ***************************************************************************/
@@ -9,7 +9,7 @@ using UnityEngine;
 using NaughtyAttributes;
 using System.Collections;
 
-public class CrossbowBehaviour : BaseAimedWeaponBehaviour
+public class CrossbowBehaviour : BaseWeaponBehaviour
 {
     enum Abilities
     {
@@ -357,17 +357,17 @@ public class CrossbowBehaviour : BaseAimedWeaponBehaviour
     {
         base.FixedUpdate();
 
-        if (UIManager.Instance.CurrentlyInFullscreenMenu())
-        {
-            return;
-        }
+        //if (UIManager.Instance.CurrentlyInFullscreenMenu())
+        //{
+        //    return;
+        //}
 
-        Vector3 lookDir = mousePos;
-        Quaternion rot = Quaternion.RotateTowards(weaponModel.transform.rotation,
-            Quaternion.LookRotation(lookDir), 20f);
-        rot.x = 0;
-        rot.z = 0;
-        weaponModel.transform.rotation = rot;
+        //Vector3 lookDir = mousePos;
+        //Quaternion rot = Quaternion.RotateTowards(weaponModel.transform.rotation,
+        //    Quaternion.LookRotation(lookDir), 20f);
+        //rot.x = 0;
+        //rot.z = 0;
+        //weaponModel.transform.rotation = rot;
 
         SplinterShotPreview();
         BombBlastPreview();
