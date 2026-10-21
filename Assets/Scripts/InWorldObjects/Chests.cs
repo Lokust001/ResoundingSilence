@@ -23,18 +23,38 @@ public class Chests : MonoBehaviour
         InputPublicEvents.InteractPressed -= TryOpenChest;
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
+        {
+            inChestRange = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
+        {
+            inChestRange = false;
+        }
+    }
+
     private void TryOpenChest()
     {
+        if (MRM == null)
+        {
+            MRM = MidRunDataManager.Instance;
+        }
         if (inChestRange)
         {
-            MRM.Money += Random.Range(Goldmin, Goldmax);
-            int PinSpawn = Random.Range(PinMin, PinMax);
-            for(int i = 0; i < PinSpawn; i++)
+            MRM.Money += Random.Range(Goldmin, Goldmax + 1);
+            int PinSpawn = Random.Range(PinMin, PinMax + 1);
+            for (int i = 0; i < PinSpawn; i++)
             {
-                GameObject temp = Instantiate(emptyPinGameObject);
+                GameObject temp = Instantiate(emptyPinGameObject, transform.position + new Vector3(1, 0, 1), transform.rotation, transform);
                 temp.GetComponent<PinWorldObject>().pin = MRM.PickDroppedPin();
             }
-            if(Random.Range(0, 100) < WeaponDropChance)
+            if (Random.Range(0, 100) < WeaponDropChance)
             {
                 //TODO drop Weapon
             }

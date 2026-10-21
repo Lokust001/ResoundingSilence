@@ -16,7 +16,8 @@ public class MidRunDataManager : BaseManager
 
     public int Money;
 
-    public List<PinScriptable> PinScriptableObjects { get; private set; } = new();
+    
+    [SerializeField]public List<PinScriptable> PinScriptableObjects;
 
     public List<PinScriptable> pinInventory { get; private set; } = new();
 
