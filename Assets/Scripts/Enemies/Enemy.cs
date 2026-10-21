@@ -309,6 +309,8 @@ public class Enemy : MonoBehaviour
     {
         int finalDmgTaken = Mathf.RoundToInt(damageToTake - (damageToTake * enemyData.dmgReductionFactor));
         enemyData.enemyHealth -= finalDmgTaken;
+        if (enemyData.enemyHealth <= 0)
+            EnemyDeath();
         return finalDmgTaken;
     }
 

@@ -17,6 +17,9 @@ public class PlayerController : MonoBehaviour
     float playerHealth;
 
     [SerializeField]
+    int currentXP;
+
+    [SerializeField]
     float playerDamage;
 
     [SerializeField]
@@ -446,8 +449,16 @@ public class PlayerController : MonoBehaviour
     /// Used to heal the player while using the healing potency that you can get from buttons
     /// </summary>
     /// <param name="healAmount"></param>
-    public void healPlayer(int healAmount)
+    public void HealPlayer(int healAmount)
     {
         playerHealth += healingPotency * healAmount;
+    }
+    /// <summary>
+    /// Used to gain XP after defeating an enemy
+    /// </summary>
+    /// <param name="xpAmount"></param>
+    public void GainXP(int xpAmount) 
+    {
+        currentXP += xpAmount;
     }
 }
