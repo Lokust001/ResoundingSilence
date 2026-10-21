@@ -1,10 +1,11 @@
 /*
 * Author: Tyler
 * Contributors: Brad Dixon, Brenden
-* Last Modified: 09/24/2026
+* Last Modified: 10/21/2026
 * Summary: This is the base scriptable object for all weapon scriptable objects.
-*          Handles the data for the weapons.
-* To Do:   Add more variables as needed. Change status effects as needed.
+*          Handles the data for the weapons. Acts as a tool to make any kind of weapon.
+* To Do:   Add more variables as needed. Change status effects as needed. 
+* Commented out variables don't have functionality yet. Will come in a later PR after controller support.
 */
 
 using NaughtyAttributes;
@@ -52,6 +53,9 @@ public class BaseWeaponScriptable : BaseScriptableObject
         "Changing between the options changes what variables are shown in the inspector.")]
     private ShownSettings shownSettings;
 
+    [Tooltip("The layers of things this weapon can hit.")]
+    public LayerMask EnemyLayer;
+
     [ShowIf(nameof(shownSettings), ShownSettings.StatusEffects)]
     [SerializeField]
     [Tooltip("Changing this variable has no impact on gameplay.\n\nIt is purely a navigational tool." +
@@ -76,64 +80,171 @@ public class BaseWeaponScriptable : BaseScriptableObject
 
     #region Weapon
 
-    [HideInInspector]
-    public List<int> WeaponDamage = new List<int>();
+    #region General Variables
+    [HideInInspector] public List<int> WeaponDamage = new List<int>();
 
     [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
     [Tooltip("How much damage the weapon does. Is a list in case the weapon has multiple hits in a combo.")]
     public List<int> BaseWeaponDamage = new List<int>();
 
-    [HideInInspector]
-    public List<float> AttackCooldown = new List<float>();
+    [HideInInspector] public List<float> AttackCooldown = new List<float>();
 
     [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
     [Tooltip("How much damage the weapon does. Is a list in case the weapon has multiple hits in a combo.")]
     public List<float> BaseAttackCooldown = new List<float>();
 
-    [ShowIf(nameof(RangedWeaponSettings))]
-    [Tooltip("How fast a projectile flies. Is a list in case the weapon has multiple projectile speeds in a combo.")]
-    public List<float> ProjectileSpeed = new List<float>();
+    //[HideInInspector] public List<float> MovementSpeedChange = new List<float>();
 
-    [ShowIf(nameof(RangedWeaponSettings))]
-    [Tooltip("How fast a projectile flies. Is a list in case the weapon has multiple projectile lifetimes in a combo.")]
-    public List<float> ProjectileLifetime = new List<float>();
+    //[ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
+    //[Tooltip("How much attacking should change the player's move speed by. Use negative values to make player slower. " +
+    //    "Is a list in case the weapon's combo attacks should change the player's speed by a different amount.")]
+    //public List<float> BaseMovementSpeedChange = new List<float>();
 
-    [ShowIf(nameof(RangedWeaponSettings))]
-    [Tooltip("How much shooting should slow the player by. " +
-        "Is a list in case the weapon's combo attacks should slow down the player by a different amount.")]
-    public List<float> MovementSlowdown = new List<float>();
+    //[HideInInspector]  public List<Vector2> PlayerDisplacement = new List<Vector2>();
 
-    [ShowIf(nameof(RangedWeaponSettings))]
-    [Tooltip("Whether or not the weapon's attacks have pierce.")]
-    public bool HasPierce;
+    //[ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
+    //[Tooltip("The direction, and by how much, the player should be moved by when attacking. " +
+    //    "Is a list in case the weapon's combo attacks should change the player's speed by a different amount.")]
+    //public List<Vector2> BasePlayerDisplacement = new List<Vector2>();
 
-    [ShowIf(EConditionOperator.And, nameof(RangedWeaponSettings), nameof(HasPierce))]
-    [Tooltip("How much damage is lost after piercing a target. Is a list in case you want pierce damage fall off to not be linear.")]
-    public List<float> PierceDamageFalloff = new List<float>();
+    //Defaults to 1 so the animation plays at normal speed.
+    [HideInInspector] public float AttackSpeed = 1;
 
-    [ShowIf(EConditionOperator.And, nameof(RangedWeaponSettings), nameof(HasPierce))]
-    [Tooltip("How much lifetime is lost after piercing a target. Is a list in case you want pierce lifetime fall off to not be linear.")]
-    public List<float> PierceLifetimeFalloff = new List<float>();
+    [HideInInspector] public List<int> AttackBursts = new List<int>();
 
-    [ShowIf(EConditionOperator.And, nameof(RangedWeaponSettings), nameof(HasPierce))]
-    [Tooltip("Set if you want to cap how many enemies the projectile can pierce through. Set to -1 if infinite. " +
-        "Made as a list in case you want combo attacks to pierce a different amount of enemies.")]
-    public List<int> PierceAmount = new List<int>();
+    [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
+    [Tooltip("When making an attack, how many times the attack should occur. Is a list in case the weapon's combo attacks should cause different amount of bursts.")]
+    public List<int> BaseAttackBursts = new List<int>();
 
-    [ShowIf(EConditionOperator.And, nameof(RangedWeaponSettings), nameof(HasPierce))]
-    [Tooltip("The minimum amount of damage the weapon can be decreased to from piercing. If <= 0, will just destroy when damage is 0.")]
-    public int MinPierceDamage;
+    [HideInInspector] public List<float> TimeBetweenBursts = new List<float>();
+
+    [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
+    [Tooltip("How much time passes between each burst. Set to 0 for weapons that unleash a burst of attacks at once. Is a list in case you want different timings for combo attacks.")]
+    public List<float> BaseTimeBetweenBursts = new List<float>();
 
     [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
     [Tooltip("Whether or not a weapon has lifesteal.")]
     public bool HasLifesteal;
 
     [ShowIf(nameof(WeaponLifeSteal))]
-    [Tooltip("How much lifesteal a weapon has.")]
-    public float BaseLifestealAmount;
+    [Tooltip("How much lifesteal a weapon has. Made as a list in case you want combo attacks to have multiple life steal values.")]
+    public List<float> BaseLifestealAmount = new List<float>();
+
+    [HideInInspector] public List<float> LifestealAmount = new List<float>();
+
+    [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
+    [Tooltip("If the weapon has an AOE attack attached.")]
+    public bool HasAOEAttack;
+
+    [ShowIf(nameof(WeaponAOE))]
+    [Tooltip("What the weapon's AOE looks like. List in case we want multiple different kinds.")]
+    public List<GameObject> WeaponAOEs = new List<GameObject>();
+
+    [HideInInspector] public List<int> AOEDamage = new List<int>();
+
+    [ShowIf(nameof(WeaponAOE))]
+    [Tooltip("The most amount of damage the AOE can do.")]
+    public List<int> BaseAOEDamage = new List<int>();
+
+    [HideInInspector] public List<float> AOESize = new List<float>();
+
+    [ShowIf(nameof(WeaponAOE))]
+    [Tooltip("How big the AOE is.")]
+    public List<float> BaseAOESize = new List<float>();
+
+    [HideInInspector] public List<float> AOEDuration = new List<float>();
+
+    [ShowIf(nameof(WeaponAOE))]
+    [Tooltip("How long the AOE lasts.")]
+    public List<float> BaseAOEDuration = new List<float>();
+
+    [HideInInspector] public List<int> AOEDamageTicks = new List<int>();
+
+    [ShowIf(nameof(WeaponAOE))]
+    [Tooltip("How many times the AOE should damage.")]
+    public List<int> BaseAOEDamageTicks = new List<int>();
+
+    [HideInInspector] public List<float> AOEDelay = new List<float>();
+
+    [ShowIf(nameof(WeaponAOE))]
+    [Tooltip("How much of a delay there is before the AOE goes off. 0 is instant.")]
+    public List<float> BaseAOEDelay = new List<float>();
+
+    #endregion
+
+    #region Ranged Variables
 
     [HideInInspector]
-    public float lifestealAmount;
+    public List<GameObject> Projectiles = new List<GameObject>();
+
+    [ShowIf(nameof(RangedWeaponSettings))]
+    [Tooltip("What kind of projectile the weapon fires. A list in case the weapon can fire multiple types of projectiles.")]
+    public List<GameObject> BaseProjectiles = new List<GameObject>();
+
+    [HideInInspector]
+    public List<float> ProjectileSpeed = new List<float>();
+
+    [ShowIf(nameof(RangedWeaponSettings))]
+    [Tooltip("How fast a projectile flies. Is a list in case the weapon has multiple projectile speeds in a combo.")]
+    public List<float> BaseProjectileSpeed = new List<float>();
+
+    [HideInInspector]
+    public List<float> ProjectileLifetime = new List<float>();
+
+    [ShowIf(nameof(RangedWeaponSettings))]
+    [Tooltip("How fast a projectile flies. Is a list in case the weapon has multiple projectile lifetimes in a combo.")]
+    public List<float> BaseProjectileLifetime = new List<float>();
+
+    [ShowIf(nameof(RangedWeaponSettings))]
+    [Tooltip("Whether or not the weapon's attacks have pierce.")]
+    public bool HasPierce;
+
+    [HideInInspector]
+    public List<float> PierceDamageFalloff = new List<float>();
+
+    [ShowIf(EConditionOperator.And, nameof(RangedWeaponSettings), nameof(HasPierce))]
+    [Tooltip("How much damage is lost after piercing a target. Is a list in case you want pierce damage fall off to not be linear.")]
+    public List<float> BasePierceDamageFalloff = new List<float>();
+
+    [HideInInspector]
+    public List<float> PierceLifetimeFalloff = new List<float>();
+
+    [ShowIf(EConditionOperator.And, nameof(RangedWeaponSettings), nameof(HasPierce))]
+    [Tooltip("How much lifetime is lost after piercing a target. Is a list in case you want pierce lifetime fall off to not be linear.")]
+    public List<float> BasePierceLifetimeFalloff = new List<float>();
+
+    [HideInInspector]
+    public List<int> PierceAmount = new List<int>();
+
+    [ShowIf(EConditionOperator.And, nameof(RangedWeaponSettings), nameof(HasPierce))]
+    [Tooltip("Set if you want to cap how many enemies the projectile can pierce through. Set to -1 if infinite. " +
+        "Made as a list in case you want combo attacks to pierce a different amount of enemies.")]
+    public List<int> BasePierceAmount = new List<int>();
+
+    [HideInInspector]
+    public List<int> MinPierceDamage = new List<int>();
+
+    [ShowIf(EConditionOperator.And, nameof(RangedWeaponSettings), nameof(HasPierce))]
+    [Tooltip("The minimum amount of damage the weapon can be decreased to from piercing. If <= 0, will just destroy when damage is 0. " +
+        "Made as a list in case you want combo attacks to have varying minimum pierce damage.")]
+    public List<int> BaseMinPierceDamage = new List<int>();
+
+    [ShowIf(nameof(RangedWeaponSettings))]
+    [Tooltip("Whether or not the projectile ricochets on hit.")]
+    public bool Ricochets;
+
+    [HideInInspector] public List<int> RicochetCount = new List<int>();
+
+    [ShowIf(EConditionOperator.And, nameof(RangedWeaponSettings), nameof(Ricochets))]
+    [Tooltip("How many times the projectile can ricochet.")]
+    public List<int> BaseRicochetCount = new List<int>();
+
+    [HideInInspector] public List<float> RicochetRange = new List<float>();
+
+    [ShowIf(EConditionOperator.And, nameof(RangedWeaponSettings), nameof(Ricochets))]
+    [Tooltip("How close enemies have to be for a ricochet to happen.s")]
+    public List<float> BaseRicochetRange = new List<float>();
+    #endregion
 
     #endregion
 
@@ -256,6 +367,7 @@ public class BaseWeaponScriptable : BaseScriptableObject
     }
     #endregion
 
+    #region CustomBools
     /// <summary>
     /// Custom bool for multiple enum values
     /// </summary>
@@ -272,6 +384,15 @@ public class BaseWeaponScriptable : BaseScriptableObject
     private bool WeaponLifeSteal()
     {
         return shownSettings == ShownSettings.BaseWeaponData && HasLifesteal;
+    }
+
+    /// <summary>
+    /// Custom bool to show if AOE attack is selected
+    /// </summary>
+    /// <returns></returns>
+    private bool WeaponAOE()
+    {
+        return shownSettings == ShownSettings.BaseWeaponData && HasAOEAttack;
     }
 
     /// <summary>
@@ -318,15 +439,35 @@ public class BaseWeaponScriptable : BaseScriptableObject
     {
         return shownSettings == ShownSettings.StatusEffects && effectType == EffectType.Burn;
     }
+    #endregion
 
     /// <summary>
-    /// When the weapon is initialised make sure weapon damage is set to numbers
+    /// Sets weapon variables to its base values
     /// </summary>
     public void Awake()
     {
         WeaponDamage = BaseWeaponDamage.ToList();
         AttackCooldown = BaseAttackCooldown.ToList();
-        lifestealAmount = BaseLifestealAmount;
+        AttackSpeed = 1;
+        //MovementSpeedChange = BaseMovementSpeedChange.ToList();
+        //PlayerDisplacement = BasePlayerDisplacement.ToList();
+        AttackBursts = BaseAttackBursts.ToList();
+        TimeBetweenBursts = BaseTimeBetweenBursts.ToList();
+        LifestealAmount = BaseLifestealAmount.ToList();
+        AOEDamage = BaseAOEDamage.ToList();
+        AOESize = BaseAOESize.ToList();
+        AOEDuration = BaseAOEDuration.ToList();
+        AOEDamageTicks = BaseAOEDamageTicks.ToList();
+        AOEDelay = BaseAOEDelay.ToList();
+        Projectiles = BaseProjectiles.ToList();
+        ProjectileSpeed = BaseProjectileSpeed.ToList();
+        ProjectileLifetime = BaseProjectileLifetime.ToList();
+        PierceDamageFalloff = BasePierceDamageFalloff.ToList();
+        PierceLifetimeFalloff = BasePierceLifetimeFalloff.ToList();
+        PierceAmount = BasePierceAmount.ToList();
+        MinPierceDamage = BaseMinPierceDamage.ToList();
+        RicochetCount = BaseRicochetCount.ToList();
+        RicochetRange = BaseRicochetRange.ToList();
         upgradeGrid.attachedWeapon = this;
     }
 
@@ -334,7 +475,7 @@ public class BaseWeaponScriptable : BaseScriptableObject
     /// changes weapon damage based on the amount of damage buffs given to the weapon on the grid
     /// </summary>
     /// <param name="DamageBuff">Greater than one multiplies the base damage numbers</param>
-    public void updateWeaponDamage(float DamageBuff)
+    public void UpdateWeaponDamage(float DamageBuff)
     {
         for(int i = 0; i < WeaponDamage.Count; i++)
         {
@@ -346,7 +487,7 @@ public class BaseWeaponScriptable : BaseScriptableObject
     /// changes weapon attack speed based on the amount of dpeed buffs given to the weapon on the grid
     /// </summary>
     /// <param name="SpeedBoost">Less than one, multiplies the base attack cooldown</param>
-    public void updateWeaponSpeed(float SpeedBoost)
+    public void UpdateWeaponSpeed(float SpeedBoost)
     {
         for(int i = 0; i < AttackCooldown.Count; i++)
         {
@@ -358,8 +499,11 @@ public class BaseWeaponScriptable : BaseScriptableObject
     /// changes how much lifesteal the weapon has based on the parameter. Parameter should be a percentage
     /// </summary>
     /// <param name="lifestealPercent"></param>
-    public void updateLifestealPercent(float lifestealPercent)
+    public void UpdateLifestealPercent(float lifestealPercent)
     {
-        lifestealAmount = BaseLifestealAmount * lifestealPercent;
+        for (int i = 0; i < AttackCooldown.Count; i++)
+        {
+            LifestealAmount[i] = BaseLifestealAmount[i] * lifestealPercent;
+        }
     }
 }
