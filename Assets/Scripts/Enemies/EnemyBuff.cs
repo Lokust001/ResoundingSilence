@@ -83,7 +83,7 @@ public class EnemyBuff : MonoBehaviour, IEntityDataReceiver, ICustomDisabler
         ClearBuffFromAllies();
 
         //Wait for the enemy to move away from the player
-        yield return StartCoroutine(enemyMovement.MoveAwayFromPlayer());
+        yield return StartCoroutine(enemyMovement.RetreatWalking());
 
         //Starts the process all over again
         AttemptBuffingAllies();
