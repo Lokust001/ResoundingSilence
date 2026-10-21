@@ -1,12 +1,13 @@
 /******************************************************************************
  * Author: Brad Dixon
  * Contributors:
- * Last Modified: 9/29/2026
- * Brief: Weapon architecture that all weapons inherit
+ * Last Modified: 10/21/2026
+ * Brief: Calls the specific weapon attack
  * TODO:
  * ***************************************************************************/
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using NaughtyAttributes;
 
 public class BaseWeaponBehaviour : MonoBehaviour
@@ -22,15 +23,26 @@ public class BaseWeaponBehaviour : MonoBehaviour
     [Expandable]
     public BaseWeaponScriptable ThisWeaponData;
     [SerializeField] protected int weaponDataID;
+    [SerializeField] protected GameObject weaponModel;
     [SerializeField] protected LayerMask groundLayerMask;
+
+    [SerializeField] protected Animator weaponAnimator;
+    [SerializeField] protected List<AnimationClip> attackAnimations = new List<AnimationClip>();
+    [SerializeField] protected int comboIndex;
 
     [Header("Base Ability Variables"), HorizontalLine(height: 4, EColor.Red)]
     [SerializeField] protected AbilitySettings abilitySettings;
 
-    protected Vector3 mousePos = Vector3.zero;
+    protected Vector3 mousePos = Vector3.forward;
+
+    protected float currentAttackSpeed;
 
     protected bool isAttacking;
     protected bool attackReady;
+
+    bool burstAttacking;
+
+    [SerializeField] List<Collider> meleeHitboxes = new List<Collider>();
 
     protected bool aimingAbilityOne;
     protected bool aimingAbilityTwo;
@@ -78,6 +90,10 @@ public class BaseWeaponBehaviour : MonoBehaviour
         //tells the abilities to instantiate
         ThisWeaponData.GetAbilities();
         attackReady = true;
+        comboIndex = 0;
+
+        currentAttackSpeed = ThisWeaponData.AttackSpeed;
+        UpdateAttackSpeed();
 
         if(!abilityOneReady)
         {
@@ -115,7 +131,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
     }
 
     /// <summary>
-    /// Updates whether or not the player is holding the attack button
+    /// Determines if whether or not the player casts an ability or attacks with the weapon
     /// </summary>
     protected void PlayerAttacking()
     {
@@ -142,11 +158,12 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// </summary>
     protected void GetMousPos(Vector2 pos)
     {
+        Plane p = new Plane(Vector3.up, Camera.main.transform.rotation.x);
         Ray ray = Camera.main.ScreenPointToRay(pos);
 
-        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundLayerMask))
+        if(p.Raycast(ray, out float hit))
         {
-            mousePos = hit.point - transform.position;
+            mousePos = ray.GetPoint(hit) - transform.position;
         }
     }
 
@@ -206,6 +223,26 @@ public class BaseWeaponBehaviour : MonoBehaviour
             return;
         }
 
+        Vector3 lookDir = mousePos;
+        Quaternion rot = Quaternion.RotateTowards(weaponModel.transform.rotation,
+            Quaternion.LookRotation(lookDir), 20f);
+        rot.x = 0;
+        rot.z = 0;
+        weaponModel.transform.rotation = rot;
+
+        if (UIManager.Instance.CurrentlyInFullscreenMenu())
+        {
+            return;
+        }
+
+        //Check if attack speed gets changed
+        if(currentAttackSpeed != ThisWeaponData.AttackSpeed)
+        {
+            Debug.Log("Changing attack speed");
+            currentAttackSpeed = ThisWeaponData.AttackSpeed;
+            UpdateAttackSpeed();
+        }
+
         if (isAttacking && attackReady)
         {
             Attack();
@@ -215,11 +252,79 @@ public class BaseWeaponBehaviour : MonoBehaviour
     }
 
     /// <summary>
+    /// Updates the weapon's animation speed. Lets us make the attacks look faster or slower.
+    /// </summary>
+    protected void UpdateAttackSpeed()
+    {
+        weaponAnimator.speed = currentAttackSpeed;
+    }
+
+    /// <summary>
     /// Tells the weapon to attack. Throws error if not replaced with attack functionality.
     /// </summary>
     virtual protected void Attack()
     {
-        throw new System.Exception("Forgot to add attack functionality.");
+        ++comboIndex;
+        weaponAnimator.Play("Base Layer." + attackAnimations[comboIndex - 1].name);
+    }
+
+    /// <summary>
+    /// Determines if a burst of attacks should be done all at once or if they should be done in order
+    /// </summary>
+    /// <returns></returns>
+    protected IEnumerator AttackBursts()
+    {
+        for(int i = 1; i < ThisWeaponData.AttackBursts[comboIndex - 1]; ++i)
+        {
+            yield return new WaitForSeconds(ThisWeaponData.TimeBetweenBursts[comboIndex - 1]);
+            SpawnProjectile();
+        }
+
+        burstAttacking = false;
+    }
+
+    /// <summary>
+    /// Called by animation event to spawn projectile during attack animation
+    /// </summary>
+    public void SpawnProjectile()
+    {
+        Debug.Log(comboIndex - 1);
+        Vector3 bulletDir = mousePos;
+        bulletDir.y = 0;
+
+        GameObject spawnedProjectile = Instantiate(ThisWeaponData.Projectiles[comboIndex - 1], transform.position, Quaternion.LookRotation(bulletDir.normalized, Vector3.up));
+        spawnedProjectile.GetComponent<BaseProjectileBehaviour>().SetData(ThisWeaponData);
+        spawnedProjectile.GetComponent<Rigidbody>().linearVelocity = bulletDir.normalized * ThisWeaponData.ProjectileSpeed[comboIndex - 1];
+
+        //If the weapon has multiple bursts fire them
+        if(ThisWeaponData.AttackBursts[comboIndex - 1] > 1 && !burstAttacking)
+        {
+            burstAttacking = true;
+            StartCoroutine(AttackBursts());
+        }
+    }
+
+    /// <summary>
+    /// Called by an animation event to see if a melee swing hit anything
+    /// </summary>
+    public void MeleeSwing()
+    {
+        foreach(Collider c in meleeHitboxes)
+        {
+            if(c.enabled)
+            {
+                Collider[] targets = Physics.OverlapBox(c.bounds.center, c.bounds.extents, Quaternion.identity, ThisWeaponData.EnemyLayer);
+
+                foreach (Collider t in targets)
+                {
+                    if(t.GetComponent<Enemy>())
+                    {
+                        t.GetComponent<Enemy>().EnemyTakeDamage(ThisWeaponData.WeaponDamage[comboIndex - 1]);
+                    }
+                    Debug.Log(t.name + " took " + ThisWeaponData.WeaponDamage[comboIndex - 1] + " damage!");
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -229,6 +334,10 @@ public class BaseWeaponBehaviour : MonoBehaviour
     virtual protected IEnumerator AttackDelay()
     {
         yield return new WaitForSeconds(ThisWeaponData.AttackCooldown[0]);
+        if(comboIndex >= attackAnimations.Count)
+        {
+            comboIndex = 0;
+        }
         attackReady = true;
     }
 

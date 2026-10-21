@@ -6,6 +6,7 @@
  * TODO: Fill out when we know how melee weapons will work.
  * ***************************************************************************/
 using UnityEngine;
+using System.Collections.Generic;
 
 public class BaseMeleeWeaponBehaviour : BaseWeaponBehaviour
 {

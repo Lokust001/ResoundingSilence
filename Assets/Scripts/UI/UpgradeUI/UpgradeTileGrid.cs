@@ -315,9 +315,9 @@ public class UpgradeTileGrid
             }
         }
 
-        attachedWeapon.updateWeaponSpeed(AttackSpeedBuff);
-        attachedWeapon.updateWeaponDamage(damagebuff);
-        attachedWeapon.updateLifestealPercent(lifestealBuff);
+        attachedWeapon.UpdateWeaponSpeed(AttackSpeedBuff);
+        attachedWeapon.UpdateWeaponDamage(damagebuff);
+        attachedWeapon.UpdateLifestealPercent(lifestealBuff);
     }
 
 
