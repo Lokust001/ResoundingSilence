@@ -22,6 +22,7 @@ public abstract class ConsumableBehavior : MonoBehaviour
         if (other.TryGetComponent<PlayerController>(out PlayerController player))
         {
             Consume(player);
+            Destroy(gameObject);
         }
     }
 }
