@@ -85,7 +85,7 @@ public class BaseProjectileBehaviour : MonoBehaviour
         if (other.GetComponent<DummyBehaviour>() || other.GetComponent<Enemy>())
         {
             //replace with the enemy taking damage
-            other.GetComponent<DummyBehaviour>().TakeDamage(myDamage);
+            other.GetComponent<Enemy>().EnemyTakeDamage(myDamage);
 
             if(weaponRef.HasLifesteal)
             {

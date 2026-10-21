@@ -317,6 +317,10 @@ public class BaseWeaponBehaviour : MonoBehaviour
 
                 foreach (Collider t in targets)
                 {
+                    if(t.GetComponent<Enemy>())
+                    {
+                        t.GetComponent<Enemy>().EnemyTakeDamage(ThisWeaponData.WeaponDamage[comboIndex - 1]);
+                    }
                     Debug.Log(t.name + " took " + ThisWeaponData.WeaponDamage[comboIndex - 1] + " damage!");
                 }
             }

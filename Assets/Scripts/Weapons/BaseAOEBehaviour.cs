@@ -44,6 +44,7 @@ public class BaseAOEBehaviour : MonoBehaviour
 
             foreach(Collider t in targets)
             {
+                t.GetComponent<Enemy>().EnemyTakeDamage(damage);
                 Debug.Log(t.name + " took " + damage + " damage!");
             }
 
