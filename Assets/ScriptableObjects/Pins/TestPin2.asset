@@ -16,7 +16,20 @@ MonoBehaviour:
   UsePresetTooltip: 0
   PresetTooltip: 
   PinName: Attack Speed Pin
-  Type: 1
+  Types: 0100000003000000
+  AutoAdjacencyPinTypes: 0300000001000000
+  autoAdjacencyAmounts: 0500000005000000
+  NorthAdjacency: 0300000001000000
+  NorthEastAdjacency: 01000000
+  EastAdjacency: 01000000
+  SouthEastAdjacency: 01000000
+  SouthAdjacency: 0300000001000000
+  SouthWestAdjacency: 03000000
+  WestAdjacency: 03000000
+  NorthWestAdjacency: 03000000
+  ManualAdjacency: 1
   ModifierNumber: 2
   StatToChange: 2
+  AdjacentTileScaling: 0
+  AdditiveScaling: 1
   pinColor: {r: 0.07820844, g: 0.4481132, b: 0.154806, a: 1}
