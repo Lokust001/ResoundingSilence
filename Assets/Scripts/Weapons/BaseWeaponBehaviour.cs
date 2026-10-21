@@ -33,7 +33,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
     [Header("Base Ability Variables"), HorizontalLine(height: 4, EColor.Red)]
     [SerializeField] protected AbilitySettings abilitySettings;
 
-    protected Vector3 mousePos = Vector3.zero;
+    protected Vector3 mousePos = Vector3.forward;
 
     protected float currentAttackSpeed;
 
