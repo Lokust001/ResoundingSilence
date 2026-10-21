@@ -41,17 +41,27 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     }
 
     /// <summary>
-    /// Start searching for the player by un-constraining the nav mesh agent and moving towards the player
+    /// Start a coroutine for ranged enemies to strafe towards the enemies
     /// </summary>
-    public void StartFollowingPlayer() 
+    public void StrafeTowardsPlayer() 
     {
-        walkingCoroutine ??= StartCoroutine(MoveTowardsPlayer());
+        StopApproachingPlayer();
+        walkingCoroutine = StartCoroutine(StrafeWalking());
+    }
+
+    /// <summary>
+    /// Start a coroutine for melee enemies to directly follow the player
+    /// </summary>
+    public void FollowPlayer() 
+    {
+        StopApproachingPlayer();
+        walkingCoroutine = StartCoroutine(FollowWalking());
     }
 
     /// <summary>
     /// Stop searching for the player by constraining the nav mesh agent
     /// </summary>
-    public void EndPlayerSearch() 
+    public void StopApproachingPlayer() 
     {
         navMeshAgent.isStopped = true;
         if (walkingCoroutine != null) 
@@ -119,22 +129,102 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     }
 
     /// <summary>
-    /// Move incrementally closer towards the player until this Coroutine is stopped
+    /// Move closer towards the player one cycle at a time until the player is reached or a new strafe is started
     /// </summary>
     /// <returns></returns>
-    private IEnumerator MoveTowardsPlayer() 
+    private IEnumerator StrafeWalking() 
     {
-        Debug.Log("Following Player");
         navMeshAgent.isStopped = false;
-        while (true) 
+        navMeshAgent.destination = CalculateMovementVariability();
+
+        while (navMeshAgent.hasPath) 
         {
-            navMeshAgent.destination = playerReference.transform.position;
             yield return new WaitForFixedUpdate();
         }
     }
 
     /// <summary>
-    /// Move away from the player by a specified distance over time
+    /// Follow the player completely until the player is within range
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator FollowWalking() 
+    {
+        navMeshAgent.isStopped = false;
+        Transform playerTransform = playerReference.transform;
+
+
+        while (true)
+        {
+            navMeshAgent.destination = playerTransform.position;
+            yield return new WaitForFixedUpdate();
+        }
+    }
+
+    /// <summary>
+    /// Helper method that uses trignometry to repeatedly calculate a random position to walk towards or retreat towards until one is found
+    /// </summary>
+    /// <param name="offset"></param>
+    /// <returns></returns>
+    private Vector3 CalculateMovementVariability(int offset = 0) 
+    {
+        //Splits the approach or retreat ariability degrees into two so that it encompasses as much the left of the circle as the right from the front
+        int halfPieSlice = offset == 0 ? enemyData.approachDestinationVariabilityDegrees / 2 : enemyData.retreatDestinationVariabilityDegrees / 2;
+        //Scales the rotated player offset for a minimum retreat distance
+        float playerOffsetScaler = offset == 0 ? 1 : enemyData.retreatDistance;
+
+        //Base case for while loop
+        bool validLocation = false;
+        //Return value
+        Vector3 finalGoal = transform.position;
+
+        //Fail-safe
+        int attempts = 0;
+
+        
+        while (!validLocation) 
+        {
+            //Generates a random approach angle to rotate the destination by
+            int currentApproachAngleOffset = Random.Range(-halfPieSlice, halfPieSlice + 1);
+            currentApproachAngleOffset += offset;
+
+            Vector3 offsetFromPlayer = playerReference.transform.position - transform.position;
+            Vector3 rotatedOffset = Quaternion.Euler(0, currentApproachAngleOffset, 0) * offsetFromPlayer * playerOffsetScaler;
+            finalGoal = transform.position + rotatedOffset;
+
+            //[Uncomment for debug]
+            //Debug.Log("Location Calculation attempt #" + (attempts + 1)+ ": Rotated movement destination by " + currentApproachAngleOffset + " degrees");
+
+            //Checks the destination to see if it is a valid navmesh location
+            validLocation = NavMesh.SamplePosition(finalGoal, out _, capsuleCollider.height, LayerMask.NameToLayer("Ground"));
+            attempts++;
+            if (attempts >= enemyData.maxVariabilityDestinationAttempts) 
+            {
+                Debug.LogWarning("Warning! " + gameObject.name + " failed to calculate a valid movement location");
+                finalGoal = transform.position;
+                break;
+            }
+        }
+
+        return finalGoal;
+    }
+
+    /// <summary>
+    /// Move away from the player towards a valid location
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerator RetreatWalking() 
+    {
+        navMeshAgent.isStopped = false;
+        navMeshAgent.destination = CalculateMovementVariability(180);
+
+        while (navMeshAgent.hasPath)
+        {
+            yield return new WaitForFixedUpdate();
+        }
+    }
+
+    /// <summary>
+    /// [Deprecated] Move away from the player by a specified distance over time 
     /// </summary>
     /// <returns></returns>
     public IEnumerator MoveAwayFromPlayer() 
@@ -193,7 +283,7 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     /// </summary>
     public void DisableEntity()
     {
-        EndPlayerSearch();
+        StopApproachingPlayer();
         StopAllCoroutines();
         meshRenderer.enabled = false;
         capsuleCollider.enabled = false;
