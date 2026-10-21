@@ -47,13 +47,14 @@ public class DebugConsole : MonoBehaviour
     //private bool noClipToggle = false;
     private bool godToggle = false;
     private bool pivotToggle = false;
-    /*private bool cameraToggle = false;
-    private bool freezeToggle = false;*/
+    private bool detachToggle = false;
+    //private bool freezeToggle = false;
 
     private PlayerController playerInstance;
     private MapGenerator mapGenInstance;
     private GameObject cameraInstance;
     private PivotCamera PivotInstance;
+    private DetachCamera DetachInstance;
 
     [SerializeField]
     [ShowIf(nameof(settings), ShownSettings.Colors)]
@@ -297,6 +298,25 @@ public class DebugConsole : MonoBehaviour
             PivotInstance.isActive = pivotToggle;
             AppendConsoleLine(Command, inputColor);
             AppendConsoleLine($"Pivot command: {pivotToggle}", commandCompletedColor);
+            FinishCommand();
+            return;
+        }
+
+        if (Command.StartsWith("detachcam") || Command.StartsWith("dc"))
+        {
+            detachToggle = !detachToggle;
+            if(detachToggle)
+            {
+                MainCameraManager.Instance.stopFollow();
+                DetachInstance.isActive = true;
+            }
+            else
+            {
+                MainCameraManager.Instance.startFollow();
+                DetachInstance.isActive = false;
+            }
+            AppendConsoleLine(Command, inputColor);
+            AppendConsoleLine($"Detach command: {detachToggle}", commandCompletedColor);
             FinishCommand();
             return;
         }

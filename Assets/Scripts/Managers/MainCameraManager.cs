@@ -114,4 +114,16 @@ public class MainCameraManager : BaseManager
             yield return null;
         }
     }
+
+    public void stopFollow()
+    {
+        FollowPlayer = false;
+        StopCoroutine(followingCoroutine);
+        followingCoroutine = null;
+    }
+
+    public void startFollow()
+    {
+        AttachCamToPlayer(player.gameObject.GetComponent<PlayerController>());
+    }
 }
