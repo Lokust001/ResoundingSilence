@@ -1,7 +1,7 @@
 /******************************************************************************
  * Author: Brad Dixon
  * Contributors:
- * Last Modified: 10/19/2026
+ * Last Modified: 10/21/2026
  * Brief: Calls the specific weapon attack
  * TODO:
  * ***************************************************************************/
@@ -23,6 +23,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
     [Expandable]
     public BaseWeaponScriptable ThisWeaponData;
     [SerializeField] protected int weaponDataID;
+    [SerializeField] protected GameObject weaponModel;
     [SerializeField] protected LayerMask groundLayerMask;
 
     [SerializeField] protected Animator weaponAnimator;
@@ -217,6 +218,18 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// </summary>
     virtual protected void FixedUpdate()
     {
+        if (UIManager.Instance.CurrentlyInFullscreenMenu())
+        {
+            return;
+        }
+
+        Vector3 lookDir = mousePos;
+        Quaternion rot = Quaternion.RotateTowards(weaponModel.transform.rotation,
+            Quaternion.LookRotation(lookDir), 20f);
+        rot.x = 0;
+        rot.z = 0;
+        weaponModel.transform.rotation = rot;
+
         if (UIManager.Instance.CurrentlyInFullscreenMenu())
         {
             return;

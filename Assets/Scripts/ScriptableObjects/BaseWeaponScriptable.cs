@@ -1,10 +1,11 @@
 /*
 * Author: Tyler
 * Contributors: Brad Dixon, Brenden
-* Last Modified: 10/19/2026
+* Last Modified: 10/21/2026
 * Summary: This is the base scriptable object for all weapon scriptable objects.
 *          Handles the data for the weapons. Acts as a tool to make any kind of weapon.
-* To Do:   Add more variables as needed. Change status effects as needed.
+* To Do:   Add more variables as needed. Change status effects as needed. 
+* Commented out variables don't have functionality yet. Will come in a later PR after controller support.
 */
 
 using NaughtyAttributes;
@@ -92,19 +93,19 @@ public class BaseWeaponScriptable : BaseScriptableObject
     [Tooltip("How much damage the weapon does. Is a list in case the weapon has multiple hits in a combo.")]
     public List<float> BaseAttackCooldown = new List<float>();
 
-    [HideInInspector] public List<float> MovementSpeedChange = new List<float>();
+    //[HideInInspector] public List<float> MovementSpeedChange = new List<float>();
 
-    [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
-    [Tooltip("How much attacking should change the player's move speed by. Use negative values to make player slower. " +
-        "Is a list in case the weapon's combo attacks should change the player's speed by a different amount.")]
-    public List<float> BaseMovementSpeedChange = new List<float>();
+    //[ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
+    //[Tooltip("How much attacking should change the player's move speed by. Use negative values to make player slower. " +
+    //    "Is a list in case the weapon's combo attacks should change the player's speed by a different amount.")]
+    //public List<float> BaseMovementSpeedChange = new List<float>();
 
-    [HideInInspector]  public List<Vector2> PlayerDisplacement = new List<Vector2>();
+    //[HideInInspector]  public List<Vector2> PlayerDisplacement = new List<Vector2>();
 
-    [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
-    [Tooltip("The direction, and by how much, the player should be moved by when attacking. " +
-        "Is a list in case the weapon's combo attacks should change the player's speed by a different amount.")]
-    public List<Vector2> BasePlayerDisplacement = new List<Vector2>();
+    //[ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
+    //[Tooltip("The direction, and by how much, the player should be moved by when attacking. " +
+    //    "Is a list in case the weapon's combo attacks should change the player's speed by a different amount.")]
+    //public List<Vector2> BasePlayerDisplacement = new List<Vector2>();
 
     //Defaults to 1 so the animation plays at normal speed.
     [HideInInspector] public float AttackSpeed = 1;
@@ -448,8 +449,8 @@ public class BaseWeaponScriptable : BaseScriptableObject
         WeaponDamage = BaseWeaponDamage.ToList();
         AttackCooldown = BaseAttackCooldown.ToList();
         AttackSpeed = 1;
-        MovementSpeedChange = BaseMovementSpeedChange.ToList();
-        PlayerDisplacement = BasePlayerDisplacement.ToList();
+        //MovementSpeedChange = BaseMovementSpeedChange.ToList();
+        //PlayerDisplacement = BasePlayerDisplacement.ToList();
         AttackBursts = BaseAttackBursts.ToList();
         TimeBetweenBursts = BaseTimeBetweenBursts.ToList();
         LifestealAmount = BaseLifestealAmount.ToList();
@@ -464,6 +465,7 @@ public class BaseWeaponScriptable : BaseScriptableObject
         PierceDamageFalloff = BasePierceDamageFalloff.ToList();
         PierceLifetimeFalloff = BasePierceLifetimeFalloff.ToList();
         PierceAmount = BasePierceAmount.ToList();
+        MinPierceDamage = BaseMinPierceDamage.ToList();
         RicochetCount = BaseRicochetCount.ToList();
         RicochetRange = BaseRicochetRange.ToList();
         upgradeGrid.attachedWeapon = this;

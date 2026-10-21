@@ -17,6 +17,9 @@ MonoBehaviour:
   PresetTooltip: 
   weaponType: 1
   shownSettings: 2
+  EnemyLayer:
+    serializedVersion: 2
+    m_Bits: 1024
   effectType: 0
   upgradeGrid:
     NumberOfGlyphRange: {x: 1, y: 1}
@@ -35,30 +38,67 @@ MonoBehaviour:
   - 1.1
   BaseAttackCooldown:
   - 1.1
-  MovementSpeedChange: []
-  BaseMovementSpeedChange: []
-  PlayerDisplacement: []
-  BasePlayerDisplacement: []
-  AttackBursts: 
-  BaseAttackBursts: 
+  AttackSpeed: 1
+  AttackBursts: 01000000
+  BaseAttackBursts: 01000000
+  TimeBetweenBursts: []
+  BaseTimeBetweenBursts: []
   HasLifesteal: 0
-  BaseLifestealAmount: []
-  LifestealAmount: []
-  ProjectileSpeed: []
+  BaseLifestealAmount:
+  - 20
+  LifestealAmount:
+  - 20
+  HasAOEAttack: 0
+  WeaponAOEs:
+  - {fileID: 8331598681187886128, guid: 5a04e87396e53b04db15f79cf4c87a37, type: 3}
+  AOEDamage: 14000000
+  BaseAOEDamage: 14000000
+  AOESize:
+  - 3
+  BaseAOESize:
+  - 3
+  AOEDuration:
+  - 0
+  BaseAOEDuration:
+  - 0.1
+  AOEDamageTicks: 01000000
+  BaseAOEDamageTicks: 01000000
+  AOEDelay:
+  - 0
+  BaseAOEDelay:
+  - 0
+  Projectiles:
+  - {fileID: 8805286060830696359, guid: f4083c9721c5aa04280c3f4b179ddf88, type: 3}
+  BaseProjectiles:
+  - {fileID: 8805286060830696359, guid: f4083c9721c5aa04280c3f4b179ddf88, type: 3}
+  ProjectileSpeed:
+  - 5
   BaseProjectileSpeed:
   - 5
-  ProjectileLifetime: []
+  ProjectileLifetime:
+  - 3
   BaseProjectileLifetime:
   - 3
   HasPierce: 0
-  PierceDamageFalloff: []
-  BasePierceDamageFalloff: []
-  PierceLifetimeFalloff: []
-  BasePierceLifetimeFalloff: []
-  PierceAmount: 
-  BasePierceAmount: 
-  MinPierceDamage: 
-  BaseMinPierceDamage: 
+  PierceDamageFalloff:
+  - 0
+  BasePierceDamageFalloff:
+  - 0
+  PierceLifetimeFalloff:
+  - 0
+  BasePierceLifetimeFalloff:
+  - 0
+  PierceAmount: 02000000
+  BasePierceAmount: 02000000
+  MinPierceDamage: 02000000
+  BaseMinPierceDamage: 02000000
+  Ricochets: 0
+  RicochetCount: 05000000
+  BaseRicochetCount: 05000000
+  RicochetRange:
+  - 6
+  BaseRicochetRange:
+  - 6
   DecayDamage: 0
   MaxDecayStacks: 0
   DecayDelay: 0

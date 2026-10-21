@@ -82,7 +82,7 @@ public class BaseProjectileBehaviour : MonoBehaviour
         hitEnemy = true;
 
         //Replace dummy check with enemy collision check
-        if (other.GetComponent<DummyBehaviour>())
+        if (other.GetComponent<DummyBehaviour>() || other.GetComponent<Enemy>())
         {
             //replace with the enemy taking damage
             other.GetComponent<DummyBehaviour>().TakeDamage(myDamage);
@@ -125,6 +125,11 @@ public class BaseProjectileBehaviour : MonoBehaviour
             if(weaponRef.HasAOEAttack)
             {
                 SpawnAOE(other.ClosestPoint(transform.position));
+            }
+
+            if(!weaponRef.HasPierce && !weaponRef.Ricochets)
+            {
+                Destroy(this.gameObject);
             }
         }
         else
