@@ -12,17 +12,27 @@ public class Chests : MonoBehaviour
     private bool inChestRange;
     private MidRunDataManager MRM;
 
+    /// <summary>
+    /// makes the chest listen to the public events for interaction
+    /// </summary>
     private void OnEnable()
     {
         InputPublicEvents.InteractPressed += TryOpenChest;
         MRM = MidRunDataManager.Instance;
     }
 
+    /// <summary>
+    /// Removes the listener to the event call
+    /// </summary>
     private void OnDisable()
     {
         InputPublicEvents.InteractPressed -= TryOpenChest;
     }
 
+    /// <summary>
+    /// detects if the player is close enough to interact with the chest
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
@@ -31,6 +41,10 @@ public class Chests : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// detects if the player has left the interaction range
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
@@ -39,6 +53,9 @@ public class Chests : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// gives the player all the stuff that spawns from the chest
+    /// </summary>
     private void TryOpenChest()
     {
         if (MRM == null)
