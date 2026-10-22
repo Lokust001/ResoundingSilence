@@ -22,6 +22,14 @@ public static class UIPublicEvents
 
     public static Action<ControllerSupportedClickable> SelectSpecificClickable;
 
+    #region PlayerHUD
+
+    public static Action UpdatePlayerHealthSlider;
+
+    public static Action UpdatePlayerEXPSlider;
+
+    #endregion
+
     #region UpgradeMenu
 
     public static Action UpgradeMenuOpened;
