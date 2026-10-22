@@ -158,7 +158,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// </summary>
     protected void GetMousPos(Vector2 pos)
     {
-        Plane p = new Plane(Vector3.up, transform.position);
+        Plane p = new Plane(Vector3.up, Camera.main.transform.rotation.x);
         Ray ray = Camera.main.ScreenPointToRay(pos);
 
         if(p.Raycast(ray, out float hit))
