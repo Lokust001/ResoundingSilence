@@ -115,11 +115,15 @@ public class LootDrop : MonoBehaviour
         DropLootOnGround(acquiredLoot);
     }
 
+    /// <summary>
+    /// Drops/spawns loot at the position where the enemy dies
+    /// </summary>
+    /// <param name="objectsToInstantiate"></param>
     private void DropLootOnGround(List<GameObject> objectsToInstantiate) 
     {
         foreach (var prefab in objectsToInstantiate)
         {
-            Instantiate(prefab);
+            Instantiate(prefab, transform.position, Quaternion.identity);
 
             if (prefab.name == "Pin")
                 DroppedPin();
@@ -134,6 +138,9 @@ public class LootDrop : MonoBehaviour
         //TODO
     }
 
+    /// <summary>
+    /// Calls the loot dropping code when this enemy dies and starts to be destroyed
+    /// </summary>
     private void OnDestroy()
     {
         RollForLoot();
