@@ -237,6 +237,11 @@ public class TarotCardController : MenuControllerSupportBase
 
     }
 
+    /// <summary>
+    /// selects the right item in the right focus
+    /// </summary>
+    /// <param name="type"></param>
+    /// <exception cref="System.Exception"></exception>
     public void SelectDefaultItemInFocus(focus type = focus.None)
     {
         if (type == focus.None)
@@ -272,6 +277,10 @@ public class TarotCardController : MenuControllerSupportBase
         }
     }
 
+    /// <summary>
+    /// picks up the item if its unlocked
+    /// </summary>
+    /// <param name="item"></param>
     protected override void PickUpItem(CarriedItemBehavior item)
     {
         if (item is TarotItemBehavior tarot)

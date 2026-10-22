@@ -1,3 +1,11 @@
+/*
+* Author: Tyler
+* Contributors:
+* Last Modified: 10/22/2026
+* Summary: Handles the back and continue buttons for the tarot menu
+* To Do:   N/A
+*/
+
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,11 +19,18 @@ public class GeneralButtons : ControllerSupportedClickable
     [SerializeField]
     private Image highlight;
 
+    /// <summary>
+    /// grabs the controller
+    /// </summary>
     private void Awake()
     {
         controller = FindAnyObjectByType<TarotCardController>();
     }
 
+    /// <summary>
+    /// sets the controller navigation neighbors
+    /// </summary>
+    /// <returns></returns>
     public override List<ControllerSupportedClickable> getNeighbors()
     {
         List<ControllerSupportedClickable> returnList = new() { null, null, null, null, null, null, null, null };
@@ -33,6 +48,9 @@ public class GeneralButtons : ControllerSupportedClickable
         return returnList;
     }
 
+    /// <summary>
+    /// does the buttons stuff
+    /// </summary>
     public override void ClickedOn()
     {
         if (IsContinueButton)

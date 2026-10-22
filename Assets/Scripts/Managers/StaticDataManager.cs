@@ -47,6 +47,10 @@ public class StaticDataManager : BaseManager
         await MakeTarots();
     }
 
+    /// <summary>
+    /// make copies of the tarot menus
+    /// </summary>
+    /// <returns></returns>
     private async Awaitable MakeTarots()
     {
         for (int i = 0; i < tarotCardScriptables.Count; i++)
