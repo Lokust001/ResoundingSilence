@@ -25660,7 +25660,7 @@ Transform:
   m_GameObject: {fileID: 1038713296907444140}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.11388546, y: 1.3, z: 0.13707207}
+  m_LocalPosition: {x: -0.0834, y: 1.3, z: 0.215}
   m_LocalScale: {x: 0.32660088, y: 1, z: 0.40195444}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -47300,6 +47300,37 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0, z: 0}
   m_TimeToStationary: 0.5
+--- !u!1 &2890608585008497212
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4413617403731437968}
+  m_Layer: 0
+  m_Name: PotentialSpawn (5)
+  m_TagString: Untagged
+  m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4413617403731437968
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2890608585008497212}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.19108178, y: 1.3, z: -0.08697728}
+  m_LocalScale: {x: 0.32660088, y: 1, z: 0.40195444}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2427814852469911713}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2892951651812469259
 GameObject:
   m_ObjectHideFlags: 0
@@ -69205,6 +69236,37 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0, z: 0}
   m_TimeToStationary: 0.5
+--- !u!1 &4014091367702687676
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7823818072806851966}
+  m_Layer: 0
+  m_Name: PotentialSpawn (6)
+  m_TagString: Untagged
+  m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7823818072806851966
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4014091367702687676}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.2662, y: 1.3, z: -0.12717274}
+  m_LocalScale: {x: 0.32660088, y: 1, z: 0.40195444}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2427814852469911713}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4027883172683052502
 GameObject:
   m_ObjectHideFlags: 0
@@ -86317,7 +86379,7 @@ Transform:
   m_GameObject: {fileID: 4951813080209372184}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.1586, y: 1.3, z: -0.0038}
+  m_LocalPosition: {x: 0.1922, y: 1.3, z: 0.2101}
   m_LocalScale: {x: 0.32660088, y: 1, z: 0.40195444}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -96055,6 +96117,8 @@ Transform:
   m_Children:
   - {fileID: 9100817816846015224}
   - {fileID: 5583962628371549153}
+  - {fileID: 4413617403731437968}
+  - {fileID: 7823818072806851966}
   - {fileID: 4694287020633982314}
   - {fileID: 7875778590553677040}
   - {fileID: 5904639371660860267}
@@ -96084,6 +96148,8 @@ MonoBehaviour:
   - {fileID: 5904639371660860267}
   - {fileID: 7122888761920004196}
   - {fileID: 1568432465107746264}
+  - {fileID: 4413617403731437968}
+  - {fileID: 7823818072806851966}
   enemyGroupTiers:
   - tierName: Melee and Shoot
     enemyPool:
@@ -96091,6 +96157,8 @@ MonoBehaviour:
     - {fileID: 5736516835863566217, guid: 5da45a64348225d4a9797f03eb1360b3, type: 3}
     - {fileID: 4702969501886654196, guid: c0d50ddd8b4eb7549be9cb919c0ce9e2, type: 3}
     - {fileID: 5736516835863566217, guid: 5da45a64348225d4a9797f03eb1360b3, type: 3}
+    - {fileID: 7656435456646436074, guid: c997b49616c1d7143ab65d2e1030d2d5, type: 3}
+    - {fileID: 5194500464997757952, guid: af965c2dde455e94187f2be25d41c8c2, type: 3}
     minimumPoints: 0
   - tierName: Charger and Cone
     enemyPool:
@@ -96098,6 +96166,8 @@ MonoBehaviour:
     - {fileID: 5194500464997757952, guid: af965c2dde455e94187f2be25d41c8c2, type: 3}
     - {fileID: 7656435456646436074, guid: c997b49616c1d7143ab65d2e1030d2d5, type: 3}
     - {fileID: 5194500464997757952, guid: af965c2dde455e94187f2be25d41c8c2, type: 3}
+    - {fileID: 4702969501886654196, guid: c0d50ddd8b4eb7549be9cb919c0ce9e2, type: 3}
+    - {fileID: 5736516835863566217, guid: 5da45a64348225d4a9797f03eb1360b3, type: 3}
     minimumPoints: 120
   - tierName: Charger and Cone and Buff
     enemyPool:
@@ -107356,7 +107426,7 @@ Transform:
   m_GameObject: {fileID: 6821359884616526634}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.030732848, y: 1.3, z: 0.01632504}
+  m_LocalPosition: {x: -0.0963, y: 1.3, z: 0.081}
   m_LocalScale: {x: 0.32660088, y: 1, z: 0.40195444}
   m_ConstrainProportionsScale: 0
   m_Children: []

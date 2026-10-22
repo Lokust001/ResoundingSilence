@@ -55495,6 +55495,8 @@ Transform:
   - {fileID: 1988737270894676123}
   - {fileID: 5002479121019731303}
   - {fileID: 7791836753016797592}
+  - {fileID: 3233750752349961768}
+  - {fileID: 8215193804555613440}
   m_Father: {fileID: 7697985524270463228}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4700800021670253419
@@ -55519,6 +55521,8 @@ MonoBehaviour:
   - {fileID: 1988737270894676123}
   - {fileID: 5002479121019731303}
   - {fileID: 7791836753016797592}
+  - {fileID: 3233750752349961768}
+  - {fileID: 8215193804555613440}
   enemyGroupTiers:
   - tierName: Melee and Shoot
     enemyPool:
@@ -55526,6 +55530,8 @@ MonoBehaviour:
     - {fileID: 5736516835863566217, guid: 5da45a64348225d4a9797f03eb1360b3, type: 3}
     - {fileID: 4702969501886654196, guid: c0d50ddd8b4eb7549be9cb919c0ce9e2, type: 3}
     - {fileID: 5736516835863566217, guid: 5da45a64348225d4a9797f03eb1360b3, type: 3}
+    - {fileID: 7656435456646436074, guid: c997b49616c1d7143ab65d2e1030d2d5, type: 3}
+    - {fileID: 5194500464997757952, guid: af965c2dde455e94187f2be25d41c8c2, type: 3}
     minimumPoints: 0
   - tierName: Charger and Cone
     enemyPool:
@@ -55533,6 +55539,8 @@ MonoBehaviour:
     - {fileID: 5194500464997757952, guid: af965c2dde455e94187f2be25d41c8c2, type: 3}
     - {fileID: 7656435456646436074, guid: c997b49616c1d7143ab65d2e1030d2d5, type: 3}
     - {fileID: 5194500464997757952, guid: af965c2dde455e94187f2be25d41c8c2, type: 3}
+    - {fileID: 4702969501886654196, guid: c0d50ddd8b4eb7549be9cb919c0ce9e2, type: 3}
+    - {fileID: 5736516835863566217, guid: 5da45a64348225d4a9797f03eb1360b3, type: 3}
     minimumPoints: 120
   - tierName: Charger and Cone and Buff
     enemyPool:
@@ -57540,6 +57548,37 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: -1.1700001, z: 0}
   m_TimeToStationary: 0.5
+--- !u!1 &5059122211439645018
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8215193804555613440}
+  m_Layer: 0
+  m_Name: PotentialSpawn (6)
+  m_TagString: Untagged
+  m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8215193804555613440
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5059122211439645018}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.305, y: 1.3, z: -0.144}
+  m_LocalScale: {x: 0.32660088, y: 1, z: 0.40195444}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1318182272973406313}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5138697743865524575
 GameObject:
   m_ObjectHideFlags: 0
@@ -85334,6 +85373,37 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: -1.1700001, z: 0}
   m_TimeToStationary: 0.5
+--- !u!1 &8237032274000285006
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3233750752349961768}
+  m_Layer: 0
+  m_Name: PotentialSpawn (5)
+  m_TagString: Untagged
+  m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3233750752349961768
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8237032274000285006}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.1592, y: 1.3, z: -0.275}
+  m_LocalScale: {x: 0.32660088, y: 1, z: 0.40195444}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1318182272973406313}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8425114959041233260
 GameObject:
   m_ObjectHideFlags: 0
