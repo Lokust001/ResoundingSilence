@@ -1065,6 +1065,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7236322570925161113}
   - component: {fileID: 8988554487706284111}
+  - component: {fileID: 4470947134498793366}
   m_Layer: 7
   m_Name: Crossbow
   m_TagString: Untagged
@@ -1104,10 +1105,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CrossbowBehaviour
   ThisWeaponData: {fileID: 0}
   weaponDataID: 0
+  weaponModel: {fileID: 7187170942483594616}
   groundLayerMask:
     serializedVersion: 2
     m_Bits: 512
+  weaponAnimator: {fileID: 4470947134498793366}
+  attackAnimations:
+  - {fileID: 7400000, guid: e90138978acc5f241830b30f92ca801f, type: 2}
+  comboIndex: 0
   abilitySettings: 0
+  meleeHitboxes: []
   abilityOneReady: 1
   abilityOneCooldown: 3
   abilityOneEndLag: 0.5
@@ -1116,8 +1123,6 @@ MonoBehaviour:
   abilityTwoCooldown: 2
   abilityTwoEndLag: 0.5
   abilityTwoRange: 6
-  weaponProjectile: {fileID: 8805286060830696359, guid: f4083c9721c5aa04280c3f4b179ddf88, type: 3}
-  weaponModel: {fileID: 7187170942483594616}
   abilityOne: 1
   abilityTwo: 3
   splinterShotDamage: 13
@@ -1149,3 +1154,25 @@ MonoBehaviour:
   stakeShotTickCount: 10
   stakeShotDOTDuration: 3
   stakeShotPreview: {fileID: 417958859510438225}
+--- !u!95 &4470947134498793366
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8556073844088731136}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f88a6b92e574246489973c201a1021fc, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
