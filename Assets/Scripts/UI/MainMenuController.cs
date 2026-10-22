@@ -7,6 +7,7 @@
 */
 
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MainMenuController : MenuBase
 {
@@ -19,9 +20,8 @@ public class MainMenuController : MenuBase
     /// starts the game
     /// </summary>
     public void StartGame()
-    {
-        GenericPublicEvents.StartGamePressed?.Invoke();
-        UIPublicEvents.UpdateUIManagerStack?.Invoke(UiMenuType.PlayerHUD);
+    { 
+        UIPublicEvents.UpdateUIManagerStack?.Invoke(UiMenuType.Tarot);
     }
 
     /// <summary>

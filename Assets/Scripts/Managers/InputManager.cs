@@ -130,6 +130,8 @@ public class InputManager : BaseManager
 
         UIPublicEvents.UpgradeMenuOpened += SwapActionMapToUpgradeMenu;
         UIPublicEvents.UpgradeMenuClosed += SwapActionMapToMidRun;
+        UIPublicEvents.TarotMenuOpened += SwapActionMapToUpgradeMenu;
+        UIPublicEvents.TarotMenuClosed += SwapActionMapToMidRun;
         GenericPublicEvents.AllManagersInitialized += ThrowCurrentControlScheme;
     }
 
@@ -142,6 +144,8 @@ public class InputManager : BaseManager
         UIPublicEvents.UpgradeMenuOpened -= SwapActionMapToUpgradeMenu;
         UIPublicEvents.UpgradeMenuClosed -= SwapActionMapToMidRun;
         GenericPublicEvents.AllManagersInitialized -= ThrowCurrentControlScheme;
+        UIPublicEvents.TarotMenuOpened -= SwapActionMapToUpgradeMenu;
+        UIPublicEvents.TarotMenuClosed -= SwapActionMapToMidRun;
     }
 
 

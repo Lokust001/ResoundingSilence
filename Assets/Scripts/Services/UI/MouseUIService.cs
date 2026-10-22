@@ -57,6 +57,7 @@ public class MouseUIService : BaseService
         InputPublicEvents.MouseMoved += UpdateMousePos;
         InputPublicEvents.ShootPressed += Click;
         InputPublicEvents.SelectPin += Click;
+        UIPublicEvents.SelectSpecificClickable += ForceSelectTile;
     }
 
     /// <summary>
@@ -67,6 +68,7 @@ public class MouseUIService : BaseService
         InputPublicEvents.MouseMoved -= UpdateMousePos;
         InputPublicEvents.ShootPressed -= Click;
         InputPublicEvents.SelectPin -= Click;
+        UIPublicEvents.SelectSpecificClickable -= ForceSelectTile;
     }
 
     /// <summary>
@@ -79,6 +81,7 @@ public class MouseUIService : BaseService
             InputPublicEvents.MouseMoved -= UpdateMousePos;
             InputPublicEvents.ShootPressed -= Click;
             InputPublicEvents.SelectPin -= Click;
+            UIPublicEvents.SelectSpecificClickable -= ForceSelectTile;
         }
 
         InputPublicEvents.ControllerEnabled -= DisableMousePublicEvents;
@@ -142,5 +145,19 @@ public class MouseUIService : BaseService
         {
             previouslyHoveredObj.ClickedOn();
         }
+    }
+
+    /// <summary>
+    /// forcibly selects a specific tile
+    /// </summary>
+    /// <param name="clickableToSelect"></param>
+    private void ForceSelectTile(ControllerSupportedClickable clickableToSelect)
+    {
+        if (previouslyHoveredObj != null)
+        {
+            previouslyHoveredObj.UnHoveredOver();
+        }
+        previouslyHoveredObj = clickableToSelect;
+        previouslyHoveredObj.HoveredOver();
     }
 }
