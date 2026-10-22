@@ -492,6 +492,7 @@ public class BaseWeaponScriptable : BaseScriptableObject
         for(int i = 0; i < AttackCooldown.Count; i++)
         {
             AttackCooldown[i] = BaseAttackCooldown[i] * SpeedBoost;
+            AttackSpeed = AttackSpeed / SpeedBoost;
         }
     }
 
