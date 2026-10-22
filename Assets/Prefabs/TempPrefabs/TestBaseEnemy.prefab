@@ -17,7 +17,6 @@ GameObject:
   - component: {fileID: 1939381331358990405}
   - component: {fileID: 5338943625410773033}
   - component: {fileID: 428448680879319751}
-  - component: {fileID: 3481477254936452928}
   m_Layer: 10
   m_Name: TestBaseEnemy
   m_TagString: Untagged
@@ -213,21 +212,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 1
---- !u!114 &3481477254936452928
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6325128634737111795}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d64ddf4282f7884c83f3d814902098e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LootDrop
-  rollingMethod: 0
-  noDropsGivenWeight: 0
-  possibleDrops: []
 --- !u!1 &8564224598725686547
 GameObject:
   m_ObjectHideFlags: 0
