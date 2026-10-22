@@ -9,6 +9,7 @@
 
 using UnityEngine;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 public class StaticDataManager : BaseManager
 {
@@ -19,6 +20,12 @@ public class StaticDataManager : BaseManager
 
     [SerializeField]
     private List<GlyphScriptable> possibleGlyphs;
+
+    [SerializeField]
+    private List<TarotScriptable> tarotCardScriptables;
+
+    [HideInInspector]
+    public List<TarotScriptable> tarotCards;
 
     /// <summary>
     /// Initializes the manager
@@ -36,8 +43,23 @@ public class StaticDataManager : BaseManager
         {
             Destroy(this);
         }
+
+        await MakeTarots();
     }
 
+    /// <summary>
+    /// make copies of the tarot menus
+    /// </summary>
+    /// <returns></returns>
+    private async Awaitable MakeTarots()
+    {
+        for (int i = 0; i < tarotCardScriptables.Count; i++)
+        {
+            tarotCards.Add(tarotCardScriptables[i].CreateNonRefCopy<TarotScriptable>());
+        }
+        await Task.CompletedTask;
+    }
+ 
     #region Weapon Getters
 
     /// <summary>

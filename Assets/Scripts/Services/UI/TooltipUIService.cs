@@ -85,6 +85,15 @@ public class TooltipUIService : BaseService
             outputStr += $"{RequestPinAutoGenTooltip(pin)}";
         }
 
+        if (scriptableObject is TarotScriptable tarot)
+        {
+            if (!tarot.isUnlocked)
+            {
+                outputStr += tarot.LockedTooltip;
+                currentToolTipTextObject.text = outputStr;
+                return;
+            }
+        }
 
         outputStr += $"\n";
         if (scriptableObject.UsePresetTooltip)

@@ -196,6 +196,7 @@ public class MenuControllerSupportBase : MenuBase
         if (targetItem.Owner == target)
         {
             ReturnCarriedItemToInventory();
+            UIPublicEvents.SelectSpecificTile?.Invoke(target);
             PickUpItem(targetItem);
         }
         else
@@ -304,7 +305,6 @@ public class MenuControllerSupportBase : MenuBase
                 PlaceItemInTile(carriedItem, itemsPrevTile);
             }
         }
-
     }
 
     #endregion

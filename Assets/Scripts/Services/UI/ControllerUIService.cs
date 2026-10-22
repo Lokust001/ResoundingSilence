@@ -106,6 +106,7 @@ public class ControllerUIService : BaseService
         InputPublicEvents.SelectPin += ClickOnSelected;
         InputPublicEvents.PlayerAimed += MoveSelectedObject;
         InputPublicEvents.AimCancelled += PlayerStoppedMoving;
+        UIPublicEvents.SelectSpecificClickable += SelectSpecficTile;
     }
 
     /// <summary>
@@ -116,6 +117,7 @@ public class ControllerUIService : BaseService
         InputPublicEvents.SelectPin -= ClickOnSelected;
         InputPublicEvents.PlayerAimed -= MoveSelectedObject;
         InputPublicEvents.AimCancelled -= PlayerStoppedMoving;
+        UIPublicEvents.SelectSpecificClickable -= SelectSpecficTile;
     }
 
     #endregion
@@ -189,7 +191,14 @@ public class ControllerUIService : BaseService
         }
         else
         {
-            EventSystem.current.SetSelectedGameObject(defaultSelectedButton);
+            EventSystem current = EventSystem.current;
+
+            current.enabled = false;
+            current.sendNavigationEvents = false;
+            current.SetSelectedGameObject(null);
+            current.SetSelectedGameObject(defaultSelectedButton);
+            current.sendNavigationEvents = true;
+            current.enabled = true;
         }
     }
 
