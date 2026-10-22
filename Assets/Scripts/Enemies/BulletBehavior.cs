@@ -13,6 +13,8 @@ public class BulletBehavior : MonoBehaviour
 
 	const float NINETY_DEGREES_ROTATION = 90f;
 
+	private int attackDamage;
+
 	/// <summary>
 	/// Initialize the bullet's velocity & rotation, then start its aging
 	/// </summary>
@@ -21,8 +23,9 @@ public class BulletBehavior : MonoBehaviour
 	/// <param name="bLifetime"></param>
 	/// <param name="startPos"></param>
 	/// <returns></returns>
-	public BulletBehavior Init(Vector3 bVelocity, float bulletSpeed, float bLifetime, Vector3 startPos) 
+	public BulletBehavior Init(Vector3 bVelocity, float bulletSpeed, float bLifetime, Vector3 startPos, int attackDamage) 
 	{
+		this.attackDamage = attackDamage;
 		bVelocity.y = 0;
 
         GetComponent<Rigidbody>().linearVelocity = bVelocity * bulletSpeed;
@@ -55,7 +58,7 @@ public class BulletBehavior : MonoBehaviour
     {
 		if (collision.gameObject.TryGetComponent<PlayerController>(out PlayerController playerController)) 
 		{
-			playerController.TakeDamage();
+			playerController.TakeDamage(attackDamage);
 			Destroy(gameObject);
 		}
     }

@@ -123,7 +123,7 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
                 pushDirection.y = 0;
                 pushDirection = pushDirection.normalized * enemyData.playerHitKnockbackDistance;
 
-                player.TakeDamage((pushDirection, enemyData.playerHitKnockbackDuration));
+                player.TakeDamage(enemyData.enemyATKDmg, (pushDirection, enemyData.playerHitKnockbackDuration));
             }
         }
     }

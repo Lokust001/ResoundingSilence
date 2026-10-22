@@ -129,10 +129,7 @@ public class MouseUIService : BaseService
             }
         }
         
-        //unhover over the previously held clickable if its different from what youre hovering over now
-        
-
-        
+        //unhover over the previously held clickable if its different from what youre hovering over now 
     }
 
     /// <summary>
@@ -141,7 +138,7 @@ public class MouseUIService : BaseService
     private void Click()
     {
         //click on the object you have rn
-        if (previouslyHoveredObj != null)
+        if (previouslyHoveredObj != null && previouslyHoveredObj.isActiveAndEnabled)
         {
             previouslyHoveredObj.ClickedOn();
         }
