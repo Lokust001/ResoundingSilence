@@ -12,6 +12,11 @@ using UnityEngine.UI;
 public class TarotItemBehavior : CarriedItemBehavior
 {
     public TarotScriptable data;
+
+    /// <summary>
+    /// Sets the data in this item
+    /// </summary>
+    /// <param name="scriptable"></param>
     public void SetTarotData(TarotScriptable scriptable)
     {
         data = scriptable;
@@ -27,6 +32,9 @@ public class TarotItemBehavior : CarriedItemBehavior
         TooltipUIService.Instance.RequestTooltip(data);
     }
 
+    /// <summary>
+    /// Clicks on the pin if this is unlocked
+    /// </summary>
     public override void ClickedOn()
     {
         if (data.isUnlocked)

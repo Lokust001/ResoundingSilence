@@ -131,4 +131,17 @@ public class TarotCardHolder : ItemHolderSlot
 
         return neighbors;
     }
+
+    /// <summary>
+    /// unequips the card if its not an inventory card
+    /// </summary>
+    public override void UnequipItem()
+    {
+        base.UnequipItem();
+        if (ownedCard == null)
+        {
+            heldItem = null;
+        }
+        
+    }
 }

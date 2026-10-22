@@ -20,6 +20,8 @@ public static class UIPublicEvents
 
     public static Action CurrentMenuClosed;
 
+    public static Action<ControllerSupportedClickable> SelectSpecificClickable;
+
     #region UpgradeMenu
 
     public static Action UpgradeMenuOpened;

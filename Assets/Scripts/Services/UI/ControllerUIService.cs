@@ -106,6 +106,7 @@ public class ControllerUIService : BaseService
         InputPublicEvents.SelectPin += ClickOnSelected;
         InputPublicEvents.PlayerAimed += MoveSelectedObject;
         InputPublicEvents.AimCancelled += PlayerStoppedMoving;
+        UIPublicEvents.SelectSpecificClickable += SelectSpecficTile;
     }
 
     /// <summary>
@@ -116,6 +117,7 @@ public class ControllerUIService : BaseService
         InputPublicEvents.SelectPin -= ClickOnSelected;
         InputPublicEvents.PlayerAimed -= MoveSelectedObject;
         InputPublicEvents.AimCancelled -= PlayerStoppedMoving;
+        UIPublicEvents.SelectSpecificClickable -= SelectSpecficTile;
     }
 
     #endregion

@@ -553,7 +553,7 @@ public class UpgradeMenuController : MenuControllerSupportBase
     public void SelectGridItem(ControllerSupportedClickable gridItem)
     {
         prevSelectedGridSlot = gridItem;
-        ControllerUIService.Instance.SelectSpecficTile(gridItem);
+        UIPublicEvents.SelectSpecificClickable?.Invoke(gridItem);
     }
 
     /// <summary>
@@ -616,7 +616,7 @@ public class UpgradeMenuController : MenuControllerSupportBase
     public void SelectInventoryItem(ControllerSupportedClickable inventoryItem)
     {
         prevSelectedInventorySlot = inventoryItem;
-        ControllerUIService.Instance.SelectSpecficTile(inventoryItem);
+        UIPublicEvents.SelectSpecificClickable?.Invoke(inventoryItem);
     }
 
     #endregion
@@ -662,7 +662,7 @@ public class UpgradeMenuController : MenuControllerSupportBase
     public void SelectTarotCard(ControllerSupportedClickable tarotCard)
     {
         prevSelectedTarotCard = tarotCard;
-        ControllerUIService.Instance.SelectSpecficTile(tarotCard);
+        UIPublicEvents.SelectSpecificClickable?.Invoke(tarotCard);
     }
 
     #endregion

@@ -62,6 +62,7 @@ public class TarotCardController : MenuControllerSupportBase
     /// <exception cref="System.Exception"></exception>
     private void PopulateInventory()
     {
+        int count = 0;
         foreach (TarotScriptable tarot in StaticDataManager.Instance.tarotCards)
         {
             //if the inventory already has a copy of the tarot card, skip to the next loop
@@ -78,10 +79,12 @@ public class TarotCardController : MenuControllerSupportBase
             }
 
             TarotItemBehavior tarotItem = Instantiate(tarotItemPrefab, nextAvailableHolder.transform);
+            tarotItem.name = $"{count}";
             nextAvailableHolder.InitSlot(tarotItem);
             tarotItem.InitItem(nextAvailableHolder);
             tarotItem.SetTarotData(tarot);
             nextAvailableHolder.SetInventorySlot(tarot);
+            count++;
         }
     }
 
@@ -119,7 +122,7 @@ public class TarotCardController : MenuControllerSupportBase
     /// </summary>
     public override void SelectDefault()
     {
-        ControllerUIService.Instance.SelectSpecficTile(tarotInventorySlots[0]);
+        UIPublicEvents.SelectSpecificClickable?.Invoke(tarotInventorySlots[0]);
         SwapCurrentFocus(focus.Inventory);
         prevSelectedInventory = ControllerUIService.Instance.currentlySelected as TarotCardHolder;
     }
@@ -132,6 +135,7 @@ public class TarotCardController : MenuControllerSupportBase
         base.SetUpPublicEvents();
 
         InputPublicEvents.SwapFocusToGrid += SwapFocusInputWrapper;
+        UIPublicEvents.SelectSpecificTile += SelectSpecificItem;
     }
 
     /// <summary>
@@ -142,6 +146,7 @@ public class TarotCardController : MenuControllerSupportBase
         base.TearDownPublicEvents();
 
         InputPublicEvents.SwapFocusToGrid -= SwapFocusInputWrapper;
+        UIPublicEvents.SelectSpecificTile -= SelectSpecificItem;
     }
 
     /// <summary>
@@ -199,7 +204,7 @@ public class TarotCardController : MenuControllerSupportBase
             }
             if (currentFocus == focus.EquippedSlots && (0 < direction && direction < 5))
             {
-                ControllerUIService.Instance.SelectSpecficTile(readyButton);
+                UIPublicEvents.SelectSpecificClickable?.Invoke(readyButton);
                 return;
             }
 
@@ -211,7 +216,7 @@ public class TarotCardController : MenuControllerSupportBase
 
             if (currentFocus == focus.Inventory && direction == 0)
             {
-                ControllerUIService.Instance.SelectSpecficTile(backButton);
+                UIPublicEvents.SelectSpecificClickable?.Invoke(backButton);
                 return;
             }
 
@@ -220,12 +225,12 @@ public class TarotCardController : MenuControllerSupportBase
 
         if (target is not TarotCardHolder)
         {
-            ControllerUIService.Instance.SelectSpecficTile(target);
+            UIPublicEvents.SelectSpecificClickable?.Invoke(target);
             return;
         }
 
         TarotCardHolder slot = target as TarotCardHolder;
-        ControllerUIService.Instance.SelectSpecficTile(target);
+        UIPublicEvents.SelectSpecificClickable?.Invoke(target);
         if (slot.ownedCard != null)
         {
             prevSelectedInventory = slot;
@@ -259,7 +264,7 @@ public class TarotCardController : MenuControllerSupportBase
                 {
                     prevSelectedInventory = tarotInventorySlots[0];
                 }
-                ControllerUIService.Instance.SelectSpecficTile(prevSelectedInventory);
+                UIPublicEvents.SelectSpecificClickable?.Invoke(prevSelectedInventory);
                 SwapCurrentFocus(focus.Inventory);
 
                 break;
@@ -269,7 +274,7 @@ public class TarotCardController : MenuControllerSupportBase
                 {
                     prevSelectedEquipped = equippedSlots[0];
                 }
-                ControllerUIService.Instance.SelectSpecficTile(prevSelectedEquipped);
+                UIPublicEvents.SelectSpecificClickable?.Invoke(prevSelectedEquipped);
                 SwapCurrentFocus(focus.EquippedSlots);
                 break;
             default:
@@ -291,5 +296,27 @@ public class TarotCardController : MenuControllerSupportBase
             }
         }
         base.PickUpItem(item);
+    }
+
+    /// <summary>
+    /// selects a specific on the menu
+    /// </summary>
+    /// <param name="item"></param>
+    private void SelectSpecificItem(ControllerSupportedClickable item)
+    {
+        if (item is TarotCardHolder tarot)
+        {
+            if (tarot.ownedCard == null)
+            {
+                prevSelectedEquipped = tarot;
+                SelectDefaultItemInFocus(focus.EquippedSlots);
+            }
+            else
+            {
+                prevSelectedInventory = tarot;
+                SelectDefaultItemInFocus(focus.Inventory);
+            }
+        }
+        
     }
 }
