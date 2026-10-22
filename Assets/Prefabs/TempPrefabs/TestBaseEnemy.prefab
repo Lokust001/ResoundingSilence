@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6106803298587227888}
   - component: {fileID: 2314649253543611431}
   - component: {fileID: 8424250619371523661}
+  - component: {fileID: 6097337471712976449}
   - component: {fileID: 2326147083794828989}
   - component: {fileID: 1939381331358990405}
   - component: {fileID: 5338943625410773033}
@@ -112,6 +113,21 @@ MonoBehaviour:
   testWithoutSpawner: 0
   enemyData: {fileID: 0}
   dmgToTake: 10
+--- !u!114 &6097337471712976449
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6325128634737111795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d64ddf4282f7884c83f3d814902098e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  rollingMethod: 0
+  noDropsGivenWeight: 10
+  possibleDrops: []
 --- !u!114 &2326147083794828989
 MonoBehaviour:
   m_ObjectHideFlags: 0
