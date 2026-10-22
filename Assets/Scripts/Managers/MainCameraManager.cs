@@ -1,13 +1,14 @@
 /*
 * Author: Tyler
-* Contributors:
-* Last Modified: 10/7/2026
+* Contributors: Brenden
+* Last Modified: 10/22/2026
 * Summary: This service controls the main camera
 * To Do:   N/A
 */
 
 using System.Collections;
 using System.Threading.Tasks;
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class MainCameraManager : BaseManager
@@ -16,7 +17,10 @@ public class MainCameraManager : BaseManager
 
     [SerializeField]
     private Camera mainCam;
+    [SerializeField]
+    private CinemachineCamera FollowPlayercinemachine;
     [HideInInspector] public Camera camInstance;
+    [HideInInspector] public CinemachineCamera followPlayerCinemachineInstance;
     
     [HideInInspector] public Vector3 CamOffset;
 
@@ -52,7 +56,8 @@ public class MainCameraManager : BaseManager
     private async Awaitable SpawnCamera()
     {
         camInstance = Instantiate(mainCam, transform);
-        CamOffset = camInstance.transform.localPosition;
+        followPlayerCinemachineInstance = Instantiate(FollowPlayercinemachine, transform).GetComponent<CinemachineCamera>(); ;
+        CamOffset = followPlayerCinemachineInstance.transform.localPosition;
 
         if (AppManager.Instance.EnableTestingMode && FindAnyObjectByType<PlayerController>() != null)
         {
@@ -110,7 +115,7 @@ public class MainCameraManager : BaseManager
         FollowPlayer = true;
         while (FollowPlayer)
         {
-            camInstance.transform.position = player.position + CamOffset;
+            followPlayerCinemachineInstance.transform.position = player.position + CamOffset;
             yield return null;
         }
     }

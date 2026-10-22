@@ -7,9 +7,7 @@ public class DetachCamera : MonoBehaviour
     Vector2 inputs;
     int rise;
 
-    public MainCameraManager CameraManager;
     public GameObject camera;
-    public Transform cameraLookOffset;
     [SerializeField] float speed;
 
     private Coroutine CameraPivotInstance;
@@ -130,15 +128,10 @@ public class DetachCamera : MonoBehaviour
     {
         if (camera == null)
         {
-            camera = CameraManager.camInstance.gameObject;
-        }
-        if (cameraLookOffset == null)
-        {
-            cameraLookOffset = GameObject.Find("CameraLookOffset").transform;
+            camera = MainCameraManager.Instance.followPlayerCinemachineInstance.gameObject;
         }
         if (isActive)
         {
-            Vector3 current = CameraManager.CamOffset;
             camera.transform.position = camera.transform.position + (new Vector3(moveDirection.x, rise, moveDirection.y) * speed);
         }
     }

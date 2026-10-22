@@ -130,7 +130,7 @@ public class PivotCamera : MonoBehaviour
     {
         if (camera == null)
         {
-            camera = CameraManager.camInstance.gameObject;
+            camera = CameraManager.followPlayerCinemachineInstance.gameObject;
         }
         if (cameraLookOffset == null)
         {

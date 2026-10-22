@@ -92,6 +92,10 @@ public class DebugConsole : MonoBehaviour
         {
             PivotInstance = FindAnyObjectByType<PivotCamera>();
         }
+        if (DetachInstance == null)
+        {
+            DetachInstance = FindAnyObjectByType<DetachCamera>();
+        }
         ClearConsole();
     }
 
@@ -294,8 +298,16 @@ public class DebugConsole : MonoBehaviour
         if(Command.StartsWith("pivotcam") || Command.StartsWith("pc"))
         {
             pivotToggle = !pivotToggle;
-            //playerInstance.pivot = pivotToggle;
+            playerInstance.MoveActive = !pivotToggle;
             PivotInstance.isActive = pivotToggle;
+            if (pivotToggle)
+            {
+                playerInstance.StopPlayerMovementAndInput();
+            }
+            else
+            {
+                playerInstance.RestartPlayerMovementAndInput();
+            }
             AppendConsoleLine(Command, inputColor);
             AppendConsoleLine($"Pivot command: {pivotToggle}", commandCompletedColor);
             FinishCommand();
@@ -305,15 +317,17 @@ public class DebugConsole : MonoBehaviour
         if (Command.StartsWith("detachcam") || Command.StartsWith("dc"))
         {
             detachToggle = !detachToggle;
-            if(detachToggle)
+            if (detachToggle)
             {
                 MainCameraManager.Instance.stopFollow();
                 DetachInstance.isActive = true;
+                playerInstance.StopPlayerMovementAndInput();
             }
             else
             {
                 MainCameraManager.Instance.startFollow();
                 DetachInstance.isActive = false;
+                playerInstance.RestartPlayerMovementAndInput();
             }
             AppendConsoleLine(Command, inputColor);
             AppendConsoleLine($"Detach command: {detachToggle}", commandCompletedColor);
