@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour
 
     public bool InGodMode;
 
+    public bool MoveActive = true;
     #endregion
 
     #region Private Variables
@@ -244,7 +245,7 @@ public class PlayerController : MonoBehaviour
     /// <returns></returns>
     private IEnumerator MovePlayerCoroutine() 
     {
-        while (true) 
+        while (MoveActive) 
         {
             //Propagate calculated velocity to rigidbody & make player move
             rigidbody.linearVelocity = new Vector3(playerVelocity.x * moveSpeed, rigidbody.linearVelocity.y, playerVelocity.z * moveSpeed);
