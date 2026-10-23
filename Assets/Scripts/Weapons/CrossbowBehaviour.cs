@@ -8,6 +8,7 @@
 using UnityEngine;
 using NaughtyAttributes;
 using System.Collections;
+using System.Collections.Generic;
 
 public class CrossbowBehaviour : BaseWeaponBehaviour
 {
@@ -402,12 +403,10 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
         int remainderDamage = splinterShotDamage % splinterShotTotalDamageTicks;
         for(int i = 0; i < splinterShotTotalDamageTicks; ++i)
         {
-            if(i + 1 == splinterShotTotalDamageTicks)
-            {
-                tickDamage += remainderDamage;
-            }
+            tickDamage = i + 1 < stakeShotTickCount ? tickDamage : tickDamage + remainderDamage;
+
             Collider[] enemiesToHit = Physics.OverlapCapsule(tempAbility.transform.position + Vector3.up, tempAbility.transform.position,
-                    tempAbility.GetComponent<CapsuleCollider>().radius, splinterShotLayerMask);
+                    tempAbility.GetComponent<CapsuleCollider>().radius * tempAbility.transform.localScale.x, splinterShotLayerMask);
 
             foreach(Collider enemyCollider in enemiesToHit)
             {
@@ -473,7 +472,7 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
                 int healValue = Mathf.CeilToInt(scatterShotDamage * ConvertToPercentage(scatterShotLifeSteal));
 
                 //TODO Replace with heal player
-                FindAnyObjectByType<DummyPlayerBehaviour>().Heal(healValue);
+                //FindAnyObjectByType<DummyPlayerBehaviour>().Heal(healValue);
             }
         }
     }
@@ -490,8 +489,15 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
         //Stores the remainder damage in case the damage doesn't divide evenly
         int remainderDamage = stakeShotDamage % stakeShotTickCount;
 
+        List<Collider> stillAlive = new List<Collider>(enemiesHit);
+
         for (int i = 0; i < stakeShotTickCount; ++i)
         {
+            tickDamage = i + 1 < stakeShotTickCount ? tickDamage : tickDamage + remainderDamage;
+
+            enemiesHit = stillAlive.ToArray();
+            stillAlive.Clear();
+
             foreach (Collider enemyCollider in enemiesHit)
             {
                 if (enemyCollider.GetComponent<Enemy>())
@@ -502,7 +508,14 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
                     int healValue = Mathf.CeilToInt(tickDamage * ConvertToPercentage(scatterShotLifeSteal));
 
                     //TODO Replace with heal player
-                    FindAnyObjectByType<DummyPlayerBehaviour>().Heal(healValue);
+                    //FindAnyObjectByType<DummyPlayerBehaviour>().Heal(healValue);
+                }
+
+                yield return new WaitForFixedUpdate();
+
+                if(enemyCollider != null)
+                {
+                    stillAlive.Add(enemyCollider);
                 }
             }
 
