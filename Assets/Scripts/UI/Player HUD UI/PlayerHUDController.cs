@@ -138,6 +138,10 @@ public class PlayerHUDController : MenuBase
         StartCoroutine(PlayerHealthAnimation());
     }
 
+    /// <summary>
+    /// Runs the player's health bar animation
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator PlayerHealthAnimation()
     {
         float timer = 0.0f;
