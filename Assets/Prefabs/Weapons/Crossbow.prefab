@@ -1113,7 +1113,7 @@ MonoBehaviour:
   attackAnimations:
   - {fileID: 7400000, guid: e90138978acc5f241830b30f92ca801f, type: 2}
   comboIndex: 0
-  abilitySettings: 0
+  abilitySettings: 1
   meleeHitboxes: []
   abilityOneReady: 1
   abilityOneCooldown: 3
@@ -1124,7 +1124,7 @@ MonoBehaviour:
   abilityTwoEndLag: 0.5
   abilityTwoRange: 6
   abilityOne: 1
-  abilityTwo: 3
+  abilityTwo: 2
   splinterShotDamage: 13
   splinterShotAOESize: 3
   splinterShotTotalDamageTicks: 5
@@ -1133,17 +1133,17 @@ MonoBehaviour:
   splinterShotLayerMask:
     serializedVersion: 2
     m_Bits: 1025
-  bombBlastDamage: 3
-  bombBlastAOESize: 2
-  bombBlastDetTime: 1
-  playerLaunchDistance: 6
-  enemyLaunchDistance: 3
+  bombBlastDamage: 50
+  bombBlastAOESize: 20
+  bombBlastDetTime: 0.5
+  playerLaunchDistance: 20
+  enemyLaunchDistance: 20
   bombBlastPreview: {fileID: 7347509225486067769}
   bombBlastLayerMask:
     serializedVersion: 2
     m_Bits: 1089
-  scatterShotDamage: 5
-  scatterShotCone: 2
+  scatterShotDamage: 50
+  scatterShotCone: 4
   scatterShotLifeSteal: 10
   scatterShotPreview: {fileID: 5277897699482532973}
   scatterShotLayerMask:
