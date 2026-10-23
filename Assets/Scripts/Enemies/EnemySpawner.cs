@@ -14,6 +14,8 @@ public class EnemySpawner : MonoBehaviour
 {
 
     private int dangerPoints;
+    [SerializeField]
+    private LayerMask spawningTriggerLayer;
 
     [SerializeField]
     private int pointsPerSecondPassed;
@@ -27,14 +29,17 @@ public class EnemySpawner : MonoBehaviour
 
     private bool generationReadyFlag;
 
-    [SerializeField]
-    List<Transform> spawnLocations;
+    
 
     [SerializeField]
     SpawnTier[] enemyGroupTiers;
 
+
     [Header("[Debug] Don't edit these fields"), SerializeField]
     List<Enemy> generatedEnemies;
+
+    [SerializeField]
+    List<Transform> spawnLocations;
 
     /// <summary>
     /// Instantiates generatedEnemies so that it isn't null and allows the first generation to happen
@@ -56,12 +61,12 @@ public class EnemySpawner : MonoBehaviour
     /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
-        //If there is ONLY a PlayerController in the parent object and not the current object
-        //(which prevents the player model from double activation)
-        if (other.GetComponentInParent<PlayerController>() != null && other.GetComponent<PlayerController>() == null)
+        //Checks if there is a PlayerController in the parent object
+        if (other.GetComponentInParent<PlayerController>())
         {
             SpawnEnemies();
         }
+        
     }
 
     /// <summary>
@@ -70,7 +75,7 @@ public class EnemySpawner : MonoBehaviour
     /// <param name="other"></param>
     private void OnTriggerExit(Collider other)
     {
-        if (other.GetComponentInParent<PlayerController>() != null && other.GetComponent<PlayerController>() == null)
+        if (other.GetComponentInParent<PlayerController>())
         {
             DespawnEnemies();
         }
