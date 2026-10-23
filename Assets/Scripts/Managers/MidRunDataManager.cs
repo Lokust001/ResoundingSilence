@@ -9,6 +9,7 @@
 using System.Collections.Generic;
 using NaughtyAttributes;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class MidRunDataManager : BaseManager
 {
@@ -31,6 +32,9 @@ public class MidRunDataManager : BaseManager
 
     [ShowIf(nameof(settings), Settings.General)]
     public int Money;
+
+    [SerializeField]
+    private GameObject tempDeathMenu;
 
     [ShowIf(nameof(settings), Settings.Health)]
     public float CurrentPlayerHealth;
@@ -209,7 +213,9 @@ public class MidRunDataManager : BaseManager
 
         if (CurrentPlayerHealth <= 0)
         {
-            Debug.Log("PlayerDied");
+            Instantiate(tempDeathMenu, UIManager.Instance.GetMainCanvas().transform);
+            InputManager.Instance.DisablePlayerInputs();
+            Time.timeScale = 0f;
         }
 
         UIPublicEvents.UpdatePlayerHealthSlider?.Invoke();

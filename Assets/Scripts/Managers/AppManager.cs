@@ -16,7 +16,7 @@ public class AppManager : MonoBehaviour
 {
     [SerializeField]
     private List<BaseManager> managers = new List<BaseManager>();
-    private List<BaseManager> initializedManagers = new List<BaseManager>();
+    public List<BaseManager> initializedManagers = new List<BaseManager>();
 
     public static AppManager Instance;
 
@@ -47,7 +47,7 @@ public class AppManager : MonoBehaviour
             throw new System.Exception("Failed to initialize");
         }
 
-        
+        Time.timeScale = 1.0f;
     }
 
     /// <summary>
