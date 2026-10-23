@@ -7,6 +7,7 @@
 */
 
 using NaughtyAttributes;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,6 +23,7 @@ public class PlayerHUDController : MenuBase
         Testing
     }
 
+    [SerializeField]
     private Settings settings;
 
     [SerializeField, ShowIf(nameof(settings), Settings.Cooldown)]
@@ -29,6 +31,12 @@ public class PlayerHUDController : MenuBase
 
     [SerializeField, ShowIf(nameof(settings), Settings.HealthBar)]
     private Image healthBarSlider;
+
+    [SerializeField, ShowIf(nameof(settings), Settings.HealthBar)]
+    private AnimationCurve healthBarAnimation;
+
+    [SerializeField, ShowIf(nameof(settings), Settings.HealthBar)]
+    private float AnimationTime = 1.0f;
 
     [SerializeField, ShowIf(nameof(settings), Settings.EXPBar)]
     private Image expBarSlider;
@@ -50,7 +58,7 @@ public class PlayerHUDController : MenuBase
     [Button("Testing Take one damage")]
     private void TakeOneDamage()
     {
-        MidRunDataManager.Instance.ChangePlayerHealth(-1);
+        MidRunDataManager.Instance.ChangePlayerHealth(-10);
     }
 
     [Button("Testing gain one exp")]
@@ -58,7 +66,6 @@ public class PlayerHUDController : MenuBase
     {
         MidRunDataManager.Instance.GainXP(1);
     }
-
 
     protected override void SetUpPublicEvents()
     {
@@ -126,8 +133,26 @@ public class PlayerHUDController : MenuBase
     private void UpdatePlayerHealthBarValue()
     {
 
-        //add animation
-        healthBarSlider.fillAmount = MidRunDataManager.Instance.CurrentPlayerHealth / MidRunDataManager.Instance.MaxPlayerHealth;
+        
+        //healthBarSlider.fillAmount = MidRunDataManager.Instance.CurrentPlayerHealth / MidRunDataManager.Instance.MaxPlayerHealth;
+        StartCoroutine(PlayerHealthAnimation());
+    }
+
+    private IEnumerator PlayerHealthAnimation()
+    {
+        float timer = 0.0f;
+        float currentHealthPercentage = healthBarSlider.fillAmount;
+        float targetHealthPercentage = MidRunDataManager.Instance.CurrentPlayerHealth / MidRunDataManager.Instance.MaxPlayerHealth;
+        
+
+        while (timer < AnimationTime)
+        {
+            yield return null;
+            
+            healthBarSlider.fillAmount = Mathf.Lerp(targetHealthPercentage, currentHealthPercentage, healthBarAnimation.Evaluate(timer / AnimationTime));
+            
+            timer += Time.deltaTime;
+        }
     }
 
     /// <summary>
