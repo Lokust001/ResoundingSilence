@@ -147,6 +147,7 @@ MonoBehaviour:
   defaultSpeed: 10
   moveSpeed: 10
   playerHealth: 10
+  currentXP: 0
   playerDamage: 5
   invincibilityLayerNamesToIgnore:
   - Enemies
@@ -162,6 +163,7 @@ MonoBehaviour:
     m_Bits: 7168
   healingPotency: 0
   InGodMode: 0
+  MoveActive: 1
   canDash: 0
   chainDashing: 0
   meleeRangeTrigger: {fileID: 6671346383346383798}
@@ -227,7 +229,7 @@ GameObject:
   - component: {fileID: 2792971860458361871}
   - component: {fileID: 265129432331814212}
   - component: {fileID: 6671346383346383798}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MeleeArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -294,7 +296,7 @@ GameObject:
   - component: {fileID: 4597244977887869256}
   - component: {fileID: 7893032319778801210}
   - component: {fileID: 2137933208230713367}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: RangedArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}

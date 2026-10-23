@@ -13,25 +13,25 @@ using UnityEngine.UI;
 
 public class PlayerHUDController : MenuBase
 {
-    [SerializeField]
+    private enum Settings
+    {
+        None,
+        HealthBar,
+        EXPBar,
+        Cooldown,
+        Testing
+    }
+
+    private Settings settings;
+
+    [SerializeField, ShowIf(nameof(settings), Settings.Cooldown)]
     private List<CooldownUIController> cooldownUIElements;
 
-    [SerializeField]
+    [SerializeField, ShowIf(nameof(settings), Settings.HealthBar)]
     private Image healthBarSlider;
 
-    [SerializeField]
+    [SerializeField, ShowIf(nameof(settings), Settings.EXPBar)]
     private Image expBarSlider;
-
-    [SerializeField]
-    private float maxHealthValue = 5;
-
-    [SerializeField]
-    private float maxEXPValue = 5;
-
-    private float currentPlayerExp;
-
-    [SerializeField]
-    private float currentPlayerHealth;
 
     #region TESTING
 
@@ -50,42 +50,36 @@ public class PlayerHUDController : MenuBase
     [Button("Testing Take one damage")]
     private void TakeOneDamage()
     {
-        currentPlayerHealth--;
-        UpdatePlayerHealthBarValue(currentPlayerHealth);
+        MidRunDataManager.Instance.ChangePlayerHealth(-1);
     }
 
     [Button("Testing gain one exp")]
     private void GainOneExp()
     {
-        currentPlayerExp++;
-        UpdatePlayerEXPBarValue(currentPlayerExp);
+        MidRunDataManager.Instance.GainXP(1);
     }
 
-    /// <summary>
-    /// subscribes to the needed public events
-    /// </summary>
-    private void Awake()
+
+    protected override void SetUpPublicEvents()
     {
+        base.SetUpPublicEvents();
         InputPublicEvents.AbilityOnePressed += Ability1Wrapper;
         InputPublicEvents.AbilityTwoPressed += Ability2Wrapper;
         InputPublicEvents.InteractPressed += DashWrapper;
         InputPublicEvents.ShootPressed += ImmediatelyRefreshAllCooldowns;
-
-        currentPlayerHealth = maxHealthValue;
-        currentPlayerExp = 0;
+        UIPublicEvents.UpdatePlayerHealthSlider += UpdatePlayerHealthBarValue;
+        UIPublicEvents.UpdatePlayerEXPSlider += UpdatePlayerEXPBarValue;
     }
 
-    /// <summary>
-    /// unsubscribes from the public events
-    /// </summary>
-    protected override void OnDestroy()
+    protected override void TearDownPublicEvents()
     {
+        base.TearDownPublicEvents();
         InputPublicEvents.AbilityOnePressed -= Ability1Wrapper;
         InputPublicEvents.AbilityTwoPressed -= Ability2Wrapper;
         InputPublicEvents.InteractPressed -= DashWrapper;
         InputPublicEvents.ShootPressed -= ImmediatelyRefreshAllCooldowns;
-        base.OnDestroy();
-
+        UIPublicEvents.UpdatePlayerHealthSlider -= UpdatePlayerHealthBarValue;
+        UIPublicEvents.UpdatePlayerEXPSlider -= UpdatePlayerEXPBarValue;
     }
 
     #region Testing
@@ -129,14 +123,11 @@ public class PlayerHUDController : MenuBase
     /// </summary>
     /// <param name="currentHealth">the current health value</param>
     /// <param name="MaxHealth">the max health value - only enter it if the player's max health changes</param>
-    private void UpdatePlayerHealthBarValue(float currentHealth, float MaxHealth = -1)
+    private void UpdatePlayerHealthBarValue()
     {
-        if (MaxHealth >= 0)
-        {
-            maxHealthValue = MaxHealth;
-        }
 
-        healthBarSlider.fillAmount = currentHealth / maxHealthValue;
+        //add animation
+        healthBarSlider.fillAmount = MidRunDataManager.Instance.CurrentPlayerHealth / MidRunDataManager.Instance.MaxPlayerHealth;
     }
 
     /// <summary>
@@ -144,14 +135,10 @@ public class PlayerHUDController : MenuBase
     /// </summary>
     /// <param name="currentExp"></param>
     /// <param name="maxExp"></param>
-    private void UpdatePlayerEXPBarValue(float currentExp, float maxExp = -1)
+    private void UpdatePlayerEXPBarValue()
     {
-        if (maxExp >= 0)
-        {
-            maxEXPValue = maxExp;
-        }
-
-        expBarSlider.fillAmount = currentExp / maxEXPValue;
+        //add animation
+        expBarSlider.fillAmount = MidRunDataManager.Instance.CurrentPlayerEXP / MidRunDataManager.Instance.ExpNeededToLevelUp;
     }
     #endregion
     #endregion

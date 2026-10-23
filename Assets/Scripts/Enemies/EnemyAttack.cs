@@ -76,7 +76,7 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
     /// <param name="other"></param>
     private void HandleVariousAttackTriggers(PlayerController player) 
     {
-        player.TakeDamage();
+        player.TakeDamage(enemyData.enemyATKDmg);
     }
 
     /// <summary>
@@ -162,7 +162,7 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
         Vector3 bulletTravelDirection = bulletRotation * (isSingleShot ? CalculateBulletDirection() : fireBulletDirection);
 
         //Instantiate bullet with the direction, travelspeed, lifetime, and give it the enemy position (can be changed later)
-        Instantiate(attackProjectilePrefab).GetComponentInChildren<BulletBehavior>().Init(bulletTravelDirection, enemyData.bulletTravelSpeed, enemyData.bulletLife, transform.position);
+        Instantiate(attackProjectilePrefab).GetComponentInChildren<BulletBehavior>().Init(bulletTravelDirection, enemyData.bulletTravelSpeed, enemyData.bulletLife, transform.position, enemyData.enemyATKDmg);
     }
     /// <summary>
     /// Helper method to provide the Vector3 direction that the player is at
