@@ -1,7 +1,7 @@
 /******************************************************************************
  * Author: Brad Dixon
  * Contributors:
- * Last Modified: 10/21/2026
+ * Last Modified: 10/23/2026
  * Brief: Handles the crossbow's basic attacks and abilities.
  * TODO: In the inspector, update the layer masks to include enemy layers
  * ***************************************************************************/
@@ -310,6 +310,9 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
     /// </summary>
     private void BombBlastPreview()
     {
+        bombBlastPreview.transform.localScale = new Vector3(bombBlastAOESize,
+            bombBlastPreview.transform.localScale.y, bombBlastAOESize);
+
         float abilityRange = abilityOne == Abilities.BombBlast ? abilityOneRange : abilityTwoRange;
 
         float staticY = bombBlastPreview.transform.position.y;
@@ -356,18 +359,6 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
-
-        //if (UIManager.Instance.CurrentlyInFullscreenMenu())
-        //{
-        //    return;
-        //}
-
-        //Vector3 lookDir = mousePos;
-        //Quaternion rot = Quaternion.RotateTowards(weaponModel.transform.rotation,
-        //    Quaternion.LookRotation(lookDir), 20f);
-        //rot.x = 0;
-        //rot.z = 0;
-        //weaponModel.transform.rotation = rot;
 
         SplinterShotPreview();
         BombBlastPreview();
@@ -420,10 +411,10 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
 
             foreach(Collider enemyCollider in enemiesToHit)
             {
-                if (enemyCollider.GetComponent<DummyBehaviour>())
+                if (enemyCollider.GetComponent<Enemy>())
                 {
                     //replace with the enemy taking damage
-                    enemyCollider.GetComponent<DummyBehaviour>().TakeDamage(tickDamage);
+                    enemyCollider.GetComponent<Enemy>().EnemyTakeDamage(tickDamage);
                 }
             }
 
@@ -447,14 +438,14 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
 
         foreach (Collider entityCollider in entitiesToHit)
         {
-            if (entityCollider.GetComponent<DummyBehaviour>())
+            if (entityCollider.GetComponent<Enemy>())
             {
                 //replace with the enemy taking damage
-                entityCollider.GetComponent<DummyBehaviour>().TakeDamage(bombBlastDamage);
+                entityCollider.GetComponent<Enemy>().EnemyTakeDamage(bombBlastDamage);
                 entityCollider.GetComponent<Rigidbody>().AddExplosionForce(enemyLaunchDistance, tempAbility.transform.position,
                     bombBlastAOESize, .1f, ForceMode.Impulse);
             }
-            else if(entityCollider.GetComponent<DummyPlayerBehaviour>() || entityCollider.GetComponentInParent<PlayerController>())
+            else if(entityCollider.GetComponent<Enemy>() || entityCollider.GetComponentInParent<PlayerController>())
             {
                 entityCollider.GetComponentInParent<Rigidbody>().AddExplosionForce(playerLaunchDistance, tempAbility.transform.position,
                     bombBlastAOESize, 0, ForceMode.Impulse);
@@ -474,10 +465,10 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
 
         foreach(Collider enemyCollider in enemiesHit)
         {
-            if(enemyCollider.GetComponent<DummyBehaviour>())
+            if(enemyCollider.GetComponent<Enemy>())
             {
                 //replace with the enemy taking damage
-                enemyCollider.GetComponent<DummyBehaviour>().TakeDamage(scatterShotDamage);
+                enemyCollider.GetComponent<Enemy>().EnemyTakeDamage(scatterShotDamage);
 
                 int healValue = Mathf.CeilToInt(scatterShotDamage * ConvertToPercentage(scatterShotLifeSteal));
 
@@ -503,10 +494,10 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
         {
             foreach (Collider enemyCollider in enemiesHit)
             {
-                if (enemyCollider.GetComponent<DummyBehaviour>())
+                if (enemyCollider.GetComponent<Enemy>())
                 {
                     //replace with the enemy taking damage
-                    enemyCollider.GetComponent<DummyBehaviour>().TakeDamage(tickDamage);
+                    enemyCollider.GetComponent<Enemy>().EnemyTakeDamage(tickDamage);
 
                     int healValue = Mathf.CeilToInt(tickDamage * ConvertToPercentage(scatterShotLifeSteal));
 
