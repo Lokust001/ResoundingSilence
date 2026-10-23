@@ -13,19 +13,16 @@ using UnityEngine;
 public class GameTimerManager : BaseManager
 {
 
-    public static GameTimerManager Instance { get; private set; }
+    public static GameTimerManager Instance;
     private float currentGameTime;
     private Coroutine gameTimeCoroutine;
-
-    [SerializeField]
-    private bool EnableTestingMode = false;
 
     /// <summary>
     /// Custom debugging check
     /// </summary>
     private void Awake()
     {
-        if (EnableTestingMode)
+        if (AppManager.Instance.EnableTestingMode)
         {
             _ = InitManager();
             StartOrResumeGameTime();
