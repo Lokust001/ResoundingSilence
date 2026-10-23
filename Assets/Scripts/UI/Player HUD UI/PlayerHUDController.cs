@@ -52,6 +52,8 @@ public class PlayerHUDController : MenuBase
     [SerializeField]
     private float DashMaxCooldown;
 
+    private Coroutine healthAnimCoroutine;
+
     /// <summary>
     /// debug command to force the ui to take one damage
     /// </summary>
@@ -131,11 +133,8 @@ public class PlayerHUDController : MenuBase
     /// <param name="currentHealth">the current health value</param>
     /// <param name="MaxHealth">the max health value - only enter it if the player's max health changes</param>
     private void UpdatePlayerHealthBarValue()
-    {
-
-        
-        //healthBarSlider.fillAmount = MidRunDataManager.Instance.CurrentPlayerHealth / MidRunDataManager.Instance.MaxPlayerHealth;
-        StartCoroutine(PlayerHealthAnimation());
+    { 
+        healthAnimCoroutine = StartCoroutine(PlayerHealthAnimation());
     }
 
     /// <summary>
@@ -153,9 +152,17 @@ public class PlayerHUDController : MenuBase
         {
             yield return null;
             
-            healthBarSlider.fillAmount = Mathf.Lerp(targetHealthPercentage, currentHealthPercentage, healthBarAnimation.Evaluate(timer / AnimationTime));
+            healthBarSlider.fillAmount = Mathf.Lerp(
+                MidRunDataManager.Instance.CurrentPlayerHealth / MidRunDataManager.Instance.MaxPlayerHealth, 
+                currentHealthPercentage, 
+                healthBarAnimation.Evaluate(timer / AnimationTime));
             
             timer += Time.deltaTime;
+        }
+
+        if (MidRunDataManager.Instance.CurrentPlayerHealth <= 0.0f)
+        {
+            MidRunDataManager.Instance.KillPlayer();
         }
     }
 

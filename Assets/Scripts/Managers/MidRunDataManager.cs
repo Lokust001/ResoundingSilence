@@ -213,12 +213,20 @@ public class MidRunDataManager : BaseManager
 
         if (CurrentPlayerHealth <= 0)
         {
-            Instantiate(tempDeathMenu, UIManager.Instance.GetMainCanvas().transform);
             InputManager.Instance.DisablePlayerInputs();
-            Time.timeScale = 0f;
         }
 
         UIPublicEvents.UpdatePlayerHealthSlider?.Invoke();
+    }
+
+    /// <summary>
+    /// temporary function
+    /// </summary>
+    public void KillPlayer()
+    {
+        Instantiate(tempDeathMenu, UIManager.Instance.GetMainCanvas().transform);
+        
+        Time.timeScale = 0f;
     }
 
     /// <summary>
