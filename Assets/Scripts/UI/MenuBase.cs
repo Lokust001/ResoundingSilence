@@ -104,7 +104,7 @@ public class MenuBase : MonoBehaviour
     protected virtual void OnDestroy()
     {
         UIPublicEvents.HideOpenMenus -= CloseMenu;
-        UIPublicEvents.NewMenuOpened -= MenuOpenedSucessfully;
+        UIPublicEvents.NewMenuOpened -= AttemptToOpenMenu;
         TearDownPublicEvents();
     }
 

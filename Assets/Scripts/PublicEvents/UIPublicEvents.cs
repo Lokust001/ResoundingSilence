@@ -20,6 +20,16 @@ public static class UIPublicEvents
 
     public static Action CurrentMenuClosed;
 
+    public static Action<ControllerSupportedClickable> SelectSpecificClickable;
+
+    #region PlayerHUD
+
+    public static Action UpdatePlayerHealthSlider;
+
+    public static Action UpdatePlayerEXPSlider;
+
+    #endregion
+
     #region UpgradeMenu
 
     public static Action UpgradeMenuOpened;
@@ -56,6 +66,14 @@ public static class UIPublicEvents
     public static Action SettingsMenuOpened;
 
     public static Action SettingsMenuClosed;
+
+    #endregion
+
+    #region TarotMenu
+
+    public static Action TarotMenuOpened;
+
+    public static Action TarotMenuClosed;
 
     #endregion
 }

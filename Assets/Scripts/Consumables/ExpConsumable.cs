@@ -8,6 +8,6 @@ public class ExpConsumable : ConsumableBehavior
 {
     public override void Consume(PlayerController player = null)
     {
-        player.GainXP((int)consumableValue);
+        MidRunDataManager.Instance.GainXP((int)consumableValue);
     }
 }

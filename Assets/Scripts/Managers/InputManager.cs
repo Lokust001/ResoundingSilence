@@ -130,6 +130,8 @@ public class InputManager : BaseManager
 
         UIPublicEvents.UpgradeMenuOpened += SwapActionMapToUpgradeMenu;
         UIPublicEvents.UpgradeMenuClosed += SwapActionMapToMidRun;
+        UIPublicEvents.TarotMenuOpened += SwapActionMapToUpgradeMenu;
+        UIPublicEvents.TarotMenuClosed += SwapActionMapToMidRun;
         GenericPublicEvents.AllManagersInitialized += ThrowCurrentControlScheme;
     }
 
@@ -142,6 +144,8 @@ public class InputManager : BaseManager
         UIPublicEvents.UpgradeMenuOpened -= SwapActionMapToUpgradeMenu;
         UIPublicEvents.UpgradeMenuClosed -= SwapActionMapToMidRun;
         GenericPublicEvents.AllManagersInitialized -= ThrowCurrentControlScheme;
+        UIPublicEvents.TarotMenuOpened -= SwapActionMapToUpgradeMenu;
+        UIPublicEvents.TarotMenuClosed -= SwapActionMapToMidRun;
     }
 
 
@@ -213,6 +217,13 @@ public class InputManager : BaseManager
     #endregion
 
     #region enabling and disabling public events
+
+    public void DisablePlayerInputs()
+    {
+        DisableUpgradeMenuPublicEvents();
+        DisableSettingsMenuPublicEvents();
+        DisableMidRunPublicEvents();
+    }
 
     /// <summary>
     /// enables the midrun action map
@@ -406,6 +417,11 @@ public class InputManager : BaseManager
     /// </summary>
     private void DisableUpgradeMenuPublicEvents()
     {
+        if (ToggleUpgradeMenuInUpgradeMenu == null)
+        {
+            return;
+        }
+
         ToggleUpgradeMenuInUpgradeMenu.started -= ToggleUpgradeMenuInUpgradeMenu_started;
         SwapFocusToGrid.started -= SwapFocusToGrid_started;
         SwapFocusToInventory.started -= SwapFocusToInventory_started;

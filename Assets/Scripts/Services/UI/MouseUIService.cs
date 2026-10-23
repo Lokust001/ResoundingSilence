@@ -57,6 +57,7 @@ public class MouseUIService : BaseService
         InputPublicEvents.MouseMoved += UpdateMousePos;
         InputPublicEvents.ShootPressed += Click;
         InputPublicEvents.SelectPin += Click;
+        UIPublicEvents.SelectSpecificClickable += ForceSelectTile;
     }
 
     /// <summary>
@@ -67,6 +68,7 @@ public class MouseUIService : BaseService
         InputPublicEvents.MouseMoved -= UpdateMousePos;
         InputPublicEvents.ShootPressed -= Click;
         InputPublicEvents.SelectPin -= Click;
+        UIPublicEvents.SelectSpecificClickable -= ForceSelectTile;
     }
 
     /// <summary>
@@ -74,11 +76,12 @@ public class MouseUIService : BaseService
     /// </summary>
     private void OnDestroy()
     {
-        if (!InputManager.Instance.ControllerIsEnabled)
+        if (InputManager.Instance != null && !InputManager.Instance.ControllerIsEnabled)
         {
             InputPublicEvents.MouseMoved -= UpdateMousePos;
             InputPublicEvents.ShootPressed -= Click;
             InputPublicEvents.SelectPin -= Click;
+            UIPublicEvents.SelectSpecificClickable -= ForceSelectTile;
         }
 
         InputPublicEvents.ControllerEnabled -= DisableMousePublicEvents;
@@ -126,10 +129,7 @@ public class MouseUIService : BaseService
             }
         }
         
-        //unhover over the previously held clickable if its different from what youre hovering over now
-        
-
-        
+        //unhover over the previously held clickable if its different from what youre hovering over now 
     }
 
     /// <summary>
@@ -138,9 +138,23 @@ public class MouseUIService : BaseService
     private void Click()
     {
         //click on the object you have rn
-        if (previouslyHoveredObj != null)
+        if (previouslyHoveredObj != null && previouslyHoveredObj.isActiveAndEnabled)
         {
             previouslyHoveredObj.ClickedOn();
         }
+    }
+
+    /// <summary>
+    /// forcibly selects a specific tile
+    /// </summary>
+    /// <param name="clickableToSelect"></param>
+    private void ForceSelectTile(ControllerSupportedClickable clickableToSelect)
+    {
+        if (previouslyHoveredObj != null)
+        {
+            previouslyHoveredObj.UnHoveredOver();
+        }
+        previouslyHoveredObj = clickableToSelect;
+        previouslyHoveredObj.HoveredOver();
     }
 }

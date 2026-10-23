@@ -7,9 +7,12 @@
 */
 
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MainMenuController : MenuBase
 {
+    [SerializeField]
+    private bool SkipTarotMenu = false;
     [SerializeField]
     private GameObject testingMenuContainer;
 
@@ -20,8 +23,16 @@ public class MainMenuController : MenuBase
     /// </summary>
     public void StartGame()
     {
-        GenericPublicEvents.StartGamePressed?.Invoke();
-        UIPublicEvents.UpdateUIManagerStack?.Invoke(UiMenuType.PlayerHUD);
+        if (SkipTarotMenu)
+        {
+            GenericPublicEvents.StartGamePressed?.Invoke();
+            UIPublicEvents.UpdateUIManagerStack?.Invoke(UiMenuType.PlayerHUD);
+        }
+        else
+        {
+            UIPublicEvents.UpdateUIManagerStack?.Invoke(UiMenuType.Tarot);
+        }
+
     }
 
     /// <summary>

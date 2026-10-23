@@ -14,7 +14,7 @@ public class ItemHolderSlot : ControllerSupportedClickable
     [SerializeField]
     private Image highlight;
 
-    [HideInInspector]
+    //[HideInInspector]
     public CarriedItemBehavior heldItem;
 
     /// <summary>

@@ -13111,7 +13111,7 @@ Transform:
   m_GameObject: {fileID: 2894565768041989394}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.212, y: 1.3, z: 0.1324}
+  m_LocalPosition: {x: 0.1427, y: 1.3, z: 0.1779}
   m_LocalScale: {x: 0.50205624, y: 1, z: 0.42600965}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -13515,7 +13515,7 @@ Transform:
   m_GameObject: {fileID: 3352364768054235719}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.020645738, y: 1.3, z: 0.01444094}
+  m_LocalPosition: {x: 0.0779, y: 1.3, z: -0.087}
   m_LocalScale: {x: 0.50205624, y: 1, z: 0.42600965}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -26290,7 +26290,7 @@ Transform:
   m_GameObject: {fileID: 6389308863602680349}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.1101, y: 1.3, z: -0.1821}
+  m_LocalPosition: {x: 0.1863, y: 1.3, z: -0.1824}
   m_LocalScale: {x: 0.50205624, y: 1, z: 0.42600965}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -29093,14 +29093,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   pointsPerSecondPassed: 2
   enemyGenerationTime: 5
-  spawnLocations:
-  - {fileID: 7224911955545868771}
-  - {fileID: 9163871878314378556}
-  - {fileID: 9176585048533050853}
-  - {fileID: 6180440702867889843}
-  - {fileID: 304900682517902049}
-  - {fileID: 183697820022578555}
-  - {fileID: 5773687211954176215}
+  spawnLocations: []
   enemyGroupTiers:
   - tierName: Melee and Shoot
     enemyPool:
@@ -29108,6 +29101,8 @@ MonoBehaviour:
     - {fileID: 5736516835863566217, guid: 5da45a64348225d4a9797f03eb1360b3, type: 3}
     - {fileID: 4702969501886654196, guid: c0d50ddd8b4eb7549be9cb919c0ce9e2, type: 3}
     - {fileID: 5736516835863566217, guid: 5da45a64348225d4a9797f03eb1360b3, type: 3}
+    - {fileID: 7656435456646436074, guid: c997b49616c1d7143ab65d2e1030d2d5, type: 3}
+    - {fileID: 5194500464997757952, guid: af965c2dde455e94187f2be25d41c8c2, type: 3}
     minimumPoints: 0
   - tierName: Charger and Cone
     enemyPool:
@@ -30302,7 +30297,7 @@ Transform:
   m_GameObject: {fileID: 7252434110492406965}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.1291, y: 1.3, z: -0.0017}
+  m_LocalPosition: {x: -0.0955, y: 1.3, z: 0.064}
   m_LocalScale: {x: 0.50205624, y: 1, z: 0.42600965}
   m_ConstrainProportionsScale: 0
   m_Children: []
