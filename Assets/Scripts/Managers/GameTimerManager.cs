@@ -64,6 +64,7 @@ public class GameTimerManager : BaseManager
     /// <summary>
     /// public method to start game time or game timer
     /// </summary>
+    [Button("Manually Start Game Timer")]
     public void StartOrResumeGameTime() 
     {
         gameTimeCoroutine = StartCoroutine(ProgressGameTime());
