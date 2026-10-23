@@ -42,7 +42,7 @@ public class UpgradeTileGrid
     /// </summary>
     public void Awake()
     {
-        
+        UIPublicEvents.PinChangedOnWeapon += NewPinSet;
     }
 
     /// <summary>
@@ -350,28 +350,28 @@ public class UpgradeTileGrid
         AdajacencyTest = UtilityFunctions.GetAdjacentTiles<UpgradeTileData>(tile.coords, grid, height, width);
         if(AdajacencyTest != null)
         {
-            if (AdajacencyTest[0] != null && tile.pin.NorthAdjacency != null && CheckAdjacency(tile.pin.NorthAdjacency, AdajacencyTest[0].pin.Types))
+            if (AdajacencyTest[0] != null && AdajacencyTest[0].pin != null && tile.pin.NorthAdjacency != null && CheckAdjacency(tile.pin.NorthAdjacency, AdajacencyTest[0].pin.Types))
                 BuffAmount += tile.pin.AdjacentTileScaling;
 
-            if (AdajacencyTest[1] != null && tile.pin.NorthAdjacency != null && CheckAdjacency(tile.pin.NorthEastAdjacency, AdajacencyTest[1].pin.Types))
+            if (AdajacencyTest[1] != null && AdajacencyTest[1].pin != null && tile.pin.NorthEastAdjacency != null && CheckAdjacency(tile.pin.NorthEastAdjacency, AdajacencyTest[1].pin.Types))
                 BuffAmount += tile.pin.AdjacentTileScaling;
             
-            if (AdajacencyTest[2] != null && tile.pin.NorthAdjacency != null && CheckAdjacency(tile.pin.EastAdjacency, AdajacencyTest[2].pin.Types))
+            if (AdajacencyTest[2] != null && AdajacencyTest[2].pin != null && tile.pin.EastAdjacency != null && CheckAdjacency(tile.pin.EastAdjacency, AdajacencyTest[2].pin.Types))
                 BuffAmount += tile.pin.AdjacentTileScaling;
             
-            if (AdajacencyTest[3] != null && tile.pin.NorthAdjacency != null && CheckAdjacency(tile.pin.SouthEastAdjacency, AdajacencyTest[3].pin.Types))
+            if (AdajacencyTest[3] != null && AdajacencyTest[3].pin != null && tile.pin.SouthEastAdjacency != null && CheckAdjacency(tile.pin.SouthEastAdjacency, AdajacencyTest[3].pin.Types))
                 BuffAmount += tile.pin.AdjacentTileScaling;
             
-            if (AdajacencyTest[4] != null && tile.pin.NorthAdjacency != null && CheckAdjacency(tile.pin.SouthAdjacency, AdajacencyTest[4].pin.Types))
+            if (AdajacencyTest[4] != null && AdajacencyTest[4].pin != null && tile.pin.SouthAdjacency != null && CheckAdjacency(tile.pin.SouthAdjacency, AdajacencyTest[4].pin.Types))
                 BuffAmount += tile.pin.AdjacentTileScaling;
             
-            if (AdajacencyTest[5] != null && tile.pin.NorthAdjacency != null && CheckAdjacency(tile.pin.SouthWestAdjacency, AdajacencyTest[5].pin.Types))
+            if (AdajacencyTest[5] != null && AdajacencyTest[5].pin != null && tile.pin.SouthWestAdjacency != null && CheckAdjacency(tile.pin.SouthWestAdjacency, AdajacencyTest[5].pin.Types))
                 BuffAmount += tile.pin.AdjacentTileScaling;
             
-            if (AdajacencyTest[6] != null && tile.pin.NorthAdjacency != null && CheckAdjacency(tile.pin.WestAdjacency, AdajacencyTest[6].pin.Types))
+            if (AdajacencyTest[6] != null && AdajacencyTest[6].pin != null && tile.pin.WestAdjacency != null && CheckAdjacency(tile.pin.WestAdjacency, AdajacencyTest[6].pin.Types))
                 BuffAmount += tile.pin.AdjacentTileScaling;
             
-            if (AdajacencyTest[7] != null && tile.pin.NorthAdjacency != null && CheckAdjacency(tile.pin.NorthWestAdjacency, AdajacencyTest[7].pin.Types))
+            if (AdajacencyTest[7] != null && AdajacencyTest[7].pin != null && tile.pin.NorthWestAdjacency != null && CheckAdjacency(tile.pin.NorthWestAdjacency, AdajacencyTest[7].pin.Types))
                 BuffAmount += tile.pin.AdjacentTileScaling;
         }
         return BuffAmount;
