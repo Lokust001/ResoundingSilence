@@ -76,7 +76,7 @@ public class MouseUIService : BaseService
     /// </summary>
     private void OnDestroy()
     {
-        if (!InputManager.Instance.ControllerIsEnabled)
+        if (InputManager.Instance != null && !InputManager.Instance.ControllerIsEnabled)
         {
             InputPublicEvents.MouseMoved -= UpdateMousePos;
             InputPublicEvents.ShootPressed -= Click;
