@@ -179,7 +179,6 @@ public class PlayerController : MonoBehaviour
         }
 
         Vector3 dashPoint = Physics.Raycast(transform.position, dashDir.normalized, out RaycastHit hit, dashRange, ~ignoreWhileInvincible) ? hit.point : transform.position + (dashDir.normalized * dashRange);
-
         StopCoroutine(playerMovementCoroutine);
 
         for (float t = 0; t < dashDuration; t += Time.deltaTime)
