@@ -48,6 +48,7 @@ public class DebugConsole : MonoBehaviour
     private bool godToggle = false;
     private bool pivotToggle = false;
     private bool detachToggle = false;
+    private bool freeToggle = false;
     //private bool freezeToggle = false;
 
     private PlayerController playerInstance;
@@ -55,6 +56,9 @@ public class DebugConsole : MonoBehaviour
     private GameObject cameraInstance;
     private PivotCamera PivotInstance;
     private DetachCamera DetachInstance;
+    private FreeCamera FreeCameraInstance;
+
+    [SerializeField] FreeCamera freecamPrefab;
 
     [SerializeField]
     [ShowIf(nameof(settings), ShownSettings.Colors)]
@@ -96,6 +100,11 @@ public class DebugConsole : MonoBehaviour
         {
             DetachInstance = FindAnyObjectByType<DetachCamera>();
         }
+        if (FreeCameraInstance == null)
+        {
+            FreeCameraInstance = Instantiate(freecamPrefab, DetachInstance.transform.position, DetachInstance.transform.rotation, playerInstance.transform);
+            FreeCameraInstance.gameObject.SetActive(false);
+        }
         ClearConsole();
     }
 
@@ -123,6 +132,9 @@ public class DebugConsole : MonoBehaviour
             AppendConsoleLine($"Change Players Speed: speed <Speed Value>");
             AppendConsoleLine($"Change Map Section: ChangeIsland <island index (or current)> <layout index>");
             AppendConsoleLine($"Reset Map: MapReset");
+            AppendConsoleLine($"Change to Pivot Camera Mode: PivotCam or PC");
+            AppendConsoleLine($"Change to Free Camera Mode: FreeCam or FC");
+            AppendConsoleLine($"Change to Detatch Camera Mode: DetachCam or DC");
             FinishCommand();
             return;
         }
@@ -300,6 +312,14 @@ public class DebugConsole : MonoBehaviour
             pivotToggle = !pivotToggle;
             playerInstance.MoveActive = !pivotToggle;
             PivotInstance.isActive = pivotToggle;
+            detachToggle = false;
+            MainCameraManager.Instance.startFollow();
+            DetachInstance.isActive = false;
+            freeToggle = false;
+            MainCameraManager.Instance.startFollow();
+            FreeCameraInstance.isActive = false;
+            FreeCameraInstance.gameObject.SetActive(false);
+            DetachInstance.gameObject.SetActive(true);
             if (pivotToggle)
             {
                 playerInstance.StopPlayerMovementAndInput();
@@ -317,6 +337,14 @@ public class DebugConsole : MonoBehaviour
         if (Command.StartsWith("detachcam") || Command.StartsWith("dc"))
         {
             detachToggle = !detachToggle;
+            pivotToggle = false;
+            playerInstance.MoveActive = !pivotToggle;
+            PivotInstance.isActive = pivotToggle;
+            freeToggle = false;
+            MainCameraManager.Instance.startFollow();
+            FreeCameraInstance.isActive = false;
+            FreeCameraInstance.gameObject.SetActive(false);
+            DetachInstance.gameObject.SetActive(true);
             if (detachToggle)
             {
                 MainCameraManager.Instance.stopFollow();
@@ -331,6 +359,37 @@ public class DebugConsole : MonoBehaviour
             }
             AppendConsoleLine(Command, inputColor);
             AppendConsoleLine($"Detach command: {detachToggle}", commandCompletedColor);
+            FinishCommand();
+            return;
+        }
+
+        if (Command.StartsWith("freecam") || Command.StartsWith("fc"))
+        {
+            freeToggle = !freeToggle;
+            detachToggle = false;
+            MainCameraManager.Instance.startFollow();
+            DetachInstance.isActive = false;
+            pivotToggle = false;
+            playerInstance.MoveActive = !pivotToggle;
+            PivotInstance.isActive = pivotToggle;
+            if(freeToggle)
+            {
+                FreeCameraInstance.gameObject.SetActive(true);
+                DetachInstance.gameObject.SetActive(false);
+                FreeCameraInstance.isActive = true;
+                MainCameraManager.Instance.stopFollow();
+                playerInstance.StopPlayerMovementAndInput();
+            }
+            else
+            {
+                FreeCameraInstance.gameObject.SetActive(false);
+                DetachInstance.gameObject.SetActive(true);
+                MainCameraManager.Instance.startFollow();
+                FreeCameraInstance.isActive = false;
+                playerInstance.RestartPlayerMovementAndInput();
+            }
+            AppendConsoleLine(Command, inputColor);
+            AppendConsoleLine($"Free Cam command: {freeToggle}", commandCompletedColor);
             FinishCommand();
             return;
         }
