@@ -11,6 +11,7 @@ using UnityEngine;
 public class weaponOnGround : MonoBehaviour
 {
     public BaseWeaponScriptable weapon;
+    public GameObject DroppedWeaponPrefab;
 
     private bool inRange;
     private bool inPickup;
@@ -101,6 +102,7 @@ public class weaponOnGround : MonoBehaviour
     {
         if (inPickup)
         {
+            Instantiate(DroppedWeaponPrefab, transform.position, transform.rotation).GetComponent<weaponOnGround>().weapon = MRM.equippedWeapons[0];
             MRM.equippedWeapons[0] = weapon;
             Destroy(this.gameObject);
         }
@@ -113,6 +115,7 @@ public class weaponOnGround : MonoBehaviour
     {
         if (inPickup)
         {
+            Instantiate(DroppedWeaponPrefab, transform.position, transform.rotation).GetComponent<weaponOnGround>().weapon = MRM.equippedWeapons[1];
             MRM.equippedWeapons[1] = weapon;
             Destroy(this.gameObject);
         }
