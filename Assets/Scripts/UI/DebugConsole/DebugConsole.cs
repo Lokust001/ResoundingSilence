@@ -88,6 +88,8 @@ public class DebugConsole : MonoBehaviour
         {
             playerInstance = FindAnyObjectByType<PlayerController>();
         }
+
+        playerInstance.StopPlayerMovementAndInput();
         if (mapGenInstance == null)
         {
             mapGenInstance = FindAnyObjectByType<MapGenerator>();
@@ -106,6 +108,17 @@ public class DebugConsole : MonoBehaviour
             FreeCameraInstance.gameObject.SetActive(false);
         }
         ClearConsole();
+    }
+
+    /// <summary>
+    /// When you close the menu it restarts
+    /// </summary>
+    private void OnDisable()
+    {
+        if(!pivotToggle && !detachToggle && !freeToggle)
+        {
+            playerInstance.RestartPlayerMovementAndInput();
+        }
     }
 
     /// <summary>
