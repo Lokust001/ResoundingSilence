@@ -1113,35 +1113,81 @@ MonoBehaviour:
   attackAnimations:
   - {fileID: 7400000, guid: e90138978acc5f241830b30f92ca801f, type: 2}
   comboIndex: 0
-  abilitySettings: 0
   meleeHitboxes: []
+  abilitySettings: 0
+  WeaponAbilities:
+  - AbilityName: SplinterShot
+    PrimaryStats:
+    - StatType: 0
+      StatValue: 13
+    - StatType: 1
+      StatValue: 5
+    - StatType: 2
+      StatValue: 5
+    SecondaryStats:
+    - StatType: 7
+      StatValue: 3
+    AbilityDamage: 0
+    AbilityDamageTicks: 0
+    AbilityDuration: 0
+    AbilityAggroRange: 0
+    AbilityPlayerSpeed: 0
+    AbilityWeaponSpeed: 0
+    AbilityLifeSteal: 0
+    AbilityAOESize: 0
+    AbilityDelay: 0
+    AbilityEnemyKnockback: 0
+    AbilityPlayerKnockback: 0
+    AbilityCooldown: 3
+    AbilityEndLag: 0.5
+    AbilityRange: 3.5
+    HasPreview: 1
+    AbilityPreview: {fileID: 7590928629485323880}
+    AbilityLayerMask:
+      serializedVersion: 2
+      m_Bits: 1024
+    AbilityAnim: {fileID: 0}
+    AbilityReadyAnim: {fileID: 0}
+  - AbilityName: BombBlast
+    PrimaryStats:
+    - StatType: 0
+      StatValue: 3
+    SecondaryStats:
+    - StatType: 7
+      StatValue: 3
+    - StatType: 8
+      StatValue: 1
+    - StatType: 10
+      StatValue: 6
+    - StatType: 9
+      StatValue: 3
+    AbilityDamage: 0
+    AbilityDamageTicks: 0
+    AbilityDuration: 0
+    AbilityAggroRange: 0
+    AbilityPlayerSpeed: 0
+    AbilityWeaponSpeed: 0
+    AbilityLifeSteal: 0
+    AbilityAOESize: 0
+    AbilityDelay: 0
+    AbilityEnemyKnockback: 0
+    AbilityPlayerKnockback: 0
+    AbilityCooldown: 3
+    AbilityEndLag: 0.5
+    AbilityRange: 3.5
+    HasPreview: 1
+    AbilityPreview: {fileID: 7347509225486067769}
+    AbilityLayerMask:
+      serializedVersion: 2
+      m_Bits: 1088
+    AbilityAnim: {fileID: 0}
+    AbilityReadyAnim: {fileID: 0}
+  abilityOneIndex: 0
+  abilityTwoIndex: 1
   abilityOneReady: 1
-  abilityOneCooldown: 3
-  abilityOneEndLag: 0.5
-  abilityOneRange: 3.5
-  abilityTwoReady: 0
-  abilityTwoCooldown: 2
-  abilityTwoEndLag: 0.5
-  abilityTwoRange: 6
-  abilityOne: 1
-  abilityTwo: 3
-  splinterShotDamage: 13
-  splinterShotAOESize: 3
-  splinterShotTotalDamageTicks: 5
-  splinterShotDuration: 5
-  splinterShotPreview: {fileID: 7590928629485323880}
-  splinterShotLayerMask:
-    serializedVersion: 2
-    m_Bits: 1024
-  bombBlastDamage: 3
-  bombBlastAOESize: 2
-  bombBlastDetTime: 1
-  playerLaunchDistance: 6
-  enemyLaunchDistance: 3
-  bombBlastPreview: {fileID: 7347509225486067769}
-  bombBlastLayerMask:
-    serializedVersion: 2
-    m_Bits: 1088
+  abilityTwoReady: 1
+  abilityOne: 0
+  abilityTwo: 1
   scatterShotDamage: 5
   scatterShotCone: 2
   scatterShotLifeSteal: 10

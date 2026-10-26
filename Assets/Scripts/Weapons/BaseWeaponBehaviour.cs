@@ -30,8 +30,12 @@ public class BaseWeaponBehaviour : MonoBehaviour
     [SerializeField] protected List<AnimationClip> attackAnimations = new List<AnimationClip>();
     [SerializeField] protected int comboIndex;
 
+    [SerializeField] List<Collider> meleeHitboxes = new List<Collider>();
+
     [Header("Base Ability Variables"), HorizontalLine(height: 4, EColor.Red)]
     [SerializeField] protected AbilitySettings abilitySettings;
+
+    [SerializeField] protected List<AbilityData> WeaponAbilities = new List<AbilityData>();
 
     protected Vector3 mousePos = Vector3.forward;
 
@@ -42,42 +46,46 @@ public class BaseWeaponBehaviour : MonoBehaviour
 
     bool burstAttacking;
 
-    [SerializeField] List<Collider> meleeHitboxes = new List<Collider>();
-
     protected bool aimingAbilityOne;
     protected bool aimingAbilityTwo;
 
-    [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityOne)]
-    [Tooltip("Set true if you want ability one to be ready to use on spawn.")]
+    [SerializeField] protected int abilityOneIndex;
+    [SerializeField] protected int abilityTwoIndex;
+
     [SerializeField] protected bool abilityOneReady;
-
-    [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityOne)]
-    [Tooltip("How long the ability is on cooldown for.")]
-    [SerializeField] protected float abilityOneCooldown;
-
-    [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityOne)]
-    [Tooltip("How long the ability puts the player in end lag for.")]
-    [SerializeField] protected float abilityOneEndLag;
-
-    [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityOne)]
-    [Tooltip("How far from the player the ability can be cast.")]
-    [SerializeField] protected float abilityOneRange;
-
-    [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityTwo)]
-    [Tooltip("Set true if you want ability two to be ready to use on spawn.")]
     [SerializeField] protected bool abilityTwoReady;
 
-    [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityTwo)]
-    [Tooltip("How long the ability is on cooldown for.")]
-    [SerializeField] protected float abilityTwoCooldown;
+    //[ShowIf(nameof(abilitySettings), AbilitySettings.AbilityOne)]
+    //[Tooltip("Set true if you want ability one to be ready to use on spawn.")]
+    //[SerializeField] protected bool abilityOneReady;
 
-    [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityTwo)]
-    [Tooltip("How long the ability puts the player in end lag for.")]
-    [SerializeField] protected float abilityTwoEndLag;
+    //[ShowIf(nameof(abilitySettings), AbilitySettings.AbilityOne)]
+    //[Tooltip("How long the ability is on cooldown for.")]
+    //[SerializeField] protected float abilityOneCooldown;
 
-    [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityTwo)]
-    [Tooltip("How far from the player the ability can be cast.")]
-    [SerializeField] protected float abilityTwoRange;
+    //[ShowIf(nameof(abilitySettings), AbilitySettings.AbilityOne)]
+    //[Tooltip("How long the ability puts the player in end lag for.")]
+    //[SerializeField] protected float abilityOneEndLag;
+
+    //[ShowIf(nameof(abilitySettings), AbilitySettings.AbilityOne)]
+    //[Tooltip("How far from the player the ability can be cast.")]
+    //[SerializeField] protected float abilityOneRange;
+
+    //[ShowIf(nameof(abilitySettings), AbilitySettings.AbilityTwo)]
+    //[Tooltip("Set true if you want ability two to be ready to use on spawn.")]
+    //[SerializeField] protected bool abilityTwoReady;
+
+    //[ShowIf(nameof(abilitySettings), AbilitySettings.AbilityTwo)]
+    //[Tooltip("How long the ability is on cooldown for.")]
+    //[SerializeField] protected float abilityTwoCooldown;
+
+    //[ShowIf(nameof(abilitySettings), AbilitySettings.AbilityTwo)]
+    //[Tooltip("How long the ability puts the player in end lag for.")]
+    //[SerializeField] protected float abilityTwoEndLag;
+
+    //[ShowIf(nameof(abilitySettings), AbilitySettings.AbilityTwo)]
+    //[Tooltip("How far from the player the ability can be cast.")]
+    //[SerializeField] protected float abilityTwoRange;
 
     /// <summary>
     /// Gets a reference to the copy of the weapon's data
@@ -95,14 +103,24 @@ public class BaseWeaponBehaviour : MonoBehaviour
         currentAttackSpeed = ThisWeaponData.AttackSpeed;
         UpdateAttackSpeed();
 
-        if(!abilityOneReady)
+        foreach(AbilityData ability in WeaponAbilities)
         {
-            StartCoroutine(AbilityDelay(abilityOneReady, abilityOneCooldown));
+            SetAbilityStats(ability, ability.PrimaryStats);
+        }
+
+        foreach (AbilityData ability in WeaponAbilities)
+        {
+            SetAbilityStats(ability, ability.SecondaryStats);
+        }
+
+        if (!abilityOneReady)
+        {
+            StartCoroutine(AbilityDelay(abilityOneReady, WeaponAbilities[abilityOneIndex].AbilityCooldown));
         }
 
         if(!abilityTwoReady)
         {
-            StartCoroutine(AbilityDelay(abilityTwoReady, abilityTwoCooldown));
+            StartCoroutine(AbilityDelay(abilityTwoReady, WeaponAbilities[abilityTwoIndex].AbilityCooldown));
         }
     }
 
@@ -130,6 +148,56 @@ public class BaseWeaponBehaviour : MonoBehaviour
         InputPublicEvents.AbilityTwoPressed -= AimingAbilityTwo;
     }
 
+    /// <summary>
+    /// Sets the stats for each of the abilities
+    /// </summary>
+    virtual protected void SetAbilityStats(AbilityData ability, List<StatValues> stats)
+    {
+        foreach(StatValues value in stats)
+        {
+            switch(value.StatType)
+            {
+                case AbilityData.Stats.Damage:
+                    ability.AbilityDamage = Mathf.CeilToInt(value.StatValue);
+                    break;
+                case AbilityData.Stats.DamageTicks:
+                    ability.AbilityDamageTicks = Mathf.CeilToInt(value.StatValue);
+                    break;
+                case AbilityData.Stats.Duration:
+                    ability.AbilityDuration = value.StatValue;
+                    break;
+                case AbilityData.Stats.AggroRange:
+                    ability.AbilityAggroRange = value.StatValue;
+                    break;
+                case AbilityData.Stats.PlayerSpeed:
+                    ability.AbilityPlayerSpeed = value.StatValue;
+                    break;
+                case AbilityData.Stats.WeaponSpeed:
+                    ability.AbilityWeaponSpeed = value.StatValue;
+                    break;
+                case AbilityData.Stats.LifeSteal:
+                    ability.AbilityLifeSteal = value.StatValue;
+                    break;
+                case AbilityData.Stats.AOESize:
+                    ability.AbilityAOESize = value.StatValue;
+                    break;
+                case AbilityData.Stats.Delay:
+                    ability.AbilityDelay = value.StatValue;
+                    break;
+                case AbilityData.Stats.EnemyKnockback:
+                    ability.AbilityEnemyKnockback = value.StatValue;
+                    break;
+                case AbilityData.Stats.PlayerKnockback:
+                    ability.AbilityPlayerKnockback = value.StatValue;
+                    break;
+                default:
+                    Debug.Log(value.StatType);
+                    break;
+            }
+        }
+    }
+
+    #region Attacking
     /// <summary>
     /// Determines if whether or not the player casts an ability or attacks with the weapon
     /// </summary>
@@ -165,52 +233,6 @@ public class BaseWeaponBehaviour : MonoBehaviour
         {
             mousePos = ray.GetPoint(hit) - transform.position;
         }
-    }
-
-    /// <summary>
-    /// How the player aims ability one. Also sets whether or not the player is aiming the ability
-    /// </summary>
-    virtual protected void AimingAbilityOne()
-    {
-        if (abilityOneReady)
-        {
-            aimingAbilityOne = !aimingAbilityOne;
-            aimingAbilityTwo = false;
-        }
-    }
-
-    /// <summary>
-    /// How the player aims ability two. Also sets whether or not the player is aiming the ability
-    /// </summary>
-    virtual protected void AimingAbilityTwo()
-    {
-        if (abilityTwoReady)
-        {
-            aimingAbilityTwo = !aimingAbilityTwo;
-            aimingAbilityOne = false;
-        }
-    }
-
-    /// <summary>
-    /// The base inheritance for using weapon abilities
-    /// </summary>
-    virtual protected void CastingAbility()
-    {
-        attackReady = false;
-        if(aimingAbilityOne)
-        {
-            aimingAbilityOne = false;
-            StartCoroutine(AbilityEndLag(abilityOneEndLag));
-            StartCoroutine(AbilityDelay(true, abilityOneCooldown));
-        }
-        else if(aimingAbilityTwo)
-        {
-            aimingAbilityTwo = false;
-            StartCoroutine(AbilityEndLag(abilityTwoEndLag));
-            StartCoroutine(AbilityDelay(false, abilityTwoCooldown));
-        }
-
-        //Add the ability functionality in the actual weapon script
     }
 
     /// <summary>
@@ -326,7 +348,9 @@ public class BaseWeaponBehaviour : MonoBehaviour
             }
         }
     }
+    #endregion
 
+    #region Abilities
     /// <summary>
     /// Waits for the weapon's attack time before letting it attack again
     /// </summary>
@@ -339,6 +363,52 @@ public class BaseWeaponBehaviour : MonoBehaviour
             comboIndex = 0;
         }
         attackReady = true;
+    }
+
+    /// <summary>
+    /// How the player aims ability one. Also sets whether or not the player is aiming the ability
+    /// </summary>
+    virtual protected void AimingAbilityOne()
+    {
+        if (abilityOneReady)
+        {
+            aimingAbilityOne = !aimingAbilityOne;
+            aimingAbilityTwo = false;
+        }
+    }
+
+    /// <summary>
+    /// How the player aims ability two. Also sets whether or not the player is aiming the ability
+    /// </summary>
+    virtual protected void AimingAbilityTwo()
+    {
+        if (abilityTwoReady)
+        {
+            aimingAbilityTwo = !aimingAbilityTwo;
+            aimingAbilityOne = false;
+        }
+    }
+
+    /// <summary>
+    /// The base inheritance for using weapon abilities
+    /// </summary>
+    virtual protected void CastingAbility()
+    {
+        attackReady = false;
+        if (aimingAbilityOne)
+        {
+            aimingAbilityOne = false;
+            StartCoroutine(AbilityEndLag(WeaponAbilities[abilityOneIndex].AbilityEndLag));
+            StartCoroutine(AbilityDelay(true, WeaponAbilities[abilityOneIndex].AbilityCooldown));
+        }
+        else if (aimingAbilityTwo)
+        {
+            aimingAbilityTwo = false;
+            StartCoroutine(AbilityEndLag(WeaponAbilities[abilityTwoIndex].AbilityEndLag));
+            StartCoroutine(AbilityDelay(false, WeaponAbilities[abilityTwoIndex].AbilityCooldown));
+        }
+
+        //Add the ability functionality in the actual weapon script
     }
 
     /// <summary>
@@ -380,6 +450,9 @@ public class BaseWeaponBehaviour : MonoBehaviour
             abilityTwoReady = true;
         }
     }
+    #endregion
+
+
 
     /// <summary>
     /// Converts the inspector variable to it's percentage value if it isn't already a percent

@@ -36,61 +36,61 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
 
     #region Splinter Shot Variables
 
-    [ShowIf(nameof(ViewingSplinterShot))]
-    [Tooltip("How much total damage the splinter shot will do.")]
-    [SerializeField] int splinterShotDamage;
+    //[ShowIf(nameof(ViewingSplinterShot))]
+    //[Tooltip("How much total damage the splinter shot will do.")]
+    //[SerializeField] int splinterShotDamage;
 
-    [ShowIf(nameof(ViewingSplinterShot))]
-    [Tooltip("How big the ability AOE is.")]
-    [SerializeField] float splinterShotAOESize;
+    //[ShowIf(nameof(ViewingSplinterShot))]
+    //[Tooltip("How big the ability AOE is.")]
+    //[SerializeField] float splinterShotAOESize;
 
-    [ShowIf(nameof(ViewingSplinterShot))]
-    [Tooltip("How many times the splinter shot will try to damage.")]
-    [SerializeField] int splinterShotTotalDamageTicks;
+    //[ShowIf(nameof(ViewingSplinterShot))]
+    //[Tooltip("How many times the splinter shot will try to damage.")]
+    //[SerializeField] int splinterShotTotalDamageTicks;
 
-    [ShowIf(nameof(ViewingSplinterShot))]
-    [Tooltip("How long the ability persists.")]
-    [SerializeField] float splinterShotDuration;
+    //[ShowIf(nameof(ViewingSplinterShot))]
+    //[Tooltip("How long the ability persists.")]
+    //[SerializeField] float splinterShotDuration;
 
-    [ShowIf(nameof(ViewingSplinterShot))]
-    [Tooltip("The preview so the player can see how their ability will look.")]
-    [SerializeField] GameObject splinterShotPreview;
+    //[ShowIf(nameof(ViewingSplinterShot))]
+    //[Tooltip("The preview so the player can see how their ability will look.")]
+    //[SerializeField] GameObject splinterShotPreview;
 
-    [ShowIf(nameof(ViewingSplinterShot))]
-    [Tooltip("Which types of layers should be checked to damage with the splinter shot.")]
-    [SerializeField] LayerMask splinterShotLayerMask;
+    //[ShowIf(nameof(ViewingSplinterShot))]
+    //[Tooltip("Which types of layers should be checked to damage with the splinter shot.")]
+    //[SerializeField] LayerMask splinterShotLayerMask;
 
     #endregion
 
     #region Bomb Blast Variables
 
-    [ShowIf(nameof(ViewingBombBlast))]
-    [Tooltip("How much damage bomb blast does to enemies.")]
-    [SerializeField] int bombBlastDamage;
+    //[ShowIf(nameof(ViewingBombBlast))]
+    //[Tooltip("How much damage bomb blast does to enemies.")]
+    //[SerializeField] int bombBlastDamage;
 
-    [ShowIf(nameof(ViewingBombBlast))]
-    [Tooltip("How big the ability AOE is.")]
-    [SerializeField] float bombBlastAOESize;
+    //[ShowIf(nameof(ViewingBombBlast))]
+    //[Tooltip("How big the ability AOE is.")]
+    //[SerializeField] float bombBlastAOESize;
 
-    [ShowIf(nameof(ViewingBombBlast))]
-    [Tooltip("How long it takes for the bomb blast to detonate.")]
-    [SerializeField] float bombBlastDetTime;
+    //[ShowIf(nameof(ViewingBombBlast))]
+    //[Tooltip("How long it takes for the bomb blast to detonate.")]
+    //[SerializeField] float bombBlastDetTime;
 
-    [ShowIf(nameof(ViewingBombBlast))]
-    [Tooltip("How far the player gets launched.")]
-    [SerializeField] float playerLaunchDistance;
+    //[ShowIf(nameof(ViewingBombBlast))]
+    //[Tooltip("How far the player gets launched.")]
+    //[SerializeField] float playerLaunchDistance;
 
-    [ShowIf(nameof(ViewingBombBlast))]
-    [Tooltip("How far the player gets launched.")]
-    [SerializeField] float enemyLaunchDistance;
+    //[ShowIf(nameof(ViewingBombBlast))]
+    //[Tooltip("How far the player gets launched.")]
+    //[SerializeField] float enemyLaunchDistance;
 
-    [ShowIf(nameof(ViewingBombBlast))]
-    [Tooltip("The preview so the player can see how their ability will look.")]
-    [SerializeField] GameObject bombBlastPreview;
+    //[ShowIf(nameof(ViewingBombBlast))]
+    //[Tooltip("The preview so the player can see how their ability will look.")]
+    //[SerializeField] GameObject bombBlastPreview;
 
-    [ShowIf(nameof(ViewingBombBlast))]
-    [Tooltip("Which types of layers should be checked to launch with the bomb blast.")]
-    [SerializeField] LayerMask bombBlastLayerMask;
+    //[ShowIf(nameof(ViewingBombBlast))]
+    //[Tooltip("Which types of layers should be checked to launch with the bomb blast.")]
+    //[SerializeField] LayerMask bombBlastLayerMask;
 
     #endregion
 
@@ -198,7 +198,7 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
         ScatterShotPreview();
         StakeShotPreview();
 
-        activePreview = splinterShotPreview;
+        activePreview = WeaponAbilities[0].AbilityPreview;
     }
 
     /// <summary>
@@ -247,20 +247,20 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
         {
             case Abilities.SplinterShot:
 
-                if(activePreview != splinterShotPreview)
+                if(activePreview != WeaponAbilities[0].AbilityPreview)
                 {
                     activePreview.SetActive(false);
                 }
 
-                activePreview = splinterShotPreview;
+                activePreview = WeaponAbilities[0].AbilityPreview;
                 break;
             case Abilities.BombBlast:
-                if (activePreview != bombBlastPreview)
+                if (activePreview != WeaponAbilities[1].AbilityPreview)
                 {
                     activePreview.SetActive(false);
                 }
 
-                activePreview = bombBlastPreview;
+                activePreview = WeaponAbilities[1].AbilityPreview;
                 break;
             case Abilities.ScatterShot:
                 if (activePreview != scatterShotPreview)
@@ -295,15 +295,15 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
     /// </summary>
     private void SplinterShotPreview()
     {
-        splinterShotPreview.transform.localScale = new Vector3(splinterShotAOESize,
-            splinterShotPreview.transform.localScale.y, splinterShotAOESize);
+        WeaponAbilities[0].AbilityPreview.transform.localScale = new Vector3(WeaponAbilities[0].AbilityAOESize,
+            WeaponAbilities[0].AbilityPreview.transform.localScale.y, WeaponAbilities[0].AbilityAOESize);
 
-        float abilityRange = abilityOne == Abilities.SplinterShot ? abilityOneRange : abilityTwoRange;
+        float abilityRange = abilityOne == Abilities.SplinterShot ? WeaponAbilities[abilityOneIndex].AbilityRange : WeaponAbilities[abilityTwoIndex].AbilityRange;
 
-        float staticY = splinterShotPreview.transform.position.y;
+        float staticY = WeaponAbilities[0].AbilityPreview.transform.position.y;
         Vector3 pos = transform.position + Vector3.ClampMagnitude(mousePos, abilityRange);
         pos.y = staticY;
-        splinterShotPreview.transform.position = pos;
+        WeaponAbilities[0].AbilityPreview.transform.position = pos;
     }
 
     /// <summary>
@@ -311,15 +311,15 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
     /// </summary>
     private void BombBlastPreview()
     {
-        bombBlastPreview.transform.localScale = new Vector3(bombBlastAOESize,
-            bombBlastPreview.transform.localScale.y, bombBlastAOESize);
+        WeaponAbilities[1].AbilityPreview.transform.localScale = new Vector3(WeaponAbilities[1].AbilityAOESize,
+            WeaponAbilities[1].AbilityPreview.transform.localScale.y, WeaponAbilities[1].AbilityAOESize);
 
-        float abilityRange = abilityOne == Abilities.BombBlast ? abilityOneRange : abilityTwoRange;
+        float abilityRange = abilityOne == Abilities.BombBlast ? WeaponAbilities[abilityOneIndex].AbilityRange : WeaponAbilities[abilityTwoIndex].AbilityRange;
 
-        float staticY = bombBlastPreview.transform.position.y;
+        float staticY = WeaponAbilities[1].AbilityPreview.transform.position.y;
         Vector3 pos = transform.position + Vector3.ClampMagnitude(mousePos, abilityRange);
         pos.y = staticY;
-        bombBlastPreview.transform.position = pos;
+        WeaponAbilities[1].AbilityPreview.transform.position = pos;
     }
 
     /// <summary>
@@ -327,7 +327,7 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
     /// </summary>
     private void ScatterShotPreview()
     {
-        float abilityRange = abilityOne == Abilities.ScatterShot ? abilityOneRange : abilityTwoRange;
+        float abilityRange = abilityOne == Abilities.ScatterShot ? WeaponAbilities[abilityOneIndex].AbilityRange : WeaponAbilities[abilityTwoIndex].AbilityRange;
 
         Vector3 pos = scatterShotPreview.transform.position;
         pos.z = transform.position.z + ((abilityRange / 2) * 1.25f);
@@ -342,7 +342,7 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
     /// </summary>
     private void StakeShotPreview()
     {
-        float abilityRange = abilityOne == Abilities.StakeShot ? abilityOneRange : abilityTwoRange;
+        float abilityRange = abilityOne == Abilities.StakeShot ? WeaponAbilities[abilityOneIndex].AbilityRange : WeaponAbilities[abilityTwoIndex].AbilityRange;
 
         Vector3 pos = stakeShotPreview.transform.position;
         pos.z = transform.position.z + abilityRange / 2;
@@ -396,17 +396,17 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
     /// </summary>
     private IEnumerator CastingSplinterShot()
     {
-        GameObject tempAbility = Instantiate(splinterShotPreview, splinterShotPreview.transform.position, Quaternion.identity);
+        GameObject tempAbility = Instantiate(WeaponAbilities[0].AbilityPreview, WeaponAbilities[0].AbilityPreview.transform.position, Quaternion.identity);
 
-        int tickDamage = splinterShotDamage / splinterShotTotalDamageTicks;
+        int tickDamage = WeaponAbilities[0].AbilityDamage / WeaponAbilities[0].AbilityDamageTicks;
         //Stores the remainder damage in case the damage doesn't divide evenly
-        int remainderDamage = splinterShotDamage % splinterShotTotalDamageTicks;
-        for(int i = 0; i < splinterShotTotalDamageTicks; ++i)
+        int remainderDamage = WeaponAbilities[0].AbilityDamage % WeaponAbilities[0].AbilityDamageTicks;
+        for(int i = 0; i < WeaponAbilities[0].AbilityDamageTicks; ++i)
         {
             tickDamage = i + 1 < stakeShotTickCount ? tickDamage : tickDamage + remainderDamage;
 
             Collider[] enemiesToHit = Physics.OverlapCapsule(tempAbility.transform.position + Vector3.up, tempAbility.transform.position,
-                    tempAbility.GetComponent<CapsuleCollider>().radius * tempAbility.transform.localScale.x, splinterShotLayerMask);
+                    tempAbility.GetComponent<CapsuleCollider>().radius * tempAbility.transform.localScale.x, WeaponAbilities[0].AbilityLayerMask);
 
             foreach(Collider enemyCollider in enemiesToHit)
             {
@@ -417,7 +417,7 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
                 }
             }
 
-            yield return new WaitForSeconds(splinterShotDuration / splinterShotTotalDamageTicks);
+            yield return new WaitForSeconds(WeaponAbilities[0].AbilityDuration / WeaponAbilities[0].AbilityDamageTicks);
         }
 
         Destroy(tempAbility);
@@ -428,26 +428,29 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
     /// </summary>
     private IEnumerator CastingBombBlast()
     {
-        GameObject tempAbility = Instantiate(bombBlastPreview, bombBlastPreview.transform.position, Quaternion.identity);
+        GameObject tempAbility = Instantiate(WeaponAbilities[1].AbilityPreview, WeaponAbilities[1].AbilityPreview.transform.position, Quaternion.identity);
 
-        yield return new WaitForSeconds(bombBlastDetTime);
+        yield return new WaitForSeconds(WeaponAbilities[1].AbilityDelay);
 
         Collider[] entitiesToHit = Physics.OverlapCapsule(tempAbility.transform.position + Vector3.up, tempAbility.transform.position,
-                    tempAbility.GetComponent<CapsuleCollider>().radius, bombBlastLayerMask);
+                    tempAbility.GetComponent<CapsuleCollider>().radius * WeaponAbilities[1].AbilityAOESize, WeaponAbilities[1].AbilityLayerMask);
+
+        Debug.Log(entitiesToHit.Length);
 
         foreach (Collider entityCollider in entitiesToHit)
         {
+            Vector3 forceDir = new Vector3(entityCollider.transform.position.x - tempAbility.transform.position.x, 0,
+                entityCollider.transform.position.z - tempAbility.transform.position.z).normalized;
+            Debug.Log(WeaponAbilities[1].AbilityEnemyKnockback * forceDir);
             if (entityCollider.GetComponent<Enemy>())
             {
                 //replace with the enemy taking damage
-                entityCollider.GetComponent<Enemy>().EnemyTakeDamage(bombBlastDamage);
-                entityCollider.GetComponent<Rigidbody>().AddExplosionForce(enemyLaunchDistance, tempAbility.transform.position,
-                    bombBlastAOESize, .1f, ForceMode.Impulse);
+                entityCollider.GetComponent<Enemy>().EnemyTakeDamage(WeaponAbilities[1].AbilityDamage);
+                entityCollider.GetComponent<Rigidbody>().AddForce(WeaponAbilities[1].AbilityEnemyKnockback * forceDir, ForceMode.Impulse);
             }
-            else if(entityCollider.GetComponent<Enemy>() || entityCollider.GetComponentInParent<PlayerController>())
+            else //if(entityCollider.GetComponentInParent<PlayerController>())
             {
-                entityCollider.GetComponentInParent<Rigidbody>().AddExplosionForce(playerLaunchDistance, tempAbility.transform.position,
-                    bombBlastAOESize, 0, ForceMode.Impulse);
+                entityCollider.GetComponentInParent<Rigidbody>().AddForce(WeaponAbilities[1].AbilityPlayerKnockback * forceDir, ForceMode.Impulse);
             }
         }
 
