@@ -67,6 +67,7 @@ public class weaponOnGround : MonoBehaviour
         if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
             inRange = false;
+            inPickup = false;
         }
     }
 
