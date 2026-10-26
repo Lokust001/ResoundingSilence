@@ -1,3 +1,10 @@
+/*
+* Author: Brenden
+* Contributors:
+* Last Modified: 10/26/2026
+* Summary: sets and hold the behavior for the camera to go into Detach mode
+* To Do:   
+*/
 using System.Collections;
 using UnityEngine;
 

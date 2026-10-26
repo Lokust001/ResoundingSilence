@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors: Brenden
-* Last Modified: 10/22/2026
+* Last Modified: 10/26/2026
 * Summary: This service controls the main camera
 * To Do:   N/A
 */
@@ -120,6 +120,9 @@ public class MainCameraManager : BaseManager
         }
     }
 
+    /// <summary>
+    /// has the camera stop following the player
+    /// </summary>
     public void stopFollow()
     {
         FollowPlayer = false;
@@ -127,6 +130,9 @@ public class MainCameraManager : BaseManager
         followingCoroutine = null;
     }
 
+    /// <summary>
+    /// reattach the camera to the player
+    /// </summary>
     public void startFollow()
     {
         AttachCamToPlayer(player.gameObject.GetComponent<PlayerController>());
