@@ -72,7 +72,7 @@ public class weaponOnGround : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    /// if in range grab try and equip weapon
     /// </summary>
     private void TryPickup()
     {
