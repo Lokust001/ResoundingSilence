@@ -88,8 +88,6 @@ public class DebugConsole : MonoBehaviour
         {
             playerInstance = FindAnyObjectByType<PlayerController>();
         }
-
-        playerInstance.StopPlayerMovementAndInput();
         if (mapGenInstance == null)
         {
             mapGenInstance = FindAnyObjectByType<MapGenerator>();
@@ -107,6 +105,7 @@ public class DebugConsole : MonoBehaviour
             FreeCameraInstance = Instantiate(freecamPrefab, DetachInstance.transform.position, DetachInstance.transform.rotation, playerInstance.transform);
             FreeCameraInstance.gameObject.SetActive(false);
         }
+        playerInstance.StopPlayerMovementAndInput();
         ClearConsole();
     }
 
@@ -120,6 +119,7 @@ public class DebugConsole : MonoBehaviour
             playerInstance.RestartPlayerMovementAndInput();
         }
     }
+
 
     /// <summary>
     /// runs through with what was inputted into the text field and runs the command that was typed
@@ -337,10 +337,6 @@ public class DebugConsole : MonoBehaviour
             {
                 playerInstance.StopPlayerMovementAndInput();
             }
-            else
-            {
-                playerInstance.RestartPlayerMovementAndInput();
-            }
             AppendConsoleLine(Command, inputColor);
             AppendConsoleLine($"Pivot command: {pivotToggle}", commandCompletedColor);
             FinishCommand();
@@ -368,7 +364,6 @@ public class DebugConsole : MonoBehaviour
             {
                 MainCameraManager.Instance.startFollow();
                 DetachInstance.isActive = false;
-                playerInstance.RestartPlayerMovementAndInput();
             }
             AppendConsoleLine(Command, inputColor);
             AppendConsoleLine($"Detach command: {detachToggle}", commandCompletedColor);
@@ -399,7 +394,6 @@ public class DebugConsole : MonoBehaviour
                 DetachInstance.gameObject.SetActive(true);
                 MainCameraManager.Instance.startFollow();
                 FreeCameraInstance.isActive = false;
-                playerInstance.RestartPlayerMovementAndInput();
             }
             AppendConsoleLine(Command, inputColor);
             AppendConsoleLine($"Free Cam command: {freeToggle}", commandCompletedColor);
