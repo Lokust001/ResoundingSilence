@@ -1,3 +1,10 @@
+/*
+* Author: Brenden
+* Contributors:
+* Last Modified: 10/26/2026
+* Summary: sets and hold the behavior for the camera to go into pivot mode
+* To Do:   
+*/
 using System.Collections;
 using UnityEngine;
 
@@ -130,7 +137,7 @@ public class PivotCamera : MonoBehaviour
     {
         if (camera == null)
         {
-            camera = CameraManager.camInstance.gameObject;
+            camera = CameraManager.followPlayerCinemachineInstance.gameObject;
         }
         if (cameraLookOffset == null)
         {
