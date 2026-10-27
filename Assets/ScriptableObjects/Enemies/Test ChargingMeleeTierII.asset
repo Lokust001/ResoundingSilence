@@ -17,9 +17,9 @@ MonoBehaviour:
   PresetTooltip: 
   enemyType: 4
   enemyName: Test Charge
-  enemyHealth: 6
-  enemyATKDmg: 6
-  timeBetweenAttacks: 1.2
+  enemyHealth: 150
+  enemyATKDmg: 40
+  timeBetweenAttacks: 1
   maxVariabilityDestinationAttempts: 50
   approachDestinationVariabilityDegrees: 1
   retreatDestinationVariabilityDegrees: 0
@@ -33,7 +33,7 @@ MonoBehaviour:
   timeBetweenRangeChecks: 0
   bulletsToFire: 0
   bulletSpreadRadiusDegrees: 0
-  attackChargeDuration: 1.3
+  attackChargeDuration: 1.1
   earlyChargeMaterial: {fileID: 2100000, guid: c160c7aea25a6e043b4eb127b5bec42c, type: 2}
   endChargeMaterial: {fileID: 2100000, guid: f6d5b7e222f01374bb41a79eea5671b5, type: 2}
   attackUptimeDuration: 0
