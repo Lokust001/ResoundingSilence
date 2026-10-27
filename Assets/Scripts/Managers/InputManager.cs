@@ -219,6 +219,16 @@ public class InputManager : BaseManager
     #region enabling and disabling public events
 
     /// <summary>
+    /// Disables the players inputs
+    /// </summary>
+    public void DisablePlayerInputs()
+    {
+        DisableUpgradeMenuPublicEvents();
+        DisableSettingsMenuPublicEvents();
+        DisableMidRunPublicEvents();
+    }
+
+    /// <summary>
     /// enables the midrun action map
     /// </summary>
     public void SwapActionMapToMidRun()
@@ -410,6 +420,11 @@ public class InputManager : BaseManager
     /// </summary>
     private void DisableUpgradeMenuPublicEvents()
     {
+        if (ToggleUpgradeMenuInUpgradeMenu == null)
+        {
+            return;
+        }
+
         ToggleUpgradeMenuInUpgradeMenu.started -= ToggleUpgradeMenuInUpgradeMenu_started;
         SwapFocusToGrid.started -= SwapFocusToGrid_started;
         SwapFocusToInventory.started -= SwapFocusToInventory_started;

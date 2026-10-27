@@ -11,6 +11,6 @@ public class HealthConsumable : ConsumableBehavior
     /// <param name="player"></param>
     public override void Consume(PlayerController player)
     {
-        player.HealPlayer((int)consumableValue);
+        MidRunDataManager.Instance.ChangePlayerHealth((int)consumableValue);
     }
 }

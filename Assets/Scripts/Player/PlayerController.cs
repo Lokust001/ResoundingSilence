@@ -20,9 +20,6 @@ public class PlayerController : MonoBehaviour
     int currentXP;
 
     [SerializeField]
-    float playerDamage;
-
-    [SerializeField]
     string[] invincibilityLayerNamesToIgnore;
 
     [SerializeField]
@@ -182,7 +179,6 @@ public class PlayerController : MonoBehaviour
         }
 
         Vector3 dashPoint = Physics.Raycast(transform.position, dashDir.normalized, out RaycastHit hit, dashRange, ~ignoreWhileInvincible) ? hit.point : transform.position + (dashDir.normalized * dashRange);
-
         StopCoroutine(playerMovementCoroutine);
 
         for (float t = 0; t < dashDuration; t += Time.deltaTime)
@@ -276,7 +272,7 @@ public class PlayerController : MonoBehaviour
     /// Lets the player take damage, with optional/nullable knockbackInfo
     /// </summary>
     /// <param name="knockbackInfo"></param>
-    public void TakeDamage((Vector3 knockbackDistance, float kbDuration)? knockbackInfo = null)
+    public void TakeDamage(int damage, (Vector3 knockbackDistance, float kbDuration)? knockbackInfo = null)
     {
         if (InGodMode)
             return;
@@ -287,6 +283,8 @@ public class PlayerController : MonoBehaviour
 
         //Start a damage/invincibility couroutine
         dmgCoroutine ??= StartCoroutine(PlayerInvincibilityFrames());
+
+        MidRunDataManager.Instance.ChangePlayerHealth(-damage);
 
         //If there is knockback data and there is no knockback coroutine active 
         if (knockbackInfo.HasValue)
@@ -446,14 +444,6 @@ public class PlayerController : MonoBehaviour
         enemy.SetInRangedArea(enteredTrigger);
     }
 
-    /// <summary>
-    /// Used to heal the player while using the healing potency that you can get from buttons
-    /// </summary>
-    /// <param name="healAmount"></param>
-    public void HealPlayer(int healAmount)
-    {
-        playerHealth += healingPotency * healAmount;
-    }
     /// <summary>
     /// Used to gain XP after defeating an enemy
     /// </summary>

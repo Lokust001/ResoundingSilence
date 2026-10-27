@@ -9,16 +9,54 @@
 using System.Collections.Generic;
 using NaughtyAttributes;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class MidRunDataManager : BaseManager
 {
+    private enum Settings
+    {
+        None,
+        General,
+        GeneralPlayer,
+        Pins,
+        Exp,
+        Health,
+        Dash
+    }
+
+    [SerializeField]
+    private Settings settings;
+
     public static MidRunDataManager Instance;
 
+
+    [ShowIf(nameof(settings), Settings.General)]
     public int Money;
 
-    
-    [SerializeField]public List<PinScriptable> PinScriptableObjects;
+    [SerializeField]
+    private GameObject tempDeathMenu;
 
+    [ShowIf(nameof(settings), Settings.Health)]
+    public float CurrentPlayerHealth;
+
+    [ShowIf(nameof(settings), Settings.Health)]
+    public float MaxPlayerHealth;
+
+    [ShowIf(nameof(settings), Settings.Health)]
+    public float HealingPotency;
+
+    [ShowIf(nameof(settings), Settings.Exp)]
+    public float CurrentPlayerEXP;
+
+    [ShowIf(nameof(settings), Settings.Exp)]
+    public float ExpNeededToLevelUp;
+
+    
+    [SerializeField]
+    [ShowIf(nameof(settings), Settings.Pins)]
+    public List<PinScriptable> PinScriptableObjects;
+
+    
     public List<PinScriptable> pinInventory { get; private set; } = new();
 
     public List<BaseWeaponScriptable> equippedWeapons { get; private set; } = new(2);
@@ -54,6 +92,8 @@ public class MidRunDataManager : BaseManager
                 pinInventory.Add(pin.CreateNonRefCopy<PinScriptable>());
             }
         }
+
+        CurrentPlayerHealth = MaxPlayerHealth;
 
         UnequipAllWeapons();
     }
@@ -155,5 +195,47 @@ public class MidRunDataManager : BaseManager
     public PinScriptable PickDroppedPin()
     {
         return PinScriptableObjects[Random.Range(0, PinScriptableObjects.Count)];
+    }
+
+    /// <summary>
+    /// Used to heal the player while using the healing potency that you can get from buttons
+    /// </summary>
+    /// <param name="amountToChange"></param>
+    public void ChangePlayerHealth(int amountToChange)
+    {
+        if (amountToChange > 0)
+        {
+            //ceil cus we are healing the player
+            amountToChange = Mathf.CeilToInt(HealingPotency * amountToChange);
+        }
+
+        CurrentPlayerHealth += amountToChange;
+
+        if (CurrentPlayerHealth <= 0)
+        {
+            Instantiate(tempDeathMenu, UIManager.Instance.GetMainCanvas().transform);
+            InputManager.Instance.DisablePlayerInputs();
+            Time.timeScale = 0f;
+        }
+
+        UIPublicEvents.UpdatePlayerHealthSlider?.Invoke();
+    }
+
+    /// <summary>
+    /// Used to gain XP after defeating an enemy
+    /// </summary>
+    /// <param name="xpAmount"></param>
+    public void GainXP(int xpAmount)
+    {
+        CurrentPlayerEXP += xpAmount;
+
+        if(CurrentPlayerEXP >= ExpNeededToLevelUp)
+        {
+            CurrentPlayerEXP -= ExpNeededToLevelUp;
+            //level up player. This will probably need to move to the health bar controller so
+            //the player levels up when the bar reaches full as opposed to before
+        }
+
+        UIPublicEvents.UpdatePlayerEXPSlider?.Invoke();
     }
 }
