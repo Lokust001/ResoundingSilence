@@ -64,19 +64,15 @@ public class BaseEnemyScriptable : BaseScriptableObject
     }
 
     [Header("Enemy Type (Required)")]
-    [SerializeField]
     public EnemyType enemyType;
 
 
-    [SerializeField, Header("General Attributes")]
+    [Header("General Attributes")]
     public string enemyName;
 
     public float enemyHealth;
-
     private float enemyMaxHealth;
-
     public int enemyATKDmg;
-
     public float timeBetweenAttacks;
 
     [Header("Dynamic Movement Attributes")]
@@ -184,8 +180,15 @@ public class BaseEnemyScriptable : BaseScriptableObject
     public int allyReducedDmgPercent;
 
     #endregion
+
+    #region Scaling Variables
+    [Header("Scaling Settings")]
+    public AnimationCurve healthScaling;
+    public AnimationCurve damageScaling;
+    #endregion
+
     /// <summary>
-    /// Sets max health as a variable for various health-related functionality
+    /// Sets max health as a variable for various health-related functionality.
     /// </summary>
     private void Awake()
     {
@@ -224,6 +227,26 @@ public class BaseEnemyScriptable : BaseScriptableObject
     public float GetDMGReductionMultiplier() 
     {
         return (float)(allyReducedDmgPercent / PERCENTAGE_DIVISOR);
+    }
+
+    #endregion
+
+    #region Enemy Scaling Methods
+    /// <summary>
+    /// Increases the max HP to match the animation curve's value at curveScaleFactor, and heals the enemy to that max health
+    /// </summary>
+    /// <param name="curveScaleFactor"></param>
+    public void ScaleHP(int curveScaleFactor) 
+    {
+        enemyMaxHealth = enemyHealth = (int)healthScaling.Evaluate(curveScaleFactor);
+    }
+    /// <summary>
+    /// Increases the DMG that the enemy deals to match the animation curve's value at curveScaleFactor
+    /// </summary>
+    /// <param name="curveScaleFactor"></param>
+    public void ScaleDMG(int curveScaleFactor) 
+    {
+        enemyATKDmg = (int)damageScaling.Evaluate(curveScaleFactor);
     }
 
     #endregion
