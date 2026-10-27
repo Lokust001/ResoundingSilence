@@ -96,49 +96,49 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
 
     #region Scatter Shot Variables
 
-    [ShowIf(nameof(ViewingScatterShot))]
-    [Tooltip("How much damage scatter shot does.")]
-    [SerializeField] int scatterShotDamage;
+    //[ShowIf(nameof(ViewingScatterShot))]
+    //[Tooltip("How much damage scatter shot does.")]
+    //[SerializeField] int scatterShotDamage;
 
-    [ShowIf(nameof(ViewingScatterShot))]
-    [Tooltip("The angle at which the scatter shot will spread.")]
-    [SerializeField] float scatterShotCone;
+    //[ShowIf(nameof(ViewingScatterShot))]
+    //[Tooltip("The angle at which the scatter shot will spread.")]
+    //[SerializeField] float scatterShotCone;
 
-    [ShowIf(nameof(ViewingScatterShot))]
-    [Tooltip("How much scatter shot should life steal for.")]
-    [SerializeField] float scatterShotLifeSteal;
+    //[ShowIf(nameof(ViewingScatterShot))]
+    //[Tooltip("How much scatter shot should life steal for.")]
+    //[SerializeField] float scatterShotLifeSteal;
 
-    [ShowIf(nameof(ViewingScatterShot))]
-    [Tooltip("The preview so the player can see how their ability will look.")]
-    [SerializeField] GameObject scatterShotPreview;
+    //[ShowIf(nameof(ViewingScatterShot))]
+    //[Tooltip("The preview so the player can see how their ability will look.")]
+    //[SerializeField] GameObject scatterShotPreview;
 
-    [ShowIf(nameof(ViewingScatterShot))]
-    [Tooltip("Which types of layers should be checked to hit with scatter shot.")]
-    [SerializeField] LayerMask scatterShotLayerMask;
+    //[ShowIf(nameof(ViewingScatterShot))]
+    //[Tooltip("Which types of layers should be checked to hit with scatter shot.")]
+    //[SerializeField] LayerMask scatterShotLayerMask;
 
     #endregion
 
     #region Stake Shot Variables
 
-    [ShowIf(nameof(ViewingStakeShot))]
-    [Tooltip("How much total damage the stake shot will do.")]
-    [SerializeField] int stakeShotDamage;
+    //[ShowIf(nameof(ViewingStakeShot))]
+    //[Tooltip("How much total damage the stake shot will do.")]
+    //[SerializeField] int stakeShotDamage;
 
-    [ShowIf(nameof(ViewingStakeShot))]
-    [Tooltip("How much the stake shot DOT life steals for.")]
-    [SerializeField] float stakeShotLifeStealAmount;
+    //[ShowIf(nameof(ViewingStakeShot))]
+    //[Tooltip("How much the stake shot DOT life steals for.")]
+    //[SerializeField] float stakeShotLifeStealAmount;
 
-    [ShowIf(nameof(ViewingStakeShot))]
-    [Tooltip("How many ticks of damage the stake shot does.")]
-    [SerializeField] int stakeShotTickCount;
+    //[ShowIf(nameof(ViewingStakeShot))]
+    //[Tooltip("How many ticks of damage the stake shot does.")]
+    //[SerializeField] int stakeShotTickCount;
 
-    [ShowIf(nameof(ViewingStakeShot))]
-    [Tooltip("How long the DOT effects lasts.")]
-    [SerializeField] float stakeShotDOTDuration;
+    //[ShowIf(nameof(ViewingStakeShot))]
+    //[Tooltip("How long the DOT effects lasts.")]
+    //[SerializeField] float stakeShotDOTDuration;
 
-    [ShowIf(nameof(ViewingStakeShot))]
-    [Tooltip("The preview so the player can see how their ability will look.")]
-    [SerializeField] GameObject stakeShotPreview;
+    //[ShowIf(nameof(ViewingStakeShot))]
+    //[Tooltip("The preview so the player can see how their ability will look.")]
+    //[SerializeField] GameObject stakeShotPreview;
 
     #region Custom ShowIf Bools
 
@@ -263,20 +263,20 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
                 activePreview = WeaponAbilities[1].AbilityPreview;
                 break;
             case Abilities.ScatterShot:
-                if (activePreview != scatterShotPreview)
+                if (activePreview != WeaponAbilities[2].AbilityPreview)
                 {
                     activePreview.SetActive(false);
                 }
 
-                activePreview = scatterShotPreview;
+                activePreview = WeaponAbilities[2].AbilityPreview;
                 break;
             case Abilities.StakeShot:
-                if (activePreview != stakeShotPreview)
+                if (activePreview != WeaponAbilities[3].AbilityPreview)
                 {
                     activePreview.SetActive(false);
                 }
 
-                activePreview = stakeShotPreview;
+                activePreview = WeaponAbilities[3].AbilityPreview;
                 break;
         }
 
@@ -329,12 +329,12 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
     {
         float abilityRange = abilityOne == Abilities.ScatterShot ? WeaponAbilities[abilityOneIndex].AbilityRange : WeaponAbilities[abilityTwoIndex].AbilityRange;
 
-        Vector3 pos = scatterShotPreview.transform.position;
+        Vector3 pos = WeaponAbilities[2].AbilityPreview.transform.position;
         pos.z = transform.position.z + ((abilityRange / 2) * 1.25f);
-        scatterShotPreview.transform.position = pos;
+        WeaponAbilities[2].AbilityPreview.transform.position = pos;
 
-        scatterShotPreview.transform.localScale = new Vector3(scatterShotCone, 
-            abilityRange, scatterShotPreview.transform.localScale.z);
+        WeaponAbilities[2].AbilityPreview.transform.localScale = new Vector3(WeaponAbilities[2].AbilityRange, 
+            abilityRange, WeaponAbilities[2].AbilityPreview.transform.localScale.z);
     }
 
     /// <summary>
@@ -344,12 +344,12 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
     {
         float abilityRange = abilityOne == Abilities.StakeShot ? WeaponAbilities[abilityOneIndex].AbilityRange : WeaponAbilities[abilityTwoIndex].AbilityRange;
 
-        Vector3 pos = stakeShotPreview.transform.position;
+        Vector3 pos = WeaponAbilities[3].AbilityPreview.transform.position;
         pos.z = transform.position.z + abilityRange / 2;
-        stakeShotPreview.transform.position = pos;
+        WeaponAbilities[3].AbilityPreview.transform.position = pos;
 
-        stakeShotPreview.transform.localScale = new Vector3(stakeShotPreview.transform.localScale.x, 
-            stakeShotPreview.transform.localScale.y, abilityRange);
+        WeaponAbilities[3].AbilityPreview.transform.localScale = new Vector3(WeaponAbilities[3].AbilityPreview.transform.localScale.x,
+            WeaponAbilities[3].AbilityPreview.transform.localScale.y, abilityRange);
     }
 
     #endregion
@@ -403,7 +403,7 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
         int remainderDamage = WeaponAbilities[0].AbilityDamage % WeaponAbilities[0].AbilityDamageTicks;
         for(int i = 0; i < WeaponAbilities[0].AbilityDamageTicks; ++i)
         {
-            tickDamage = i + 1 < stakeShotTickCount ? tickDamage : tickDamage + remainderDamage;
+            tickDamage = i + 1 < WeaponAbilities[0].AbilityDamageTicks ? tickDamage : tickDamage + remainderDamage;
 
             Collider[] enemiesToHit = Physics.OverlapCapsule(tempAbility.transform.position + Vector3.up, tempAbility.transform.position,
                     tempAbility.GetComponent<CapsuleCollider>().radius * tempAbility.transform.localScale.x, WeaponAbilities[0].AbilityLayerMask);
@@ -463,16 +463,16 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
     private void CastingScatterShot()
     {
         Collider[] enemiesHit = Physics.OverlapBox(activePreview.GetComponent<BoxCollider>().bounds.center,
-                    activePreview.GetComponent<BoxCollider>().bounds.extents, Quaternion.identity, scatterShotLayerMask);
+                    activePreview.GetComponent<BoxCollider>().bounds.extents, Quaternion.identity, WeaponAbilities[2].AbilityLayerMask);
 
         foreach(Collider enemyCollider in enemiesHit)
         {
             if(enemyCollider.GetComponent<Enemy>())
             {
                 //replace with the enemy taking damage
-                enemyCollider.GetComponent<Enemy>().EnemyTakeDamage(scatterShotDamage);
+                enemyCollider.GetComponent<Enemy>().EnemyTakeDamage(WeaponAbilities[2].AbilityDamage);
 
-                int healValue = Mathf.CeilToInt(scatterShotDamage * ConvertToPercentage(scatterShotLifeSteal));
+                int healValue = Mathf.CeilToInt(WeaponAbilities[2].AbilityDamage * ConvertToPercentage(WeaponAbilities[2].AbilityLifeSteal));
 
                 //TODO Replace with heal player
                 //FindAnyObjectByType<DummyPlayerBehaviour>().Heal(healValue);
@@ -486,17 +486,17 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
     private IEnumerator CastingStakeShot()
     {
         Collider[] enemiesHit = Physics.OverlapBox(activePreview.GetComponent<BoxCollider>().bounds.center,
-                    activePreview.GetComponent<BoxCollider>().bounds.extents, Quaternion.identity, scatterShotLayerMask);
+                    activePreview.GetComponent<BoxCollider>().bounds.extents, Quaternion.identity, WeaponAbilities[3].AbilityLayerMask);
 
-        int tickDamage = stakeShotDamage / stakeShotTickCount;
+        int tickDamage = WeaponAbilities[3].AbilityDamage / WeaponAbilities[3].AbilityDamageTicks;
         //Stores the remainder damage in case the damage doesn't divide evenly
-        int remainderDamage = stakeShotDamage % stakeShotTickCount;
+        int remainderDamage = WeaponAbilities[3].AbilityDamage % WeaponAbilities[3].AbilityDamageTicks;
 
         List<Collider> stillAlive = new List<Collider>(enemiesHit);
 
-        for (int i = 0; i < stakeShotTickCount; ++i)
+        for (int i = 0; i < WeaponAbilities[3].AbilityDamageTicks; ++i)
         {
-            tickDamage = i + 1 < stakeShotTickCount ? tickDamage : tickDamage + remainderDamage;
+            tickDamage = i + 1 < WeaponAbilities[3].AbilityDamageTicks ? tickDamage : tickDamage + remainderDamage;
 
             enemiesHit = stillAlive.ToArray();
             stillAlive.Clear();
@@ -508,7 +508,7 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
                     //replace with the enemy taking damage
                     enemyCollider.GetComponent<Enemy>().EnemyTakeDamage(tickDamage);
 
-                    int healValue = Mathf.CeilToInt(tickDamage * ConvertToPercentage(scatterShotLifeSteal));
+                    int healValue = Mathf.CeilToInt(tickDamage * ConvertToPercentage(WeaponAbilities[3].AbilityLifeSteal));
 
                     //TODO Replace with heal player
                     //FindAnyObjectByType<DummyPlayerBehaviour>().Heal(healValue);
@@ -522,7 +522,7 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
                 }
             }
 
-            yield return new WaitForSeconds(stakeShotDOTDuration / stakeShotTickCount);
+            yield return new WaitForSeconds(WeaponAbilities[3].AbilityDuration / WeaponAbilities[3].AbilityDamageTicks);
         }
     }
 }

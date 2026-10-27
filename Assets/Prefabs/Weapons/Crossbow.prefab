@@ -1114,7 +1114,7 @@ MonoBehaviour:
   - {fileID: 7400000, guid: e90138978acc5f241830b30f92ca801f, type: 2}
   comboIndex: 0
   meleeHitboxes: []
-  abilitySettings: 0
+  abilitySettings: 1
   WeaponAbilities:
   - AbilityName: SplinterShot
     PrimaryStats:
@@ -1182,24 +1182,72 @@ MonoBehaviour:
       m_Bits: 1088
     AbilityAnim: {fileID: 0}
     AbilityReadyAnim: {fileID: 0}
-  abilityOneIndex: 0
-  abilityTwoIndex: 1
+  - AbilityName: ScatterShot
+    PrimaryStats:
+    - StatType: 0
+      StatValue: 5
+    SecondaryStats:
+    - StatType: 6
+      StatValue: 10
+    AbilityDamage: 0
+    AbilityDamageTicks: 0
+    AbilityDuration: 0
+    AbilityAggroRange: 0
+    AbilityPlayerSpeed: 0
+    AbilityWeaponSpeed: 0
+    AbilityLifeSteal: 0
+    AbilityAOESize: 0
+    AbilityDelay: 0
+    AbilityEnemyKnockback: 0
+    AbilityPlayerKnockback: 0
+    AbilityCooldown: 3
+    AbilityEndLag: 0.5
+    AbilityRange: 3.5
+    HasPreview: 1
+    AbilityPreview: {fileID: 5277897699482532973}
+    AbilityLayerMask:
+      serializedVersion: 2
+      m_Bits: 1024
+    AbilityAnim: {fileID: 0}
+    AbilityReadyAnim: {fileID: 0}
+  - AbilityName: StakeShot
+    PrimaryStats:
+    - StatType: 0
+      StatValue: 20
+    - StatType: 1
+      StatValue: 10
+    - StatType: 2
+      StatValue: 3
+    SecondaryStats:
+    - StatType: 6
+      StatValue: 100
+    AbilityDamage: 0
+    AbilityDamageTicks: 0
+    AbilityDuration: 0
+    AbilityAggroRange: 0
+    AbilityPlayerSpeed: 0
+    AbilityWeaponSpeed: 0
+    AbilityLifeSteal: 0
+    AbilityAOESize: 0
+    AbilityDelay: 0
+    AbilityEnemyKnockback: 0
+    AbilityPlayerKnockback: 0
+    AbilityCooldown: 2
+    AbilityEndLag: 0.5
+    AbilityRange: 6
+    HasPreview: 1
+    AbilityPreview: {fileID: 417958859510438225}
+    AbilityLayerMask:
+      serializedVersion: 2
+      m_Bits: 1024
+    AbilityAnim: {fileID: 0}
+    AbilityReadyAnim: {fileID: 0}
+  abilityOneIndex: 2
+  abilityTwoIndex: 3
   abilityOneReady: 1
   abilityTwoReady: 1
-  abilityOne: 0
-  abilityTwo: 1
-  scatterShotDamage: 5
-  scatterShotCone: 2
-  scatterShotLifeSteal: 10
-  scatterShotPreview: {fileID: 5277897699482532973}
-  scatterShotLayerMask:
-    serializedVersion: 2
-    m_Bits: 1025
-  stakeShotDamage: 20
-  stakeShotLifeStealAmount: 100
-  stakeShotTickCount: 10
-  stakeShotDOTDuration: 3
-  stakeShotPreview: {fileID: 417958859510438225}
+  abilityOne: 2
+  abilityTwo: 3
 --- !u!95 &4470947134498793366
 Animator:
   serializedVersion: 7

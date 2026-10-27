@@ -476,6 +476,8 @@ MonoBehaviour:
   WeaponAbilities: []
   abilityOneIndex: 0
   abilityTwoIndex: 0
+  abilityOneReady: 0
+  abilityTwoReady: 0
 --- !u!4 &593513383
 Transform:
   m_ObjectHideFlags: 0
@@ -1127,6 +1129,8 @@ MonoBehaviour:
   WeaponAbilities: []
   abilityOneIndex: 0
   abilityTwoIndex: 0
+  abilityOneReady: 0
+  abilityTwoReady: 0
 --- !u!4 &1900383282
 Transform:
   m_ObjectHideFlags: 0
@@ -1361,6 +1365,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8556073844088731136, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
+      propertyPath: abilityTwo
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
+      propertyPath: abilitySettings
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
+      propertyPath: abilityTwoIndex
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
