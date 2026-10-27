@@ -7,9 +7,11 @@
 */
 using UnityEngine;
 using NaughtyAttributes;
+using System;
 [CreateAssetMenu(fileName = "BaseEnemyScriptable", menuName = "Scriptables/BaseEnemyScriptable")]
 public class BaseEnemyScriptable : BaseScriptableObject
 {
+
     public enum EnemyType
     {
         None,
@@ -184,6 +186,13 @@ public class BaseEnemyScriptable : BaseScriptableObject
     public int allyReducedDmgPercent;
 
     #endregion
+
+    #region Scaling Variables
+    [Header("Scaling Settings")]
+    public AnimationCurve healthScaling;
+    public AnimationCurve damageScaling;
+    #endregion
+
     /// <summary>
     /// Sets max health as a variable for various health-related functionality
     /// </summary>

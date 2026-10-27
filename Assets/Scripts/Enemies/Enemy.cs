@@ -136,6 +136,8 @@ public class Enemy : MonoBehaviour
     /// </summary>
     public void NextEnemyAction() 
     {
+        allowNonImmediateBehavior = true;
+        Debug.Log("Melee: " + inMeleeRange + " Ranged: " + inRangedRange);
         if (!inRangedRange && !inMeleeRange)
         {
             NotInPlayerZones();
@@ -148,6 +150,7 @@ public class Enemy : MonoBehaviour
         {
             MeleeZoneEntryBehaviors();
         }
+        allowNonImmediateBehavior = false;
     }
 
     /// <summary>
@@ -161,9 +164,7 @@ public class Enemy : MonoBehaviour
         {
             //[Uncomment for debug]
             //Debug.Log("Behavior Loop # [" + i +"]\t inRanged : " + inRangedRange + " Melee area: " + inMeleeRange);
-            allowNonImmediateBehavior = true;
             NextEnemyAction();
-            allowNonImmediateBehavior = false;
             yield return actionInterval;
             i++;
         }
@@ -219,9 +220,11 @@ public class Enemy : MonoBehaviour
                 break;
             case BaseEnemyScriptable.EnemyType.Melee:
             case BaseEnemyScriptable.EnemyType.ChargingMelee:
+                Debug.Log("Ranged Zone Melee" + allowNonImmediateBehavior);
                 if (allowNonImmediateBehavior) 
                 {
                     allowNonImmediateBehavior = false;
+                    Debug.Log("Following player");
                     movementBeahvior.FollowPlayer();
                 }
                 break;
@@ -300,6 +303,7 @@ public class Enemy : MonoBehaviour
         Debug.Log("I've lost my buff! My attacks now deal: " + EnemyDealDamage() + "dmg, and if an attack hits me that is " + dmgToTake + " dmg, I only take " + EnemyTakeDamage(dmgToTake));
     }
 
+
     /// <summary>
     /// Method that calculates enemy damage taken while simultaenously updating enemyData with those values
     /// </summary>
@@ -335,13 +339,15 @@ public class Enemy : MonoBehaviour
         
     }
     /// <summary>
-    /// Simulates an enemydeath
+    /// Simulates an enemydeath, and fulfills objectives if they're active
     /// </summary>
 
     [Button("EnemyDeath")]
     public void EnemyDeath() 
     {
+        ObjectiveManager.Instance.AttemptHuntObjectivesProgression(enemyData);
         Destroy(gameObject);
     }
+
 }
 
