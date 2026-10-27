@@ -233,12 +233,12 @@ public class BaseEnemyScriptable : BaseScriptableObject
 
     #region Enemy Scaling Methods
     /// <summary>
-    /// Increases the max HP to match the animation curve's value at curveScaleFactor
+    /// Increases the max HP to match the animation curve's value at curveScaleFactor, and heals the enemy to that max health
     /// </summary>
     /// <param name="curveScaleFactor"></param>
     public void ScaleHP(int curveScaleFactor) 
     {
-        enemyMaxHealth = healthScaling.Evaluate(curveScaleFactor);
+        enemyMaxHealth = enemyHealth = (int)healthScaling.Evaluate(curveScaleFactor);
     }
     /// <summary>
     /// Increases the DMG that the enemy deals to match the animation curve's value at curveScaleFactor
