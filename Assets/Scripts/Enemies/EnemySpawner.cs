@@ -14,23 +14,32 @@ public class EnemySpawner : MonoBehaviour
 {
 
     private int dangerPoints;
+    [SerializeField]
+    private LayerMask spawningTriggerLayer;
 
     [SerializeField]
     private int pointsPerSecondPassed;
 
     [SerializeField]
     private float enemyGenerationTime;
+    [SerializeField]
+    private int timeBetweenScalingEnemies = 60;
+
+    private int spawnerEnemyScale;
 
     private bool generationReadyFlag;
 
-    [SerializeField]
-    List<Transform> spawnLocations;
+    
 
     [SerializeField]
     SpawnTier[] enemyGroupTiers;
 
+
     [Header("[Debug] Don't edit these fields"), SerializeField]
     List<Enemy> generatedEnemies;
+
+    [SerializeField]
+    List<Transform> spawnLocations;
 
     /// <summary>
     /// Instantiates generatedEnemies so that it isn't null and allows the first generation to happen
@@ -52,12 +61,12 @@ public class EnemySpawner : MonoBehaviour
     /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
-        //If there is ONLY a PlayerController in the parent object and not the current object
-        //(which prevents the player model from double activation)
-        if (other.GetComponentInParent<PlayerController>() != null && other.GetComponent<PlayerController>() == null)
+        //Checks if there is a PlayerController in the parent object
+        if (other.GetComponentInParent<PlayerController>())
         {
             SpawnEnemies();
         }
+        
     }
 
     /// <summary>
@@ -66,7 +75,7 @@ public class EnemySpawner : MonoBehaviour
     /// <param name="other"></param>
     private void OnTriggerExit(Collider other)
     {
-        if (other.GetComponentInParent<PlayerController>() != null && other.GetComponent<PlayerController>() == null)
+        if (other.GetComponentInParent<PlayerController>())
         {
             DespawnEnemies();
         }
@@ -101,13 +110,19 @@ public class EnemySpawner : MonoBehaviour
             Debug.LogWarning("An enemy spawner has less transforms than the amount of enemies it needs to spawn, re-using some transforms");
         }
 
+        bool scaleThisTime = EnemyNeedsScaling();
 
         foreach (var enemy in generatedEnemies)
         {
+            //Find a random Vector3 location and then remove that from being re-used
             int randomIndex = Random.Range(0, transformCopy.Count);
             Vector3 spawnLocation = transformCopy[randomIndex].position;
             enemy.transform.position = spawnLocation;
             transformCopy.RemoveAt(randomIndex);
+
+            //Scale the enemy and enable it
+            if(scaleThisTime)
+                enemy.ScaleEnemy(spawnerEnemyScale);
             enemy.EnableEnemy();
 
         }
@@ -154,10 +169,18 @@ public class EnemySpawner : MonoBehaviour
                 break;
             }
         }
+        //Do not store result as enemies will be generated so they MUST be scaled,
+        //the method will update the variable needed for the scale
+        EnemyNeedsScaling();
 
         foreach (var enemy in calculatedEnemyPool)
         {
+            //Create the enemy
             Enemy createdEnemy = Instantiate(enemy, transform.position, Quaternion.identity).GetComponent<Enemy>();
+            
+            //Scale the enemy's stats based on the calculated level or scale value
+            createdEnemy.ScaleEnemy(spawnerEnemyScale);
+
             createdEnemy.destroyCancellationToken.Register(() =>
             //Inner Method that removes the destroyed enemy from the list,
             //then starts a timer for the next generation interval
@@ -183,5 +206,20 @@ public class EnemySpawner : MonoBehaviour
         generationReadyFlag = true;
     }
 
+    /// <summary>
+    /// Calculates if the enemies need to scale up their stats based on the passed GameTime.
+    /// Returns the conditional and also assigns a local variable if enemy scaling has changed.
+    /// </summary>
+    /// <returns></returns>
+    private bool EnemyNeedsScaling() 
+    {
+        int newScaledValue = Mathf.FloorToInt(GameTimerManager.Instance.GetPreciseGameTime() / timeBetweenScalingEnemies);
 
+        if (newScaledValue > spawnerEnemyScale) 
+        {
+            spawnerEnemyScale = newScaledValue;
+            return true;
+        }
+        return false;
+    }
 }

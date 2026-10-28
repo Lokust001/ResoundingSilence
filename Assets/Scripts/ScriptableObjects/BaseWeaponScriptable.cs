@@ -66,6 +66,9 @@ public class BaseWeaponScriptable : BaseScriptableObject
     [Tooltip("This is the grid that will be attached to this kind of weapon when it is made")]
     public UpgradeTileGrid upgradeGrid;
 
+    [Tooltip("This is used by the weapons that are dropped on the ground")]
+    public GameObject weaponModel; 
+
     #endregion
 
     #region Lore
