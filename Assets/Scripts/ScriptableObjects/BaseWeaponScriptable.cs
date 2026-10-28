@@ -474,6 +474,7 @@ public class BaseWeaponScriptable : BaseScriptableObject
         upgradeGrid.attachedWeapon = this;
     }
 
+    #region Pin Functions
     /// <summary>
     /// changes weapon damage based on the amount of damage buffs given to the weapon on the grid
     /// </summary>
@@ -510,4 +511,11 @@ public class BaseWeaponScriptable : BaseScriptableObject
             LifestealAmount[i] = BaseLifestealAmount[i] * lifestealPercent;
         }
     }
+
+    public void UpdateAbilityDamage(float DamageBuff1, float DamageBuff2)
+    {
+        //editableAbilities[0].damage = editableAbilities[0].baseDamage * DamageBuff1;
+        //editableAbilities[1].damage = editableAbilities[1].baseDamage * DamageBuff2;
+    }
+    #endregion
 }
