@@ -146,16 +146,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   defaultSpeed: 10
   moveSpeed: 10
-  playerHealth: 10
+  playerHealth: 100
   currentXP: 0
   invincibilityLayerNamesToIgnore:
   - Enemies
   - EnemyProjectile
-  invincibilityDuration: 5
-  dashRange: 3
-  dashDuration: 0.8
-  dashCooldown: 3
-  totalDashes: 3
+  invincibilityDuration: 2
+  dashRange: 6
+  dashDuration: 0.5
+  dashCooldown: 0.5
+  totalDashes: 1
   chainDashWindow: 1
   ignoreWhileInvincible:
     serializedVersion: 2
