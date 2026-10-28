@@ -354,7 +354,7 @@ public class Enemy : MonoBehaviour
     [Button("EnemyDeath")]
     public void EnemyDeath() 
     {
-        ObjectiveManager.Instance.AttemptHuntObjectivesProgression(enemyData);
+        SideObjectiveManager.Instance.AttemptHuntObjectivesProgression(enemyData);
         Destroy(gameObject);
     }
 

@@ -9,7 +9,7 @@ using NaughtyAttributes;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Objective", menuName = "Scriptables/Objective")]
-public class Objective : BaseScriptableObject
+public class SideObjective : BaseScriptableObject
 {
     public enum ObjectiveType 
     {

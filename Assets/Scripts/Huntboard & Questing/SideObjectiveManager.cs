@@ -9,25 +9,38 @@ using NaughtyAttributes;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectiveManager : MonoBehaviour
+public class SideObjectiveManager : MonoBehaviour
 {
-    public static ObjectiveManager Instance;
+    public static SideObjectiveManager Instance;
 
-    public Objective.ObjectiveType boardType;
+    public SideObjective.ObjectiveType boardType;
 
-    [ShowIf(nameof(boardType), Objective.ObjectiveType.HuntObjective)]
+    [ShowIf(nameof(boardType), SideObjective.ObjectiveType.HuntObjective)]
     [Header("Hunt Board Objectives")]
-    public List<Objective> currentHuntObjectives;
+    public List<SideObjective> currentHuntObjectives;
 
     //Can be expanded to include gather, destination, or other objectives
-
+    /// <summary>
+    /// Implement singleton interface and create a non-ref copy of all objectives
+    /// </summary>
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
         }
-        else { Destroy(this); }
+        else
+        {
+            Destroy(this);
+        }
+
+        var nonRefCopyList = new List<SideObjective>();
+        foreach (var item in currentHuntObjectives)
+        {
+            nonRefCopyList.Add(item.CreateNonRefCopy<SideObjective>());
+        }
+
+        currentHuntObjectives = nonRefCopyList;
     }
 
     /// <summary>
@@ -36,7 +49,7 @@ public class ObjectiveManager : MonoBehaviour
     /// <param name="huntedEnemyData"></param>
     public void AttemptHuntObjectivesProgression(BaseEnemyScriptable huntedEnemyData) 
     {
-        foreach (Objective obj in currentHuntObjectives) 
+        foreach (SideObjective obj in currentHuntObjectives) 
         {
             obj.ProgressHuntObjective(huntedEnemyData);
         }
