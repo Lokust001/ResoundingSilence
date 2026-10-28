@@ -172,7 +172,9 @@ public class PlayerHUDController : MenuBase
 
         if (MidRunDataManager.Instance.CurrentPlayerHealth <= 0.0f)
         {
+            
             MidRunDataManager.Instance.KillPlayer();
+            StopAllCoroutines();
         }
     }
 
