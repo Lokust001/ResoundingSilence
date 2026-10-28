@@ -299,6 +299,15 @@ public class Enemy : MonoBehaviour
 
         Debug.Log("I've lost my buff! My attacks now deal: " + EnemyDealDamage() + "dmg, and if an attack hits me that is " + dmgToTake + " dmg, I only take " + EnemyTakeDamage(dmgToTake));
     }
+    /// <summary>
+    /// Scales the enemy's HP and Damage values
+    /// </summary>
+    /// <param name="newLevel"></param>
+    public void ScaleEnemy(int scaleValue) 
+    {
+        enemyData.ScaleDMG(scaleValue);
+        enemyData.ScaleHP(scaleValue);
+    }
 
     /// <summary>
     /// Method that calculates enemy damage taken while simultaenously updating enemyData with those values
