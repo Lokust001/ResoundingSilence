@@ -148,7 +148,6 @@ MonoBehaviour:
   moveSpeed: 10
   playerHealth: 10
   currentXP: 0
-  playerDamage: 5
   invincibilityLayerNamesToIgnore:
   - Enemies
   - EnemyProjectile
@@ -160,7 +159,7 @@ MonoBehaviour:
   chainDashWindow: 1
   ignoreWhileInvincible:
     serializedVersion: 2
-    m_Bits: 7168
+    m_Bits: 7296
   healingPotency: 0
   InGodMode: 0
   MoveActive: 1
@@ -393,7 +392,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6840699441752713292}
   - component: {fileID: 1023429072148922387}
-  m_Layer: 6
+  - component: {fileID: 8788501428374508173}
+  m_Layer: 14
   m_Name: Spawn&DespawnZone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -436,6 +436,19 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 2
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8788501428374508173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9071100767457554633}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6725d744f418194b805c2aba199566f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TriggerObjects
+  triggerShapeColor: {r: 1, g: 0.853353, b: 0, a: 1}
 --- !u!1001 &2401131150891747416
 PrefabInstance:
   m_ObjectHideFlags: 0

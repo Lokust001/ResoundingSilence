@@ -218,6 +218,9 @@ public class InputManager : BaseManager
 
     #region enabling and disabling public events
 
+    /// <summary>
+    /// Disables the players inputs
+    /// </summary>
     public void DisablePlayerInputs()
     {
         DisableUpgradeMenuPublicEvents();

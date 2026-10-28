@@ -176,15 +176,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ff4dae3e4b577941ab4fc7c8a312573, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  spawningTriggerLayer:
+    serializedVersion: 2
+    m_Bits: 16384
   pointsPerSecondPassed: 2
   enemyGenerationTime: 5
-  spawnLocations:
-  - {fileID: 1953518458947509403}
-  - {fileID: 7912245610416555411}
-  - {fileID: 1358926013342182918}
-  - {fileID: 2079372628717767990}
-  - {fileID: 7655613371141394048}
-  - {fileID: 5736048193353774861}
+  timeBetweenScalingEnemies: 60
   enemyGroupTiers:
   - tierName: Melee and Shoot
     enemyPool:
@@ -203,6 +200,13 @@ MonoBehaviour:
     - {fileID: 5744320469832728330, guid: f6aca458b8f2f08478e04f3803fe0390, type: 3}
     minimumPoints: 240
   generatedEnemies: []
+  spawnLocations:
+  - {fileID: 1953518458947509403}
+  - {fileID: 7912245610416555411}
+  - {fileID: 1358926013342182918}
+  - {fileID: 2079372628717767990}
+  - {fileID: 7655613371141394048}
+  - {fileID: 5736048193353774861}
 --- !u!33 &9079773255356512544
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -221,10 +225,10 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 16384
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 16375
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
