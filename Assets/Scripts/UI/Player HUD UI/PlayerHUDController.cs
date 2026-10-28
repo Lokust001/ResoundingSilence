@@ -134,6 +134,11 @@ public class PlayerHUDController : MenuBase
     /// <param name="MaxHealth">the max health value - only enter it if the player's max health changes</param>
     private void UpdatePlayerHealthBarValue()
     { 
+        if(healthAnimCoroutine != null)
+        {
+            StopCoroutine(healthAnimCoroutine);
+            healthAnimCoroutine = null;
+        }
         healthAnimCoroutine = StartCoroutine(PlayerHealthAnimation());
     }
 
@@ -156,6 +161,11 @@ public class PlayerHUDController : MenuBase
                 MidRunDataManager.Instance.CurrentPlayerHealth / MidRunDataManager.Instance.MaxPlayerHealth, 
                 currentHealthPercentage, 
                 healthBarAnimation.Evaluate(timer / AnimationTime));
+
+            if (healthBarSlider.fillAmount <= 0)
+            {
+                break;
+            }
             
             timer += Time.deltaTime;
         }
