@@ -19,6 +19,8 @@ public class SideObjectiveManager : MonoBehaviour
     [Header("Hunt Board Objectives")]
     public List<SideObjective> currentHuntObjectives;
 
+    public List<SideObjective> completedHuntObjectives;
+
     //Can be expanded to include gather, destination, or other objectives
     /// <summary>
     /// Implement singleton interface and create a non-ref copy of all objectives
@@ -34,7 +36,7 @@ public class SideObjectiveManager : MonoBehaviour
             Destroy(this);
         }
 
-        var nonRefCopyList = new List<SideObjective>();
+        var nonRefCopyList = completedHuntObjectives = new List<SideObjective>();
         foreach (var item in currentHuntObjectives)
         {
             nonRefCopyList.Add(item.CreateNonRefCopy<SideObjective>());
@@ -49,9 +51,17 @@ public class SideObjectiveManager : MonoBehaviour
     /// <param name="huntedEnemyData"></param>
     public void AttemptHuntObjectivesProgression(BaseEnemyScriptable huntedEnemyData) 
     {
+        bool canRemoveActive = false;
         foreach (SideObjective obj in currentHuntObjectives) 
         {
-            obj.ProgressHuntObjective(huntedEnemyData);
+            canRemoveActive = obj.ProgressHuntObjective(huntedEnemyData);
+            if (canRemoveActive) 
+            {
+                completedHuntObjectives.Add(obj);
+            }
         }
+
+        if(canRemoveActive)
+            currentHuntObjectives.RemoveAll(obj => obj.huntedEnemiesGoal >= obj.huntEnemiesProgress);
     }
 }

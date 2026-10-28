@@ -46,7 +46,7 @@ public class SideObjective : BaseScriptableObject
     /// the type of enemy to be hunted
     /// </summary>
     /// <param name="enemyData"></param>
-    public void ProgressHuntObjective(BaseEnemyScriptable enemyData) 
+    public bool ProgressHuntObjective(BaseEnemyScriptable enemyData) 
     {
         //Base case for AllEnemies
         bool progress = true;
@@ -67,5 +67,7 @@ public class SideObjective : BaseScriptableObject
         //It doesn't always progress because an enemy may be the wrong type of HuntObjective
         if(progress)
             huntEnemiesProgress++;
+
+        return huntEnemiesProgress >= huntedEnemiesGoal;
     }
 }
