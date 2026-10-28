@@ -59,18 +59,5 @@ public class SideObjectiveManager : MonoBehaviour
                 currentHuntObjectives.Remove(obj);
             }
         }
-
-        //bool canRemoveActive = false;
-        //foreach (SideObjective obj in currentHuntObjectives) 
-        //{
-        //    canRemoveActive = obj.ProgressHuntObjective(huntedEnemyData);
-        //    if (canRemoveActive) 
-        //    {
-        //        completedObjectives.Add(obj);
-        //    }
-        //}
-
-        //if (canRemoveActive)
-        //    currentHuntObjectives.RemoveAll(obj => obj.huntedEnemiesGoal >= obj.huntEnemiesProgress);
     }
 }
