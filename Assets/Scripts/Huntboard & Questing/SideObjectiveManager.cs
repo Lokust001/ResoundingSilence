@@ -19,11 +19,11 @@ public class SideObjectiveManager : MonoBehaviour
     [Header("Hunt Board Objectives")]
     public List<SideObjective> currentHuntObjectives;
 
-    public List<SideObjective> completedHuntObjectives;
+    public List<SideObjective> completedObjectives;
 
     //Can be expanded to include gather, destination, or other objectives
     /// <summary>
-    /// Implement singleton interface and create a non-ref copy of all objectives
+    /// Implement singleton interface and overwrite referenced SO's with non-refs instead
     /// </summary>
     private void Awake()
     {
@@ -36,13 +36,12 @@ public class SideObjectiveManager : MonoBehaviour
             Destroy(this);
         }
 
-        var nonRefCopyList = completedHuntObjectives = new List<SideObjective>();
-        foreach (var item in currentHuntObjectives)
-        {
-            nonRefCopyList.Add(item.CreateNonRefCopy<SideObjective>());
-        }
+        completedObjectives = new();
 
-        currentHuntObjectives = nonRefCopyList;
+        for(int i = 0; i < currentHuntObjectives.Count; i++)
+        {
+            currentHuntObjectives[i] = currentHuntObjectives[i].CreateNonRefCopy<SideObjective>();
+        }
     }
 
     /// <summary>
@@ -51,17 +50,27 @@ public class SideObjectiveManager : MonoBehaviour
     /// <param name="huntedEnemyData"></param>
     public void AttemptHuntObjectivesProgression(BaseEnemyScriptable huntedEnemyData) 
     {
-        bool canRemoveActive = false;
-        foreach (SideObjective obj in currentHuntObjectives) 
+        for (int i = currentHuntObjectives.Count - 1; i >= 0; i--) 
         {
-            canRemoveActive = obj.ProgressHuntObjective(huntedEnemyData);
-            if (canRemoveActive) 
+            var obj = currentHuntObjectives[i];
+            if (obj.ProgressHuntObjective(huntedEnemyData)) 
             {
-                completedHuntObjectives.Add(obj);
+                completedObjectives.Add(obj);
+                currentHuntObjectives.Remove(obj);
             }
         }
 
-        if(canRemoveActive)
-            currentHuntObjectives.RemoveAll(obj => obj.huntedEnemiesGoal >= obj.huntEnemiesProgress);
+        //bool canRemoveActive = false;
+        //foreach (SideObjective obj in currentHuntObjectives) 
+        //{
+        //    canRemoveActive = obj.ProgressHuntObjective(huntedEnemyData);
+        //    if (canRemoveActive) 
+        //    {
+        //        completedObjectives.Add(obj);
+        //    }
+        //}
+
+        //if (canRemoveActive)
+        //    currentHuntObjectives.RemoveAll(obj => obj.huntedEnemiesGoal >= obj.huntEnemiesProgress);
     }
 }
