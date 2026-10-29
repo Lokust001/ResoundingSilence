@@ -6,6 +6,7 @@
 * To Do:   
 */
 
+using NaughtyAttributes;
 using System.Collections;
 using UnityEngine;
 
@@ -14,19 +15,55 @@ public class MiniMapCamera : MonoBehaviour
     private PlayerController player;
     private bool shouldBeFollowingPlayer;
 
-    private Vector3 offset;
+    [SerializeField]
+    private Vector3 mainMapOffset;
+
+    [SerializeField]
+    private Vector3 miniMapOffset;
+
+    [SerializeField]
+    private Vector3 currentOffset;
 
     private Coroutine followingPlayerCoroutine;
+    private Coroutine camPosSwapCoroutine;
+
+    [Button]
+    public void SwapCameraPositions(float timeToSwap = 0.5f)
+    {
+        if (camPosSwapCoroutine == null)
+        {
+            Debug.Log("triggered");
+            camPosSwapCoroutine = StartCoroutine(PerformCamPosSwap
+                (currentOffset == miniMapOffset ? mainMapOffset : miniMapOffset, timeToSwap));
+        }
+    }
+
+    private IEnumerator PerformCamPosSwap(Vector3 targetOffset, float time = 0.5f)
+    {
+        Vector3 vec1 = currentOffset;
+
+        float currentTimer = 0.0f;
+        while (currentTimer <= time)
+        {
+            currentOffset = Vector3.Lerp(vec1, targetOffset, (currentTimer / time));
+
+
+            currentTimer += Time.deltaTime;
+            yield return null;
+        }
+        currentOffset = targetOffset;
+        camPosSwapCoroutine = null;
+    }
 
     /// <summary>
     /// initializes the camera
     /// </summary>
-    private void InitMinimapCamera()
+    public void InitMinimapCamera()
     {
-        offset = transform.position;
         player = FindAnyObjectByType<PlayerController>();
         shouldBeFollowingPlayer = true;
         followingPlayerCoroutine = StartCoroutine(FollowPlayer());
+        currentOffset = miniMapOffset;
     }
 
     /// <summary>
@@ -43,9 +80,9 @@ public class MiniMapCamera : MonoBehaviour
             }
             else
             {
-                if (player.transform.position + offset != transform.position)
+                if (player.transform.position + currentOffset != transform.position)
                 {
-                    transform.position = player.transform.position + offset;
+                    transform.position = player.transform.position + currentOffset;
                 }
             }
 
@@ -64,7 +101,14 @@ public class MiniMapCamera : MonoBehaviour
         if (followingPlayerCoroutine != null)
         {
             StopCoroutine(followingPlayerCoroutine);
+            
         }
+
+        if (camPosSwapCoroutine != null)
+        {
+            StopCoroutine(camPosSwapCoroutine);
+            currentOffset = miniMapOffset;
+        } 
         
     }
 

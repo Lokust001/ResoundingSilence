@@ -20,7 +20,8 @@ public class PlayerHUDController : MenuBase
         HealthBar,
         EXPBar,
         Cooldown,
-        Testing
+        Testing,
+        Minimap
     }
 
     [SerializeField]
@@ -41,6 +42,10 @@ public class PlayerHUDController : MenuBase
     [SerializeField, ShowIf(nameof(settings), Settings.EXPBar)]
     private Image expBarSlider;
 
+    [SerializeField]
+    private MiniMapCamera mapCamPrefab;
+
+    private MiniMapCamera mapCam;
     #region TESTING
 
     [SerializeField]
@@ -53,6 +58,8 @@ public class PlayerHUDController : MenuBase
     private float DashMaxCooldown;
 
     private Coroutine healthAnimCoroutine;
+
+    private bool mapIsCurrentlyMini;
 
     /// <summary>
     /// debug command to force the ui to take one damage
@@ -89,6 +96,25 @@ public class PlayerHUDController : MenuBase
         InputPublicEvents.ShootPressed -= ImmediatelyRefreshAllCooldowns;
         UIPublicEvents.UpdatePlayerHealthSlider -= UpdatePlayerHealthBarValue;
         UIPublicEvents.UpdatePlayerEXPSlider -= UpdatePlayerEXPBarValue;
+    }
+
+    /// <summary>
+    /// makes the map camera
+    /// </summary>
+    public override void InitMenu()
+    {
+        base.InitMenu();
+        mapCam = Instantiate(mapCamPrefab, MainCameraManager.Instance.transform);
+        mapCam.InitMinimapCamera();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    private void SwitchCurrentMinimapPos()
+    {
+        mapCam.SwapCameraPositions();
+        
     }
 
     #region Testing

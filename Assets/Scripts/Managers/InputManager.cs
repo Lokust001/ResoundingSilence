@@ -229,6 +229,30 @@ public class InputManager : BaseManager
     }
 
     /// <summary>
+    /// Enables the player's inputs
+    /// 
+    /// TODO: update with more cases as needed
+    /// </summary>
+    public void EnablePlayerInputs()
+    {
+        if (!UIManager.Instance.CurrentlyInFullscreenMenu())
+        {
+            SwapActionMapToMidRun();
+        }
+        else
+        {
+            if (UIManager.Instance.GetCurrentMenu() == UiMenuType.UpgradeMenu)
+            {
+                SwapActionMapToUpgradeMenu();
+            }
+            else
+            {
+                SwapActionMapToSettingsMenu();
+            }
+        }
+    }
+
+    /// <summary>
     /// enables the midrun action map
     /// </summary>
     public void SwapActionMapToMidRun()
