@@ -20,7 +20,8 @@ public class PlayerHUDController : MenuBase
         HealthBar,
         EXPBar,
         Cooldown,
-        Testing
+        Testing,
+        Minimap
     }
 
     [SerializeField]
@@ -41,6 +42,10 @@ public class PlayerHUDController : MenuBase
     [SerializeField, ShowIf(nameof(settings), Settings.EXPBar)]
     private Image expBarSlider;
 
+    [SerializeField]
+    private MiniMapCamera mapCamPrefab;
+
+    private MiniMapCamera mapCam;
     #region TESTING
 
     [SerializeField]
@@ -54,6 +59,8 @@ public class PlayerHUDController : MenuBase
 
     private Coroutine healthAnimCoroutine;
 
+    private bool mapIsCurrentlyMini;
+
     /// <summary>
     /// debug command to force the ui to take one damage
     /// </summary>
@@ -63,12 +70,18 @@ public class PlayerHUDController : MenuBase
         MidRunDataManager.Instance.ChangePlayerHealth(-10);
     }
 
+    /// <summary>
+    /// gains one exp for testing
+    /// </summary>
     [Button("Testing gain one exp")]
     private void GainOneExp()
     {
         MidRunDataManager.Instance.GainXP(1);
     }
 
+    /// <summary>
+    /// turns on the public events
+    /// </summary>
     protected override void SetUpPublicEvents()
     {
         base.SetUpPublicEvents();
@@ -80,6 +93,9 @@ public class PlayerHUDController : MenuBase
         UIPublicEvents.UpdatePlayerEXPSlider += UpdatePlayerEXPBarValue;
     }
 
+    /// <summary>
+    /// turns off the public events
+    /// </summary>
     protected override void TearDownPublicEvents()
     {
         base.TearDownPublicEvents();
@@ -89,6 +105,16 @@ public class PlayerHUDController : MenuBase
         InputPublicEvents.ShootPressed -= ImmediatelyRefreshAllCooldowns;
         UIPublicEvents.UpdatePlayerHealthSlider -= UpdatePlayerHealthBarValue;
         UIPublicEvents.UpdatePlayerEXPSlider -= UpdatePlayerEXPBarValue;
+    }
+
+    /// <summary>
+    /// makes the map camera
+    /// </summary>
+    public override void InitMenu()
+    {
+        base.InitMenu();
+        mapCam = Instantiate(mapCamPrefab, MainCameraManager.Instance.transform);
+        mapCam.InitMinimapCamera();
     }
 
     #region Testing
