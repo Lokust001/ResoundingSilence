@@ -27,6 +27,10 @@ public class MiniMapCamera : MonoBehaviour
     private Coroutine followingPlayerCoroutine;
     private Coroutine camPosSwapCoroutine;
 
+    /// <summary>
+    /// makes the camera zoom out or in
+    /// </summary>
+    /// <param name="timeToSwap"></param>
     [Button]
     public void SwapCameraPositions(float timeToSwap = 0.5f)
     {
@@ -38,6 +42,12 @@ public class MiniMapCamera : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// lerps the camera positions between the current position and the target position over a given time
+    /// </summary>
+    /// <param name="targetOffset"></param>
+    /// <param name="time"></param>
+    /// <returns></returns>
     private IEnumerator PerformCamPosSwap(Vector3 targetOffset, float time = 0.5f)
     {
         Vector3 vec1 = currentOffset;

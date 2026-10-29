@@ -70,12 +70,18 @@ public class PlayerHUDController : MenuBase
         MidRunDataManager.Instance.ChangePlayerHealth(-10);
     }
 
+    /// <summary>
+    /// gains one exp for testing
+    /// </summary>
     [Button("Testing gain one exp")]
     private void GainOneExp()
     {
         MidRunDataManager.Instance.GainXP(1);
     }
 
+    /// <summary>
+    /// turns on the public events
+    /// </summary>
     protected override void SetUpPublicEvents()
     {
         base.SetUpPublicEvents();
@@ -87,6 +93,9 @@ public class PlayerHUDController : MenuBase
         UIPublicEvents.UpdatePlayerEXPSlider += UpdatePlayerEXPBarValue;
     }
 
+    /// <summary>
+    /// turns off the public events
+    /// </summary>
     protected override void TearDownPublicEvents()
     {
         base.TearDownPublicEvents();
@@ -106,15 +115,6 @@ public class PlayerHUDController : MenuBase
         base.InitMenu();
         mapCam = Instantiate(mapCamPrefab, MainCameraManager.Instance.transform);
         mapCam.InitMinimapCamera();
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    private void SwitchCurrentMinimapPos()
-    {
-        mapCam.SwapCameraPositions();
-        
     }
 
     #region Testing
