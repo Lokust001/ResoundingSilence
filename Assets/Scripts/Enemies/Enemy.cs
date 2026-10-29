@@ -5,6 +5,7 @@
  */
 
 using NaughtyAttributes;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -25,12 +26,18 @@ public class Enemy : MonoBehaviour
     [SerializeField, Header("Debug Variables")]
     private int dmgToTake;
 
+    public Action aggroEnemyGroup;
+
+    private bool isAggro;
+
     private bool inMeleeRange;
     private bool inRangedRange;
 
     private bool allowNonImmediateBehavior;
 
     private YieldInstruction actionInterval;
+
+    private EnemySpawner assignedSpawner;
 
     /// <summary>
     /// Creates a copy of the scriptable object not tied to the inspector, then propagates it other scripts
@@ -75,6 +82,7 @@ public class Enemy : MonoBehaviour
     public void DisableEnemy()
     {
         aggroTrigger.EnemyTriggerActivated -= EnableEnemyAggro;
+        isAggro = false;
         foreach (ICustomDisabler entity in GetComponentsInChildren<ICustomDisabler>(true))
         {
             entity.DisableEntity();
@@ -84,14 +92,28 @@ public class Enemy : MonoBehaviour
         StopAllCoroutines();
     }
 
+    public void AssignEnemySpawner(EnemySpawner spawner) 
+    {
+        assignedSpawner = spawner;
+    }
+
     /// <summary>
     /// Aggro's the enemy and then disables this behavior for the rest of its runtime
     /// </summary>
     /// <param name="obj"></param>
-    private void EnableEnemyAggro(PlayerController obj)
+    public void EnableEnemyAggro(PlayerController obj = null)
     {
+        _ = obj;
+
+        if (isAggro)
+            return;
+
+        isAggro = true;
         Debug.Log(gameObject.name + " is aggro'd");
+        //Remove Aggro Trigger
         aggroTrigger.EnemyTriggerActivated -= EnableEnemyAggro;
+        //Call other enemies to be aggro'd
+        aggroEnemyGroup?.Invoke();
         FirstEnemyAction();
 
     }
@@ -320,6 +342,10 @@ public class Enemy : MonoBehaviour
         enemyData.enemyHealth -= finalDmgTaken;
         if (enemyData.enemyHealth <= 0)
             EnemyDeath();
+
+        if (!isAggro)
+            EnableEnemyAggro();
+
         return finalDmgTaken;
     }
 

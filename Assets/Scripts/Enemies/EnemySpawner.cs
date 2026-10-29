@@ -23,7 +23,16 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField]
     private float enemyGenerationTime;
     [SerializeField]
+    private GameObject enemySpawnsParent;
+
+    [SerializeField]
     private int timeBetweenScalingEnemies = 60;
+
+    [Header("Trigger Objects")]
+    [SerializeField]
+    private TriggerObjects spawnDespawnTrigger;
+    [SerializeField]
+    private TriggerObjects deAggroTrigger;
 
     private int spawnerEnemyScale;
 
@@ -50,37 +59,60 @@ public class EnemySpawner : MonoBehaviour
         generationReadyFlag = true;
 
         //Retrieves all spawn transforms and removes the one on the parent gameobject
-        spawnLocations = GetComponentsInChildren<Transform>().ToList<Transform>();
-        spawnLocations.Remove(transform);
+        spawnLocations = enemySpawnsParent.GetComponentsInChildren<Transform>().ToList<Transform>();
+        spawnLocations.Remove(enemySpawnsParent.transform);
 
+    }
+    /// <summary>
+    /// Add listener for Player enter or exiting the spawn & de-aggro trigger
+    /// </summary>
+    private void OnEnable()
+    {
+        spawnDespawnTrigger.PlayerEnterOrExit += SpawnOrDespawnHandler;
+        deAggroTrigger.PlayerEnterOrExit += DeAggroHandler;
     }
 
     /// <summary>
-    /// Start spwaning enemies when player is about to be nearby
+    /// Remove listener for Player enter or exiting the spawn & de-aggro trigger
     /// </summary>
-    /// <param name="other"></param>
-    private void OnTriggerEnter(Collider other)
+    private void OnDisable()
     {
-        //Checks if there is a PlayerController in the parent object
-        if (other.GetComponentInParent<PlayerController>())
+        spawnDespawnTrigger.PlayerEnterOrExit -= SpawnOrDespawnHandler;
+        deAggroTrigger.PlayerEnterOrExit-= DeAggroHandler;
+    }
+
+    private void SpawnOrDespawnHandler(bool playerEnters) 
+    {
+        if (playerEnters)
         {
             SpawnEnemies();
         }
-        
-    }
-
-    /// <summary>
-    /// Start despawning enemies when player is about to leave the location
-    /// </summary>
-    /// <param name="other"></param>
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.GetComponentInParent<PlayerController>())
+        else 
         {
             DespawnEnemies();
         }
     }
 
+
+    public void AggroAllEnemies() 
+    {
+        foreach (var enemy in generatedEnemies) 
+        {
+            enemy.EnableEnemyAggro();
+        }
+    }
+
+    private void DeAggroHandler(bool playerEnters)
+    {
+        if (!playerEnters) 
+        {
+            foreach (var enemy in generatedEnemies)
+            {
+                //De-aggro
+
+            }
+        }
+    }
 
     /// <summary>
     /// Spawns a group of enemies at random spawn locations.
@@ -180,12 +212,13 @@ public class EnemySpawner : MonoBehaviour
             
             //Scale the enemy's stats based on the calculated level or scale value
             createdEnemy.ScaleEnemy(spawnerEnemyScale);
-
+            createdEnemy.AssignEnemySpawner(this);
+            createdEnemy.aggroEnemyGroup += AggroAllEnemies;
             createdEnemy.destroyCancellationToken.Register(() =>
             //Inner Method that removes the destroyed enemy from the list,
             //then starts a timer for the next generation interval
             {
-
+                createdEnemy.aggroEnemyGroup -= AggroAllEnemies;
                 generatedEnemies.Remove(createdEnemy);
                 if (generatedEnemies.Count <= 0 && this != null)
                     StartCoroutine(NextGenerationCooldown());
