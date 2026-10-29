@@ -27,7 +27,8 @@ public class PinScriptable : BaseScriptableObject
         BulletDamage,
         AttackSpeed,
         addDebuff,
-        Lifesteal
+        Lifesteal,
+        BurstDamage
     }
 
     [HorizontalLine(4, EColor.Red)]

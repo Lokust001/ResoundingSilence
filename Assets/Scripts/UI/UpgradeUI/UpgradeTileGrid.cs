@@ -6,11 +6,10 @@
 * To Do:   N/A
 */
 
-using NaughtyAttributes;
 using System.Collections.Generic;
 using System.Linq;
+using NaughtyAttributes;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 [System.Serializable]
 public class UpgradeTileGrid
@@ -72,7 +71,7 @@ public class UpgradeTileGrid
                 rowTiles.Add(false);
             }
         }
-        
+
         /// <summary>
         /// updates the rows with the width so it can be easily changed in the inspector
         /// </summary>
@@ -121,7 +120,7 @@ public class UpgradeTileGrid
     /// </summary>
     public void UpdateGridHeightCount()
     {
-        
+
         if (rows.Count == height || height < 0)
         {
             return;
@@ -182,19 +181,19 @@ public class UpgradeTileGrid
         }
 
         //place glyphs randomly
-        int glyphsToPlace = Random.Range(minInclusive: NumberOfGlyphRange.x, maxExclusive:NumberOfGlyphRange.y + 1);
+        int glyphsToPlace = Random.Range(minInclusive: NumberOfGlyphRange.x, maxExclusive: NumberOfGlyphRange.y + 1);
 
         if (glyphsToPlace <= 0)
         {
             return;
         }
 
-        for (int i =  0; i < glyphsToPlace; i++)
+        for (int i = 0; i < glyphsToPlace; i++)
         {
             enabledUnGlyphedTiles[Random.Range(0, enabledUnGlyphedTiles.Count)].SetGlyph(StaticDataManager.Instance.GetRandomGlyph());
         }
 
-        
+
     }
 
     /// <summary>
@@ -203,9 +202,9 @@ public class UpgradeTileGrid
     public void GetPins()
     {
         pins.Clear();
-        foreach(var grid in grid)
+        foreach (var grid in grid)
         {
-            if(grid.pin != null)
+            if (grid.pin != null)
             {
                 pins.Add(grid.pin);
             }
@@ -230,72 +229,35 @@ public class UpgradeTileGrid
         float damagebuff = 1.0f;
         float AttackSpeedBuff = 1.0f;
         float lifestealBuff = 1.0f;
+        float BurstBuff = 1.0f;
         GetPins();
-        foreach(var pin in pins)
+        foreach (var pin in pins)
         {
             UpgradeTileData thisTile = grid.FirstOrDefault(x => x.pin == pin);
-            if (pin.StatToChange == PinScriptable.WeaponStatToChange.BulletDamage)
+            switch (pin.StatToChange)
             {
-                float buffAmount = pin.ModifierNumber;
-                if(pin.AdditiveScaling)
-                {
-                    buffAmount += GetAdjacentBuff(thisTile);
-                }
-                else
-                {
-                    buffAmount *= (1 + (GetAdjacentBuff(thisTile)/100));
-                }
-
-                if ((thisTile.GlyphActive && thisTile.glyph.Type == GlyphScriptable.GlyphType.DoubleThisGlyph) || doubleGlyphAdjacent(thisTile))
-                {
-                    buffAmount *= 2;
-                }
-                damagebuff += (buffAmount / 100);
-                
-            }
-            else if(pin.StatToChange == PinScriptable.WeaponStatToChange.AttackSpeed)
-            {
-                float buffAmount = pin.ModifierNumber;
-                if(pin.AdditiveScaling)
-                {
-                    buffAmount += GetAdjacentBuff(thisTile);
-                }
-                else
-                {
-                    buffAmount *= (1 + (GetAdjacentBuff(thisTile) / 100));
-                }
-
-                if ((thisTile.GlyphActive && thisTile.glyph.Type == GlyphScriptable.GlyphType.DoubleThisGlyph) || doubleGlyphAdjacent(thisTile))
-                {
-                    buffAmount *= 2;
-                }
-                AttackSpeedBuff *= (100 - buffAmount) / 100;
-            }
-            else if (pin.StatToChange == PinScriptable.WeaponStatToChange.Lifesteal)
-            {
-                float buffAmount = pin.ModifierNumber;
-                if (pin.AdditiveScaling)
-                {
-                    buffAmount += GetAdjacentBuff(thisTile);
-                }
-                else
-                {
-                    buffAmount *= (1 + (GetAdjacentBuff(thisTile) / 100));
-                }
-
-                if ((thisTile.GlyphActive && thisTile.glyph.Type == GlyphScriptable.GlyphType.DoubleThisGlyph) || doubleGlyphAdjacent(thisTile))
-                {
-                    buffAmount *= 2;
-                }
-                lifestealBuff += (buffAmount / 100);
+                case PinScriptable.WeaponStatToChange.none:
+                    continue;
+                case PinScriptable.WeaponStatToChange.BulletDamage:
+                    damagebuff += (GetBuffAmount(pin, thisTile) / 100);
+                    continue;
+                case PinScriptable.WeaponStatToChange.AttackSpeed:
+                    AttackSpeedBuff *= (100 - GetBuffAmount(pin, thisTile)) / 100;
+                    continue;
+                case PinScriptable.WeaponStatToChange.Lifesteal:
+                    lifestealBuff += (GetBuffAmount(pin, thisTile) / 100);
+                    continue;
+                case PinScriptable.WeaponStatToChange.BurstDamage:
+                    BurstBuff += (GetBuffAmount(pin, thisTile) / 100);
+                    continue;
             }
         }
 
-        foreach(UpgradeTileData tile in grid)
+        foreach (UpgradeTileData tile in grid)
         {
             if (tile.GlyphActive)
             {
-                switch(tile.glyph.Type)
+                switch (tile.glyph.Type)
                 {
                     case 0:
                         break;
@@ -308,7 +270,7 @@ public class UpgradeTileGrid
                     case GlyphScriptable.GlyphType.HealthingReceived:
                         playerController.healingPotency = 1 + (tile.glyph.GlyphChangeAmount / 100);
                         break;
-                    case GlyphScriptable.GlyphType.StatusEffect: 
+                    case GlyphScriptable.GlyphType.StatusEffect:
                         //ToDo Add the extra StatusEffect Buffs
                         break;
                 }
@@ -318,8 +280,33 @@ public class UpgradeTileGrid
         attachedWeapon.UpdateWeaponSpeed(AttackSpeedBuff);
         attachedWeapon.UpdateWeaponDamage(damagebuff);
         attachedWeapon.UpdateLifestealPercent(lifestealBuff);
+        attachedWeapon.AddBurst((int)((BurstBuff * 100) / 100));
     }
 
+    /// <summary>
+    /// checks all the current stats of this current pin and sends it back in as a %
+    /// </summary>
+    /// <param name="pin"></param>
+    /// <param name="thisTile"></param>
+    /// <returns></returns>
+    public float GetBuffAmount(PinScriptable pin, UpgradeTileData thisTile)
+    {
+        float buffAmount = pin.ModifierNumber;
+        if (pin.AdditiveScaling)
+        {
+            buffAmount += GetAdjacentBuff(thisTile);
+        }
+        else
+        {
+            buffAmount *= (1 + (GetAdjacentBuff(thisTile) / 100));
+        }
+        if ((thisTile.GlyphActive && thisTile.glyph.Type == GlyphScriptable.GlyphType.DoubleThisGlyph) || doubleGlyphAdjacent(thisTile))
+        {
+            buffAmount *= 2;
+        }
+
+        return buffAmount;
+    }
 
     /// <summary>
     /// when a new pin is set check if it was on a glyph that it's compatable with
@@ -328,7 +315,7 @@ public class UpgradeTileGrid
     public void CheckGlyphs(PinScriptable newpin)
     {
         UpgradeTileData tile = grid.FirstOrDefault(x => x.pin == newpin);
-        if(tile.glyph != null && newpin.Types[0] == tile.glyph.PinTypeToModify)
+        if (tile.glyph != null && newpin.Types[0] == tile.glyph.PinTypeToModify)
         {
             tile.GlyphActive = true;
         }
@@ -346,31 +333,31 @@ public class UpgradeTileGrid
     public float GetAdjacentBuff(UpgradeTileData tile)
     {
         float BuffAmount = 0;
-        
+
         AdajacencyTest = UtilityFunctions.GetAdjacentTiles<UpgradeTileData>(tile.coords, grid, height, width);
-        if(AdajacencyTest != null)
+        if (AdajacencyTest != null)
         {
             if (AdajacencyTest[0] != null && AdajacencyTest[0].pin != null && tile.pin.NorthAdjacency != null && CheckAdjacency(tile.pin.NorthAdjacency, AdajacencyTest[0].pin.Types))
                 BuffAmount += tile.pin.AdjacentTileScaling;
 
             if (AdajacencyTest[1] != null && AdajacencyTest[1].pin != null && tile.pin.NorthEastAdjacency != null && CheckAdjacency(tile.pin.NorthEastAdjacency, AdajacencyTest[1].pin.Types))
                 BuffAmount += tile.pin.AdjacentTileScaling;
-            
+
             if (AdajacencyTest[2] != null && AdajacencyTest[2].pin != null && tile.pin.EastAdjacency != null && CheckAdjacency(tile.pin.EastAdjacency, AdajacencyTest[2].pin.Types))
                 BuffAmount += tile.pin.AdjacentTileScaling;
-            
+
             if (AdajacencyTest[3] != null && AdajacencyTest[3].pin != null && tile.pin.SouthEastAdjacency != null && CheckAdjacency(tile.pin.SouthEastAdjacency, AdajacencyTest[3].pin.Types))
                 BuffAmount += tile.pin.AdjacentTileScaling;
-            
+
             if (AdajacencyTest[4] != null && AdajacencyTest[4].pin != null && tile.pin.SouthAdjacency != null && CheckAdjacency(tile.pin.SouthAdjacency, AdajacencyTest[4].pin.Types))
                 BuffAmount += tile.pin.AdjacentTileScaling;
-            
+
             if (AdajacencyTest[5] != null && AdajacencyTest[5].pin != null && tile.pin.SouthWestAdjacency != null && CheckAdjacency(tile.pin.SouthWestAdjacency, AdajacencyTest[5].pin.Types))
                 BuffAmount += tile.pin.AdjacentTileScaling;
-            
+
             if (AdajacencyTest[6] != null && AdajacencyTest[6].pin != null && tile.pin.WestAdjacency != null && CheckAdjacency(tile.pin.WestAdjacency, AdajacencyTest[6].pin.Types))
                 BuffAmount += tile.pin.AdjacentTileScaling;
-            
+
             if (AdajacencyTest[7] != null && AdajacencyTest[7].pin != null && tile.pin.NorthWestAdjacency != null && CheckAdjacency(tile.pin.NorthWestAdjacency, AdajacencyTest[7].pin.Types))
                 BuffAmount += tile.pin.AdjacentTileScaling;
         }
@@ -403,11 +390,11 @@ public class UpgradeTileGrid
     /// <returns></returns>
     private bool CheckAdjacency(List<PinScriptable.PinType> accepted, List<PinScriptable.PinType> adjacentTypes)
     {
-        foreach(PinScriptable.PinType tester in accepted)
+        foreach (PinScriptable.PinType tester in accepted)
         {
-            foreach(PinScriptable.PinType type in adjacentTypes)
+            foreach (PinScriptable.PinType type in adjacentTypes)
             {
-                if(tester == type)
+                if (tester == type)
                 {
                     return true;
                 }
