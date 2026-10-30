@@ -142,6 +142,7 @@ public class MidRunDataManager : BaseManager
     public int AddPinToInventory(PinScriptable pin)
     {
         pinInventory.Add(pin);
+        UIPublicEvents.InventoryUpdated?.Invoke();
         return pinInventory.Count - 1;
     }
 
