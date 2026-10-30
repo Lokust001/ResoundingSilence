@@ -1,7 +1,7 @@
 /******************************************************************************
  * Author: Brad Dixon
  * Contributors:
- * Last Modified: 10/28/2026
+ * Last Modified: 10/30/2026
  * Brief:
  * TODO:
  * ***************************************************************************/
@@ -18,9 +18,9 @@ public class AbilityData
         Damage,
         DamageTicks,
         Duration,
-        AggroRange,
-        PlayerSpeed,
-        WeaponSpeed,
+        //AggroRange,
+        //PlayerSpeed,
+        //WeaponSpeed,
         LifeSteal,
         AOESize,
         Delay,
@@ -31,23 +31,25 @@ public class AbilityData
     public List<StatValues> PrimaryStats = new List<StatValues>();
     public List<StatValues> SecondaryStats = new List<StatValues>();
 
-    [HideInInspector] public int AbilityDamage;
-    [HideInInspector] public int AbilityDamageTicks;
-    [HideInInspector] public float AbilityDuration;
-    [HideInInspector] public float AbilityAggroRange;
-    [HideInInspector] public float AbilityPlayerSpeed;
-    [HideInInspector] public float AbilityWeaponSpeed;
-    [HideInInspector] public float AbilityLifeSteal;
-    [HideInInspector] public float AbilityAOESize;
-    [HideInInspector] public float AbilityDelay;
-    [HideInInspector] public float AbilityEnemyKnockback;
-    [HideInInspector] public float AbilityPlayerKnockback;
+    [HideInInspector] public int AbilityDamage = 0;
+    [HideInInspector] public int AbilityDamageTicks = 0;
+    [HideInInspector] public float AbilityDuration = 0;
+    [HideInInspector] public float AbilityAggroRange = 0;
+    [HideInInspector] public float AbilityPlayerSpeed = 0;
+    [HideInInspector] public float AbilityWeaponSpeed = 0;
+    [HideInInspector] public float AbilityLifeSteal = 0;
+    [HideInInspector] public float AbilityAOESize = 1;
+    [HideInInspector] public float AbilityDelay = 0;
+    [HideInInspector] public float AbilityEnemyKnockback = 0;
+    [HideInInspector] public float AbilityPlayerKnockback = 0;
 
     public float AbilityCooldown;
     public float AbilityEndLag;
     public float AbilityRange;
     public bool HasPreview;
     public PreviewShape PreviewData;
+
+    public bool PersistingAbility;
     public LayerMask AbilityLayerMask;
 
     [HideInInspector] public Vector3 BaseAbilitySize;

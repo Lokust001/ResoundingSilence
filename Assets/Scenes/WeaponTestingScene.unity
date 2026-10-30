@@ -1577,11 +1577,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
       propertyPath: abilityOneIndex
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
       propertyPath: abilityTwoIndex
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
       propertyPath: WeaponAbilities.Array.data[2].OrbitsPlayer
@@ -1589,6 +1589,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
       propertyPath: WeaponAbilities.Array.data[3].OrbitsPlayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
+      propertyPath: WeaponAbilities.Array.data[0].PersistingAbility
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
@@ -1639,6 +1643,34 @@ PrefabInstance:
       propertyPath: WeaponAbilities.Array.data[3].PreviewData.AbilityPreview
       value: 
       objectReference: {fileID: 275741845}
+    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
+      propertyPath: WeaponAbilities.Array.data[0].SecondaryStats.Array.data[0].StatType
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
+      propertyPath: WeaponAbilities.Array.data[1].SecondaryStats.Array.data[0].StatType
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
+      propertyPath: WeaponAbilities.Array.data[1].SecondaryStats.Array.data[1].StatType
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
+      propertyPath: WeaponAbilities.Array.data[1].SecondaryStats.Array.data[2].StatType
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
+      propertyPath: WeaponAbilities.Array.data[1].SecondaryStats.Array.data[3].StatType
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
+      propertyPath: WeaponAbilities.Array.data[2].SecondaryStats.Array.data[0].StatType
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
+      propertyPath: WeaponAbilities.Array.data[3].SecondaryStats.Array.data[0].StatType
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

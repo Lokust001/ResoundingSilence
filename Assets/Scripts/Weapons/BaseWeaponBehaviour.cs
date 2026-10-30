@@ -169,15 +169,15 @@ public class BaseWeaponBehaviour : MonoBehaviour
                 case AbilityData.Stats.Duration:
                     ability.AbilityDuration = value.StatValue;
                     break;
-                case AbilityData.Stats.AggroRange:
-                    ability.AbilityAggroRange = value.StatValue;
-                    break;
-                case AbilityData.Stats.PlayerSpeed:
-                    ability.AbilityPlayerSpeed = value.StatValue;
-                    break;
-                case AbilityData.Stats.WeaponSpeed:
-                    ability.AbilityWeaponSpeed = value.StatValue;
-                    break;
+                //case AbilityData.Stats.AggroRange:
+                //    ability.AbilityAggroRange = value.StatValue;
+                //    break;
+                //case AbilityData.Stats.PlayerSpeed:s
+                //    ability.AbilityPlayerSpeed = value.StatValue;
+                //    break;
+                //case AbilityData.Stats.WeaponSpeed:
+                //    ability.AbilityWeaponSpeed = value.StatValue;
+                //    break;
                 case AbilityData.Stats.LifeSteal:
                     ability.AbilityLifeSteal = value.StatValue;
                     break;
@@ -479,13 +479,15 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// <summary>
     /// The base inheritance for using weapon abilities
     /// </summary>
-    virtual protected void CastingAbility()
+    virtual public void CastingAbility()
     {
         weaponAnimator.SetBool("AbilityCast", true);
         continuouslyUpdatePreview = false;
         attackReady = false;
         aimingAbilityOne = false;
         aimingAbilityTwo = false;
+
+        StartCoroutine(AbilityDamage());
 
         StartCoroutine(AbilityEndLag(WeaponAbilities[currentAbilityIndex].AbilityEndLag));
         StartCoroutine(AbilityDelay(true, WeaponAbilities[currentAbilityIndex].AbilityCooldown));
@@ -507,11 +509,105 @@ public class BaseWeaponBehaviour : MonoBehaviour
     }
 
     /// <summary>
-    /// Public 
+    /// Contains functionality for how the ability behaves
     /// </summary>
-    public void AbilityDamage()
+    /// <returns></returns>
+    protected IEnumerator AbilityDamage()
     {
+        GameObject tempAbility = null;
+        if (WeaponAbilities[currentAbilityIndex].PersistingAbility)
+        {
+            tempAbility = Instantiate(activePreview, activePreview.transform.position, Quaternion.identity);
+        }
 
+        yield return new WaitForSeconds(WeaponAbilities[currentAbilityIndex].AbilityDelay);
+
+        int damage = WeaponAbilities[currentAbilityIndex].AbilityDuration > 0 ? 
+            Mathf.CeilToInt(WeaponAbilities[currentAbilityIndex].AbilityDamage / WeaponAbilities[currentAbilityIndex].AbilityDamageTicks)
+            : WeaponAbilities[currentAbilityIndex].AbilityDamage;
+        float delay = WeaponAbilities[currentAbilityIndex].AbilityDamageTicks > 0 ?
+            WeaponAbilities[currentAbilityIndex].AbilityDuration / WeaponAbilities[currentAbilityIndex].AbilityDamageTicks : 0;
+        float elapsed = 0;
+
+        Collider[] targets;
+
+        float r = 0;
+        Vector3 center = Vector3.zero;
+        Vector3 extents = Vector3.zero;
+
+        switch (WeaponAbilities[currentAbilityIndex].PreviewData.ShapeType)
+        {
+            case PreviewShape.Shape.Square:
+            case PreviewShape.Shape.Cone:
+                center = activePreview.GetComponent<BoxCollider>().bounds.center;
+                extents = activePreview.GetComponent<BoxCollider>().bounds.extents;
+
+                targets = Physics.OverlapBox(center, extents, Quaternion.identity,
+                WeaponAbilities[currentAbilityIndex].AbilityLayerMask);
+                break;
+            case PreviewShape.Shape.Sphere:
+                r = activePreview.GetComponent<SphereCollider>() ? activePreview.GetComponent<SphereCollider>().radius :
+                    activePreview.GetComponent<CapsuleCollider>().radius;
+                targets = Physics.OverlapSphere(activePreview.transform.position,
+                    r * WeaponAbilities[currentAbilityIndex].AbilityAOESize,
+                    WeaponAbilities[currentAbilityIndex].AbilityLayerMask);
+                break;
+            default:
+                targets = new Collider[0];
+                break;
+        }
+
+        activePreview.SetActive(false);
+
+        do
+        {
+            if (WeaponAbilities[currentAbilityIndex].PersistingAbility)
+            {
+                switch (WeaponAbilities[currentAbilityIndex].PreviewData.ShapeType)
+                {
+                    case PreviewShape.Shape.Square:
+                    case PreviewShape.Shape.Cone:
+                        targets = Physics.OverlapBox(center, extents, Quaternion.identity,
+                        WeaponAbilities[currentAbilityIndex].AbilityLayerMask);
+                        break;
+                    case PreviewShape.Shape.Sphere:
+                        targets = Physics.OverlapSphere(activePreview.transform.position,
+                            r * WeaponAbilities[currentAbilityIndex].AbilityAOESize,
+                            WeaponAbilities[currentAbilityIndex].AbilityLayerMask);
+                        break;
+                    default:
+                        targets = new Collider[0];
+                        break;
+                }
+            }
+
+            foreach (Collider t in targets)
+            {
+                t.GetComponent<Enemy>().EnemyTakeDamage(damage);
+                Debug.Log(t.name + " took " + damage + " damage!");
+
+                Vector3 forceDir = new Vector3(t.transform.position.x - activePreview.transform.position.x, 0,
+                t.transform.position.z - activePreview.transform.position.z).normalized;
+
+                if (t.GetComponent<Enemy>())
+                {
+                    //replace with the enemy taking damage
+                    t.GetComponent<Rigidbody>().AddForce(WeaponAbilities[currentAbilityIndex].AbilityEnemyKnockback * forceDir, ForceMode.Impulse);
+                }
+                else
+                {
+                    t.GetComponentInParent<Rigidbody>().AddForce(WeaponAbilities[currentAbilityIndex].AbilityPlayerKnockback * forceDir, ForceMode.Impulse);
+                }
+            }
+
+            yield return new WaitForSeconds(delay);
+            elapsed += delay;
+        } while (elapsed < WeaponAbilities[currentAbilityIndex].AbilityDuration);
+
+        if (WeaponAbilities[currentAbilityIndex].PersistingAbility)
+        {
+            Destroy(tempAbility);
+        }
     }
 
     /// <summary>

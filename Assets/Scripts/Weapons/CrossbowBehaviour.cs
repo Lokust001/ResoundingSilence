@@ -368,28 +368,28 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
     /// <summary>
     /// Determines which ability the player is trying to cast it and then casts it
     /// </summary>
-    protected override void CastingAbility()
-    {
-        switch (aimingAbilityOne == true ? abilityOne : abilityTwo)
-        {
-            case Abilities.SplinterShot:
-                StartCoroutine(CastingSplinterShot());
-                break;
-            case Abilities.BombBlast:
-                StartCoroutine(CastingBombBlast());
-                break;
-            case Abilities.ScatterShot:
-                CastingScatterShot();
-                break;
-            case Abilities.StakeShot:
-                StartCoroutine(CastingStakeShot());
-                break;
-        }
+    //protected override void CastingAbility()
+    //{
+    //    switch (aimingAbilityOne == true ? abilityOne : abilityTwo)
+    //    {
+    //        case Abilities.SplinterShot:
+    //            StartCoroutine(CastingSplinterShot());
+    //            break;
+    //        case Abilities.BombBlast:
+    //            StartCoroutine(CastingBombBlast());
+    //            break;
+    //        case Abilities.ScatterShot:
+    //            CastingScatterShot();
+    //            break;
+    //        case Abilities.StakeShot:
+    //            StartCoroutine(CastingStakeShot());
+    //            break;
+    //    }
 
-        activePreview.SetActive(false);
+    //    activePreview.SetActive(false);
 
-        base.CastingAbility();
-    }
+    //    base.CastingAbility();
+    //}
 
     /// <summary>
     /// How the splinter shot ability interacts with the enemies
