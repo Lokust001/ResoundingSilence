@@ -243,54 +243,54 @@ public class UpgradeTileGrid
             switch (pin.StatToChange)
             {
                 case PinScriptable.WeaponStatToChange.none:
-                    continue;
+                    break;
                 case PinScriptable.WeaponStatToChange.BulletDamage:
                     damagebuff += (GetBuffAmount(pin, thisTile) / 100);
-                    continue;
+                    break;
                 case PinScriptable.WeaponStatToChange.AttackSpeed:
                     AttackSpeedBuff *= (100 - GetBuffAmount(pin, thisTile)) / 100;
-                    continue;
+                    break;
                 case PinScriptable.WeaponStatToChange.Lifesteal:
                     lifestealBuff += (GetBuffAmount(pin, thisTile) / 100);
-                    continue;
+                    break;
                 case PinScriptable.WeaponStatToChange.BurstDamage:
                     BurstBuff += (GetBuffAmount(pin, thisTile) / 100);
-                    continue;
+                    break;
                 case PinScriptable.WeaponStatToChange.AbilityDamage:
                     AbilityDamageBuff += (GetBuffAmount(pin, thisTile) / 100);
-                    continue;
+                    break;
                 case PinScriptable.WeaponStatToChange.AbilityCooldown:
                     AbilityCooldown *= (100 - GetBuffAmount(pin, thisTile)) / 100;
-                    continue;
+                    break;
                 case PinScriptable.WeaponStatToChange.projectileSpeed:
                     ProjectileSpeed += (GetBuffAmount(pin, thisTile) / 100);
-                    continue;
+                    break;
                 case PinScriptable.WeaponStatToChange.DashDistance:
                     DashBuff += (GetBuffAmount(pin, thisTile) / 100);
-                    continue;
+                    break;
                 case PinScriptable.WeaponStatToChange.DamageResistance:
                     DamageResistance *= (100 - GetBuffAmount(pin, thisTile)) / 100;
-                    continue;
+                    break;
                 case PinScriptable.WeaponStatToChange.MoveSpeed:
                     MoveSpeedBuff += (GetBuffAmount(pin, thisTile) / 100);
-                    continue;
+                    break;
                 case PinScriptable.WeaponStatToChange.HealingUp:
                     HealingPotency += (GetBuffAmount(pin, thisTile) / 100);
-                    continue;
+                    break;
                 case PinScriptable.WeaponStatToChange.GlassCannon:
                     damagebuff += (GetBuffAmount(pin, thisTile) / 100);
                     DamageResistance *= pin.SecondModifier / 100;
-                    continue;
+                    break;
                 case PinScriptable.WeaponStatToChange.knockbackResistance:
                     knockbackAmount *= (100 - GetBuffAmount(pin, thisTile)) / 100;
-                    continue;
+                    break;
                 case PinScriptable.WeaponStatToChange.ThickSkin:
                     DamageResistance *= (100 - GetBuffAmount(pin, thisTile)) / 100;
                     HealingPotency -= pin.SecondModifier / 100;
-                    continue;
+                    break;
                 case PinScriptable.WeaponStatToChange.Regen:
                     regenAmount += (GetBuffAmount(pin, thisTile) / 100);
-                    continue;
+                    break;
             }
         }
 

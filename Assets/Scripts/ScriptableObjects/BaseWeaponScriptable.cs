@@ -551,6 +551,10 @@ public class BaseWeaponScriptable : BaseScriptableObject
         //editableAbilities[1].Cooldown = editableAbilities[1].baseCooldown * CooldownReduction;
     }
 
+    /// <summary>
+    /// adds a burst to the attack and adds the the burst damage
+    /// </summary>
+    /// <param name="percentDamage"></param>
     public void AddBurst(int percentDamage)
     {
         if(percentDamage > 5)
@@ -563,6 +567,10 @@ public class BaseWeaponScriptable : BaseScriptableObject
         }
     }
 
+    /// <summary>
+    /// adds speed to the projectiles
+    /// </summary>
+    /// <param name="speedBoost"></param>
     public void ProjectileSpeedBoost(float speedBoost)
     {
         for (int i = 0; i < ProjectileSpeed.Count; i++)
@@ -571,6 +579,15 @@ public class BaseWeaponScriptable : BaseScriptableObject
         }
     }
 
+    /// <summary>
+    /// takes and stores the player modifiers
+    /// </summary>
+    /// <param name="dash"></param>
+    /// <param name="DR"></param>
+    /// <param name="moveSpeed"></param>
+    /// <param name="healing"></param>
+    /// <param name="kb"></param>
+    /// <param name="regen"></param>
     public void getPlayerModifiers(float dash, float DR, float moveSpeed, float healing, float kb, float regen)
     {
         DashBuff = dash;
@@ -581,6 +598,9 @@ public class BaseWeaponScriptable : BaseScriptableObject
         regenAmount = regen;
     }
 
+    /// <summary>
+    /// sends the player modifiers to the player
+    /// </summary>
     public void sendPlayerModifiers()
     {
         playerController.DashDistance(DashBuff);

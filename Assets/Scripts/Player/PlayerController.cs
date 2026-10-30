@@ -129,31 +129,55 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Pinfunctions
+    /// <summary>
+    /// Increases the dash range
+    /// </summary>
+    /// <param name="dashIncrease"></param>
     public void DashDistance(float dashIncrease)
     {
         dashRange = dashIncrease * BasedashRange;
     }
 
+    /// <summary>
+    /// increases the movement speed
+    /// </summary>
+    /// <param name="moveBuff"></param>
     public void MoveSpeedIncrease(float moveBuff)
     {
         moveSpeed = moveBuff * defaultSpeed;
     }
 
+    /// <summary>
+    /// changes the damage resistance
+    /// </summary>
+    /// <param name="Modifier"></param>
     public void DamageResistanceChange(float Modifier)
     {
         damageResistance = Modifier;
     }
 
+    /// <summary>
+    /// changes the healing potency
+    /// </summary>
+    /// <param name="Modifier"></param>
     public void healingPotencyChange(float Modifier)
     {
         healingPotency = Modifier;
     }
 
+    /// <summary>
+    /// adds knockback resistance
+    /// </summary>
+    /// <param name="Modifier"></param>
     public void KnockbackResistance(float Modifier)
     {
         KnockbackAmount = Modifier;
     }
 
+    /// <summary>
+    /// adds regen boost
+    /// </summary>
+    /// <param name="Modifier"></param>
     public void RegenBoost(float Modifier)
     {
         regenAmount = BaseRegenAmount + ((Modifier - 1) * 100);
