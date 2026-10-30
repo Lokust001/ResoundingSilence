@@ -2,16 +2,16 @@
 * Author: Dalsten Yan
 * Contributors:
 * Last Modified: 09/18/2026
-* Summary: Interface that contains shared entity data
+* Summary: Interface that encompasses most enemy-derived behaviors
 * To Do:
 */
-public interface IStatBasedEnemies
+public interface ISharedEnemyBehaviors
 {
     /// <summary>
     /// Method that helps propagate ScriptableObjects into other Scripts that may need them
     /// </summary>
     /// <param name="baseScriptable"></param>
-    void SetEntityData(BaseScriptableObject baseScriptable);
+    void ReceiveEnemyData(BaseScriptableObject baseScriptable);
 
-    void DeAggroEntity();
+    void DeAggroEnemy();
 }

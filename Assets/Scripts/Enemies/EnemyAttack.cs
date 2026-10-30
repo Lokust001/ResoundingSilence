@@ -8,7 +8,7 @@ using System.Collections;
 using UnityEngine;
 using static BaseEnemyScriptable;
 
-public class EnemyAttack : MonoBehaviour, IStatBasedEnemies, ICustomEnabler, ICustomDisabler
+public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, ICustomDisabler
 {
 
     [SerializeField]
@@ -352,7 +352,7 @@ public class EnemyAttack : MonoBehaviour, IStatBasedEnemies, ICustomEnabler, ICu
     /// <summary>
     /// De-aggros the enemy's attack behavior by stopping all coroutines, resetting melee indicator, and freeing up coroutine trackers
     /// </summary>
-    public void DeAggroEntity() 
+    public void DeAggroEnemy() 
     {
         sphereTrigger.enabled = false;
         StopAllCoroutines();
@@ -364,7 +364,7 @@ public class EnemyAttack : MonoBehaviour, IStatBasedEnemies, ICustomEnabler, ICu
     /// Casts the scriptable object into a BaseEnemyScriptable and assigns the data of the enemy to this script
     /// </summary>
     /// <param name="baseScriptable"></param>
-    public void SetEntityData(BaseScriptableObject baseScriptable)
+    public void ReceiveEnemyData(BaseScriptableObject baseScriptable)
     {
         enemyData = (BaseEnemyScriptable)baseScriptable;
         InitializeVariables();
@@ -386,7 +386,7 @@ public class EnemyAttack : MonoBehaviour, IStatBasedEnemies, ICustomEnabler, ICu
     /// </summary>
     public void DisableEntity()
     {
-        DeAggroEntity();
+        DeAggroEnemy();
 
         if (chargingCapCollider != null)
             chargingCapCollider.enabled = false;

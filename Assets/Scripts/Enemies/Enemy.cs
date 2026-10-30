@@ -61,9 +61,9 @@ public class Enemy : MonoBehaviour
     /// </summary>
     void PropagateEnemyData()
     {
-        foreach (IStatBasedEnemies entity in GetComponentsInChildren<IStatBasedEnemies>(true))
+        foreach (ISharedEnemyBehaviors entity in GetComponentsInChildren<ISharedEnemyBehaviors>(true))
         {
-            entity.SetEntityData(enemyData);
+            entity.ReceiveEnemyData(enemyData);
         }
     }
 
@@ -127,9 +127,9 @@ public class Enemy : MonoBehaviour
     public void EnemyDeAggro() 
     {
         isAggro = false;
-        foreach (var behavior in GetComponentsInChildren<IStatBasedEnemies>(true))
+        foreach (var behavior in GetComponentsInChildren<ISharedEnemyBehaviors>(true))
         {
-            behavior.DeAggroEntity();
+            behavior.DeAggroEnemy();
         }
         attackBehavior.ResetIndicatorParent();
         aggroTrigger.EnemyTriggerActivated += AggroEnemy;
