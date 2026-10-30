@@ -23,7 +23,16 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField]
     private float enemyGenerationTime;
     [SerializeField]
+    private GameObject enemySpawnsParent;
+
+    [SerializeField]
     private int timeBetweenScalingEnemies = 60;
+
+    [Header("Trigger Objects")]
+    [SerializeField]
+    private TriggerObjects spawnDespawnTrigger;
+    [SerializeField]
+    private TriggerObjects deAggroTrigger;
 
     private int spawnerEnemyScale;
 
@@ -50,37 +59,75 @@ public class EnemySpawner : MonoBehaviour
         generationReadyFlag = true;
 
         //Retrieves all spawn transforms and removes the one on the parent gameobject
-        spawnLocations = GetComponentsInChildren<Transform>().ToList<Transform>();
-        spawnLocations.Remove(transform);
+        spawnLocations = enemySpawnsParent.GetComponentsInChildren<Transform>().ToList<Transform>();
+        spawnLocations.Remove(enemySpawnsParent.transform);
 
+    }
+    /// <summary>
+    /// Add listener for Player enter or exiting the spawn & de-aggro trigger
+    /// </summary>
+    private void OnEnable()
+    {
+        spawnDespawnTrigger.PlayerEnterOrExit += SpawnOrDespawnHandler;
+        deAggroTrigger.PlayerEnterOrExit += DeAggroHandler;
     }
 
     /// <summary>
-    /// Start spwaning enemies when player is about to be nearby
+    /// Remove listener for Player enter or exiting the spawn & de-aggro trigger
     /// </summary>
-    /// <param name="other"></param>
-    private void OnTriggerEnter(Collider other)
+    private void OnDisable()
     {
-        //Checks if there is a PlayerController in the parent object
-        if (other.GetComponentInParent<PlayerController>())
+        spawnDespawnTrigger.PlayerEnterOrExit -= SpawnOrDespawnHandler;
+        deAggroTrigger.PlayerEnterOrExit-= DeAggroHandler;
+    }
+
+    /// <summary>
+    /// Handles the logic for the player entering specifically the De-aggro trigger
+    /// </summary>
+    /// <param name="playerEnters"></param>
+    private void SpawnOrDespawnHandler(bool playerEnters) 
+    {
+        if (playerEnters)
         {
             SpawnEnemies();
         }
-        
-    }
-
-    /// <summary>
-    /// Start despawning enemies when player is about to leave the location
-    /// </summary>
-    /// <param name="other"></param>
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.GetComponentInParent<PlayerController>())
+        else 
         {
             DespawnEnemies();
         }
     }
 
+    /// <summary>
+    /// Aggros all enemy when called from one enemy
+    /// </summary>
+    public void AggroAllEnemies() 
+    {
+        foreach (var enemy in generatedEnemies) 
+        {
+            enemy.AggroEnemy();
+        }
+    }
+
+    private void DeAggroHandler(bool playerEnters)
+    {
+        //If player is leaving De-Aggro Trigger
+        if (!playerEnters)
+        {
+            Debug.Log("De-aggro-ing enemies");
+            foreach (var enemy in generatedEnemies)
+            {
+                enemy.EnemyDeAggro();
+            }
+        }
+        //If player goes into de-aggro range, re-enable aggro triggers
+        else 
+        {
+            foreach (var enemy in generatedEnemies)
+            {
+                enemy.EnableAggroFunctionality();
+            }
+        }
+    }
 
     /// <summary>
     /// Spawns a group of enemies at random spawn locations.
@@ -144,6 +191,17 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Grabs a random enemy group from the groupList
+    /// </summary>
+    /// <param name="groupList"></param>
+    /// <returns></returns>
+    private List<GameObject> RandomEnemyGroupFromTier(SpawnTier.EnemyGroup[] groupList) 
+    {
+        int randomGroupIndex = Random.Range(0, groupList.Length);
+        return groupList[randomGroupIndex].enemies.ToList<GameObject>();
+    }
+
 
     /// <summary>
     /// Calculates and assigns a tier of enemies based on the number of danger points
@@ -164,7 +222,7 @@ public class EnemySpawner : MonoBehaviour
         {
             if (dangerPoints >= enemyGroupTiers[i].minimumPoints)
             {
-                calculatedEnemyPool = enemyGroupTiers[i].enemyPool.ToList<GameObject>();
+                calculatedEnemyPool = RandomEnemyGroupFromTier(enemyGroupTiers[i].enemyGroups);
                 Debug.Log(enemyGroupTiers[i].tierName + " was chosen from calculated danger points");
                 break;
             }
@@ -180,12 +238,12 @@ public class EnemySpawner : MonoBehaviour
             
             //Scale the enemy's stats based on the calculated level or scale value
             createdEnemy.ScaleEnemy(spawnerEnemyScale);
-
+            createdEnemy.aggroEnemyGroup += AggroAllEnemies;
             createdEnemy.destroyCancellationToken.Register(() =>
             //Inner Method that removes the destroyed enemy from the list,
             //then starts a timer for the next generation interval
             {
-
+                createdEnemy.aggroEnemyGroup -= AggroAllEnemies;
                 generatedEnemies.Remove(createdEnemy);
                 if (generatedEnemies.Count <= 0 && this != null)
                     StartCoroutine(NextGenerationCooldown());

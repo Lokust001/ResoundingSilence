@@ -8,7 +8,7 @@ using System.Collections;
 using UnityEngine;
 using static BaseEnemyScriptable;
 
-public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICustomDisabler
+public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, ICustomDisabler
 {
 
     [SerializeField]
@@ -265,7 +265,7 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
     /// <summary>
     /// Resets the parent indicator scale so that that the indicator isn't showing
     /// </summary>
-    private void ResetIndicatorParent() 
+    public void ResetIndicatorParent() 
     {
         if(attackIndicatorArea != null)
             attackIndicatorArea.transform.parent.localScale = new(1, 1, 0);
@@ -341,10 +341,30 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
     }
 
     /// <summary>
+    /// Turns on the sphere collider used for checking aggro
+    /// </summary>
+    public void EnableAggroChecking() 
+    {
+        sphereTrigger.enabled = true;
+    }
+
+
+    /// <summary>
+    /// De-aggros the enemy's attack behavior by stopping all coroutines, resetting melee indicator, and freeing up coroutine trackers
+    /// </summary>
+    public void DeAggroEnemy() 
+    {
+        sphereTrigger.enabled = false;
+        StopAllCoroutines();
+        ResetIndicatorParent();
+        activeATKorCooldown = enemyCharging = null;
+    }
+
+    /// <summary>
     /// Casts the scriptable object into a BaseEnemyScriptable and assigns the data of the enemy to this script
     /// </summary>
     /// <param name="baseScriptable"></param>
-    public void SetEntityData(BaseScriptableObject baseScriptable)
+    public void ReceiveEnemyData(BaseScriptableObject baseScriptable)
     {
         enemyData = (BaseEnemyScriptable)baseScriptable;
         InitializeVariables();
@@ -356,7 +376,7 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
     /// </summary>
     public void EnableEntity()
     {
-        sphereTrigger.enabled = true;
+        //sphereTrigger.enabled = true;
         if(chargingCapCollider != null)
             chargingCapCollider.enabled = true;
     }
@@ -366,10 +386,7 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
     /// </summary>
     public void DisableEntity()
     {
-        StopAllCoroutines();
-        ResetIndicatorParent();
-        activeATKorCooldown = enemyCharging = null;
-        sphereTrigger.enabled = false;
+        DeAggroEnemy();
 
         if (chargingCapCollider != null)
             chargingCapCollider.enabled = false;
