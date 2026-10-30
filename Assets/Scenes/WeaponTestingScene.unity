@@ -289,11 +289,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &275741845 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 417958859510438225, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
-  m_PrefabInstance: {fileID: 2135661603}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &276588698
 GameObject:
   m_ObjectHideFlags: 0
@@ -927,11 +922,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 768497752}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &1190311270 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5277897699482532973, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
-  m_PrefabInstance: {fileID: 2135661603}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1263588570
 GameObject:
   m_ObjectHideFlags: 0
@@ -1160,16 +1150,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1764995708 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7590928629485323880, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
-  m_PrefabInstance: {fileID: 2135661603}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1876089265 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7347509225486067769, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
-  m_PrefabInstance: {fileID: 2135661603}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1881888023
 GameObject:
   m_ObjectHideFlags: 0
@@ -1523,10 +1503,6 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 611638886}
-    - target: {fileID: 4403383144082048249, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
-      propertyPath: m_VersionIndex
-      value: 38
-      objectReference: {fileID: 0}
     - target: {fileID: 5473042265430862922, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -1574,102 +1550,6 @@ PrefabInstance:
     - target: {fileID: 8556073844088731136, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
       propertyPath: m_Name
       value: Crossbow
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
-      propertyPath: abilityOneIndex
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
-      propertyPath: abilityTwoIndex
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
-      propertyPath: WeaponAbilities.Array.data[2].OrbitsPlayer
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
-      propertyPath: WeaponAbilities.Array.data[3].OrbitsPlayer
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
-      propertyPath: WeaponAbilities.Array.data[0].PersistingAbility
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
-      propertyPath: WeaponAbilities.Array.data[0].PreviewData.ShapeType
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
-      propertyPath: WeaponAbilities.Array.data[1].PreviewData.ShapeType
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
-      propertyPath: WeaponAbilities.Array.data[2].PreviewData.ShapeType
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
-      propertyPath: WeaponAbilities.Array.data[3].PreviewData.ScaleZOnly
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
-      propertyPath: WeaponAbilities.Array.data[2].PreviewData.SizeIsRange
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
-      propertyPath: WeaponAbilities.Array.data[3].PreviewData.SizeIsRange
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
-      propertyPath: WeaponAbilities.Array.data[2].PreviewData.OrbitsPlayer
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
-      propertyPath: WeaponAbilities.Array.data[3].PreviewData.OrbitsPlayer
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
-      propertyPath: WeaponAbilities.Array.data[0].PreviewData.AbilityPreview
-      value: 
-      objectReference: {fileID: 1764995708}
-    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
-      propertyPath: WeaponAbilities.Array.data[1].PreviewData.AbilityPreview
-      value: 
-      objectReference: {fileID: 1876089265}
-    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
-      propertyPath: WeaponAbilities.Array.data[2].PreviewData.AbilityPreview
-      value: 
-      objectReference: {fileID: 1190311270}
-    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
-      propertyPath: WeaponAbilities.Array.data[3].PreviewData.AbilityPreview
-      value: 
-      objectReference: {fileID: 275741845}
-    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
-      propertyPath: WeaponAbilities.Array.data[0].SecondaryStats.Array.data[0].StatType
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
-      propertyPath: WeaponAbilities.Array.data[1].SecondaryStats.Array.data[0].StatType
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
-      propertyPath: WeaponAbilities.Array.data[1].SecondaryStats.Array.data[1].StatType
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
-      propertyPath: WeaponAbilities.Array.data[1].SecondaryStats.Array.data[2].StatType
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
-      propertyPath: WeaponAbilities.Array.data[1].SecondaryStats.Array.data[3].StatType
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
-      propertyPath: WeaponAbilities.Array.data[2].SecondaryStats.Array.data[0].StatType
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 8988554487706284111, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
-      propertyPath: WeaponAbilities.Array.data[3].SecondaryStats.Array.data[0].StatType
-      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

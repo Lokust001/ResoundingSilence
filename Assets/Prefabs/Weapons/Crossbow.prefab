@@ -604,7 +604,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 23
+  m_VersionIndex: 38
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -1125,7 +1125,7 @@ MonoBehaviour:
     - StatType: 2
       StatValue: 5
     SecondaryStats:
-    - StatType: 7
+    - StatType: 4
       StatValue: 3
     AbilityDamage: 0
     AbilityDamageTicks: 0
@@ -1142,15 +1142,19 @@ MonoBehaviour:
     AbilityEndLag: 0.5
     AbilityRange: 3.5
     HasPreview: 1
-    OrbitsPlayer: 0
-    SizeIsRange: 0
-    ScaleXOnly: 0
-    ScaleZOnly: 0
-    AbilityPreview: {fileID: 7590928629485323880}
+    PreviewData:
+      ShapeType: 1
+      AbilityPreview: {fileID: 7590928629485323880}
+      OrbitsPlayer: 0
+      SizeIsRange: 0
+      ScaleXOnly: 0
+      ScaleZOnly: 0
+    PersistingAbility: 1
     AbilityLayerMask:
       serializedVersion: 2
       m_Bits: 1024
     BaseAbilitySize: {x: 0, y: 0, z: 0}
+    AbilityPos: {x: 0, y: 0, z: 0}
     AbilityAnim:
       AnimClip: {fileID: 0}
       LayerIndex: 0
@@ -1162,13 +1166,13 @@ MonoBehaviour:
     - StatType: 0
       StatValue: 3
     SecondaryStats:
-    - StatType: 7
+    - StatType: 4
       StatValue: 3
-    - StatType: 8
+    - StatType: 5
       StatValue: 1
-    - StatType: 10
+    - StatType: 7
       StatValue: 6
-    - StatType: 9
+    - StatType: 6
       StatValue: 3
     AbilityDamage: 0
     AbilityDamageTicks: 0
@@ -1185,15 +1189,19 @@ MonoBehaviour:
     AbilityEndLag: 0.5
     AbilityRange: 3.5
     HasPreview: 1
-    OrbitsPlayer: 0
-    SizeIsRange: 0
-    ScaleXOnly: 0
-    ScaleZOnly: 0
-    AbilityPreview: {fileID: 7347509225486067769}
+    PreviewData:
+      ShapeType: 1
+      AbilityPreview: {fileID: 7347509225486067769}
+      OrbitsPlayer: 0
+      SizeIsRange: 0
+      ScaleXOnly: 0
+      ScaleZOnly: 0
+    PersistingAbility: 0
     AbilityLayerMask:
       serializedVersion: 2
       m_Bits: 1088
     BaseAbilitySize: {x: 0, y: 0, z: 0}
+    AbilityPos: {x: 0, y: 0, z: 0}
     AbilityAnim:
       AnimClip: {fileID: 0}
       LayerIndex: 0
@@ -1205,7 +1213,7 @@ MonoBehaviour:
     - StatType: 0
       StatValue: 5
     SecondaryStats:
-    - StatType: 6
+    - StatType: 3
       StatValue: 10
     AbilityDamage: 0
     AbilityDamageTicks: 0
@@ -1222,15 +1230,19 @@ MonoBehaviour:
     AbilityEndLag: 0.5
     AbilityRange: 3.5
     HasPreview: 1
-    OrbitsPlayer: 0
-    SizeIsRange: 1
-    ScaleXOnly: 0
-    ScaleZOnly: 0
-    AbilityPreview: {fileID: 5277897699482532973}
+    PreviewData:
+      ShapeType: 2
+      AbilityPreview: {fileID: 5277897699482532973}
+      OrbitsPlayer: 1
+      SizeIsRange: 1
+      ScaleXOnly: 0
+      ScaleZOnly: 0
+    PersistingAbility: 0
     AbilityLayerMask:
       serializedVersion: 2
       m_Bits: 1024
     BaseAbilitySize: {x: 0, y: 0, z: 0}
+    AbilityPos: {x: 0, y: 0, z: 0}
     AbilityAnim:
       AnimClip: {fileID: 0}
       LayerIndex: 0
@@ -1246,7 +1258,7 @@ MonoBehaviour:
     - StatType: 2
       StatValue: 3
     SecondaryStats:
-    - StatType: 6
+    - StatType: 3
       StatValue: 100
     AbilityDamage: 0
     AbilityDamageTicks: 0
@@ -1263,15 +1275,19 @@ MonoBehaviour:
     AbilityEndLag: 0.5
     AbilityRange: 6
     HasPreview: 1
-    OrbitsPlayer: 0
-    SizeIsRange: 1
-    ScaleXOnly: 0
-    ScaleZOnly: 1
-    AbilityPreview: {fileID: 417958859510438225}
+    PreviewData:
+      ShapeType: 0
+      AbilityPreview: {fileID: 417958859510438225}
+      OrbitsPlayer: 1
+      SizeIsRange: 1
+      ScaleXOnly: 0
+      ScaleZOnly: 1
+    PersistingAbility: 0
     AbilityLayerMask:
       serializedVersion: 2
       m_Bits: 1024
     BaseAbilitySize: {x: 0, y: 0, z: 0}
+    AbilityPos: {x: 0, y: 0, z: 0}
     AbilityAnim:
       AnimClip: {fileID: 0}
       LayerIndex: 0
@@ -1280,7 +1296,7 @@ MonoBehaviour:
       LayerIndex: 0
   currentAbilityIndex: 0
   abilityOneIndex: 0
-  abilityTwoIndex: 3
+  abilityTwoIndex: 1
   abilityOneReady: 1
   abilityTwoReady: 1
   abilityOne: 0
