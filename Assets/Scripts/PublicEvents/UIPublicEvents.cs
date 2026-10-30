@@ -46,6 +46,8 @@ public static class UIPublicEvents
 
     public static Action<PinScriptable> PinChangedOnWeapon;
 
+    public static Action InventoryUpdated;
+
     #endregion
 
     #region Player HUD
