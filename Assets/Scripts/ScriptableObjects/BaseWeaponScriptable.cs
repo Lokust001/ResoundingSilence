@@ -125,6 +125,12 @@ public class BaseWeaponScriptable : BaseScriptableObject
     [Tooltip("How much time passes between each burst. Set to 0 for weapons that unleash a burst of attacks at once. Is a list in case you want different timings for combo attacks.")]
     public List<float> BaseTimeBetweenBursts = new List<float>();
 
+    [HideInInspector] public List<float> BurstDamageAmount = new List<float>();
+
+    [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
+    [Tooltip("How much % damage the burst does compared to the base attack")]
+    public List<float> BaseBurstDamageAmount = new List<float>();
+
     [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
     [Tooltip("Whether or not a weapon has lifesteal.")]
     public bool HasLifesteal;
@@ -444,11 +450,22 @@ public class BaseWeaponScriptable : BaseScriptableObject
     }
     #endregion
 
+    #region Player Modifiers
+    PlayerController playerController = null;
+    float DashBuff;
+    float DamageResistance;
+    float MoveSpeedBuff;
+    float HealingPotency;
+    float knockbackAmount;
+    float regenAmount;
+    #endregion
+
     /// <summary>
     /// Sets weapon variables to its base values
     /// </summary>
     public void Awake()
     {
+        playerController = FindAnyObjectByType<PlayerController>();
         WeaponDamage = BaseWeaponDamage.ToList();
         AttackCooldown = BaseAttackCooldown.ToList();
         AttackSpeed = 1;
@@ -474,6 +491,7 @@ public class BaseWeaponScriptable : BaseScriptableObject
         upgradeGrid.attachedWeapon = this;
     }
 
+    #region Pin Functions
     /// <summary>
     /// changes weapon damage based on the amount of damage buffs given to the weapon on the grid
     /// </summary>
@@ -510,4 +528,67 @@ public class BaseWeaponScriptable : BaseScriptableObject
             LifestealAmount[i] = BaseLifestealAmount[i] * lifestealPercent;
         }
     }
+
+    /// <summary>
+    /// changes the amount of damage the abilities 
+    /// </summary>
+    /// <param name="DamageBuff1"></param>
+    /// <param name="DamageBuff2"></param>
+    public void UpdateAbilityDamage(float DamageBuff)
+    {
+        //editableAbilities[0].damage = editableAbilities[0].baseDamage * DamageBuff;
+        //editableAbilities[1].damage = editableAbilities[1].baseDamage * DamageBuff;
+    }
+
+    /// <summary>
+    /// Changes the cooldown of the abilities
+    /// </summary>
+    /// <param name="DamageBuff1"></param>
+    /// <param name="DamageBuff2"></param>
+    public void UpdateAbilityCooldown(float CooldownReduction)
+    {
+        //editableAbilities[0].Cooldown = editableAbilities[0].baseCooldown * CooldownReduction;
+        //editableAbilities[1].Cooldown = editableAbilities[1].baseCooldown * CooldownReduction;
+    }
+
+    public void AddBurst(int percentDamage)
+    {
+        if(percentDamage > 5)
+        {
+            for(int i = 0; i < AttackBursts.Count; i++)
+            {
+                AttackBursts[i] = BaseAttackBursts[i] + 1;
+                BurstDamageAmount[i] = BaseBurstDamageAmount[i] + (percentDamage / 100); 
+            }
+        }
+    }
+
+    public void ProjectileSpeedBoost(float speedBoost)
+    {
+        for (int i = 0; i < ProjectileSpeed.Count; i++)
+        {
+            ProjectileSpeed[i] = BaseProjectileSpeed[i] * speedBoost;
+        }
+    }
+
+    public void getPlayerModifiers(float dash, float DR, float moveSpeed, float healing, float kb, float regen)
+    {
+        DashBuff = dash;
+        DamageResistance = DR;
+        MoveSpeedBuff = moveSpeed;
+        HealingPotency = healing;
+        knockbackAmount = kb;
+        regenAmount = regen;
+    }
+
+    public void sendPlayerModifiers()
+    {
+        playerController.DashDistance(DashBuff);
+        playerController.DamageResistanceChange(DamageResistance);
+        playerController.MoveSpeedIncrease(MoveSpeedBuff);
+        playerController.healingPotencyChange(HealingPotency);
+        playerController.KnockbackResistance(knockbackAmount);
+        playerController.RegenBoost(regenAmount);
+    }
+    #endregion
 }
