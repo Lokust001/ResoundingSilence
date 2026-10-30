@@ -519,14 +519,25 @@ public class BaseWeaponScriptable : BaseScriptableObject
     }
 
     /// <summary>
-    /// changes the amount of damage the weapon 
+    /// changes the amount of damage the abilities 
     /// </summary>
     /// <param name="DamageBuff1"></param>
     /// <param name="DamageBuff2"></param>
-    public void UpdateAbilityDamage(float DamageBuff1, float DamageBuff2)
+    public void UpdateAbilityDamage(float DamageBuff)
     {
-        //editableAbilities[0].damage = editableAbilities[0].baseDamage * DamageBuff1;
-        //editableAbilities[1].damage = editableAbilities[1].baseDamage * DamageBuff2;
+        //editableAbilities[0].damage = editableAbilities[0].baseDamage * DamageBuff;
+        //editableAbilities[1].damage = editableAbilities[1].baseDamage * DamageBuff;
+    }
+
+    /// <summary>
+    /// Changes the cooldown of the abilities
+    /// </summary>
+    /// <param name="DamageBuff1"></param>
+    /// <param name="DamageBuff2"></param>
+    public void UpdateAbilityCooldown(float CooldownReduction)
+    {
+        //editableAbilities[0].Cooldown = editableAbilities[0].baseCooldown * CooldownReduction;
+        //editableAbilities[1].Cooldown = editableAbilities[1].baseCooldown * CooldownReduction;
     }
 
     public void AddBurst(int percentDamage)
@@ -538,6 +549,14 @@ public class BaseWeaponScriptable : BaseScriptableObject
                 AttackBursts[i] = BaseAttackBursts[i] + 1;
                 BurstDamageAmount[i] = BaseBurstDamageAmount[i] + (percentDamage / 100); 
             }
+        }
+    }
+
+    public void ProjectileSpeedBoost(float speedBoost)
+    {
+        for (int i = 0; i < ProjectileSpeed.Count; i++)
+        {
+            ProjectileSpeed[i] = BaseProjectileSpeed[i] * speedBoost;
         }
     }
     #endregion

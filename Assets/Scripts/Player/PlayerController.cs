@@ -25,7 +25,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     float invincibilityDuration;
 
-    [SerializeField] float dashRange;
+    [SerializeField] float BasedashRange;
+    float dashRange;
     [SerializeField] float dashDuration;
     [SerializeField] float dashCooldown;
     [SerializeField] int totalDashes;
@@ -34,7 +35,9 @@ public class PlayerController : MonoBehaviour
     [Tooltip("What layers the player shouldn't collide with while they are invinvible.")]
     [SerializeField] LayerMask ignoreWhileInvincible;
 
-    [HideInInspector] public float healingPotency;
+    float healingPotency = 1.0f;
+    float damageResistance = 1.0f;
+    float KnockbackAmount = 1.0f;
 
     #region Debug Console Variables
 
@@ -106,6 +109,7 @@ public class PlayerController : MonoBehaviour
         playerModelCollider = GetComponent<CapsuleCollider>();
 
         moveSpeed = defaultSpeed;
+        dashRange = BasedashRange;
 
         //Defaults to right in case player dashes before ever moving
         dashDir = Vector3.right;
@@ -116,6 +120,34 @@ public class PlayerController : MonoBehaviour
         PlayerInputEnded();
         RestartPlayerMovementAndInput();
     }
+    #endregion
+
+    #region Pinfunctions
+    public void DashDistance(float dashIncrease)
+    {
+        dashRange = dashIncrease * BasedashRange;
+    }
+
+    public void MoveSpeedIncrease(float moveBuff)
+    {
+        moveSpeed = moveBuff * defaultSpeed;
+    }
+
+    public void DamageResistanceChange(float Modifier)
+    {
+        damageResistance = Modifier;
+    }
+
+    public void healingPotencyChange(float Modifier)
+    {
+        healingPotency = Modifier;
+    }
+
+    public void KnockbackResistance(float Modifier)
+    {
+        KnockbackAmount = Modifier;
+    }
+
     #endregion
 
     /// <summary>
@@ -284,7 +316,7 @@ public class PlayerController : MonoBehaviour
         //Start a damage/invincibility couroutine
         dmgCoroutine ??= StartCoroutine(PlayerInvincibilityFrames());
 
-        MidRunDataManager.Instance.ChangePlayerHealth(-damage);
+        MidRunDataManager.Instance.ChangePlayerHealth((int)(-damage * damageResistance));
 
         //If there is knockback data and there is no knockback coroutine active 
         if (knockbackInfo.HasValue)
@@ -346,7 +378,7 @@ public class PlayerController : MonoBehaviour
         Transform playerTransform = transform;
 
         //Calculate the knockback destination, which is the player's current position plus its calculated offset after knockback
-        Vector3 knockbackDestination = playerTransform.position + knockbackInfo.knockbackDistance;
+        Vector3 knockbackDestination = playerTransform.position + (knockbackInfo.knockbackDistance * KnockbackAmount);
 
         //Total distance between the player and the destination of the knockback
         float maxDistance = Vector3.Distance(playerTransform.position, knockbackDestination);

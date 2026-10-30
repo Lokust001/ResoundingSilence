@@ -6,6 +6,7 @@
 * To Do:   N/A
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NaughtyAttributes;
@@ -230,6 +231,14 @@ public class UpgradeTileGrid
         float AttackSpeedBuff = 1.0f;
         float lifestealBuff = 1.0f;
         float BurstBuff = 1.0f;
+        float AbilityDamageBuff = 1.0f;
+        float AbilityCooldown = 1.0f;
+        float ProjectileSpeed = 1.0f;
+        float DashBuff = 1.0f;
+        float DamageResistance = 1.0f;
+        float MoveSpeedBuff = 1.0f;
+        float HealingPotency = 1.0f;
+        float knockbackAmount = 1.0f;
         GetPins();
         foreach (var pin in pins)
         {
@@ -250,6 +259,38 @@ public class UpgradeTileGrid
                 case PinScriptable.WeaponStatToChange.BurstDamage:
                     BurstBuff += (GetBuffAmount(pin, thisTile) / 100);
                     continue;
+                case PinScriptable.WeaponStatToChange.AbilityDamage:
+                    AbilityDamageBuff += (GetBuffAmount(pin, thisTile) / 100);
+                    continue;
+                case PinScriptable.WeaponStatToChange.AbilityCooldown:
+                    AbilityCooldown *= (100 - GetBuffAmount(pin, thisTile)) / 100;
+                    continue;
+                case PinScriptable.WeaponStatToChange.projectileSpeed:
+                    ProjectileSpeed += (GetBuffAmount(pin, thisTile) / 100);
+                    continue;
+                case PinScriptable.WeaponStatToChange.DashDistance:
+                    DashBuff += (GetBuffAmount(pin, thisTile) / 100);
+                    continue;
+                case PinScriptable.WeaponStatToChange.DamageResistance:
+                    DamageResistance *= (100 - GetBuffAmount(pin, thisTile)) / 100;
+                    continue;
+                case PinScriptable.WeaponStatToChange.MoveSpeed:
+                    MoveSpeedBuff += (GetBuffAmount(pin, thisTile) / 100);
+                    continue;
+                case PinScriptable.WeaponStatToChange.HealingUp:
+                    HealingPotency += (GetBuffAmount(pin, thisTile) / 100);
+                    continue;
+                case PinScriptable.WeaponStatToChange.GlassCannon:
+                    damagebuff += (GetBuffAmount(pin, thisTile) / 100);
+                    DamageResistance *= pin.SecondModifier / 100;
+                    continue;
+                case PinScriptable.WeaponStatToChange.knockbackResistance:
+                    knockbackAmount *= (100 - GetBuffAmount(pin, thisTile)) / 100;
+                    continue;
+                case PinScriptable.WeaponStatToChange.ThickSkin:
+                    DamageResistance *= (100 - GetBuffAmount(pin, thisTile)) / 100;
+                    HealingPotency -= pin.SecondModifier / 100;
+                    continue;
             }
         }
 
@@ -268,7 +309,7 @@ public class UpgradeTileGrid
                         damagebuff *= 1 + (tile.glyph.GlyphChangeAmount / 100);
                         break;
                     case GlyphScriptable.GlyphType.HealthingReceived:
-                        playerController.healingPotency = 1 + (tile.glyph.GlyphChangeAmount / 100);
+                        HealingPotency = HealingPotency + (tile.glyph.GlyphChangeAmount / 100);
                         break;
                     case GlyphScriptable.GlyphType.StatusEffect:
                         //ToDo Add the extra StatusEffect Buffs
@@ -281,6 +322,13 @@ public class UpgradeTileGrid
         attachedWeapon.UpdateWeaponDamage(damagebuff);
         attachedWeapon.UpdateLifestealPercent(lifestealBuff);
         attachedWeapon.AddBurst((int)((BurstBuff * 100) / 100));
+        attachedWeapon.UpdateAbilityDamage(damagebuff);
+        attachedWeapon.ProjectileSpeedBoost(ProjectileSpeed);
+        playerController.DashDistance(DashBuff);
+        playerController.DamageResistanceChange(DamageResistance);
+        playerController.MoveSpeedIncrease(MoveSpeedBuff);
+        playerController.healingPotencyChange(HealingPotency);
+        playerController.KnockbackResistance(knockbackAmount);
     }
 
     /// <summary>
