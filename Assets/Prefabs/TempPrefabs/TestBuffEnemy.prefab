@@ -4645,7 +4645,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 135
+  m_VersionIndex: 1143
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -4783,18 +4783,18 @@ PrefabInstance:
     - target: {fileID: 2314649253543611431, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 518f3ab58fad3c941b3ba9dd29c3e22c, type: 2}
+      objectReference: {fileID: 2100000, guid: 254b2bd33d14e5247b15c31b9dc175ec, type: 2}
     - target: {fileID: 2892623662654031983, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -1.12
       objectReference: {fileID: 0}
     - target: {fileID: 2892623662654031983, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 1.6
       objectReference: {fileID: 0}
     - target: {fileID: 2892623662654031983, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 1.61
       objectReference: {fileID: 0}
     - target: {fileID: 2892623662654031983, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: m_LocalRotation.w
@@ -4828,9 +4828,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: TestBuffEnemy
       objectReference: {fileID: 0}
+    - target: {fileID: 6325128634737111795, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8424250619371523661, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: dmgToTake
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8424250619371523661, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: enemyData
@@ -4840,6 +4844,10 @@ PrefabInstance:
       propertyPath: aggroTrigger
       value: 
       objectReference: {fileID: 1538420289414581598}
+    - target: {fileID: 8424250619371523661, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: testWithoutSpawner
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8564224598725686547, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: m_Layer
       value: 13
