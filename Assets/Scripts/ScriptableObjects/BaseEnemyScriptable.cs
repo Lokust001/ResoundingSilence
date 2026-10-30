@@ -7,9 +7,11 @@
 */
 using UnityEngine;
 using NaughtyAttributes;
+using System;
 [CreateAssetMenu(fileName = "BaseEnemyScriptable", menuName = "Scriptables/BaseEnemyScriptable")]
 public class BaseEnemyScriptable : BaseScriptableObject
 {
+
     public enum EnemyType
     {
         None,
