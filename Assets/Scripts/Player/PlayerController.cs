@@ -32,12 +32,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] int totalDashes;
     [SerializeField] float chainDashWindow;
 
+    [SerializeField] float TimeToStartRegen;
+    [SerializeField] float RegenTickRate;
+    [SerializeField, Tooltip("this is in % of max health")] float BaseRegenAmount;
+    float regenAmount;
+
     [Tooltip("What layers the player shouldn't collide with while they are invinvible.")]
     [SerializeField] LayerMask ignoreWhileInvincible;
-
-    float healingPotency = 1.0f;
-    float damageResistance = 1.0f;
-    float KnockbackAmount = 1.0f;
 
     #region Debug Console Variables
 
@@ -54,6 +55,7 @@ public class PlayerController : MonoBehaviour
     Coroutine dmgCoroutine;
     Coroutine knockbackCoroutine;
     Coroutine dashWindowCoroutine;
+    Coroutine regenCoroutine;
 
     Coroutine playerMovementCoroutine;
 
@@ -70,6 +72,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private TriggerObjects rangedRangeTrigger;
 
+    float healingPotency = 1.0f;
+    float damageResistance = 1.0f;
+    float KnockbackAmount = 1.0f;
     #endregion
 
     #region Unity Methods
@@ -110,6 +115,7 @@ public class PlayerController : MonoBehaviour
 
         moveSpeed = defaultSpeed;
         dashRange = BasedashRange;
+        regenAmount = BaseRegenAmount;
 
         //Defaults to right in case player dashes before ever moving
         dashDir = Vector3.right;
@@ -146,6 +152,11 @@ public class PlayerController : MonoBehaviour
     public void KnockbackResistance(float Modifier)
     {
         KnockbackAmount = Modifier;
+    }
+
+    public void RegenBoost(float Modifier)
+    {
+        regenAmount = BaseRegenAmount + ((Modifier - 1) * 100);
     }
 
     #endregion
@@ -306,6 +317,7 @@ public class PlayerController : MonoBehaviour
     /// <param name="knockbackInfo"></param>
     public void TakeDamage(int damage, (Vector3 knockbackDistance, float kbDuration)? knockbackInfo = null)
     {
+        StopCoroutine(regenCoroutine);
         if (InGodMode)
             return;
         
@@ -321,7 +333,8 @@ public class PlayerController : MonoBehaviour
         //If there is knockback data and there is no knockback coroutine active 
         if (knockbackInfo.HasValue)
             knockbackCoroutine ??= StartCoroutine(TakePlayerKnockback(knockbackInfo.Value));
-        
+
+        regenCoroutine = StartCoroutine(HealthRegen());
     }
 
     /// <summary>
@@ -453,6 +466,20 @@ public class PlayerController : MonoBehaviour
         //Let player move again
         RestartPlayerMovementAndInput();
         knockbackCoroutine = null;
+    }
+
+    /// <summary>
+    /// starts the player health regen if they have it
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerator HealthRegen()
+    {
+        yield return new WaitForSecondsRealtime(TimeToStartRegen);
+        while (true)
+        {
+            MidRunDataManager.Instance.ChangePlayerHealth((int)(MidRunDataManager.Instance.MaxPlayerHealth * regenAmount));
+            yield return new WaitForSecondsRealtime(RegenTickRate);
+        }
     }
 
     /// <summary>

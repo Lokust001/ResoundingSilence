@@ -450,11 +450,22 @@ public class BaseWeaponScriptable : BaseScriptableObject
     }
     #endregion
 
+    #region Player Modifiers
+    PlayerController playerController = null;
+    float DashBuff;
+    float DamageResistance;
+    float MoveSpeedBuff;
+    float HealingPotency;
+    float knockbackAmount;
+    float regenAmount;
+    #endregion
+
     /// <summary>
     /// Sets weapon variables to its base values
     /// </summary>
     public void Awake()
     {
+        playerController = FindAnyObjectByType<PlayerController>();
         WeaponDamage = BaseWeaponDamage.ToList();
         AttackCooldown = BaseAttackCooldown.ToList();
         AttackSpeed = 1;
@@ -558,6 +569,26 @@ public class BaseWeaponScriptable : BaseScriptableObject
         {
             ProjectileSpeed[i] = BaseProjectileSpeed[i] * speedBoost;
         }
+    }
+
+    public void getPlayerModifiers(float dash, float DR, float moveSpeed, float healing, float kb, float regen)
+    {
+        DashBuff = dash;
+        DamageResistance = DR;
+        MoveSpeedBuff = moveSpeed;
+        HealingPotency = healing;
+        knockbackAmount = kb;
+        regenAmount = regen;
+    }
+
+    public void sendPlayerModifiers()
+    {
+        playerController.DashDistance(DashBuff);
+        playerController.DamageResistanceChange(DamageResistance);
+        playerController.MoveSpeedIncrease(MoveSpeedBuff);
+        playerController.healingPotencyChange(HealingPotency);
+        playerController.KnockbackResistance(knockbackAmount);
+        playerController.RegenBoost(regenAmount);
     }
     #endregion
 }

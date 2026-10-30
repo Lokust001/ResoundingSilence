@@ -239,6 +239,7 @@ public class UpgradeTileGrid
         float MoveSpeedBuff = 1.0f;
         float HealingPotency = 1.0f;
         float knockbackAmount = 1.0f;
+        float regenAmount = 1.0f;
         GetPins();
         foreach (var pin in pins)
         {
@@ -291,6 +292,9 @@ public class UpgradeTileGrid
                     DamageResistance *= (100 - GetBuffAmount(pin, thisTile)) / 100;
                     HealingPotency -= pin.SecondModifier / 100;
                     continue;
+                case PinScriptable.WeaponStatToChange.Regen:
+                    regenAmount += (GetBuffAmount(pin, thisTile) / 100);
+                    continue;
             }
         }
 
@@ -324,11 +328,7 @@ public class UpgradeTileGrid
         attachedWeapon.AddBurst((int)((BurstBuff * 100) / 100));
         attachedWeapon.UpdateAbilityDamage(damagebuff);
         attachedWeapon.ProjectileSpeedBoost(ProjectileSpeed);
-        playerController.DashDistance(DashBuff);
-        playerController.DamageResistanceChange(DamageResistance);
-        playerController.MoveSpeedIncrease(MoveSpeedBuff);
-        playerController.healingPotencyChange(HealingPotency);
-        playerController.KnockbackResistance(knockbackAmount);
+        attachedWeapon.getPlayerModifiers(DashBuff, DamageResistance, MoveSpeedBuff, HealingPotency, knockbackAmount, regenAmount);
     }
 
     /// <summary>

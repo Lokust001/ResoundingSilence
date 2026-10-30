@@ -38,7 +38,8 @@ public class PinScriptable : BaseScriptableObject
         HealingUp,
         GlassCannon,
         knockbackResistance,
-        ThickSkin
+        ThickSkin,
+        Regen
     }
 
     [HorizontalLine(4, EColor.Red)]
