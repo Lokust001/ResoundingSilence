@@ -341,10 +341,20 @@ public class EnemyAttack : MonoBehaviour, IStatBasedEnemies, ICustomEnabler, ICu
     }
 
     /// <summary>
+    /// Turns on the sphere collider used for checking aggro
+    /// </summary>
+    public void EnableAggroChecking() 
+    {
+        sphereTrigger.enabled = true;
+    }
+
+
+    /// <summary>
     /// De-aggros the enemy's attack behavior by stopping all coroutines, resetting melee indicator, and freeing up coroutine trackers
     /// </summary>
     public void DeAggroEntity() 
     {
+        sphereTrigger.enabled = false;
         StopAllCoroutines();
         ResetIndicatorParent();
         activeATKorCooldown = enemyCharging = null;
@@ -366,7 +376,7 @@ public class EnemyAttack : MonoBehaviour, IStatBasedEnemies, ICustomEnabler, ICu
     /// </summary>
     public void EnableEntity()
     {
-        sphereTrigger.enabled = true;
+        //sphereTrigger.enabled = true;
         if(chargingCapCollider != null)
             chargingCapCollider.enabled = true;
     }
@@ -377,7 +387,6 @@ public class EnemyAttack : MonoBehaviour, IStatBasedEnemies, ICustomEnabler, ICu
     public void DisableEntity()
     {
         DeAggroEntity();
-        sphereTrigger.enabled = false;
 
         if (chargingCapCollider != null)
             chargingCapCollider.enabled = false;

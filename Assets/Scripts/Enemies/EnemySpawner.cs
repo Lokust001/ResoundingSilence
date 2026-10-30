@@ -98,19 +98,27 @@ public class EnemySpawner : MonoBehaviour
     {
         foreach (var enemy in generatedEnemies) 
         {
-            enemy.EnableEnemyAggro();
+            enemy.AggroEnemy();
         }
     }
 
     private void DeAggroHandler(bool playerEnters)
     {
         //If player is leaving De-Aggro Trigger
-        if (!playerEnters) 
+        if (!playerEnters)
         {
             Debug.Log("De-aggro-ing enemies");
             foreach (var enemy in generatedEnemies)
             {
                 enemy.EnemyDeAggro();
+            }
+        }
+        //If player goes into de-aggro range, re-enable aggro triggers
+        else 
+        {
+            foreach (var enemy in generatedEnemies)
+            {
+                enemy.EnableAggroFunctionality();
             }
         }
     }

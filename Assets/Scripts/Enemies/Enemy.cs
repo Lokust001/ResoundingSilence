@@ -49,8 +49,11 @@ public class Enemy : MonoBehaviour
         buffBehavior = GetComponentInChildren<EnemyBuff>(true);
         enemyData = enemyData.CreateNonRefCopy<BaseEnemyScriptable>();
         PropagateEnemyData();
-        if(testWithoutSpawner)
+        if (testWithoutSpawner) 
+        {
             EnableEnemy();
+            attackBehavior.EnableAggroChecking();
+        }
     }
 
     /// <summary>
@@ -69,7 +72,7 @@ public class Enemy : MonoBehaviour
     /// </summary>
     public void EnableEnemy()
     {
-        aggroTrigger.EnemyTriggerActivated += EnableEnemyAggro;
+        aggroTrigger.EnemyTriggerActivated += AggroEnemy;
         foreach (ICustomEnabler entity in GetComponentsInChildren<ICustomEnabler>(true))
         {
             entity.EnableEntity();
@@ -81,7 +84,7 @@ public class Enemy : MonoBehaviour
     /// </summary>
     public void DisableEnemy()
     {
-        aggroTrigger.EnemyTriggerActivated -= EnableEnemyAggro;
+        aggroTrigger.EnemyTriggerActivated -= AggroEnemy;
         isAggro = false;
         foreach (ICustomDisabler entity in GetComponentsInChildren<ICustomDisabler>(true))
         {
@@ -96,7 +99,7 @@ public class Enemy : MonoBehaviour
     /// Aggro's the enemy and then disables this behavior for the rest of its runtime
     /// </summary>
     /// <param name="obj"></param>
-    public void EnableEnemyAggro(PlayerController obj = null)
+    public void AggroEnemy(PlayerController obj = null)
     {
         _ = obj;
 
@@ -106,11 +109,16 @@ public class Enemy : MonoBehaviour
         isAggro = true;
         Debug.Log(gameObject.name + " is aggro'd");
         //Remove Aggro Trigger
-        aggroTrigger.EnemyTriggerActivated -= EnableEnemyAggro;
+        aggroTrigger.EnemyTriggerActivated -= AggroEnemy;
         //Call other enemies to be aggro'd
         aggroEnemyGroup?.Invoke();
         FirstEnemyAction();
 
+    }
+
+    public void EnableAggroFunctionality() 
+    {
+        attackBehavior.EnableAggroChecking();
     }
 
     /// <summary>
@@ -124,7 +132,7 @@ public class Enemy : MonoBehaviour
             behavior.DeAggroEntity();
         }
         attackBehavior.ResetIndicatorParent();
-        aggroTrigger.EnemyTriggerActivated += EnableEnemyAggro;
+        aggroTrigger.EnemyTriggerActivated += AggroEnemy;
     }
 
     /// <summary>
@@ -157,7 +165,7 @@ public class Enemy : MonoBehaviour
     /// </summary>
     private void OnDisable()
     {
-        aggroTrigger.EnemyTriggerActivated -= EnableEnemyAggro;
+        aggroTrigger.EnemyTriggerActivated -= AggroEnemy;
     }
 
     /// <summary>
@@ -345,7 +353,7 @@ public class Enemy : MonoBehaviour
             EnemyDeath();
 
         if (!isAggro)
-            EnableEnemyAggro();
+            AggroEnemy();
 
         return finalDmgTaken;
     }

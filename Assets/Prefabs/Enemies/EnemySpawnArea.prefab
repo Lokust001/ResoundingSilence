@@ -250,29 +250,16 @@ MonoBehaviour:
   deAggroTrigger: {fileID: 1358984570026033854}
   enemyGroupTiers:
   - tierName: Melee and Shoot
-    enemyPool:
-    - {fileID: 4702969501886654196, guid: c0d50ddd8b4eb7549be9cb919c0ce9e2, type: 3}
-    - {fileID: 5736516835863566217, guid: 5da45a64348225d4a9797f03eb1360b3, type: 3}
+    enemyGroups: []
     minimumPoints: 0
   - tierName: Charger and Cone
-    enemyPool:
-    - {fileID: 7656435456646436074, guid: c997b49616c1d7143ab65d2e1030d2d5, type: 3}
-    - {fileID: 5194500464997757952, guid: af965c2dde455e94187f2be25d41c8c2, type: 3}
+    enemyGroups: []
     minimumPoints: 120
   - tierName: Charger and Cone and Buff
-    enemyPool:
-    - {fileID: 7656435456646436074, guid: c997b49616c1d7143ab65d2e1030d2d5, type: 3}
-    - {fileID: 5194500464997757952, guid: af965c2dde455e94187f2be25d41c8c2, type: 3}
-    - {fileID: 5744320469832728330, guid: f6aca458b8f2f08478e04f3803fe0390, type: 3}
+    enemyGroups: []
     minimumPoints: 240
   generatedEnemies: []
-  spawnLocations:
-  - {fileID: 1953518458947509403}
-  - {fileID: 7912245610416555411}
-  - {fileID: 1358926013342182918}
-  - {fileID: 2079372628717767990}
-  - {fileID: 7655613371141394048}
-  - {fileID: 5736048193353774861}
+  spawnLocations: []
 --- !u!1 &7081144705210933612
 GameObject:
   m_ObjectHideFlags: 0
