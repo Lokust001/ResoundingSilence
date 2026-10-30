@@ -13,5 +13,8 @@ public interface ISharedEnemyBehaviors
     /// <param name="baseScriptable"></param>
     void ReceiveEnemyData(BaseScriptableObject baseScriptable);
 
+    /// <summary>
+    /// De-aggros the enemy in each enemy-derived behavior
+    /// </summary>
     void DeAggroEnemy();
 }

@@ -81,6 +81,10 @@ public class EnemySpawner : MonoBehaviour
         deAggroTrigger.PlayerEnterOrExit-= DeAggroHandler;
     }
 
+    /// <summary>
+    /// Handles the logic for the player entering specifically the De-aggro trigger
+    /// </summary>
+    /// <param name="playerEnters"></param>
     private void SpawnOrDespawnHandler(bool playerEnters) 
     {
         if (playerEnters)
@@ -93,7 +97,9 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
-
+    /// <summary>
+    /// Aggros all enemy when called from one enemy
+    /// </summary>
     public void AggroAllEnemies() 
     {
         foreach (var enemy in generatedEnemies) 

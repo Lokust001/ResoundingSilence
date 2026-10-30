@@ -115,7 +115,9 @@ public class Enemy : MonoBehaviour
         FirstEnemyAction();
 
     }
-
+    /// <summary>
+    /// Tells attackBehavior to enable the aggro trigger
+    /// </summary>
     public void EnableAggroFunctionality() 
     {
         attackBehavior.EnableAggroChecking();
