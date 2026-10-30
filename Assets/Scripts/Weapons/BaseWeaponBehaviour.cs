@@ -33,7 +33,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
     [SerializeField] List<Collider> meleeHitboxes = new List<Collider>();
 
     [Header("Base Ability Variables"), HorizontalLine(height: 4, EColor.Red)]
-    [SerializeField] protected AbilitySettings abilitySettings;
+    //[SerializeField] protected AbilitySettings abilitySettings;
 
     [SerializeField] protected List<AbilityData> WeaponAbilities = new List<AbilityData>();
 
@@ -110,6 +110,10 @@ public class BaseWeaponBehaviour : MonoBehaviour
 
         foreach(AbilityData ability in WeaponAbilities)
         {
+            if(ability.HasPreview)
+            {
+                activePreview = ability.PreviewData.AbilityPreview;
+            }
             ability.BaseAbilitySize = new Vector3(ability.PreviewData.AbilityPreview.transform.localScale.x, 
                 ability.PreviewData.AbilityPreview.transform.localScale.y, ability.PreviewData.AbilityPreview.transform.localScale.z);
             SetAbilityStats(ability, ability.PrimaryStats);
@@ -583,9 +587,6 @@ public class BaseWeaponBehaviour : MonoBehaviour
 
             foreach (Collider t in targets)
             {
-                t.GetComponent<Enemy>().EnemyTakeDamage(damage);
-                Debug.Log(t.name + " took " + damage + " damage!");
-
                 Vector3 forceDir = new Vector3(t.transform.position.x - activePreview.transform.position.x, 0,
                 t.transform.position.z - activePreview.transform.position.z).normalized;
 
@@ -593,6 +594,8 @@ public class BaseWeaponBehaviour : MonoBehaviour
                 {
                     //replace with the enemy taking damage
                     t.GetComponent<Rigidbody>().AddForce(WeaponAbilities[currentAbilityIndex].AbilityEnemyKnockback * forceDir, ForceMode.Impulse);
+                    t.GetComponent<Enemy>().EnemyTakeDamage(damage);
+                    Debug.Log(t.name + " took " + damage + " damage!");
                 }
                 else
                 {

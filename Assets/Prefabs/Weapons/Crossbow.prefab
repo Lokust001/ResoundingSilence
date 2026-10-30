@@ -1064,7 +1064,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7236322570925161113}
-  - component: {fileID: 8988554487706284111}
+  - component: {fileID: 1506777356380557928}
   - component: {fileID: 4470947134498793366}
   m_Layer: 7
   m_Name: Crossbow
@@ -1091,7 +1091,7 @@ Transform:
   - {fileID: 4298004810466838347}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8988554487706284111
+--- !u!114 &1506777356380557928
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1100,9 +1100,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 8556073844088731136}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f623ee31e6121349ac8494b6d6cb84d, type: 3}
+  m_Script: {fileID: 11500000, guid: 579420d72e9042b4bad5d8251cab5b62, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CrossbowBehaviour
+  m_EditorClassIdentifier: Assembly-CSharp::BaseWeaponBehaviour
   ThisWeaponData: {fileID: 0}
   weaponDataID: 0
   weaponModel: {fileID: 7187170942483594616}
@@ -1114,7 +1114,6 @@ MonoBehaviour:
   - {fileID: 7400000, guid: e90138978acc5f241830b30f92ca801f, type: 2}
   comboIndex: 0
   meleeHitboxes: []
-  abilitySettings: 0
   WeaponAbilities:
   - AbilityName: SplinterShot
     PrimaryStats:
@@ -1295,12 +1294,10 @@ MonoBehaviour:
       AnimClip: {fileID: 7400000, guid: 1e2498aa2fdfa224c92f2407cea11044, type: 2}
       LayerIndex: 0
   currentAbilityIndex: 0
-  abilityOneIndex: 0
-  abilityTwoIndex: 1
+  abilityOneIndex: 1
+  abilityTwoIndex: 2
   abilityOneReady: 1
   abilityTwoReady: 1
-  abilityOne: 0
-  abilityTwo: 3
 --- !u!95 &4470947134498793366
 Animator:
   serializedVersion: 7
