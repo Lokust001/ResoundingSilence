@@ -53,15 +53,48 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHUDController
   menuType: 3
   defaultSelectedGameobject: {fileID: 0}
+  settings: 1
   cooldownUIElements:
   - {fileID: 494414621949499502}
   - {fileID: 4173824137368353500}
   - {fileID: 1763182532516954795}
   healthBarSlider: {fileID: 2869840550695607072}
+  healthBarAnimation:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: -2.3029892
+      outSlope: -2.3029892
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.018862572
+    - serializedVersion: 3
+      time: 0.7500656
+      value: 0.05026554
+      inSlope: -0.40251356
+      outSlope: -0.19458126
+      tangentMode: 65
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.999957
+      value: 0.001641355
+      inSlope: -0.19458126
+      outSlope: 0
+      tangentMode: 5
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  AnimationTime: 1.5
   expBarSlider: {fileID: 286880279861512986}
-  maxHealthValue: 5
-  maxEXPValue: 5
-  currentPlayerHealth: 0
+  mapCamPrefab: {fileID: -1809554380819732707, guid: 9d7b098084c7562428ee563553a9f832, type: 3}
   Ability1MaxCooldown: 5
   Ability2MaxCooldown: 10
   DashMaxCooldown: 2
@@ -807,7 +840,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4386113371156323729, guid: de67ec1f50c7ea04b9ea8549bcc6022f, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 375.16998
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 4386113371156323729, guid: de67ec1f50c7ea04b9ea8549bcc6022f, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -932,7 +965,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4386113371156323729, guid: de67ec1f50c7ea04b9ea8549bcc6022f, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 625.2833
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 4386113371156323729, guid: de67ec1f50c7ea04b9ea8549bcc6022f, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -1053,7 +1086,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4386113371156323729, guid: de67ec1f50c7ea04b9ea8549bcc6022f, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 125.05666
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 4386113371156323729, guid: de67ec1f50c7ea04b9ea8549bcc6022f, type: 3}
       propertyPath: m_AnchoredPosition.y

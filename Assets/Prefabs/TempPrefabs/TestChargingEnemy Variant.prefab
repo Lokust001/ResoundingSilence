@@ -141,18 +141,18 @@ PrefabInstance:
     - target: {fileID: 2314649253543611431, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 518f3ab58fad3c941b3ba9dd29c3e22c, type: 2}
+      objectReference: {fileID: 2100000, guid: 825c19d7baa51654b8416d0e67a5a1bb, type: 2}
     - target: {fileID: 2892623662654031983, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -12.81
       objectReference: {fileID: 0}
     - target: {fileID: 2892623662654031983, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 1.618
       objectReference: {fileID: 0}
     - target: {fileID: 2892623662654031983, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 10.5
       objectReference: {fileID: 0}
     - target: {fileID: 2892623662654031983, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: m_LocalRotation.w
@@ -188,7 +188,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5338943625410773033, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: m_AutoBraking
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5338943625410773033, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: m_Acceleration
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 5338943625410773033, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: avoidancePriority
@@ -222,9 +226,13 @@ PrefabInstance:
       propertyPath: enemyData
       value: 
       objectReference: {fileID: 11400000, guid: db102c2e3d4135444b94b9f6633440b5, type: 2}
+    - target: {fileID: 8424250619371523661, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: testWithoutSpawner
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8564224598725686547, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: m_Layer
-      value: 13
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 2141401131119659193, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
@@ -258,7 +266,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
