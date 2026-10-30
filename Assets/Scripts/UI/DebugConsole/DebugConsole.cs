@@ -6,7 +6,6 @@
 * To Do:   The Debug console SpreadSheet
 */
 using NaughtyAttributes;
-using NUnit.Framework.Internal.Commands;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
@@ -33,10 +32,10 @@ public class DebugConsole : MonoBehaviour
     TMPro.TMP_Text textArea;
 
     [ShowIf(nameof(settings), ShownSettings.Refs)]
-    [SerializeField] 
+    [SerializeField]
     ScrollRect logScrollRect;
 
-    
+
     //private GameObject[] enemies;
 
     /*[ShowIf(nameof(settings), ShownSettings.Refs]
@@ -117,7 +116,7 @@ public class DebugConsole : MonoBehaviour
     /// </summary>
     private void OnDisable()
     {
-        if(!pivotToggle && !detachToggle && !freeToggle)
+        if (!pivotToggle && !detachToggle && !freeToggle)
         {
             playerInstance.RestartPlayerMovementAndInput();
         }
@@ -205,7 +204,7 @@ public class DebugConsole : MonoBehaviour
             return;
         }
 
-        if(Command.StartsWith("changeisland") || Command.StartsWith("ci"))
+        if (Command.StartsWith("changeisland") || Command.StartsWith("ci"))
         {
             string postCommand = "";
             if (Command.StartsWith("changeisland"))
@@ -254,7 +253,7 @@ public class DebugConsole : MonoBehaviour
                     postCommand = postCommand.Substring(3);
                 }
 
-                if(postCommand.StartsWith(" "))
+                if (postCommand.StartsWith(" "))
                 {
                     postCommand = postCommand.Substring(1);
                 }
@@ -299,9 +298,9 @@ public class DebugConsole : MonoBehaviour
                     FinishCommand();
                     return;
                 }
-                else if(int.TryParse(Command, out Temp))
+                else if (int.TryParse(Command, out Temp))
                 {
-                     mapGenInstance.SwitchIsland(TempIsland, Temp);
+                    mapGenInstance.SwitchIsland(TempIsland, Temp);
                     AppendConsoleLine(Command, inputColor);
                     AppendConsoleLine($"Island {TempIsland} Has switched to layout {Temp}", commandCompletedColor);
                     FinishCommand();
@@ -315,7 +314,7 @@ public class DebugConsole : MonoBehaviour
 
         }
 
-        if(Command.StartsWith("mapreset") || Command.StartsWith("mr"))
+        if (Command.StartsWith("mapreset") || Command.StartsWith("mr"))
         {
             mapGenInstance.DeleteIslands();
             AppendConsoleLine(Command, inputColor);
@@ -325,7 +324,7 @@ public class DebugConsole : MonoBehaviour
             return;
         }
 
-        if(Command.StartsWith("pivotcam") || Command.StartsWith("pc"))
+        if (Command.StartsWith("pivotcam") || Command.StartsWith("pc"))
         {
             pivotToggle = !pivotToggle;
             playerInstance.MoveActive = !pivotToggle;
@@ -385,7 +384,7 @@ public class DebugConsole : MonoBehaviour
             pivotToggle = false;
             playerInstance.MoveActive = !pivotToggle;
             PivotInstance.isActive = pivotToggle;
-            if(freeToggle)
+            if (freeToggle)
             {
                 FreeCameraInstance.gameObject.SetActive(true);
                 DetachInstance.gameObject.SetActive(false);
@@ -485,7 +484,7 @@ public class DebugConsole : MonoBehaviour
     /// <param name="line"></param>
     private void AppendConsoleLine(string line, Color TextColor = default)
     {
-        if(TextColor == default)
+        if (TextColor == default)
         {
             TextColor = Color.white;
         }
@@ -494,7 +493,7 @@ public class DebugConsole : MonoBehaviour
             textArea.text += $"\n";
         }
         textArea.text += $"<color=#{ColorUtility.ToHtmlStringRGB(TextColor)}>{line}</color>";
-        
+
         StartCoroutine(ScrollToBottomNextFrame());
     }
 
@@ -513,7 +512,7 @@ public class DebugConsole : MonoBehaviour
     /// </summary>
     /// <param name="Speed"></param>
     private void PlayerSpeed(float Speed)
-    { 
+    {
         playerInstance.moveSpeed = Speed;
     }
 
