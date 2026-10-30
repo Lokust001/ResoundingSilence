@@ -5,8 +5,6 @@
 * Summary: stores the data for the tile grid
 * To Do:   N/A
 */
-
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using NaughtyAttributes;
@@ -193,8 +191,6 @@ public class UpgradeTileGrid
         {
             enabledUnGlyphedTiles[Random.Range(0, enabledUnGlyphedTiles.Count)].SetGlyph(StaticDataManager.Instance.GetRandomGlyph());
         }
-
-
     }
 
     /// <summary>
