@@ -1,7 +1,7 @@
 /******************************************************************************
  * Author: Brad Dixon
  * Contributors:
- * Last Modified: 10/21/2026
+ * Last Modified: 10/27/2026
  * Brief: Calls the specific weapon attack
  * TODO:
  * ***************************************************************************/
@@ -36,6 +36,11 @@ public class BaseWeaponBehaviour : MonoBehaviour
     [SerializeField] protected AbilitySettings abilitySettings;
 
     [SerializeField] protected List<AbilityData> WeaponAbilities = new List<AbilityData>();
+
+    protected GameObject activePreview;
+    [SerializeField] protected int currentAbilityIndex;
+
+    bool continuouslyUpdatePreview;
 
     protected Vector3 mousePos = Vector3.forward;
 
@@ -105,11 +110,9 @@ public class BaseWeaponBehaviour : MonoBehaviour
 
         foreach(AbilityData ability in WeaponAbilities)
         {
+            ability.BaseAbilitySize = new Vector3(ability.PreviewData.AbilityPreview.transform.localScale.x, 
+                ability.PreviewData.AbilityPreview.transform.localScale.y, ability.PreviewData.AbilityPreview.transform.localScale.z);
             SetAbilityStats(ability, ability.PrimaryStats);
-        }
-
-        foreach (AbilityData ability in WeaponAbilities)
-        {
             SetAbilityStats(ability, ability.SecondaryStats);
         }
 
@@ -252,9 +255,12 @@ public class BaseWeaponBehaviour : MonoBehaviour
         rot.z = 0;
         weaponModel.transform.rotation = rot;
 
-        if (UIManager.Instance.CurrentlyInFullscreenMenu())
+        if(continuouslyUpdatePreview)
         {
-            return;
+            float staticY = activePreview.transform.position.y;
+            Vector3 pos = transform.position + Vector3.ClampMagnitude(mousePos, WeaponAbilities[currentAbilityIndex].AbilityRange);
+            pos.y = staticY;
+            activePreview.transform.position = pos;
         }
 
         //Check if attack speed gets changed
@@ -373,7 +379,10 @@ public class BaseWeaponBehaviour : MonoBehaviour
         if (abilityOneReady)
         {
             aimingAbilityOne = !aimingAbilityOne;
+            weaponAnimator.SetBool("AbilityCast", !aimingAbilityOne);
             aimingAbilityTwo = false;
+            currentAbilityIndex = abilityOneIndex;
+            AimingAbility();
         }
     }
 
@@ -385,8 +394,86 @@ public class BaseWeaponBehaviour : MonoBehaviour
         if (abilityTwoReady)
         {
             aimingAbilityTwo = !aimingAbilityTwo;
+            weaponAnimator.SetBool("AbilityCast", !aimingAbilityTwo);
             aimingAbilityOne = false;
+            currentAbilityIndex = abilityTwoIndex;
+            AimingAbility();
         }
+    }
+
+    /// <summary>
+    /// Displays the ability preview and plays the readying animation
+    /// </summary>
+    /// <param name="abilityOne"></param>
+    virtual protected void AimingAbility()
+    {
+        activePreview.SetActive(false);
+
+        if(WeaponAbilities[currentAbilityIndex].HasPreview)
+        {
+            activePreview = WeaponAbilities[currentAbilityIndex].PreviewData.AbilityPreview;
+            weaponAnimator.Play(WeaponAbilities[currentAbilityIndex].AbilityReadyAnim.AnimClip.name, 0);
+        }
+        else
+        {
+            CastingAbility();
+        }
+
+        //activePreview.SetActive(abilityOne ? aimingAbilityOne : aimingAbilityTwo);
+    }
+
+    /// <summary>
+    /// Anim event that shows the ability preview
+    /// </summary>
+    /// <param name="orbitsPlayer"></param>
+    /// <param name="sizeIsRange"></param>
+    public void DisplayAbilityPreview()
+    {
+        continuouslyUpdatePreview = !WeaponAbilities[currentAbilityIndex].PreviewData.OrbitsPlayer;
+
+        float sizeValue = WeaponAbilities[currentAbilityIndex].PreviewData.SizeIsRange ? WeaponAbilities[currentAbilityIndex].AbilityRange : WeaponAbilities[currentAbilityIndex].AbilityAOESize;
+
+        Vector3 abilitySize = WeaponAbilities[currentAbilityIndex].BaseAbilitySize;
+        Vector3 pos = Vector3.zero;
+
+        if (WeaponAbilities[currentAbilityIndex].PreviewData.ScaleXOnly)
+        {
+            abilitySize.x *= sizeValue;
+        }
+        else if(WeaponAbilities[currentAbilityIndex].PreviewData.ScaleZOnly)
+        {
+            abilitySize.z *= sizeValue;
+        }
+        else
+        {
+            abilitySize *= sizeValue;
+
+            if (WeaponAbilities[currentAbilityIndex].PreviewData.ShapeType != PreviewShape.Shape.Cone)
+            {
+                abilitySize.y = WeaponAbilities[currentAbilityIndex].BaseAbilitySize.y;
+            }
+            //pos.z = abilitySize.z; //(abilitySize.z / 2);
+        }
+
+        switch(WeaponAbilities[currentAbilityIndex].PreviewData.ShapeType)
+        {
+            case PreviewShape.Shape.Square:
+            case PreviewShape.Shape.Sphere:
+                pos.z = abilitySize.z / 2;
+                break;
+            case PreviewShape.Shape.Cone:
+                pos.z = abilitySize.y / 2;
+                break;
+        }
+
+        activePreview.transform.localScale = abilitySize;
+
+        if (WeaponAbilities[currentAbilityIndex].PreviewData.OrbitsPlayer)
+        {
+            activePreview.transform.localPosition = pos;
+        }
+
+        activePreview.SetActive(true);
     }
 
     /// <summary>
@@ -394,21 +481,37 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// </summary>
     virtual protected void CastingAbility()
     {
+        weaponAnimator.SetBool("AbilityCast", true);
+        continuouslyUpdatePreview = false;
         attackReady = false;
-        if (aimingAbilityOne)
-        {
-            aimingAbilityOne = false;
-            StartCoroutine(AbilityEndLag(WeaponAbilities[abilityOneIndex].AbilityEndLag));
-            StartCoroutine(AbilityDelay(true, WeaponAbilities[abilityOneIndex].AbilityCooldown));
-        }
-        else if (aimingAbilityTwo)
-        {
-            aimingAbilityTwo = false;
-            StartCoroutine(AbilityEndLag(WeaponAbilities[abilityTwoIndex].AbilityEndLag));
-            StartCoroutine(AbilityDelay(false, WeaponAbilities[abilityTwoIndex].AbilityCooldown));
-        }
+        aimingAbilityOne = false;
+        aimingAbilityTwo = false;
+
+        StartCoroutine(AbilityEndLag(WeaponAbilities[currentAbilityIndex].AbilityEndLag));
+        StartCoroutine(AbilityDelay(true, WeaponAbilities[currentAbilityIndex].AbilityCooldown));
+
+        //if (aimingAbilityOne)
+        //{
+        //    aimingAbilityOne = false;
+        //    StartCoroutine(AbilityEndLag(WeaponAbilities[abilityOneIndex].AbilityEndLag));
+        //    StartCoroutine(AbilityDelay(true, WeaponAbilities[abilityOneIndex].AbilityCooldown));
+        //}
+        //else if (aimingAbilityTwo)
+        //{
+        //    aimingAbilityTwo = false;
+        //    StartCoroutine(AbilityEndLag(WeaponAbilities[abilityTwoIndex].AbilityEndLag));
+        //    StartCoroutine(AbilityDelay(false, WeaponAbilities[abilityTwoIndex].AbilityCooldown));
+        //}
 
         //Add the ability functionality in the actual weapon script
+    }
+
+    /// <summary>
+    /// Public 
+    /// </summary>
+    public void AbilityDamage()
+    {
+
     }
 
     /// <summary>
@@ -451,8 +554,6 @@ public class BaseWeaponBehaviour : MonoBehaviour
         }
     }
     #endregion
-
-
 
     /// <summary>
     /// Converts the inspector variable to it's percentage value if it isn't already a percent

@@ -30,7 +30,7 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
     bool showingAbilityOnePreview;
     bool showingAbilityTwoPreview;
 
-    GameObject activePreview;
+    //GameObject activePreview;
 
     #region Ability Variables
 
@@ -195,10 +195,10 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
     {
         base.Start();
 
-        ScatterShotPreview();
-        StakeShotPreview();
+        //ScatterShotPreview();
+        //StakeShotPreview();
 
-        activePreview = WeaponAbilities[0].AbilityPreview;
+        activePreview = WeaponAbilities[0].PreviewData.AbilityPreview;
     }
 
     /// <summary>
@@ -212,28 +212,28 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
     /// <summary>
     /// Shows the preview for ability one's attack
     /// </summary>
-    protected override void AimingAbilityOne()
-    {
-        if (abilityOneReady)
-        {
-            ShowAbilityPreview(true);
-        }
+    //protected override void AimingAbilityOne()
+    //{
+    //    if (abilityOneReady)
+    //    {
+    //        ShowAbilityPreview(true);
+    //    }
 
-        base.AimingAbilityOne();
-    }
+    //    base.AimingAbilityOne();
+    //}
 
-    /// <summary>
-    /// Shows the preview for ability two's attack
-    /// </summary>
-    protected override void AimingAbilityTwo()
-    {
-        if (abilityTwoReady)
-        {
-            ShowAbilityPreview(false);
-        }
+    ///// <summary>
+    ///// Shows the preview for ability two's attack
+    ///// </summary>
+    //protected override void AimingAbilityTwo()
+    //{
+    //    if (abilityTwoReady)
+    //    {
+    //        ShowAbilityPreview(false);
+    //    }
 
-        base.AimingAbilityTwo();
-    }
+    //    base.AimingAbilityTwo();
+    //}
 
     #region Ability Previews
 
@@ -241,116 +241,116 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
     /// Displays the corresponding preview when an ability is selected
     /// </summary>
     /// <param name="pressedAbilityOne"></param> Let's us know which ability preview to show/hide
-    private void ShowAbilityPreview(bool pressedAbilityOne)
-    {
-        switch (pressedAbilityOne == true ? abilityOne : abilityTwo)
-        {
-            case Abilities.SplinterShot:
+    //private void ShowAbilityPreview(bool pressedAbilityOne)
+    //{
+    //    switch (pressedAbilityOne == true ? abilityOne : abilityTwo)
+    //    {
+    //        case Abilities.SplinterShot:
 
-                if(activePreview != WeaponAbilities[0].AbilityPreview)
-                {
-                    activePreview.SetActive(false);
-                }
+    //            if(activePreview != WeaponAbilities[0].AbilityPreview)
+    //            {
+    //                activePreview.SetActive(false);
+    //            }
 
-                activePreview = WeaponAbilities[0].AbilityPreview;
-                break;
-            case Abilities.BombBlast:
-                if (activePreview != WeaponAbilities[1].AbilityPreview)
-                {
-                    activePreview.SetActive(false);
-                }
+    //            activePreview = WeaponAbilities[0].AbilityPreview;
+    //            break;
+    //        case Abilities.BombBlast:
+    //            if (activePreview != WeaponAbilities[1].AbilityPreview)
+    //            {
+    //                activePreview.SetActive(false);
+    //            }
 
-                activePreview = WeaponAbilities[1].AbilityPreview;
-                break;
-            case Abilities.ScatterShot:
-                if (activePreview != WeaponAbilities[2].AbilityPreview)
-                {
-                    activePreview.SetActive(false);
-                }
+    //            activePreview = WeaponAbilities[1].AbilityPreview;
+    //            break;
+    //        case Abilities.ScatterShot:
+    //            if (activePreview != WeaponAbilities[2].AbilityPreview)
+    //            {
+    //                activePreview.SetActive(false);
+    //            }
 
-                activePreview = WeaponAbilities[2].AbilityPreview;
-                break;
-            case Abilities.StakeShot:
-                if (activePreview != WeaponAbilities[3].AbilityPreview)
-                {
-                    activePreview.SetActive(false);
-                }
+    //            activePreview = WeaponAbilities[2].AbilityPreview;
+    //            break;
+    //        case Abilities.StakeShot:
+    //            if (activePreview != WeaponAbilities[3].AbilityPreview)
+    //            {
+    //                activePreview.SetActive(false);
+    //            }
 
-                activePreview = WeaponAbilities[3].AbilityPreview;
-                break;
-        }
+    //            activePreview = WeaponAbilities[3].AbilityPreview;
+    //            break;
+    //    }
 
-        if(activePreview.activeInHierarchy)
-        {
-            activePreview.SetActive(false);
-        }
-        else
-        {
-            activePreview.SetActive(true);
-        }
-    }
+    //    if(activePreview.activeInHierarchy)
+    //    {
+    //        activePreview.SetActive(false);
+    //    }
+    //    else
+    //    {
+    //        activePreview.SetActive(true);
+    //    }
+    //}
 
     /// <summary>
     /// How the splinter shot preview looks
     /// </summary>
-    private void SplinterShotPreview()
-    {
-        WeaponAbilities[0].AbilityPreview.transform.localScale = new Vector3(WeaponAbilities[0].AbilityAOESize,
-            WeaponAbilities[0].AbilityPreview.transform.localScale.y, WeaponAbilities[0].AbilityAOESize);
+    //private void SplinterShotPreview()
+    //{
+    //    WeaponAbilities[0].AbilityPreview.transform.localScale = new Vector3(WeaponAbilities[0].AbilityAOESize,
+    //        WeaponAbilities[0].AbilityPreview.transform.localScale.y, WeaponAbilities[0].AbilityAOESize);
 
-        float abilityRange = abilityOne == Abilities.SplinterShot ? WeaponAbilities[abilityOneIndex].AbilityRange : WeaponAbilities[abilityTwoIndex].AbilityRange;
+    //    float abilityRange = abilityOne == Abilities.SplinterShot ? WeaponAbilities[abilityOneIndex].AbilityRange : WeaponAbilities[abilityTwoIndex].AbilityRange;
 
-        float staticY = WeaponAbilities[0].AbilityPreview.transform.position.y;
-        Vector3 pos = transform.position + Vector3.ClampMagnitude(mousePos, abilityRange);
-        pos.y = staticY;
-        WeaponAbilities[0].AbilityPreview.transform.position = pos;
-    }
+    //    float staticY = WeaponAbilities[0].AbilityPreview.transform.position.y;
+    //    Vector3 pos = transform.position + Vector3.ClampMagnitude(mousePos, abilityRange);
+    //    pos.y = staticY;
+    //    WeaponAbilities[0].AbilityPreview.transform.position = pos;
+    //}
 
     /// <summary>
     /// How the bomb blast preview looks
     /// </summary>
-    private void BombBlastPreview()
-    {
-        WeaponAbilities[1].AbilityPreview.transform.localScale = new Vector3(WeaponAbilities[1].AbilityAOESize,
-            WeaponAbilities[1].AbilityPreview.transform.localScale.y, WeaponAbilities[1].AbilityAOESize);
+    //private void BombBlastPreview()
+    //{
+    //    WeaponAbilities[1].AbilityPreview.transform.localScale = new Vector3(WeaponAbilities[1].AbilityAOESize,
+    //        WeaponAbilities[1].AbilityPreview.transform.localScale.y, WeaponAbilities[1].AbilityAOESize);
 
-        float abilityRange = abilityOne == Abilities.BombBlast ? WeaponAbilities[abilityOneIndex].AbilityRange : WeaponAbilities[abilityTwoIndex].AbilityRange;
+    //    float abilityRange = abilityOne == Abilities.BombBlast ? WeaponAbilities[abilityOneIndex].AbilityRange : WeaponAbilities[abilityTwoIndex].AbilityRange;
 
-        float staticY = WeaponAbilities[1].AbilityPreview.transform.position.y;
-        Vector3 pos = transform.position + Vector3.ClampMagnitude(mousePos, abilityRange);
-        pos.y = staticY;
-        WeaponAbilities[1].AbilityPreview.transform.position = pos;
-    }
+    //    float staticY = WeaponAbilities[1].AbilityPreview.transform.position.y;
+    //    Vector3 pos = transform.position + Vector3.ClampMagnitude(mousePos, abilityRange);
+    //    pos.y = staticY;
+    //    WeaponAbilities[1].AbilityPreview.transform.position = pos;
+    //}
 
-    /// <summary>
-    /// How the scatter shot preview looks
-    /// </summary>
-    private void ScatterShotPreview()
-    {
-        float abilityRange = abilityOne == Abilities.ScatterShot ? WeaponAbilities[abilityOneIndex].AbilityRange : WeaponAbilities[abilityTwoIndex].AbilityRange;
+    ///// <summary>
+    ///// How the scatter shot preview looks
+    ///// </summary>
+    //private void ScatterShotPreview()
+    //{
+    //    float abilityRange = abilityOne == Abilities.ScatterShot ? WeaponAbilities[abilityOneIndex].AbilityRange : WeaponAbilities[abilityTwoIndex].AbilityRange;
 
-        Vector3 pos = WeaponAbilities[2].AbilityPreview.transform.position;
-        pos.z = transform.position.z + ((abilityRange / 2) * 1.25f);
-        WeaponAbilities[2].AbilityPreview.transform.position = pos;
+    //    Vector3 pos = WeaponAbilities[2].AbilityPreview.transform.position;
+    //    pos.z = transform.position.z + ((abilityRange / 2) * 1.25f);
+    //    WeaponAbilities[2].AbilityPreview.transform.position = pos;
 
-        WeaponAbilities[2].AbilityPreview.transform.localScale = new Vector3(WeaponAbilities[2].AbilityRange, 
-            abilityRange, WeaponAbilities[2].AbilityPreview.transform.localScale.z);
-    }
+    //    WeaponAbilities[2].AbilityPreview.transform.localScale = new Vector3(WeaponAbilities[2].AbilityRange, 
+    //        abilityRange, WeaponAbilities[2].AbilityPreview.transform.localScale.z);
+    //}
 
-    /// <summary>
-    /// How the stake shot preview looks
-    /// </summary>
-    private void StakeShotPreview()
-    {
-        float abilityRange = abilityOne == Abilities.StakeShot ? WeaponAbilities[abilityOneIndex].AbilityRange : WeaponAbilities[abilityTwoIndex].AbilityRange;
+    ///// <summary>
+    ///// How the stake shot preview looks
+    ///// </summary>
+    //private void StakeShotPreview()
+    //{
+    //    float abilityRange = abilityOne == Abilities.StakeShot ? WeaponAbilities[abilityOneIndex].AbilityRange : WeaponAbilities[abilityTwoIndex].AbilityRange;
 
-        Vector3 pos = WeaponAbilities[3].AbilityPreview.transform.position;
-        pos.z = transform.position.z + abilityRange / 2;
-        WeaponAbilities[3].AbilityPreview.transform.position = pos;
+    //    Vector3 pos = WeaponAbilities[3].AbilityPreview.transform.position;
+    //    pos.z = transform.position.z + abilityRange / 2;
+    //    WeaponAbilities[3].AbilityPreview.transform.position = pos;
 
-        WeaponAbilities[3].AbilityPreview.transform.localScale = new Vector3(WeaponAbilities[3].AbilityPreview.transform.localScale.x,
-            WeaponAbilities[3].AbilityPreview.transform.localScale.y, abilityRange);
-    }
+    //    WeaponAbilities[3].AbilityPreview.transform.localScale = new Vector3(WeaponAbilities[3].AbilityPreview.transform.localScale.x,
+    //        WeaponAbilities[3].AbilityPreview.transform.localScale.y, abilityRange);
+    //}
 
     #endregion
 
@@ -361,8 +361,8 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
     {
         base.FixedUpdate();
 
-        SplinterShotPreview();
-        BombBlastPreview();
+        //SplinterShotPreview();
+        //BombBlastPreview();
     }
 
     /// <summary>
@@ -396,7 +396,7 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
     /// </summary>
     private IEnumerator CastingSplinterShot()
     {
-        GameObject tempAbility = Instantiate(WeaponAbilities[0].AbilityPreview, WeaponAbilities[0].AbilityPreview.transform.position, Quaternion.identity);
+        GameObject tempAbility = Instantiate(WeaponAbilities[0].PreviewData.AbilityPreview, WeaponAbilities[0].PreviewData.AbilityPreview.transform.position, Quaternion.identity);
 
         int tickDamage = WeaponAbilities[0].AbilityDamage / WeaponAbilities[0].AbilityDamageTicks;
         //Stores the remainder damage in case the damage doesn't divide evenly
@@ -428,7 +428,7 @@ public class CrossbowBehaviour : BaseWeaponBehaviour
     /// </summary>
     private IEnumerator CastingBombBlast()
     {
-        GameObject tempAbility = Instantiate(WeaponAbilities[1].AbilityPreview, WeaponAbilities[1].AbilityPreview.transform.position, Quaternion.identity);
+        GameObject tempAbility = Instantiate(WeaponAbilities[1].PreviewData.AbilityPreview, WeaponAbilities[1].PreviewData.AbilityPreview.transform.position, Quaternion.identity);
 
         yield return new WaitForSeconds(WeaponAbilities[1].AbilityDelay);
 

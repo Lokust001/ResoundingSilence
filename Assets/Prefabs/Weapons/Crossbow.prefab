@@ -1114,7 +1114,7 @@ MonoBehaviour:
   - {fileID: 7400000, guid: e90138978acc5f241830b30f92ca801f, type: 2}
   comboIndex: 0
   meleeHitboxes: []
-  abilitySettings: 1
+  abilitySettings: 0
   WeaponAbilities:
   - AbilityName: SplinterShot
     PrimaryStats:
@@ -1142,12 +1142,21 @@ MonoBehaviour:
     AbilityEndLag: 0.5
     AbilityRange: 3.5
     HasPreview: 1
+    OrbitsPlayer: 0
+    SizeIsRange: 0
+    ScaleXOnly: 0
+    ScaleZOnly: 0
     AbilityPreview: {fileID: 7590928629485323880}
     AbilityLayerMask:
       serializedVersion: 2
       m_Bits: 1024
-    AbilityAnim: {fileID: 0}
-    AbilityReadyAnim: {fileID: 0}
+    BaseAbilitySize: {x: 0, y: 0, z: 0}
+    AbilityAnim:
+      AnimClip: {fileID: 0}
+      LayerIndex: 0
+    AbilityReadyAnim:
+      AnimClip: {fileID: 7400000, guid: 95bf142e0ad03104ca9c94a63c9531e6, type: 2}
+      LayerIndex: 0
   - AbilityName: BombBlast
     PrimaryStats:
     - StatType: 0
@@ -1176,12 +1185,21 @@ MonoBehaviour:
     AbilityEndLag: 0.5
     AbilityRange: 3.5
     HasPreview: 1
+    OrbitsPlayer: 0
+    SizeIsRange: 0
+    ScaleXOnly: 0
+    ScaleZOnly: 0
     AbilityPreview: {fileID: 7347509225486067769}
     AbilityLayerMask:
       serializedVersion: 2
       m_Bits: 1088
-    AbilityAnim: {fileID: 0}
-    AbilityReadyAnim: {fileID: 0}
+    BaseAbilitySize: {x: 0, y: 0, z: 0}
+    AbilityAnim:
+      AnimClip: {fileID: 0}
+      LayerIndex: 0
+    AbilityReadyAnim:
+      AnimClip: {fileID: 7400000, guid: 60721c1c43ae1574bb1d28c01dbbacd7, type: 2}
+      LayerIndex: 0
   - AbilityName: ScatterShot
     PrimaryStats:
     - StatType: 0
@@ -1204,12 +1222,21 @@ MonoBehaviour:
     AbilityEndLag: 0.5
     AbilityRange: 3.5
     HasPreview: 1
+    OrbitsPlayer: 0
+    SizeIsRange: 1
+    ScaleXOnly: 0
+    ScaleZOnly: 0
     AbilityPreview: {fileID: 5277897699482532973}
     AbilityLayerMask:
       serializedVersion: 2
       m_Bits: 1024
-    AbilityAnim: {fileID: 0}
-    AbilityReadyAnim: {fileID: 0}
+    BaseAbilitySize: {x: 0, y: 0, z: 0}
+    AbilityAnim:
+      AnimClip: {fileID: 0}
+      LayerIndex: 0
+    AbilityReadyAnim:
+      AnimClip: {fileID: 7400000, guid: 6e4ba02038ef92048a60caca727721dc, type: 2}
+      LayerIndex: 0
   - AbilityName: StakeShot
     PrimaryStats:
     - StatType: 0
@@ -1236,17 +1263,27 @@ MonoBehaviour:
     AbilityEndLag: 0.5
     AbilityRange: 6
     HasPreview: 1
+    OrbitsPlayer: 0
+    SizeIsRange: 1
+    ScaleXOnly: 0
+    ScaleZOnly: 1
     AbilityPreview: {fileID: 417958859510438225}
     AbilityLayerMask:
       serializedVersion: 2
       m_Bits: 1024
-    AbilityAnim: {fileID: 0}
-    AbilityReadyAnim: {fileID: 0}
-  abilityOneIndex: 2
+    BaseAbilitySize: {x: 0, y: 0, z: 0}
+    AbilityAnim:
+      AnimClip: {fileID: 0}
+      LayerIndex: 0
+    AbilityReadyAnim:
+      AnimClip: {fileID: 7400000, guid: 1e2498aa2fdfa224c92f2407cea11044, type: 2}
+      LayerIndex: 0
+  currentAbilityIndex: 0
+  abilityOneIndex: 0
   abilityTwoIndex: 3
   abilityOneReady: 1
   abilityTwoReady: 1
-  abilityOne: 2
+  abilityOne: 0
   abilityTwo: 3
 --- !u!95 &4470947134498793366
 Animator:
