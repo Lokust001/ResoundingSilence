@@ -104,12 +104,13 @@ public class EnemySpawner : MonoBehaviour
 
     private void DeAggroHandler(bool playerEnters)
     {
+        //If player is leaving De-Aggro Trigger
         if (!playerEnters) 
         {
+            Debug.Log("De-aggro-ing enemies");
             foreach (var enemy in generatedEnemies)
             {
-                //De-aggro
-
+                enemy.EnemyDeAggro();
             }
         }
     }
@@ -176,6 +177,17 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Grabs a random enemy group from the groupList
+    /// </summary>
+    /// <param name="groupList"></param>
+    /// <returns></returns>
+    private List<GameObject> RandomEnemyGroupFromTier(SpawnTier.EnemyGroup[] groupList) 
+    {
+        int randomGroupIndex = Random.Range(0, groupList.Length);
+        return groupList[randomGroupIndex].enemies.ToList<GameObject>();
+    }
+
 
     /// <summary>
     /// Calculates and assigns a tier of enemies based on the number of danger points
@@ -196,7 +208,7 @@ public class EnemySpawner : MonoBehaviour
         {
             if (dangerPoints >= enemyGroupTiers[i].minimumPoints)
             {
-                calculatedEnemyPool = enemyGroupTiers[i].enemyPool.ToList<GameObject>();
+                calculatedEnemyPool = RandomEnemyGroupFromTier(enemyGroupTiers[i].enemyGroups);
                 Debug.Log(enemyGroupTiers[i].tierName + " was chosen from calculated danger points");
                 break;
             }
@@ -212,7 +224,6 @@ public class EnemySpawner : MonoBehaviour
             
             //Scale the enemy's stats based on the calculated level or scale value
             createdEnemy.ScaleEnemy(spawnerEnemyScale);
-            createdEnemy.AssignEnemySpawner(this);
             createdEnemy.aggroEnemyGroup += AggroAllEnemies;
             createdEnemy.destroyCancellationToken.Register(() =>
             //Inner Method that removes the destroyed enemy from the list,

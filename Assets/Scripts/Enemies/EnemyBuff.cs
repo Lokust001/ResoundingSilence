@@ -9,7 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyBuff : MonoBehaviour, IEntityDataReceiver, ICustomDisabler
+public class EnemyBuff : MonoBehaviour, IStatBasedEnemies, ICustomDisabler
 {
     BaseEnemyScriptable enemyData;
 
@@ -94,6 +94,7 @@ public class EnemyBuff : MonoBehaviour, IEntityDataReceiver, ICustomDisabler
     /// </summary>
     private void ClearBuffFromAllies()
     {
+
         //Turn off the aura visual and prevent new enemies from entering it
         buffAuraTrigger.enabled = buffAuraMesh.enabled = false;
 
@@ -150,5 +151,13 @@ public class EnemyBuff : MonoBehaviour, IEntityDataReceiver, ICustomDisabler
     {
         StopAllCoroutines();
         ClearBuffFromAllies();
+    }
+
+    /// <summary>
+    /// De-Aggro's an enemy's buff behavior by calling DisableEntity since they share 1:1 functionality
+    /// </summary>
+    public void DeAggroEntity() 
+    {
+        DisableEntity();
     }
 }

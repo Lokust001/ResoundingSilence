@@ -8,7 +8,7 @@ using System.Collections;
 using UnityEngine;
 using static BaseEnemyScriptable;
 
-public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICustomDisabler
+public class EnemyAttack : MonoBehaviour, IStatBasedEnemies, ICustomEnabler, ICustomDisabler
 {
 
     [SerializeField]
@@ -265,7 +265,7 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
     /// <summary>
     /// Resets the parent indicator scale so that that the indicator isn't showing
     /// </summary>
-    private void ResetIndicatorParent() 
+    public void ResetIndicatorParent() 
     {
         if(attackIndicatorArea != null)
             attackIndicatorArea.transform.parent.localScale = new(1, 1, 0);
@@ -341,6 +341,16 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
     }
 
     /// <summary>
+    /// De-aggros the enemy's attack behavior by stopping all coroutines, resetting melee indicator, and freeing up coroutine trackers
+    /// </summary>
+    public void DeAggroEntity() 
+    {
+        StopAllCoroutines();
+        ResetIndicatorParent();
+        activeATKorCooldown = enemyCharging = null;
+    }
+
+    /// <summary>
     /// Casts the scriptable object into a BaseEnemyScriptable and assigns the data of the enemy to this script
     /// </summary>
     /// <param name="baseScriptable"></param>
@@ -366,9 +376,7 @@ public class EnemyAttack : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, I
     /// </summary>
     public void DisableEntity()
     {
-        StopAllCoroutines();
-        ResetIndicatorParent();
-        activeATKorCooldown = enemyCharging = null;
+        DeAggroEntity();
         sphereTrigger.enabled = false;
 
         if (chargingCapCollider != null)

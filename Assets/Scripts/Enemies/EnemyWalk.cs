@@ -8,7 +8,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICustomDisabler
+public class EnemyWalk : MonoBehaviour, IStatBasedEnemies, ICustomEnabler, ICustomDisabler
 {
     private NavMeshAgent navMeshAgent;
     private GameObject playerReference;
@@ -283,9 +283,17 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     /// </summary>
     public void DisableEntity()
     {
-        StopApproachingPlayer();
-        StopAllCoroutines();
+        DeAggroEntity();
         meshRenderer.enabled = false;
         capsuleCollider.enabled = false;
+    }
+
+    /// <summary>
+    /// De-aggro's the enemy's movement behavior by stopping all movement coroutines
+    /// </summary>
+    public void DeAggroEntity() 
+    {
+        StopApproachingPlayer();
+        StopAllCoroutines();
     }
 }
