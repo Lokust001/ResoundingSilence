@@ -6,7 +6,9 @@
 * To Do:   The Debug console SpreadSheet
 */
 using NaughtyAttributes;
+using NUnit.Framework.Internal.Commands;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -107,6 +109,7 @@ public class DebugConsole : MonoBehaviour
         }
         playerInstance.StopPlayerMovementAndInput();
         ClearConsole();
+        transform.SetAsLastSibling();
     }
 
     /// <summary>
@@ -127,7 +130,8 @@ public class DebugConsole : MonoBehaviour
     public void CallFunction()
     {
         string Command = inputs.text.ToLower();
-
+        Command = Command.Trim();
+        AppendConsoleLine(Command);
         inputs.text = "";
         inputs.ActivateInputField();
 
@@ -148,6 +152,7 @@ public class DebugConsole : MonoBehaviour
             AppendConsoleLine($"Change to Pivot Camera Mode: PivotCam or PC");
             AppendConsoleLine($"Change to Free Camera Mode: FreeCam or FC");
             AppendConsoleLine($"Change to Detatch Camera Mode: DetachCam or DC");
+            AppendConsoleLine($"Add a specific pin to inventory: AddPin or AP <index of pin (int) or name of pin (string).");
             FinishCommand();
             return;
         }
@@ -401,6 +406,62 @@ public class DebugConsole : MonoBehaviour
             return;
         }
 
+        if (Command.StartsWith("addpin") || Command.StartsWith("ap"))
+        {
+            string postCommand = "";
+            if (Command.StartsWith("addpin"))
+            {
+                postCommand = Command.Substring(6);
+            }
+            else
+            {
+                postCommand = Command.Substring(2);
+            }
+
+            postCommand = RemoveWhitespaces(postCommand);
+
+            if (postCommand == null || postCommand.Length == 0)
+            {
+                AppendConsoleLine(Command, incorrectInputColor);
+                AppendConsoleLine($"The Add Pins command requires either\n - A number (the index of the pin in the static data manager)\n - A name (the name of the pin).", Color.orange);
+                FinishCommand();
+                return;
+            }
+
+            PinScriptable pin = null;
+
+            if (int.TryParse(postCommand, out int pinInt))
+            {
+                if (pinInt < 0 || pinInt >= StaticDataManager.Instance.Pins.Count)
+                {
+                    AppendConsoleLine(Command, incorrectInputColor);
+                    AppendConsoleLine($"The Add Pins <int> command must have an int between 0 (inclusive) and {StaticDataManager.Instance.Pins.Count - 1} (inclusive).", Color.orange);
+                    FinishCommand();
+                    return;
+                }
+
+                pin = StaticDataManager.Instance.Pins[pinInt];
+            }
+            else
+            {
+                pin = StaticDataManager.Instance.Pins.FirstOrDefault(x => RemoveWhitespaces(x.PinName.ToLower()) == postCommand);
+            }
+
+            if (pin == null)
+            {
+                AppendConsoleLine(Command, incorrectInputColor);
+                AppendConsoleLine($"Pin Not Found.", Color.orange);
+                FinishCommand();
+                return;
+            }
+
+            MidRunDataManager.Instance.AddPinToInventory(pin.CreateNonRefCopy<PinScriptable>());
+            AppendConsoleLine(Command, inputColor);
+            AppendConsoleLine($"The Pin {pin.PinName} has been added to your inventory", commandCompletedColor);
+            FinishCommand();
+            return;
+        }
+
 
         AppendConsoleLine(Command, incorrectInputColor);
         AppendConsoleLine($"No command found, use Help for a list of all commands.", Color.orange);
@@ -445,12 +506,6 @@ public class DebugConsole : MonoBehaviour
     {
         yield return null;
         logScrollRect.verticalNormalizedPosition = 0;
-/*        if (logScrollRect == null)
-            yield break;
-
-        Canvas.ForceUpdateCanvases();*/
-
-        
     }
 
     /// <summary>
@@ -477,5 +532,15 @@ public class DebugConsole : MonoBehaviour
     private void ClearConsole()
     {
         textArea.text = "";
+    }
+
+    /// <summary>
+    /// returns a copy of the given string with all whitespaces removed
+    /// </summary>
+    /// <param name="text"></param>
+    /// <returns></returns>
+    private string RemoveWhitespaces(string text)
+    {
+        return string.Concat(text.Where(c => !char.IsWhiteSpace(c)));
     }
 }
