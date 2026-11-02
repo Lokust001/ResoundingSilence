@@ -551,8 +551,9 @@ public class BaseWeaponBehaviour : MonoBehaviour
 
             foreach (Collider t in targets)
             {
-                Vector3 forceDir = new Vector3(t.transform.position.x - tempAbility.transform.position.x, 0,
-                t.transform.position.z - tempAbility.transform.position.z).normalized;
+                Vector3 originPosition = WeaponAbilities[abilityIndex].PreviewData.KnockBackFromPreviewCenter ? tempAbility.transform.position : this.transform.position;
+                Vector3 forceDir = new Vector3(t.transform.position.x - originPosition.x, 0,
+                t.transform.position.z - originPosition.z).normalized;
 
                 if (t.GetComponent<Enemy>())
                 {

@@ -90,4 +90,5 @@ public struct PreviewShape
     public bool SizeIsRange;
     public bool ScaleXOnly;
     public bool ScaleZOnly;
+    public bool KnockBackFromPreviewCenter;
 }
