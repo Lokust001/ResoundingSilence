@@ -7,6 +7,7 @@
 */
 using NaughtyAttributes;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -31,10 +32,10 @@ public class DebugConsole : MonoBehaviour
     TMPro.TMP_Text textArea;
 
     [ShowIf(nameof(settings), ShownSettings.Refs)]
-    [SerializeField] 
+    [SerializeField]
     ScrollRect logScrollRect;
 
-    
+
     //private GameObject[] enemies;
 
     /*[ShowIf(nameof(settings), ShownSettings.Refs]
@@ -107,6 +108,7 @@ public class DebugConsole : MonoBehaviour
         }
         playerInstance.StopPlayerMovementAndInput();
         ClearConsole();
+        transform.SetAsLastSibling();
     }
 
     /// <summary>
@@ -114,7 +116,7 @@ public class DebugConsole : MonoBehaviour
     /// </summary>
     private void OnDisable()
     {
-        if(!pivotToggle && !detachToggle && !freeToggle)
+        if (!pivotToggle && !detachToggle && !freeToggle)
         {
             playerInstance.RestartPlayerMovementAndInput();
         }
@@ -127,7 +129,8 @@ public class DebugConsole : MonoBehaviour
     public void CallFunction()
     {
         string Command = inputs.text.ToLower();
-
+        Command = Command.Trim();
+        AppendConsoleLine(Command);
         inputs.text = "";
         inputs.ActivateInputField();
 
@@ -148,6 +151,7 @@ public class DebugConsole : MonoBehaviour
             AppendConsoleLine($"Change to Pivot Camera Mode: PivotCam or PC");
             AppendConsoleLine($"Change to Free Camera Mode: FreeCam or FC");
             AppendConsoleLine($"Change to Detatch Camera Mode: DetachCam or DC");
+            AppendConsoleLine($"Add a specific pin to inventory: AddPin or AP <index of pin (int) or name of pin (string).");
             FinishCommand();
             return;
         }
@@ -200,7 +204,7 @@ public class DebugConsole : MonoBehaviour
             return;
         }
 
-        if(Command.StartsWith("changeisland") || Command.StartsWith("ci"))
+        if (Command.StartsWith("changeisland") || Command.StartsWith("ci"))
         {
             string postCommand = "";
             if (Command.StartsWith("changeisland"))
@@ -249,7 +253,7 @@ public class DebugConsole : MonoBehaviour
                     postCommand = postCommand.Substring(3);
                 }
 
-                if(postCommand.StartsWith(" "))
+                if (postCommand.StartsWith(" "))
                 {
                     postCommand = postCommand.Substring(1);
                 }
@@ -294,9 +298,9 @@ public class DebugConsole : MonoBehaviour
                     FinishCommand();
                     return;
                 }
-                else if(int.TryParse(Command, out Temp))
+                else if (int.TryParse(Command, out Temp))
                 {
-                     mapGenInstance.SwitchIsland(TempIsland, Temp);
+                    mapGenInstance.SwitchIsland(TempIsland, Temp);
                     AppendConsoleLine(Command, inputColor);
                     AppendConsoleLine($"Island {TempIsland} Has switched to layout {Temp}", commandCompletedColor);
                     FinishCommand();
@@ -310,7 +314,7 @@ public class DebugConsole : MonoBehaviour
 
         }
 
-        if(Command.StartsWith("mapreset") || Command.StartsWith("mr"))
+        if (Command.StartsWith("mapreset") || Command.StartsWith("mr"))
         {
             mapGenInstance.DeleteIslands();
             AppendConsoleLine(Command, inputColor);
@@ -320,7 +324,7 @@ public class DebugConsole : MonoBehaviour
             return;
         }
 
-        if(Command.StartsWith("pivotcam") || Command.StartsWith("pc"))
+        if (Command.StartsWith("pivotcam") || Command.StartsWith("pc"))
         {
             pivotToggle = !pivotToggle;
             playerInstance.MoveActive = !pivotToggle;
@@ -380,7 +384,7 @@ public class DebugConsole : MonoBehaviour
             pivotToggle = false;
             playerInstance.MoveActive = !pivotToggle;
             PivotInstance.isActive = pivotToggle;
-            if(freeToggle)
+            if (freeToggle)
             {
                 FreeCameraInstance.gameObject.SetActive(true);
                 DetachInstance.gameObject.SetActive(false);
@@ -397,6 +401,62 @@ public class DebugConsole : MonoBehaviour
             }
             AppendConsoleLine(Command, inputColor);
             AppendConsoleLine($"Free Cam command: {freeToggle}", commandCompletedColor);
+            FinishCommand();
+            return;
+        }
+
+        if (Command.StartsWith("addpin") || Command.StartsWith("ap"))
+        {
+            string postCommand = "";
+            if (Command.StartsWith("addpin"))
+            {
+                postCommand = Command.Substring(6);
+            }
+            else
+            {
+                postCommand = Command.Substring(2);
+            }
+
+            postCommand = RemoveWhitespaces(postCommand);
+
+            if (postCommand == null || postCommand.Length == 0)
+            {
+                AppendConsoleLine(Command, incorrectInputColor);
+                AppendConsoleLine($"The Add Pins command requires either\n - A number (the index of the pin in the static data manager)\n - A name (the name of the pin).", Color.orange);
+                FinishCommand();
+                return;
+            }
+
+            PinScriptable pin = null;
+
+            if (int.TryParse(postCommand, out int pinInt))
+            {
+                if (pinInt < 0 || pinInt >= StaticDataManager.Instance.Pins.Count)
+                {
+                    AppendConsoleLine(Command, incorrectInputColor);
+                    AppendConsoleLine($"The Add Pins <int> command must have an int between 0 (inclusive) and {StaticDataManager.Instance.Pins.Count - 1} (inclusive).", Color.orange);
+                    FinishCommand();
+                    return;
+                }
+
+                pin = StaticDataManager.Instance.Pins[pinInt];
+            }
+            else
+            {
+                pin = StaticDataManager.Instance.Pins.FirstOrDefault(x => RemoveWhitespaces(x.PinName.ToLower()) == postCommand);
+            }
+
+            if (pin == null)
+            {
+                AppendConsoleLine(Command, incorrectInputColor);
+                AppendConsoleLine($"Pin Not Found.", Color.orange);
+                FinishCommand();
+                return;
+            }
+
+            MidRunDataManager.Instance.AddPinToInventory(pin.CreateNonRefCopy<PinScriptable>());
+            AppendConsoleLine(Command, inputColor);
+            AppendConsoleLine($"The Pin {pin.PinName} has been added to your inventory", commandCompletedColor);
             FinishCommand();
             return;
         }
@@ -424,7 +484,7 @@ public class DebugConsole : MonoBehaviour
     /// <param name="line"></param>
     private void AppendConsoleLine(string line, Color TextColor = default)
     {
-        if(TextColor == default)
+        if (TextColor == default)
         {
             TextColor = Color.white;
         }
@@ -433,7 +493,7 @@ public class DebugConsole : MonoBehaviour
             textArea.text += $"\n";
         }
         textArea.text += $"<color=#{ColorUtility.ToHtmlStringRGB(TextColor)}>{line}</color>";
-        
+
         StartCoroutine(ScrollToBottomNextFrame());
     }
 
@@ -445,12 +505,6 @@ public class DebugConsole : MonoBehaviour
     {
         yield return null;
         logScrollRect.verticalNormalizedPosition = 0;
-/*        if (logScrollRect == null)
-            yield break;
-
-        Canvas.ForceUpdateCanvases();*/
-
-        
     }
 
     /// <summary>
@@ -458,7 +512,7 @@ public class DebugConsole : MonoBehaviour
     /// </summary>
     /// <param name="Speed"></param>
     private void PlayerSpeed(float Speed)
-    { 
+    {
         playerInstance.moveSpeed = Speed;
     }
 
@@ -477,5 +531,15 @@ public class DebugConsole : MonoBehaviour
     private void ClearConsole()
     {
         textArea.text = "";
+    }
+
+    /// <summary>
+    /// returns a copy of the given string with all whitespaces removed
+    /// </summary>
+    /// <param name="text"></param>
+    /// <returns></returns>
+    private string RemoveWhitespaces(string text)
+    {
+        return string.Concat(text.Where(c => !char.IsWhiteSpace(c)));
     }
 }

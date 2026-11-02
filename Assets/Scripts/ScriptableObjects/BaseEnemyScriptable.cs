@@ -7,9 +7,11 @@
 */
 using UnityEngine;
 using NaughtyAttributes;
+using System;
 [CreateAssetMenu(fileName = "BaseEnemyScriptable", menuName = "Scriptables/BaseEnemyScriptable")]
 public class BaseEnemyScriptable : BaseScriptableObject
 {
+
     public enum EnemyType
     {
         None,
@@ -74,6 +76,7 @@ public class BaseEnemyScriptable : BaseScriptableObject
     private float enemyMaxHealth;
     public int enemyATKDmg;
     public float timeBetweenAttacks;
+    public float reAggroCooldown = 3f;
 
     [Header("Dynamic Movement Attributes")]
     [ShowIf(nameof(HasMovementVariability))]

@@ -185,6 +185,7 @@ public class UpgradeMenuController : MenuControllerSupportBase
     {
         base.SetUpPublicEvents();
 
+        UIPublicEvents.InventoryUpdated += PopulateInventory;
         InputPublicEvents.SwapFocusToInventory += MoveFocusToInventory;
         InputPublicEvents.SwapFocusToGrid += MoveFocusToGrid;
         InputPublicEvents.SwapFocusToTarot += MoveFocusToTarot;
@@ -202,6 +203,7 @@ public class UpgradeMenuController : MenuControllerSupportBase
         InputPublicEvents.SwapFocusToGrid -= MoveFocusToGrid;
         UIPublicEvents.SelectSpecificTile -= SelectSpecificTile;
         InputPublicEvents.SwapFocusToTarot -= MoveFocusToTarot;
+        UIPublicEvents.InventoryUpdated -= PopulateInventory;
     }
 
     /// <summary>

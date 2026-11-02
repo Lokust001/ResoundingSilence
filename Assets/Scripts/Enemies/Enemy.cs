@@ -5,6 +5,7 @@
  */
 
 using NaughtyAttributes;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -21,9 +22,14 @@ public class Enemy : MonoBehaviour
 
     private EnemyAttack attackBehavior;
     private EnemyWalk movementBeahvior;
+    private EnemyBuff buffBehavior;
 
     [SerializeField, Header("Debug Variables")]
     private int dmgToTake;
+
+    public Action aggroEnemyGroup;
+
+    private bool isAggro;
 
     private bool inMeleeRange;
     private bool inRangedRange;
@@ -31,6 +37,7 @@ public class Enemy : MonoBehaviour
     private bool allowNonImmediateBehavior;
 
     private YieldInstruction actionInterval;
+    private WaitForSeconds deAggroInterval;
 
     /// <summary>
     /// Creates a copy of the scriptable object not tied to the inspector, then propagates it other scripts
@@ -38,12 +45,17 @@ public class Enemy : MonoBehaviour
     void Awake()
     {
         actionInterval = new WaitForSeconds(enemyData.timeBetweenRangeChecks);
+        deAggroInterval = new WaitForSeconds(enemyData.reAggroCooldown);
         attackBehavior = GetComponentInChildren<EnemyAttack>();
         movementBeahvior = GetComponentInChildren<EnemyWalk>();
+        buffBehavior = GetComponentInChildren<EnemyBuff>(true);
         enemyData = enemyData.CreateNonRefCopy<BaseEnemyScriptable>();
         PropagateEnemyData();
-        if(testWithoutSpawner)
+        if (testWithoutSpawner) 
+        {
             EnableEnemy();
+            attackBehavior.EnableAggroChecking();
+        }
     }
 
     /// <summary>
@@ -51,9 +63,9 @@ public class Enemy : MonoBehaviour
     /// </summary>
     void PropagateEnemyData()
     {
-        foreach (IEntityDataReceiver entity in GetComponentsInChildren<IEntityDataReceiver>(true))
+        foreach (ISharedEnemyBehaviors entity in GetComponentsInChildren<ISharedEnemyBehaviors>(true))
         {
-            entity.SetEntityData(enemyData);
+            entity.ReceiveEnemyData(enemyData);
         }
     }
 
@@ -62,7 +74,7 @@ public class Enemy : MonoBehaviour
     /// </summary>
     public void EnableEnemy()
     {
-        aggroTrigger.EnemyTriggerActivated += EnableEnemyAggro;
+        aggroTrigger.EnemyTriggerActivated += AggroEnemy;
         foreach (ICustomEnabler entity in GetComponentsInChildren<ICustomEnabler>(true))
         {
             entity.EnableEntity();
@@ -74,7 +86,8 @@ public class Enemy : MonoBehaviour
     /// </summary>
     public void DisableEnemy()
     {
-        aggroTrigger.EnemyTriggerActivated -= EnableEnemyAggro;
+        aggroTrigger.EnemyTriggerActivated -= AggroEnemy;
+        isAggro = false;
         foreach (ICustomDisabler entity in GetComponentsInChildren<ICustomDisabler>(true))
         {
             entity.DisableEntity();
@@ -88,16 +101,51 @@ public class Enemy : MonoBehaviour
     /// Aggro's the enemy and then disables this behavior for the rest of its runtime
     /// </summary>
     /// <param name="obj"></param>
-    private void EnableEnemyAggro(PlayerController obj)
+    public void AggroEnemy(PlayerController obj = null)
     {
-        Debug.Log(gameObject.name + " is aggro'd");
-        aggroTrigger.EnemyTriggerActivated -= EnableEnemyAggro;
+        _ = obj;
+
+        if (isAggro)
+            return;
+
+        isAggro = true;
+        //Remove Aggro Trigger
+        aggroTrigger.EnemyTriggerActivated -= AggroEnemy;
+        //Call other enemies to be aggro'd
+        aggroEnemyGroup?.Invoke();
         FirstEnemyAction();
 
     }
+    /// <summary>
+    /// Tells attackBehavior to enable the aggro trigger
+    /// </summary>
+    public IEnumerator DelayedAggroReEnable() 
+    {
+        yield return deAggroInterval;
+        attackBehavior.EnableAggroChecking();
+        aggroTrigger.EnemyTriggerActivated += AggroEnemy;
+    }
 
     /// <summary>
-    /// The first decision that the enemy takes, on whether it follows 
+    /// De-Aggro's the enemy and stops all coroutines on other behaviors
+    /// </summary>
+    public void EnemyDeAggro() 
+    {
+        //Don't call if player just went in the spawner and didn't aggro
+        if (!isAggro)
+            return;
+
+        isAggro = false;
+        foreach (var behavior in GetComponentsInChildren<ISharedEnemyBehaviors>(true))
+        {
+            behavior.DeAggroEnemy();
+        }
+        attackBehavior.ResetIndicatorParent();
+        StartCoroutine(DelayedAggroReEnable());
+    }
+
+    /// <summary>
+    /// The first decision that the enemy takes after becoming aggro'd, on whether it follows 
     /// one temporal-based loop or two
     /// </summary>
     private void FirstEnemyAction() 
@@ -106,17 +154,15 @@ public class Enemy : MonoBehaviour
         {
             case BaseEnemyScriptable.EnemyType.None:
                 break;
-            case BaseEnemyScriptable.EnemyType.SingleShooter:
-            case BaseEnemyScriptable.EnemyType.ConeShooter:
+            case BaseEnemyScriptable.EnemyType.SingleShooter: case BaseEnemyScriptable.EnemyType.ConeShooter:
                 attackBehavior.InitiateAttack();
                 StartCoroutine(RepeatedlyCheckShooterRange());
                 break;
-            case BaseEnemyScriptable.EnemyType.Melee:
-            case BaseEnemyScriptable.EnemyType.ChargingMelee:
+            case BaseEnemyScriptable.EnemyType.Melee: case BaseEnemyScriptable.EnemyType.ChargingMelee:
                 movementBeahvior.FollowPlayer();
                 break;
             case BaseEnemyScriptable.EnemyType.BuffEnemy:
-                GetComponentInChildren<EnemyBuff>(true).AttemptBuffingAllies();
+                buffBehavior.AttemptBuffingAllies();
                 break;
             default:
                 break;
@@ -128,7 +174,7 @@ public class Enemy : MonoBehaviour
     /// </summary>
     private void OnDisable()
     {
-        aggroTrigger.EnemyTriggerActivated -= EnableEnemyAggro;
+        aggroTrigger.EnemyTriggerActivated -= AggroEnemy;
     }
 
     /// <summary>
@@ -136,6 +182,8 @@ public class Enemy : MonoBehaviour
     /// </summary>
     public void NextEnemyAction() 
     {
+        allowNonImmediateBehavior = true;
+        //Debug.Log("Melee: " + inMeleeRange + " Ranged: " + inRangedRange);
         if (!inRangedRange && !inMeleeRange)
         {
             NotInPlayerZones();
@@ -148,6 +196,7 @@ public class Enemy : MonoBehaviour
         {
             MeleeZoneEntryBehaviors();
         }
+        allowNonImmediateBehavior = false;
     }
 
     /// <summary>
@@ -157,13 +206,11 @@ public class Enemy : MonoBehaviour
     private IEnumerator RepeatedlyCheckShooterRange() 
     {
         int i = 0;
-        while (true) 
+        while (isAggro) 
         {
             //[Uncomment for debug]
             //Debug.Log("Behavior Loop # [" + i +"]\t inRanged : " + inRangedRange + " Melee area: " + inMeleeRange);
-            allowNonImmediateBehavior = true;
             NextEnemyAction();
-            allowNonImmediateBehavior = false;
             yield return actionInterval;
             i++;
         }
@@ -180,12 +227,10 @@ public class Enemy : MonoBehaviour
             case BaseEnemyScriptable.EnemyType.None:
                 Debug.LogError("Invalid EnemyType entered Zone!");
                 break;
-            case BaseEnemyScriptable.EnemyType.Melee:
-            case BaseEnemyScriptable.EnemyType.ChargingMelee:
+            case BaseEnemyScriptable.EnemyType.Melee: case BaseEnemyScriptable.EnemyType.ChargingMelee:
                 movementBeahvior.FollowPlayer();
                 break;
-            case BaseEnemyScriptable.EnemyType.SingleShooter:
-            case BaseEnemyScriptable.EnemyType.ConeShooter:
+            case BaseEnemyScriptable.EnemyType.SingleShooter: case BaseEnemyScriptable.EnemyType.ConeShooter:
                 movementBeahvior.StrafeTowardsPlayer();
                 break;
         }
@@ -213,15 +258,14 @@ public class Enemy : MonoBehaviour
             case BaseEnemyScriptable.EnemyType.None:
                 Debug.LogError("Invalid EnemyType entered Zone!");
                 break;
-            case BaseEnemyScriptable.EnemyType.SingleShooter:
-            case BaseEnemyScriptable.EnemyType.ConeShooter:
+            case BaseEnemyScriptable.EnemyType.SingleShooter: case BaseEnemyScriptable.EnemyType.ConeShooter:
                 movementBeahvior.StopApproachingPlayer();
                 break;
-            case BaseEnemyScriptable.EnemyType.Melee:
-            case BaseEnemyScriptable.EnemyType.ChargingMelee:
+            case BaseEnemyScriptable.EnemyType.Melee: case BaseEnemyScriptable.EnemyType.ChargingMelee:
                 if (allowNonImmediateBehavior) 
                 {
                     allowNonImmediateBehavior = false;
+                    Debug.Log("Following player");
                     movementBeahvior.FollowPlayer();
                 }
                 break;
@@ -255,8 +299,7 @@ public class Enemy : MonoBehaviour
             case BaseEnemyScriptable.EnemyType.None:
                 Debug.LogError("Invalid EnemyType entered Zone!");
                 break;
-            case BaseEnemyScriptable.EnemyType.SingleShooter:
-            case BaseEnemyScriptable.EnemyType.ConeShooter:
+            case BaseEnemyScriptable.EnemyType.SingleShooter: case BaseEnemyScriptable.EnemyType.ConeShooter:
                 movementBeahvior.StopApproachingPlayer();
                 //Only do this if a time-based check has passed via RepeatedlyCheckShooterRange
                 if (allowNonImmediateBehavior) 
@@ -265,8 +308,7 @@ public class Enemy : MonoBehaviour
                     StartCoroutine(movementBeahvior.RetreatWalking());
                 }
                 break;
-            case BaseEnemyScriptable.EnemyType.Melee:
-            case BaseEnemyScriptable.EnemyType.ChargingMelee:
+            case BaseEnemyScriptable.EnemyType.Melee: case BaseEnemyScriptable.EnemyType.ChargingMelee:
                 movementBeahvior.StopApproachingPlayer();
                 attackBehavior.InitiateAttack();
                 break;
@@ -309,6 +351,7 @@ public class Enemy : MonoBehaviour
         enemyData.ScaleHP(scaleValue);
     }
 
+
     /// <summary>
     /// Method that calculates enemy damage taken while simultaenously updating enemyData with those values
     /// </summary>
@@ -320,6 +363,10 @@ public class Enemy : MonoBehaviour
         enemyData.enemyHealth -= finalDmgTaken;
         if (enemyData.enemyHealth <= 0)
             EnemyDeath();
+
+        if (!isAggro)
+            AggroEnemy();
+
         return finalDmgTaken;
     }
 
@@ -344,13 +391,15 @@ public class Enemy : MonoBehaviour
         
     }
     /// <summary>
-    /// Simulates an enemydeath
+    /// Simulates an enemydeath, and fulfills objectives if they're active
     /// </summary>
 
     [Button("EnemyDeath")]
     public void EnemyDeath() 
     {
+        SideObjectiveManager.Instance.AttemptHuntObjectivesProgression(enemyData);
         Destroy(gameObject);
     }
+
 }
 
