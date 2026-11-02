@@ -543,10 +543,10 @@ public class BaseWeaponBehaviour : MonoBehaviour
         {
             case PreviewShape.Shape.Square:
             case PreviewShape.Shape.Cone:
-                center = activePreview.GetComponent<BoxCollider>().bounds.center;
-                extents = activePreview.GetComponent<BoxCollider>().bounds.extents;
+                center = activePreview.GetComponent<BoxCollider>().transform.TransformPoint(activePreview.GetComponent<BoxCollider>().center);
+                extents = Vector3.Scale(activePreview.GetComponent<BoxCollider>().size, activePreview.GetComponent<BoxCollider>().transform.lossyScale) * .5f;
 
-                targets = Physics.OverlapBox(center, extents, Quaternion.identity,
+                targets = Physics.OverlapBox(center, extents, activePreview.GetComponent<BoxCollider>().transform.rotation,
                 WeaponAbilities[currentAbilityIndex].AbilityLayerMask);
                 break;
             case PreviewShape.Shape.Sphere:
@@ -571,7 +571,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
                 {
                     case PreviewShape.Shape.Square:
                     case PreviewShape.Shape.Cone:
-                        targets = Physics.OverlapBox(center, extents, Quaternion.identity,
+                        targets = Physics.OverlapBox(center, extents, activePreview.GetComponent<BoxCollider>().transform.rotation,
                         WeaponAbilities[currentAbilityIndex].AbilityLayerMask);
                         break;
                     case PreviewShape.Shape.Sphere:
