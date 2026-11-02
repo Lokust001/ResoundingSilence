@@ -191,10 +191,10 @@ public class EnemySpawner : MonoBehaviour
     /// </summary>
     /// <param name="groupList"></param>
     /// <returns></returns>
-    private List<GameObject> RandomEnemyGroupFromTier(SpawnTier.EnemyGroup[] groupList) 
+    private List<GameObject> RandomEnemyGroupFromTier(EnemyGroup[] groupList) 
     {
         int randomGroupIndex = Random.Range(0, groupList.Length);
-        return groupList[randomGroupIndex].enemies.ToList<GameObject>();
+        return groupList[randomGroupIndex].enemies;
     }
 
 

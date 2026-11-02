@@ -20,6 +20,7 @@ MonoBehaviour:
   enemyHealth: 100
   enemyATKDmg: 25
   timeBetweenAttacks: 1.2
+  reAggroCooldown: 3
   maxVariabilityDestinationAttempts: 50
   approachDestinationVariabilityDegrees: 90
   retreatDestinationVariabilityDegrees: 270
@@ -45,3 +46,15 @@ MonoBehaviour:
   retreatHealthPercent: 0
   allyATKIncreasePercent: 0
   allyReducedDmgPercent: 0
+  healthScaling:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  damageScaling:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
