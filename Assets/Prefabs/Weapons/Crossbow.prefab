@@ -604,7 +604,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 23
+  m_VersionIndex: 38
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -1064,7 +1064,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7236322570925161113}
-  - component: {fileID: 8988554487706284111}
+  - component: {fileID: 1506777356380557928}
   - component: {fileID: 4470947134498793366}
   m_Layer: 7
   m_Name: Crossbow
@@ -1091,7 +1091,7 @@ Transform:
   - {fileID: 4298004810466838347}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8988554487706284111
+--- !u!114 &1506777356380557928
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1100,9 +1100,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 8556073844088731136}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f623ee31e6121349ac8494b6d6cb84d, type: 3}
+  m_Script: {fileID: 11500000, guid: 579420d72e9042b4bad5d8251cab5b62, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CrossbowBehaviour
+  m_EditorClassIdentifier: Assembly-CSharp::BaseWeaponBehaviour
   ThisWeaponData: {fileID: 0}
   weaponDataID: 0
   weaponModel: {fileID: 7187170942483594616}
@@ -1113,47 +1113,191 @@ MonoBehaviour:
   attackAnimations:
   - {fileID: 7400000, guid: e90138978acc5f241830b30f92ca801f, type: 2}
   comboIndex: 0
-  abilitySettings: 0
   meleeHitboxes: []
+  WeaponAbilities:
+  - AbilityName: SplinterShot
+    PrimaryStats:
+    - StatType: 0
+      StatValue: 13
+    - StatType: 1
+      StatValue: 5
+    - StatType: 2
+      StatValue: 5
+    SecondaryStats:
+    - StatType: 4
+      StatValue: 3
+    AbilityDamage: 0
+    AbilityDamageTicks: 0
+    AbilityDuration: 0
+    AbilityAggroRange: 0
+    AbilityPlayerSpeed: 0
+    AbilityWeaponSpeed: 0
+    AbilityLifeSteal: 0
+    AbilityAOESize: 0
+    AbilityDelay: 0
+    AbilityEnemyKnockback: 0
+    AbilityPlayerKnockback: 0
+    AbilityCooldown: 3
+    AbilityEndLag: 0.5
+    AbilityRange: 3.5
+    HasPreview: 1
+    PreviewData:
+      ShapeType: 1
+      AbilityPreview: {fileID: 7590928629485323880}
+      OrbitsPlayer: 0
+      SizeIsRange: 0
+      ScaleXOnly: 0
+      ScaleZOnly: 0
+    PersistingAbility: 1
+    AbilityLayerMask:
+      serializedVersion: 2
+      m_Bits: 1024
+    BaseAbilitySize: {x: 0, y: 0, z: 0}
+    AbilityPos: {x: 0, y: 0, z: 0}
+    AbilityAnim:
+      AnimClip: {fileID: 0}
+      LayerIndex: 0
+    AbilityReadyAnim:
+      AnimClip: {fileID: 7400000, guid: 95bf142e0ad03104ca9c94a63c9531e6, type: 2}
+      LayerIndex: 0
+  - AbilityName: BombBlast
+    PrimaryStats:
+    - StatType: 0
+      StatValue: 3
+    SecondaryStats:
+    - StatType: 4
+      StatValue: 3
+    - StatType: 5
+      StatValue: 1
+    - StatType: 7
+      StatValue: 6
+    - StatType: 6
+      StatValue: 3
+    AbilityDamage: 0
+    AbilityDamageTicks: 0
+    AbilityDuration: 0
+    AbilityAggroRange: 0
+    AbilityPlayerSpeed: 0
+    AbilityWeaponSpeed: 0
+    AbilityLifeSteal: 0
+    AbilityAOESize: 0
+    AbilityDelay: 0
+    AbilityEnemyKnockback: 0
+    AbilityPlayerKnockback: 0
+    AbilityCooldown: 3
+    AbilityEndLag: 0.5
+    AbilityRange: 3.5
+    HasPreview: 1
+    PreviewData:
+      ShapeType: 1
+      AbilityPreview: {fileID: 7347509225486067769}
+      OrbitsPlayer: 0
+      SizeIsRange: 0
+      ScaleXOnly: 0
+      ScaleZOnly: 0
+    PersistingAbility: 0
+    AbilityLayerMask:
+      serializedVersion: 2
+      m_Bits: 1088
+    BaseAbilitySize: {x: 0, y: 0, z: 0}
+    AbilityPos: {x: 0, y: 0, z: 0}
+    AbilityAnim:
+      AnimClip: {fileID: 0}
+      LayerIndex: 0
+    AbilityReadyAnim:
+      AnimClip: {fileID: 7400000, guid: 60721c1c43ae1574bb1d28c01dbbacd7, type: 2}
+      LayerIndex: 0
+  - AbilityName: ScatterShot
+    PrimaryStats:
+    - StatType: 0
+      StatValue: 5
+    SecondaryStats:
+    - StatType: 3
+      StatValue: 10
+    AbilityDamage: 0
+    AbilityDamageTicks: 0
+    AbilityDuration: 0
+    AbilityAggroRange: 0
+    AbilityPlayerSpeed: 0
+    AbilityWeaponSpeed: 0
+    AbilityLifeSteal: 0
+    AbilityAOESize: 0
+    AbilityDelay: 0
+    AbilityEnemyKnockback: 0
+    AbilityPlayerKnockback: 0
+    AbilityCooldown: 3
+    AbilityEndLag: 0.5
+    AbilityRange: 3.5
+    HasPreview: 1
+    PreviewData:
+      ShapeType: 2
+      AbilityPreview: {fileID: 5277897699482532973}
+      OrbitsPlayer: 1
+      SizeIsRange: 1
+      ScaleXOnly: 0
+      ScaleZOnly: 0
+    PersistingAbility: 0
+    AbilityLayerMask:
+      serializedVersion: 2
+      m_Bits: 1024
+    BaseAbilitySize: {x: 0, y: 0, z: 0}
+    AbilityPos: {x: 0, y: 0, z: 0}
+    AbilityAnim:
+      AnimClip: {fileID: 0}
+      LayerIndex: 0
+    AbilityReadyAnim:
+      AnimClip: {fileID: 7400000, guid: 6e4ba02038ef92048a60caca727721dc, type: 2}
+      LayerIndex: 0
+  - AbilityName: StakeShot
+    PrimaryStats:
+    - StatType: 0
+      StatValue: 20
+    - StatType: 1
+      StatValue: 10
+    - StatType: 2
+      StatValue: 3
+    SecondaryStats:
+    - StatType: 3
+      StatValue: 100
+    AbilityDamage: 0
+    AbilityDamageTicks: 0
+    AbilityDuration: 0
+    AbilityAggroRange: 0
+    AbilityPlayerSpeed: 0
+    AbilityWeaponSpeed: 0
+    AbilityLifeSteal: 0
+    AbilityAOESize: 0
+    AbilityDelay: 0
+    AbilityEnemyKnockback: 0
+    AbilityPlayerKnockback: 0
+    AbilityCooldown: 2
+    AbilityEndLag: 0.5
+    AbilityRange: 6
+    HasPreview: 1
+    PreviewData:
+      ShapeType: 0
+      AbilityPreview: {fileID: 417958859510438225}
+      OrbitsPlayer: 1
+      SizeIsRange: 1
+      ScaleXOnly: 0
+      ScaleZOnly: 1
+    PersistingAbility: 0
+    AbilityLayerMask:
+      serializedVersion: 2
+      m_Bits: 1024
+    BaseAbilitySize: {x: 0, y: 0, z: 0}
+    AbilityPos: {x: 0, y: 0, z: 0}
+    AbilityAnim:
+      AnimClip: {fileID: 0}
+      LayerIndex: 0
+    AbilityReadyAnim:
+      AnimClip: {fileID: 7400000, guid: 1e2498aa2fdfa224c92f2407cea11044, type: 2}
+      LayerIndex: 0
+  currentAbilityIndex: 0
+  abilityOneIndex: 1
+  abilityTwoIndex: 2
   abilityOneReady: 1
-  abilityOneCooldown: 3
-  abilityOneEndLag: 0.5
-  abilityOneRange: 3.5
-  abilityTwoReady: 0
-  abilityTwoCooldown: 2
-  abilityTwoEndLag: 0.5
-  abilityTwoRange: 6
-  abilityOne: 1
-  abilityTwo: 3
-  splinterShotDamage: 13
-  splinterShotAOESize: 3
-  splinterShotTotalDamageTicks: 5
-  splinterShotDuration: 5
-  splinterShotPreview: {fileID: 7590928629485323880}
-  splinterShotLayerMask:
-    serializedVersion: 2
-    m_Bits: 1024
-  bombBlastDamage: 3
-  bombBlastAOESize: 2
-  bombBlastDetTime: 1
-  playerLaunchDistance: 6
-  enemyLaunchDistance: 3
-  bombBlastPreview: {fileID: 7347509225486067769}
-  bombBlastLayerMask:
-    serializedVersion: 2
-    m_Bits: 1088
-  scatterShotDamage: 5
-  scatterShotCone: 2
-  scatterShotLifeSteal: 10
-  scatterShotPreview: {fileID: 5277897699482532973}
-  scatterShotLayerMask:
-    serializedVersion: 2
-    m_Bits: 1025
-  stakeShotDamage: 20
-  stakeShotLifeStealAmount: 100
-  stakeShotTickCount: 10
-  stakeShotDOTDuration: 3
-  stakeShotPreview: {fileID: 417958859510438225}
+  abilityTwoReady: 1
 --- !u!95 &4470947134498793366
 Animator:
   serializedVersion: 7
