@@ -8,7 +8,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICustomDisabler
+public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, ICustomDisabler
 {
     private NavMeshAgent navMeshAgent;
     private GameObject playerReference;
@@ -263,7 +263,7 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     /// Casts the scriptable object into a BaseEnemyScriptable and assigns the data of the enemy to this script
     /// </summary>
     /// <param name="baseScriptable"></param>
-    public void SetEntityData(BaseScriptableObject baseScriptable)
+    public void ReceiveEnemyData(BaseScriptableObject baseScriptable)
     {
         enemyData = (BaseEnemyScriptable)baseScriptable;
         InitializeVariables();
@@ -283,9 +283,17 @@ public class EnemyWalk : MonoBehaviour, IEntityDataReceiver, ICustomEnabler, ICu
     /// </summary>
     public void DisableEntity()
     {
-        StopApproachingPlayer();
-        StopAllCoroutines();
+        DeAggroEnemy();
         meshRenderer.enabled = false;
         capsuleCollider.enabled = false;
+    }
+
+    /// <summary>
+    /// De-aggro's the enemy's movement behavior by stopping all movement coroutines
+    /// </summary>
+    public void DeAggroEnemy() 
+    {
+        StopApproachingPlayer();
+        StopAllCoroutines();
     }
 }
