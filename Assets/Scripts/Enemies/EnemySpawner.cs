@@ -108,12 +108,15 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Handles the logic for player entering or exiting the de-aggro trigger
+    /// </summary>
+    /// <param name="playerEnters"></param>
     private void DeAggroHandler(bool playerEnters)
     {
         //If player is leaving De-Aggro Trigger
         if (!playerEnters)
         {
-            Debug.Log("De-aggro-ing enemies");
             foreach (var enemy in generatedEnemies)
             {
                 enemy.EnemyDeAggro();
@@ -204,8 +207,8 @@ public class EnemySpawner : MonoBehaviour
         List<GameObject> calculatedEnemyPool = new();
 
         dangerPoints = GameTimerManager.Instance.GetRoundedGameTime() * pointsPerSecondPassed;
-        Debug.Log("Danger Points calculated to be: " + dangerPoints + " pts, from " + GameTimerManager.Instance.GetRoundedGameTime() + "secs x " + pointsPerSecondPassed +
-            " points per second passed");
+        //Debug.Log("Danger Points calculated to be: " + dangerPoints + " pts, from " + GameTimerManager.Instance.GetRoundedGameTime() + "secs x " + pointsPerSecondPassed +
+            //" points per second passed");
 
         //Loop through the tiers starting from the highest tier
         //If this spawner's danger points matches any tier,
@@ -215,7 +218,7 @@ public class EnemySpawner : MonoBehaviour
             if (dangerPoints >= enemyGroupTiers[i].minimumPoints)
             {
                 calculatedEnemyPool = RandomEnemyGroupFromTier(enemyGroupTiers[i].enemyGroups);
-                Debug.Log(enemyGroupTiers[i].tierName + " was chosen from calculated danger points");
+                //Debug.Log(enemyGroupTiers[i].tierName + " was chosen from calculated danger points");
                 break;
             }
         }

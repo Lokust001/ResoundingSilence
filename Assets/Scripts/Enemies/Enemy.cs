@@ -109,7 +109,6 @@ public class Enemy : MonoBehaviour
             return;
 
         isAggro = true;
-        Debug.Log(gameObject.name + " is aggro'd");
         //Remove Aggro Trigger
         aggroTrigger.EnemyTriggerActivated -= AggroEnemy;
         //Call other enemies to be aggro'd
