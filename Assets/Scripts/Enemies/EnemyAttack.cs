@@ -376,7 +376,7 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
     /// </summary>
     public void EnableEntity()
     {
-        //sphereTrigger.enabled = true;
+        EnableAggroChecking();
         if(chargingCapCollider != null)
             chargingCapCollider.enabled = true;
     }

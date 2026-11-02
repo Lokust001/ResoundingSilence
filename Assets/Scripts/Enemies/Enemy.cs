@@ -37,6 +37,7 @@ public class Enemy : MonoBehaviour
     private bool allowNonImmediateBehavior;
 
     private YieldInstruction actionInterval;
+    private WaitForSeconds deAggroInterval;
 
     /// <summary>
     /// Creates a copy of the scriptable object not tied to the inspector, then propagates it other scripts
@@ -44,6 +45,7 @@ public class Enemy : MonoBehaviour
     void Awake()
     {
         actionInterval = new WaitForSeconds(enemyData.timeBetweenRangeChecks);
+        deAggroInterval = new WaitForSeconds(enemyData.reAggroCooldown);
         attackBehavior = GetComponentInChildren<EnemyAttack>();
         movementBeahvior = GetComponentInChildren<EnemyWalk>();
         buffBehavior = GetComponentInChildren<EnemyBuff>(true);
@@ -118,9 +120,11 @@ public class Enemy : MonoBehaviour
     /// <summary>
     /// Tells attackBehavior to enable the aggro trigger
     /// </summary>
-    public void EnableAggroFunctionality() 
+    public IEnumerator DelayedAggroReEnable() 
     {
+        yield return deAggroInterval;
         attackBehavior.EnableAggroChecking();
+        aggroTrigger.EnemyTriggerActivated += AggroEnemy;
     }
 
     /// <summary>
@@ -128,13 +132,17 @@ public class Enemy : MonoBehaviour
     /// </summary>
     public void EnemyDeAggro() 
     {
+        //Don't call if player just went in the spawner and didn't aggro
+        if (!isAggro)
+            return;
+
         isAggro = false;
         foreach (var behavior in GetComponentsInChildren<ISharedEnemyBehaviors>(true))
         {
             behavior.DeAggroEnemy();
         }
         attackBehavior.ResetIndicatorParent();
-        aggroTrigger.EnemyTriggerActivated += AggroEnemy;
+        StartCoroutine(DelayedAggroReEnable());
     }
 
     /// <summary>
@@ -176,7 +184,7 @@ public class Enemy : MonoBehaviour
     public void NextEnemyAction() 
     {
         allowNonImmediateBehavior = true;
-        Debug.Log("Melee: " + inMeleeRange + " Ranged: " + inRangedRange);
+        //Debug.Log("Melee: " + inMeleeRange + " Ranged: " + inRangedRange);
         if (!inRangedRange && !inMeleeRange)
         {
             NotInPlayerZones();

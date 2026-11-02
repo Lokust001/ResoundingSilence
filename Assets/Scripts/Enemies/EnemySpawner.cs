@@ -119,14 +119,6 @@ public class EnemySpawner : MonoBehaviour
                 enemy.EnemyDeAggro();
             }
         }
-        //If player goes into de-aggro range, re-enable aggro triggers
-        else 
-        {
-            foreach (var enemy in generatedEnemies)
-            {
-                enemy.EnableAggroFunctionality();
-            }
-        }
     }
 
     /// <summary>
