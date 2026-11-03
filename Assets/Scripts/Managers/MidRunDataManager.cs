@@ -301,7 +301,7 @@ public class MidRunDataManager : BaseManager
                 ++playerLvl;
             }
 
-            ExpNeededToLevelUp = XpNeededIncrease == ValueChange.ExactValue ? playerLvls[playerLvl - 1].ExpToLevelUp : Mathf.FloorToInt(ExpNeededToLevelUp * ConvertToPercentage(playerLvls[playerLvl - 1].ExpToLevelUp));
+            ExpNeededToLevelUp = XpNeededIncrease == ValueChange.ExactValue ? playerLvls[playerLvl - 1].ExpToLevelUp : ExpNeededToLevelUp + Mathf.FloorToInt(ExpNeededToLevelUp * ConvertToPercentage(playerLvls[playerLvl - 1].ExpToLevelUp));
             //level up player. This will probably need to move to the health bar controller so
             //the player levels up when the bar reaches full as opposed to before
 
