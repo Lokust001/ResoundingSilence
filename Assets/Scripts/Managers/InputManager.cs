@@ -363,6 +363,7 @@ public class InputManager : BaseManager
         interact.started += Interact_started;
         interact.canceled += Interact_canceled;
         aim.performed += Aim_performed;
+        aim.canceled += Aim_canceled;
         abilityOne.started += AbilityOne_started;
         abilityOne.canceled += AbilityOne_canceled;
 
@@ -379,6 +380,8 @@ public class InputManager : BaseManager
     }
 
     
+
+
 
 
 
@@ -430,6 +433,7 @@ public class InputManager : BaseManager
         interact.started -= Interact_started;
         interact.canceled -= Interact_canceled;
         aim.performed -= Aim_performed;
+        aim.canceled -= Aim_canceled;
         abilityOne.started -= AbilityOne_started;
         abilityTwo.started -= AbilityTwo_started;
         dash.started -= Dash_started;
@@ -540,6 +544,15 @@ public class InputManager : BaseManager
             InputPublicEvents.PlayerAimed?.Invoke(obj.ReadValue<Vector2>());
         }
         
+    }
+
+    /// <summary>
+    /// triggers when the player stops moving the aim stick
+    /// </summary>
+    /// <param name="obj"></param>
+    private void Aim_canceled(InputAction.CallbackContext obj)
+    {
+        InputPublicEvents.PlayerStoppedAiming?.Invoke();
     }
 
     /// <summary>
