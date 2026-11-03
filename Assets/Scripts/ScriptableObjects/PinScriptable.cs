@@ -27,7 +27,19 @@ public class PinScriptable : BaseScriptableObject
         BulletDamage,
         AttackSpeed,
         addDebuff,
-        Lifesteal
+        Lifesteal,
+        BurstDamage,
+        AbilityDamage,
+        AbilityCooldown,
+        projectileSpeed,
+        DashDistance,
+        MoveSpeed,
+        DamageResistance,
+        HealingUp,
+        GlassCannon,
+        knockbackResistance,
+        ThickSkin,
+        Regen
     }
 
     [HorizontalLine(4, EColor.Red)]
@@ -56,6 +68,8 @@ public class PinScriptable : BaseScriptableObject
 
     [Tooltip("This is numerical value for how much to modify in %")]
     public float ModifierNumber;
+    [Tooltip("This is numerical value for how much to modify in %, this is used for if there is a negative to the stat")]
+    public float SecondModifier;
 
     [Tooltip("How you want to change the weapon")]
     public WeaponStatToChange StatToChange;
