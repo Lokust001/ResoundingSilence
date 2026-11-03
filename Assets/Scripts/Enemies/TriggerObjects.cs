@@ -14,6 +14,7 @@ public class TriggerObjects : MonoBehaviour
 
     public event Action<PlayerController> EnemyTriggerActivated;
     public event Action<Enemy, bool> PlayerTriggerActivated;
+    public event Action<bool> PlayerEnterOrExit;
 
     /// <summary>
     /// Propagates its OnTriggerEnter event onto other listeners attached to ChildTriggerActivated or PlayerTriggerActivated
@@ -24,6 +25,7 @@ public class TriggerObjects : MonoBehaviour
         if (other.TryGetComponent<PlayerController>(out var player)) 
         {
             EnemyTriggerActivated?.Invoke(player);
+            PlayerEnterOrExit?.Invoke(true);
         }
         else if (other.TryGetComponent<Enemy>(out var enemy)) 
         {
@@ -40,6 +42,7 @@ public class TriggerObjects : MonoBehaviour
         if (other.TryGetComponent<PlayerController>(out var player)) 
         {
             EnemyTriggerActivated?.Invoke(player);
+            PlayerEnterOrExit?.Invoke(false);
         }
         else if (other.TryGetComponent<Enemy>(out var enemy))
         {
@@ -53,6 +56,9 @@ public class TriggerObjects : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = triggerShapeColor;
-        Gizmos.DrawWireSphere(transform.position, GetComponent<SphereCollider>().radius * transform.root.localScale.y);
+        if(GetComponent<SphereCollider>())
+            Gizmos.DrawWireSphere(transform.position, GetComponent<SphereCollider>().radius * transform.root.localScale.y);
+        if(GetComponent<MeshCollider>())
+            Gizmos.DrawWireMesh(GetComponent<MeshCollider>().sharedMesh, transform.position, transform.rotation, transform.localScale);
     }
 }
