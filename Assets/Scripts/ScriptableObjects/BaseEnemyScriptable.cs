@@ -76,6 +76,7 @@ public class BaseEnemyScriptable : BaseScriptableObject
     private float enemyMaxHealth;
     public int enemyATKDmg;
     public float timeBetweenAttacks;
+    public float reAggroCooldown = 3f;
 
     [Header("Dynamic Movement Attributes")]
     [ShowIf(nameof(HasMovementVariability))]

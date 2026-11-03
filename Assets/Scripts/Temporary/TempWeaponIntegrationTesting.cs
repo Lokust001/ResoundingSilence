@@ -31,6 +31,6 @@ public class TempWeaponIntegrationTesting : MonoBehaviour
     /// </summary>
     private void EquipCrossbow()
     {
-        MidRunDataManager.Instance.EquipWeaponInSlot(0, FindAnyObjectByType<CrossbowBehaviour>().ThisWeaponData);
+        MidRunDataManager.Instance.EquipWeaponInSlot(0, FindAnyObjectByType<BaseWeaponBehaviour>().ThisWeaponData);
     }
 }

@@ -27,6 +27,8 @@ public class StaticDataManager : BaseManager
     [HideInInspector]
     public List<TarotScriptable> tarotCards;
 
+    public List<PinScriptable> Pins;
+
     /// <summary>
     /// Initializes the manager
     /// </summary>
