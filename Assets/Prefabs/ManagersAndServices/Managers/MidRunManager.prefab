@@ -45,14 +45,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MidRunDataManager
   services: []
-  settings: 5
+  settings: 4
   Money: 0
   tempDeathMenu: {fileID: 696378551426930164, guid: bf81449783588774cb3c99f93c38750d, type: 3}
   CurrentPlayerHealth: 100
   MaxPlayerHealth: 100
   HealingPotency: 1
+  XpNeededIncrease: 0
+  LvlUpStatIncrease: 0
+  playerLvls:
+  - ExpToLevelUp: 20
+    LevelUpStats:
+    - StatType: 0
+      StatChange: 10
+  - ExpToLevelUp: 30
+    LevelUpStats:
+    - StatType: 0
+      StatChange: 10
+  - ExpToLevelUp: 35
+    LevelUpStats:
+    - StatType: 0
+      StatChange: 20
+  capLvl: 0
   CurrentPlayerEXP: 0
-  ExpNeededToLevelUp: 5
+  ExpNeededToLevelUp: 0
+  GiveXpAmount: 5
   PinScriptableObjects:
   - {fileID: 11400000, guid: 04bfd488cf39f16458a593ff814a306c, type: 2}
   - {fileID: 11400000, guid: 7a832fe27fb58b64e8a6322f5b21809e, type: 2}
