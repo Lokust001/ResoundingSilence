@@ -341,7 +341,10 @@ public class PlayerController : MonoBehaviour
     /// <param name="knockbackInfo"></param>
     public void TakeDamage(int damage, (Vector3 knockbackDistance, float kbDuration)? knockbackInfo = null)
     {
-        StopCoroutine(regenCoroutine);
+        if (regenCoroutine != null)
+        {
+            StopCoroutine(regenCoroutine);
+        }
         if (InGodMode)
             return;
         
