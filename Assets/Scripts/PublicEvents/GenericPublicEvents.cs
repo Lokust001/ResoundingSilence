@@ -19,4 +19,6 @@ public static class GenericPublicEvents
     public static Action<PlayerController> PlayerSpawnedIn;
 
     public static Action ReturnToMainMenu;
+
+    public static Action<BaseEnemyScriptable> EnemyDies;
 }

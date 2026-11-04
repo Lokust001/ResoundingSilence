@@ -397,6 +397,7 @@ public class Enemy : MonoBehaviour
     [Button("EnemyDeath")]
     public void EnemyDeath() 
     {
+        GenericPublicEvents.EnemyDies?.Invoke(enemyData);
         SideObjectiveManager.Instance.AttemptHuntObjectivesProgression(enemyData);
         Destroy(gameObject);
     }
