@@ -22,19 +22,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e5faca417b31b9848b208d39604cc445, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 77.461006
+      value: -197.61
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e5faca417b31b9848b208d39604cc445, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.62
+      value: 0.408
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e5faca417b31b9848b208d39604cc445, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 534.23004
+      value: -34.4
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e5faca417b31b9848b208d39604cc445, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e5faca417b31b9848b208d39604cc445, type: 3}
       propertyPath: m_LocalRotation.x
@@ -42,7 +42,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e5faca417b31b9848b208d39604cc445, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 1
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e5faca417b31b9848b208d39604cc445, type: 3}
       propertyPath: m_LocalRotation.z
@@ -54,7 +54,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e5faca417b31b9848b208d39604cc445, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 180
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e5faca417b31b9848b208d39604cc445, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -102,11 +102,11 @@ NavMeshObstacle:
   m_Enabled: 1
   serializedVersion: 3
   m_Shape: 1
-  m_Extents: {x: 0.0075, y: 0.01, z: 0.003}
+  m_Extents: {x: 0.0075, y: 0.0105, z: 0.003}
   m_MoveThreshold: 0.1
   m_Carve: 0
   m_CarveOnlyStationary: 1
-  m_Center: {x: 0, y: 0.007, z: 0}
+  m_Center: {x: 0, y: 0.0079, z: 0}
   m_TimeToStationary: 0.5
 --- !u!65 &3335116145941029869
 BoxCollider:
@@ -127,5 +127,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.0077805845, y: 0.015052188, z: 0.0036144208}
-  m_Center: {x: 0.0000024828616, y: 0.006974998, z: 0.00005833747}
+  m_Size: {x: 0.01360922, y: 0.017221348, z: 0.0054913703}
+  m_Center: {x: -0.0000055520713, y: 0.0058904183, z: -0.00009078948}
