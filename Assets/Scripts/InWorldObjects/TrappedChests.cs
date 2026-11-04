@@ -65,10 +65,14 @@ public class TrappedChests : MonoBehaviour
 
     private void CheckQuest(BaseEnemyScriptable enemy)
     {
-        if(EnemySpawner.generatedEnemies.Count <= 0)
+        if(EnemySpawner.generatedEnemies.Count == 0)
         {
             //probably a ui popup will go here
             encounterFinished=true;
+        }
+        else
+        {
+            encounterFinished = false;
         }
     }
 
@@ -86,7 +90,9 @@ public class TrappedChests : MonoBehaviour
             EnemySpawner.SpawnEnemies();
             encounterStarted = true;
         }
-        if(inChestRange && encounterFinished && !chestOpened)
+
+        CheckQuest(null);
+        if (inChestRange && encounterFinished && !chestOpened)
         {
             MRM.Money += Random.Range(Goldmin, Goldmax + 1);
             int PinSpawn = Random.Range(PinMin, PinMax + 1);
