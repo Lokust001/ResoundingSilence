@@ -54,6 +54,8 @@ public class MapGenerator : MonoBehaviour
                 islands.Add(temp);
             }
         }
+        getIslandData();
+        populateIsland();
     }
 
     /// <summary>
@@ -73,8 +75,8 @@ public class MapGenerator : MonoBehaviour
     {
         foreach(GameObject island  in islands)
         {
-            island.GetComponent<IslandData>().ChooseFastTravel();
-            island.GetComponent<IslandData>().ChooseEnemySpawns();
+            //island.GetComponent<IslandData>().ChooseFastTravel();
+            //island.GetComponent<IslandData>().ChooseEnemySpawns();
         }
         SpawnBuffs();
         SpawnObjectives();
