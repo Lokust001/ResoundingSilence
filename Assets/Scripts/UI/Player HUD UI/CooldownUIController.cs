@@ -26,7 +26,11 @@ public class CooldownUIController : MonoBehaviour
     [SerializeField]
     private CooldownToUpdate thisCooldownType;
 
-    private Slider cooldownSlider;
+    [SerializeField]
+    private Image cooldownImage;
+
+    [SerializeField]
+    private Image backgroundImage;
 
     private Coroutine cooldownCoroutine;
 
@@ -35,7 +39,6 @@ public class CooldownUIController : MonoBehaviour
     /// </summary>
     private void Awake()
     {
-        cooldownSlider = GetComponent<Slider>();
         UIPublicEvents.UpdateHUDCooldownUI += SetNewCooldown;
         UIPublicEvents.ImmediatelyRefreshCooldown += ImmediatelyRefreshCooldown;
     }
@@ -47,6 +50,28 @@ public class CooldownUIController : MonoBehaviour
     {
         UIPublicEvents.UpdateHUDCooldownUI -= SetNewCooldown;
         UIPublicEvents.ImmediatelyRefreshCooldown -= ImmediatelyRefreshCooldown;
+    }
+
+    /// <summary>
+    /// changes the image on the cooldown
+    /// </summary>
+    /// <param name="backgroundImage"></param>
+    /// <param name="cooldownSliderImage"></param>
+    /// <param name="cooldownType"></param>
+    public void ChangeCooldownImage(Image backgroundImage, Image cooldownSliderImage, CooldownToUpdate cooldownType)
+    {
+        if (thisCooldownType != cooldownType)
+        {
+            return;
+        }
+
+        if (backgroundImage == null || cooldownSliderImage == null)
+        {
+            return;
+        }
+
+        this.backgroundImage = backgroundImage;
+        cooldownImage = cooldownSliderImage;
     }
 
     /// <summary>
@@ -79,7 +104,7 @@ public class CooldownUIController : MonoBehaviour
             timer += Time.deltaTime;
 
             //updates the slider - has to be between 0 and 1 so we divide to get the percentage
-            cooldownSlider.value = timer / maxCooldown;
+            cooldownImage.fillAmount = timer / maxCooldown;
             yield return null;
         }
 
@@ -104,6 +129,6 @@ public class CooldownUIController : MonoBehaviour
         }
 
         //1 is off cooldown - fully filled
-        cooldownSlider.value = 1;
+        cooldownImage.fillAmount = 1;
     }
 }

@@ -9,6 +9,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public static class UIPublicEvents
 {
@@ -54,6 +55,8 @@ public static class UIPublicEvents
 
     public static Action<CooldownUIController.CooldownToUpdate, float> UpdateHUDCooldownUI;
     public static Action<CooldownUIController.CooldownToUpdate> ImmediatelyRefreshCooldown;
+
+    public static Action<Image, Image, CooldownUIController.CooldownToUpdate> ChangeCooldownImages;
 
     #endregion
 
