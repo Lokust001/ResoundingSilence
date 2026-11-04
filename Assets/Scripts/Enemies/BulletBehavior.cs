@@ -5,11 +5,16 @@
 * Summary: Basic bullet travel logic
 * To Do:   Add more variables as needed.
 */
+using NaughtyAttributes;
 using System.Collections;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class BulletBehavior : MonoBehaviour
 {
+	[SerializeField, Layer]
+	private List<int> layersToIgnoreFrom;
+
 
 	const float NINETY_DEGREES_ROTATION = 90f;
 
@@ -59,8 +64,13 @@ public class BulletBehavior : MonoBehaviour
 		if (collision.gameObject.TryGetComponent<PlayerController>(out PlayerController playerController)) 
 		{
 			playerController.TakeDamage(attackDamage);
-			Destroy(gameObject);
+			
 		}
+
+		if (!layersToIgnoreFrom.Contains(collision.gameObject.layer))
+		{
+            Destroy(gameObject);
+        }
     }
 
 }
