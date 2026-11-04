@@ -52,6 +52,12 @@ public class CooldownUIController : MonoBehaviour
         UIPublicEvents.ImmediatelyRefreshCooldown -= ImmediatelyRefreshCooldown;
     }
 
+    /// <summary>
+    /// changes the image on the cooldown
+    /// </summary>
+    /// <param name="backgroundImage"></param>
+    /// <param name="cooldownSliderImage"></param>
+    /// <param name="cooldownType"></param>
     public void ChangeCooldownImage(Image backgroundImage, Image cooldownSliderImage, CooldownToUpdate cooldownType)
     {
         if (thisCooldownType != cooldownType)
