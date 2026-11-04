@@ -21,6 +21,8 @@ public static class InputPublicEvents
     public static Action<Vector2> MouseMoved;
     public static Action<Vector2> PlayerAimed;
 
+    public static Action PlayerStoppedAiming;
+
     public static Action<Vector2> MovePressed;
     public static Action MoveReleased;
 
