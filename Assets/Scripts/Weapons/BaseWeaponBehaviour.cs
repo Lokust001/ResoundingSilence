@@ -1,14 +1,14 @@
 /******************************************************************************
  * Author: Brad Dixon
- * Contributors:
- * Last Modified: 10/21/2026
+ * Contributors: Tyler Hayes
+ * Last Modified: 11/2/2026
  * Brief: Calls the specific weapon attack
  * TODO:
  * ***************************************************************************/
-using UnityEngine;
+using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
-using NaughtyAttributes;
+using UnityEngine;
 
 public class BaseWeaponBehaviour : MonoBehaviour
 {
@@ -30,10 +30,24 @@ public class BaseWeaponBehaviour : MonoBehaviour
     [SerializeField] protected List<AnimationClip> attackAnimations = new List<AnimationClip>();
     [SerializeField] protected int comboIndex;
 
+    [SerializeField] List<Collider> meleeHitboxes = new List<Collider>();
+
     [Header("Base Ability Variables"), HorizontalLine(height: 4, EColor.Red)]
-    [SerializeField] protected AbilitySettings abilitySettings;
+    //[SerializeField] protected AbilitySettings abilitySettings;
+
+    [SerializeField] protected List<AbilityData> WeaponAbilities = new List<AbilityData>();
+
+    protected GameObject activePreview;
+    [SerializeField] protected int currentAbilityIndex;
+
+    bool continuouslyUpdatePreview;
 
     protected Vector3 mousePos = Vector3.forward;
+
+    [HorizontalLine(4, EColor.Red)]
+    public Vector3 aimDir = Vector3.forward;
+
+    public bool playerAiming;
 
     protected float currentAttackSpeed;
 
@@ -42,42 +56,15 @@ public class BaseWeaponBehaviour : MonoBehaviour
 
     bool burstAttacking;
 
-    [SerializeField] List<Collider> meleeHitboxes = new List<Collider>();
-
     protected bool aimingAbilityOne;
     protected bool aimingAbilityTwo;
 
-    [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityOne)]
-    [Tooltip("Set true if you want ability one to be ready to use on spawn.")]
+    [SerializeField] protected int abilityOneIndex;
+    [SerializeField] protected int abilityTwoIndex;
+
     [SerializeField] protected bool abilityOneReady;
-
-    [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityOne)]
-    [Tooltip("How long the ability is on cooldown for.")]
-    [SerializeField] protected float abilityOneCooldown;
-
-    [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityOne)]
-    [Tooltip("How long the ability puts the player in end lag for.")]
-    [SerializeField] protected float abilityOneEndLag;
-
-    [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityOne)]
-    [Tooltip("How far from the player the ability can be cast.")]
-    [SerializeField] protected float abilityOneRange;
-
-    [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityTwo)]
-    [Tooltip("Set true if you want ability two to be ready to use on spawn.")]
     [SerializeField] protected bool abilityTwoReady;
 
-    [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityTwo)]
-    [Tooltip("How long the ability is on cooldown for.")]
-    [SerializeField] protected float abilityTwoCooldown;
-
-    [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityTwo)]
-    [Tooltip("How long the ability puts the player in end lag for.")]
-    [SerializeField] protected float abilityTwoEndLag;
-
-    [ShowIf(nameof(abilitySettings), AbilitySettings.AbilityTwo)]
-    [Tooltip("How far from the player the ability can be cast.")]
-    [SerializeField] protected float abilityTwoRange;
 
     /// <summary>
     /// Gets a reference to the copy of the weapon's data
@@ -95,14 +82,26 @@ public class BaseWeaponBehaviour : MonoBehaviour
         currentAttackSpeed = ThisWeaponData.AttackSpeed;
         UpdateAttackSpeed();
 
-        if(!abilityOneReady)
+        foreach (AbilityData ability in WeaponAbilities)
         {
-            StartCoroutine(AbilityDelay(abilityOneReady, abilityOneCooldown));
+            if (ability.HasPreview)
+            {
+                activePreview = ability.PreviewData.AbilityPreview;
+            }
+            ability.BaseAbilitySize = new Vector3(ability.PreviewData.AbilityPreview.transform.localScale.x,
+                ability.PreviewData.AbilityPreview.transform.localScale.y, ability.PreviewData.AbilityPreview.transform.localScale.z);
+            SetAbilityStats(ability, ability.PrimaryStats);
+            SetAbilityStats(ability, ability.SecondaryStats);
         }
 
-        if(!abilityTwoReady)
+        if (!abilityOneReady)
         {
-            StartCoroutine(AbilityDelay(abilityTwoReady, abilityTwoCooldown));
+            StartCoroutine(AbilityDelay(abilityOneReady, WeaponAbilities[abilityOneIndex].AbilityCooldown));
+        }
+
+        if (!abilityTwoReady)
+        {
+            StartCoroutine(AbilityDelay(abilityTwoReady, WeaponAbilities[abilityTwoIndex].AbilityCooldown));
         }
     }
 
@@ -113,10 +112,56 @@ public class BaseWeaponBehaviour : MonoBehaviour
     {
         InputPublicEvents.ShootPressed += PlayerAttacking;
         InputPublicEvents.ShootReleased += PlayerStoppedAttacking;
-        InputPublicEvents.MouseMoved += GetMousPos;
+        InputPublicEvents.KeyboardMouseEnabled += KBMEnabled;
+        InputPublicEvents.ControllerEnabled += ControllerEnabled;
         InputPublicEvents.AbilityOnePressed += AimingAbilityOne;
         InputPublicEvents.AbilityTwoPressed += AimingAbilityTwo;
+
+        StartCoroutine(EnableInputs());
     }
+
+    /// <summary>
+    /// enables the right input based on the control type
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator EnableInputs()
+    {
+        while (InputManager.Instance == null)
+        {
+            yield return null;
+            Debug.Log($"Player Inputs are null");
+        }
+
+        if (InputManager.Instance.ControllerIsEnabled)
+        {
+            ControllerEnabled();
+        }
+        else
+        {
+            KBMEnabled();
+        }
+    }
+
+    /// <summary>
+    /// triggers when the keyboard and mouse get enabled
+    /// </summary>
+    private void KBMEnabled()
+    {
+        InputPublicEvents.MouseMoved += GetMousPos;
+        InputPublicEvents.PlayerAimed -= PlayerAimed;
+        InputPublicEvents.PlayerStoppedAiming -= PlayerStoppedAiming;
+    }
+
+    /// <summary>
+    /// triggers when controller is enabled
+    /// </summary>
+    private void ControllerEnabled()
+    {
+        InputPublicEvents.MouseMoved -= GetMousPos;
+        InputPublicEvents.PlayerAimed += PlayerAimed;
+        InputPublicEvents.PlayerStoppedAiming += PlayerStoppedAiming;
+    }
+
 
     /// <summary>
     /// Disables input event listening to prevent duplicates
@@ -125,11 +170,65 @@ public class BaseWeaponBehaviour : MonoBehaviour
     {
         InputPublicEvents.ShootPressed -= PlayerAttacking;
         InputPublicEvents.ShootReleased -= PlayerStoppedAttacking;
-        InputPublicEvents.MouseMoved -= GetMousPos;
+        InputPublicEvents.KeyboardMouseEnabled -= KBMEnabled;
+        InputPublicEvents.ControllerEnabled -= ControllerEnabled;
+        InputPublicEvents.PlayerStoppedAiming -= PlayerStoppedAiming;
         InputPublicEvents.AbilityOnePressed -= AimingAbilityOne;
         InputPublicEvents.AbilityTwoPressed -= AimingAbilityTwo;
+        InputPublicEvents.MouseMoved -= GetMousPos;
+        InputPublicEvents.PlayerAimed -= PlayerAimed;
     }
 
+    /// <summary>
+    /// Sets the stats for each of the abilities
+    /// </summary>
+    virtual protected void SetAbilityStats(AbilityData ability, List<StatValues> stats)
+    {
+        foreach (StatValues value in stats)
+        {
+            switch (value.StatType)
+            {
+                case AbilityData.Stats.Damage:
+                    ability.AbilityDamage = Mathf.CeilToInt(value.StatValue);
+                    break;
+                case AbilityData.Stats.DamageTicks:
+                    ability.AbilityDamageTicks = Mathf.CeilToInt(value.StatValue);
+                    break;
+                case AbilityData.Stats.Duration:
+                    ability.AbilityDuration = value.StatValue;
+                    break;
+                //case AbilityData.Stats.AggroRange:
+                //    ability.AbilityAggroRange = value.StatValue;
+                //    break;
+                //case AbilityData.Stats.PlayerSpeed:s
+                //    ability.AbilityPlayerSpeed = value.StatValue;
+                //    break;
+                //case AbilityData.Stats.WeaponSpeed:
+                //    ability.AbilityWeaponSpeed = value.StatValue;
+                //    break;
+                case AbilityData.Stats.LifeSteal:
+                    ability.AbilityLifeSteal = value.StatValue;
+                    break;
+                case AbilityData.Stats.AOESize:
+                    ability.AbilityAOESize = value.StatValue;
+                    break;
+                case AbilityData.Stats.Delay:
+                    ability.AbilityDelay = value.StatValue;
+                    break;
+                case AbilityData.Stats.EnemyKnockback:
+                    ability.AbilityEnemyKnockback = value.StatValue;
+                    break;
+                case AbilityData.Stats.PlayerKnockback:
+                    ability.AbilityPlayerKnockback = value.StatValue;
+                    break;
+                default:
+                    Debug.Log(value.StatType);
+                    break;
+            }
+        }
+    }
+
+    #region Attacking
     /// <summary>
     /// Determines if whether or not the player casts an ability or attacks with the weapon
     /// </summary>
@@ -161,56 +260,30 @@ public class BaseWeaponBehaviour : MonoBehaviour
         Plane p = new Plane(Vector3.up, transform.position);
         Ray ray = Camera.main.ScreenPointToRay(pos);
 
-        if(p.Raycast(ray, out float hit))
+        if (p.Raycast(ray, out float hit))
         {
             mousePos = ray.GetPoint(hit) - transform.position;
+            aimDir = mousePos.normalized;
         }
     }
 
     /// <summary>
-    /// How the player aims ability one. Also sets whether or not the player is aiming the ability
+    /// gets the direction of the player's aim
     /// </summary>
-    virtual protected void AimingAbilityOne()
+    /// <param name="dir"></param>
+    protected void PlayerAimed(Vector2 dir)
     {
-        if (abilityOneReady)
-        {
-            aimingAbilityOne = !aimingAbilityOne;
-            aimingAbilityTwo = false;
-        }
+        aimDir = new(dir.x, aimDir.y, dir.y);
+        playerAiming = true;
+
     }
 
     /// <summary>
-    /// How the player aims ability two. Also sets whether or not the player is aiming the ability
+    /// trigger when the player has stopped aiming
     /// </summary>
-    virtual protected void AimingAbilityTwo()
+    protected void PlayerStoppedAiming()
     {
-        if (abilityTwoReady)
-        {
-            aimingAbilityTwo = !aimingAbilityTwo;
-            aimingAbilityOne = false;
-        }
-    }
-
-    /// <summary>
-    /// The base inheritance for using weapon abilities
-    /// </summary>
-    virtual protected void CastingAbility()
-    {
-        attackReady = false;
-        if(aimingAbilityOne)
-        {
-            aimingAbilityOne = false;
-            StartCoroutine(AbilityEndLag(abilityOneEndLag));
-            StartCoroutine(AbilityDelay(true, abilityOneCooldown));
-        }
-        else if(aimingAbilityTwo)
-        {
-            aimingAbilityTwo = false;
-            StartCoroutine(AbilityEndLag(abilityTwoEndLag));
-            StartCoroutine(AbilityDelay(false, abilityTwoCooldown));
-        }
-
-        //Add the ability functionality in the actual weapon script
+        playerAiming = false;
     }
 
     /// <summary>
@@ -223,20 +296,40 @@ public class BaseWeaponBehaviour : MonoBehaviour
             return;
         }
 
-        Vector3 lookDir = mousePos;
-        Quaternion rot = Quaternion.RotateTowards(weaponModel.transform.rotation,
-            Quaternion.LookRotation(lookDir), 20f);
+        Quaternion rot = Quaternion.LookRotation(aimDir);
         rot.x = 0;
         rot.z = 0;
         weaponModel.transform.rotation = rot;
 
-        if (UIManager.Instance.CurrentlyInFullscreenMenu())
+        if (continuouslyUpdatePreview)
         {
-            return;
+            float staticY = activePreview.transform.position.y;
+
+            Vector3 pos = activePreview.transform.position;
+
+            if (InputManager.Instance.ControllerIsEnabled)
+            {
+                if (playerAiming)
+                {
+                    Vector3 currentAimVel = aimDir * StaticDataManager.Instance.playerAimSpeed;
+
+                    pos = transform.position + Vector3.ClampMagnitude(
+                        (activePreview.transform.position - transform.position) + currentAimVel,
+                        WeaponAbilities[currentAbilityIndex].AbilityRange);
+                }
+
+            }
+            else
+            {
+                pos = transform.position + Vector3.ClampMagnitude(mousePos, WeaponAbilities[currentAbilityIndex].AbilityRange);
+            }
+
+            pos.y = staticY;
+            activePreview.transform.position = pos;
         }
 
         //Check if attack speed gets changed
-        if(currentAttackSpeed != ThisWeaponData.AttackSpeed)
+        if (currentAttackSpeed != ThisWeaponData.AttackSpeed)
         {
             Debug.Log("Changing attack speed");
             currentAttackSpeed = ThisWeaponData.AttackSpeed;
@@ -274,7 +367,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// <returns></returns>
     protected IEnumerator AttackBursts()
     {
-        for(int i = 1; i < ThisWeaponData.AttackBursts[comboIndex - 1]; ++i)
+        for (int i = 1; i < ThisWeaponData.AttackBursts[comboIndex - 1]; ++i)
         {
             yield return new WaitForSeconds(ThisWeaponData.TimeBetweenBursts[comboIndex - 1]);
             SpawnProjectile();
@@ -288,8 +381,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// </summary>
     public void SpawnProjectile()
     {
-        Debug.Log(comboIndex - 1);
-        Vector3 bulletDir = mousePos;
+        Vector3 bulletDir = aimDir;
         bulletDir.y = 0;
 
         GameObject spawnedProjectile = Instantiate(ThisWeaponData.Projectiles[comboIndex - 1], transform.position, Quaternion.LookRotation(bulletDir.normalized, Vector3.up));
@@ -297,7 +389,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
         spawnedProjectile.GetComponent<Rigidbody>().linearVelocity = bulletDir.normalized * ThisWeaponData.ProjectileSpeed[comboIndex - 1];
 
         //If the weapon has multiple bursts fire them
-        if(ThisWeaponData.AttackBursts[comboIndex - 1] > 1 && !burstAttacking)
+        if (ThisWeaponData.AttackBursts[comboIndex - 1] > 1 && !burstAttacking)
         {
             burstAttacking = true;
             StartCoroutine(AttackBursts());
@@ -309,15 +401,15 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// </summary>
     public void MeleeSwing()
     {
-        foreach(Collider c in meleeHitboxes)
+        foreach (Collider c in meleeHitboxes)
         {
-            if(c.enabled)
+            if (c.enabled)
             {
                 Collider[] targets = Physics.OverlapBox(c.bounds.center, c.bounds.extents, Quaternion.identity, ThisWeaponData.EnemyLayer);
 
                 foreach (Collider t in targets)
                 {
-                    if(t.GetComponent<Enemy>())
+                    if (t.GetComponent<Enemy>())
                     {
                         t.GetComponent<Enemy>().EnemyTakeDamage(ThisWeaponData.WeaponDamage[comboIndex - 1]);
                     }
@@ -326,7 +418,9 @@ public class BaseWeaponBehaviour : MonoBehaviour
             }
         }
     }
+    #endregion
 
+    #region Abilities
     /// <summary>
     /// Waits for the weapon's attack time before letting it attack again
     /// </summary>
@@ -334,11 +428,248 @@ public class BaseWeaponBehaviour : MonoBehaviour
     virtual protected IEnumerator AttackDelay()
     {
         yield return new WaitForSeconds(ThisWeaponData.AttackCooldown[0]);
-        if(comboIndex >= attackAnimations.Count)
+        if (comboIndex >= attackAnimations.Count)
         {
             comboIndex = 0;
         }
         attackReady = true;
+    }
+
+    /// <summary>
+    /// How the player aims ability one. Also sets whether or not the player is aiming the ability
+    /// </summary>
+    virtual protected void AimingAbilityOne()
+    {
+        if (abilityOneReady)
+        {
+            aimingAbilityOne = !aimingAbilityOne;
+            weaponAnimator.SetBool("AbilityCast", !aimingAbilityOne);
+            aimingAbilityTwo = false;
+            currentAbilityIndex = abilityOneIndex;
+            AimingAbility();
+        }
+    }
+
+    /// <summary>
+    /// How the player aims ability two. Also sets whether or not the player is aiming the ability
+    /// </summary>
+    virtual protected void AimingAbilityTwo()
+    {
+        if (abilityTwoReady)
+        {
+            aimingAbilityTwo = !aimingAbilityTwo;
+            weaponAnimator.SetBool("AbilityCast", !aimingAbilityTwo);
+            aimingAbilityOne = false;
+            currentAbilityIndex = abilityTwoIndex;
+            AimingAbility();
+        }
+    }
+
+    /// <summary>
+    /// Displays the ability preview and plays the readying animation
+    /// </summary>
+    /// <param name="abilityOne"></param>
+    virtual protected void AimingAbility()
+    {
+        activePreview.SetActive(false);
+
+        if (WeaponAbilities[currentAbilityIndex].HasPreview)
+        {
+            activePreview = WeaponAbilities[currentAbilityIndex].PreviewData.AbilityPreview;
+            weaponAnimator.Play(WeaponAbilities[currentAbilityIndex].AbilityReadyAnim.AnimClip.name, 0);
+        }
+        else
+        {
+            CastingAbility();
+        }
+
+        //activePreview.SetActive(abilityOne ? aimingAbilityOne : aimingAbilityTwo);
+    }
+
+    /// <summary>
+    /// Anim event that shows the ability preview
+    /// </summary>
+    /// <param name="orbitsPlayer"></param>
+    /// <param name="sizeIsRange"></param>
+    public void DisplayAbilityPreview()
+    {
+        continuouslyUpdatePreview = !WeaponAbilities[currentAbilityIndex].PreviewData.OrbitsPlayer;
+
+        float sizeValue = WeaponAbilities[currentAbilityIndex].PreviewData.SizeIsRange ? WeaponAbilities[currentAbilityIndex].AbilityRange : WeaponAbilities[currentAbilityIndex].AbilityAOESize;
+
+        Vector3 abilitySize = WeaponAbilities[currentAbilityIndex].BaseAbilitySize;
+        Vector3 pos = Vector3.zero;
+
+        if (WeaponAbilities[currentAbilityIndex].PreviewData.ScaleXOnly)
+        {
+            abilitySize.x *= sizeValue;
+        }
+        else if (WeaponAbilities[currentAbilityIndex].PreviewData.ScaleZOnly)
+        {
+            abilitySize.z *= sizeValue;
+        }
+        else
+        {
+            abilitySize *= sizeValue;
+
+            if (WeaponAbilities[currentAbilityIndex].PreviewData.ShapeType != PreviewShape.Shape.Cone)
+            {
+                abilitySize.y = WeaponAbilities[currentAbilityIndex].BaseAbilitySize.y;
+            }
+            //pos.z = abilitySize.z; //(abilitySize.z / 2);
+        }
+
+        switch (WeaponAbilities[currentAbilityIndex].PreviewData.ShapeType)
+        {
+            case PreviewShape.Shape.Square:
+            case PreviewShape.Shape.Sphere:
+                pos.z = abilitySize.z / 2;
+                break;
+            case PreviewShape.Shape.Cone:
+                pos.z = abilitySize.y / 2;
+                break;
+        }
+
+        activePreview.transform.localScale = abilitySize;
+
+        if (WeaponAbilities[currentAbilityIndex].PreviewData.OrbitsPlayer)
+        {
+            activePreview.transform.localPosition = pos;
+        }
+
+        activePreview.SetActive(true);
+    }
+
+    /// <summary>
+    /// The base inheritance for using weapon abilities
+    /// </summary>
+    virtual public void CastingAbility()
+    {
+        weaponAnimator.SetBool("AbilityCast", true);
+        continuouslyUpdatePreview = false;
+        attackReady = false;
+        aimingAbilityOne = false;
+        aimingAbilityTwo = false;
+
+        StartCoroutine(AbilityDamage(currentAbilityIndex));
+
+        StartCoroutine(AbilityEndLag(WeaponAbilities[currentAbilityIndex].AbilityEndLag));
+        StartCoroutine(AbilityDelay(currentAbilityIndex == abilityOneIndex, WeaponAbilities[currentAbilityIndex].AbilityCooldown));
+    }
+
+    /// <summary>
+    /// Contains functionality for how the ability behaves
+    /// </summary>
+    /// <returns></returns>
+    protected IEnumerator AbilityDamage(int abilityIndex)
+    {
+        //GameObject tempAbility = activePreview;
+        //if (WeaponAbilities[abilityIndex].PersistingAbility)
+        //{
+        //    tempAbility = Instantiate(activePreview, activePreview.transform.position, Quaternion.identity);
+        //}
+
+        GameObject tempAbility = Instantiate(WeaponAbilities[abilityIndex].PreviewData.AbilityPreview, activePreview.transform.position, activePreview.transform.rotation);
+        if (WeaponAbilities[abilityIndex].PreviewData.OrbitsPlayer)
+        {
+            tempAbility.transform.parent = weaponModel.transform;
+            tempAbility.transform.localScale = activePreview.transform.localScale;
+        }
+        activePreview.SetActive(false);
+
+        yield return new WaitForSeconds(WeaponAbilities[abilityIndex].AbilityDelay);
+
+        int damage = WeaponAbilities[abilityIndex].AbilityDuration > 0 ?
+            Mathf.CeilToInt(WeaponAbilities[abilityIndex].AbilityDamage / WeaponAbilities[abilityIndex].AbilityDamageTicks)
+            : WeaponAbilities[abilityIndex].AbilityDamage;
+        float delay = WeaponAbilities[abilityIndex].AbilityDamageTicks > 0 ?
+            WeaponAbilities[abilityIndex].AbilityDuration / WeaponAbilities[abilityIndex].AbilityDamageTicks : 0;
+        float elapsed = 0;
+
+        Collider[] targets;
+
+        float r = 0;
+        Vector3 center = Vector3.zero;
+        Vector3 extents = Vector3.zero;
+
+        switch (WeaponAbilities[abilityIndex].PreviewData.ShapeType)
+        {
+            case PreviewShape.Shape.Square:
+            case PreviewShape.Shape.Cone:
+                center = tempAbility.GetComponent<BoxCollider>().transform.TransformPoint(tempAbility.GetComponent<BoxCollider>().center);
+                extents = Vector3.Scale(tempAbility.GetComponent<BoxCollider>().size, tempAbility.GetComponent<BoxCollider>().transform.lossyScale) * .5f;
+
+                targets = Physics.OverlapBox(center, extents, tempAbility.GetComponent<BoxCollider>().transform.rotation,
+                WeaponAbilities[abilityIndex].AbilityLayerMask);
+                break;
+            case PreviewShape.Shape.Sphere:
+                r = tempAbility.GetComponent<SphereCollider>() ? tempAbility.GetComponent<SphereCollider>().radius :
+                    tempAbility.GetComponent<CapsuleCollider>().radius;
+                targets = Physics.OverlapSphere(tempAbility.transform.position,
+                    r * WeaponAbilities[abilityIndex].AbilityAOESize,
+                    WeaponAbilities[abilityIndex].AbilityLayerMask);
+                break;
+            default:
+                targets = new Collider[0];
+                break;
+        }
+
+        if (!WeaponAbilities[abilityIndex].PersistingAbility)
+        {
+            tempAbility.SetActive(false);
+        }
+
+        do
+        {
+            if (WeaponAbilities[abilityIndex].PersistingAbility)
+            {
+                switch (WeaponAbilities[abilityIndex].PreviewData.ShapeType)
+                {
+                    case PreviewShape.Shape.Square:
+                    case PreviewShape.Shape.Cone:
+                        targets = Physics.OverlapBox(center, extents, tempAbility.GetComponent<BoxCollider>().transform.rotation,
+                        WeaponAbilities[abilityIndex].AbilityLayerMask);
+                        break;
+                    case PreviewShape.Shape.Sphere:
+                        targets = Physics.OverlapSphere(tempAbility.transform.position,
+                            r * WeaponAbilities[abilityIndex].AbilityAOESize,
+                            WeaponAbilities[abilityIndex].AbilityLayerMask);
+                        break;
+                    default:
+                        targets = new Collider[0];
+                        break;
+                }
+            }
+
+            foreach (Collider t in targets)
+            {
+                Vector3 originPosition = WeaponAbilities[abilityIndex].PreviewData.KnockBackFromPreviewCenter ? tempAbility.transform.position : this.transform.position;
+                Vector3 forceDir = new Vector3(t.transform.position.x - originPosition.x, 0,
+                t.transform.position.z - originPosition.z).normalized;
+
+                if (t.GetComponent<Enemy>())
+                {
+                    //replace with the enemy taking damage
+                    t.GetComponent<Rigidbody>().AddForce(WeaponAbilities[abilityIndex].AbilityEnemyKnockback * forceDir, ForceMode.Impulse);
+                    t.GetComponent<Enemy>().EnemyTakeDamage(damage);
+                    Debug.Log(t.name + " took " + damage + " damage!");
+                }
+                else
+                {
+                    t.GetComponentInParent<Rigidbody>().AddForce(WeaponAbilities[abilityIndex].AbilityPlayerKnockback * forceDir, ForceMode.Impulse);
+                }
+            }
+
+            yield return new WaitForSeconds(delay);
+            elapsed += delay;
+        } while (elapsed < WeaponAbilities[abilityIndex].AbilityDuration);
+
+        Destroy(tempAbility);
+
+        //if (WeaponAbilities[abilityIndex].PersistingAbility)
+        //{
+        //    Destroy(tempAbility);
+        //}
     }
 
     /// <summary>
@@ -360,7 +691,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// <returns></returns>
     virtual protected IEnumerator AbilityDelay(bool isAbilityOne, float time)
     {
-        if(isAbilityOne)
+        if (isAbilityOne)
         {
             abilityOneReady = false;
         }
@@ -380,6 +711,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
             abilityTwoReady = true;
         }
     }
+    #endregion
 
     /// <summary>
     /// Converts the inspector variable to it's percentage value if it isn't already a percent

@@ -29,6 +29,8 @@ public class StaticDataManager : BaseManager
 
     public List<PinScriptable> Pins;
 
+    public float playerAimSpeed;
+
     /// <summary>
     /// Initializes the manager
     /// </summary>
