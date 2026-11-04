@@ -1,8 +1,8 @@
 /******************************************************************************
  * Author: Brad Dixon
  * Contributors:
- * Last Modified: 10/30/2026
- * Brief:
+ * Last Modified: 11/4/2026
+ * Brief: Contains ability information to make an ability
  * TODO:
  * ***************************************************************************/
 using UnityEngine;
@@ -50,6 +50,7 @@ public class AbilityData
     public PreviewShape PreviewData;
 
     public bool PersistingAbility;
+    public bool CancelOnRecast;
     public LayerMask AbilityLayerMask;
 
     [HideInInspector] public Vector3 BaseAbilitySize;

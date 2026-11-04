@@ -628,7 +628,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &593513383
 Transform:
   m_ObjectHideFlags: 0
@@ -693,6 +693,8 @@ MonoBehaviour:
   - {fileID: 1172260322}
   WeaponAbilities: []
   currentAbilityIndex: 0
+  aimDir: {x: 0, y: 0, z: 1}
+  playerAiming: 0
   abilityOneIndex: 0
   abilityTwoIndex: 0
   abilityOneReady: 1
@@ -1644,6 +1646,8 @@ MonoBehaviour:
   - {fileID: 276588700}
   WeaponAbilities: []
   currentAbilityIndex: 0
+  aimDir: {x: 0, y: 0, z: 1}
+  playerAiming: 0
   abilityOneIndex: 0
   abilityTwoIndex: 0
   abilityOneReady: 0

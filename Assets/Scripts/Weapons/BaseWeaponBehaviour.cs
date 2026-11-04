@@ -1,7 +1,7 @@
 /******************************************************************************
  * Author: Brad Dixon
  * Contributors: Tyler Hayes
- * Last Modified: 11/2/2026
+ * Last Modified: 11/4/2026
  * Brief: Calls the specific weapon attack
  * TODO:
  * ***************************************************************************/
@@ -236,7 +236,8 @@ public class BaseWeaponBehaviour : MonoBehaviour
     {
         if (aimingAbilityOne || aimingAbilityTwo)
         {
-            CastingAbility();
+            weaponAnimator.Play(WeaponAbilities[currentAbilityIndex].AbilityAnim.AnimClip.name, WeaponAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
+            //CastingAbility();
         }
         else
         {
@@ -340,7 +341,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
         {
             Attack();
             attackReady = false;
-            StartCoroutine(AttackDelay());
+            //StartCoroutine(AttackDelay());
         }
     }
 
@@ -394,6 +395,8 @@ public class BaseWeaponBehaviour : MonoBehaviour
             burstAttacking = true;
             StartCoroutine(AttackBursts());
         }
+
+        StartCoroutine(AttackDelay());
     }
 
     /// <summary>
@@ -417,6 +420,8 @@ public class BaseWeaponBehaviour : MonoBehaviour
                 }
             }
         }
+
+        StartCoroutine(AttackDelay());
     }
     #endregion
 
@@ -446,7 +451,15 @@ public class BaseWeaponBehaviour : MonoBehaviour
             weaponAnimator.SetBool("AbilityCast", !aimingAbilityOne);
             aimingAbilityTwo = false;
             currentAbilityIndex = abilityOneIndex;
-            AimingAbility();
+            if (WeaponAbilities[currentAbilityIndex].HasPreview)
+            {
+                AimingAbility();
+            }
+            else
+            {
+                //weaponAnimator.Play(WeaponAbilities[currentAbilityIndex].AbilityAnim.AnimClip.name, WeaponAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
+                CastingAbility();
+            }
         }
     }
 
@@ -461,7 +474,15 @@ public class BaseWeaponBehaviour : MonoBehaviour
             weaponAnimator.SetBool("AbilityCast", !aimingAbilityTwo);
             aimingAbilityOne = false;
             currentAbilityIndex = abilityTwoIndex;
-            AimingAbility();
+            if (WeaponAbilities[currentAbilityIndex].HasPreview)
+            {
+                AimingAbility();
+            }
+            else
+            {
+                //weaponAnimator.Play(WeaponAbilities[currentAbilityIndex].AbilityAnim.AnimClip.name, WeaponAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
+                CastingAbility();
+            }
         }
     }
 
@@ -473,17 +494,19 @@ public class BaseWeaponBehaviour : MonoBehaviour
     {
         activePreview.SetActive(false);
 
-        if (WeaponAbilities[currentAbilityIndex].HasPreview)
-        {
-            activePreview = WeaponAbilities[currentAbilityIndex].PreviewData.AbilityPreview;
-            weaponAnimator.Play(WeaponAbilities[currentAbilityIndex].AbilityReadyAnim.AnimClip.name, 0);
-        }
-        else
-        {
-            CastingAbility();
-        }
+        activePreview = WeaponAbilities[currentAbilityIndex].PreviewData.AbilityPreview;
+        weaponAnimator.Play(WeaponAbilities[currentAbilityIndex].AbilityReadyAnim.AnimClip.name, WeaponAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
 
-        //activePreview.SetActive(abilityOne ? aimingAbilityOne : aimingAbilityTwo);
+        //if (WeaponAbilities[currentAbilityIndex].HasPreview)
+        //{
+        //    activePreview = WeaponAbilities[currentAbilityIndex].PreviewData.AbilityPreview;
+        //    weaponAnimator.Play(WeaponAbilities[currentAbilityIndex].AbilityReadyAnim.AnimClip.name, WeaponAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
+        //}
+        //else
+        //{
+        //    weaponAnimator.Play(WeaponAbilities[currentAbilityIndex].AbilityAnim.AnimClip.name, WeaponAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
+        //    //CastingAbility();
+        //}
     }
 
     /// <summary>
@@ -516,7 +539,6 @@ public class BaseWeaponBehaviour : MonoBehaviour
             {
                 abilitySize.y = WeaponAbilities[currentAbilityIndex].BaseAbilitySize.y;
             }
-            //pos.z = abilitySize.z; //(abilitySize.z / 2);
         }
 
         switch (WeaponAbilities[currentAbilityIndex].PreviewData.ShapeType)
@@ -563,12 +585,6 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// <returns></returns>
     protected IEnumerator AbilityDamage(int abilityIndex)
     {
-        //GameObject tempAbility = activePreview;
-        //if (WeaponAbilities[abilityIndex].PersistingAbility)
-        //{
-        //    tempAbility = Instantiate(activePreview, activePreview.transform.position, Quaternion.identity);
-        //}
-
         GameObject tempAbility = Instantiate(WeaponAbilities[abilityIndex].PreviewData.AbilityPreview, activePreview.transform.position, activePreview.transform.rotation);
         if (WeaponAbilities[abilityIndex].PreviewData.OrbitsPlayer)
         {
