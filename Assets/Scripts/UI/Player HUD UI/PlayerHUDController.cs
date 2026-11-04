@@ -27,9 +27,6 @@ public class PlayerHUDController : MenuBase
     [SerializeField]
     private Settings settings;
 
-    [SerializeField, ShowIf(nameof(settings), Settings.Cooldown)]
-    private List<CooldownUIController> cooldownUIElements;
-
     [SerializeField, ShowIf(nameof(settings), Settings.HealthBar)]
     private Image healthBarSlider;
 
@@ -42,20 +39,17 @@ public class PlayerHUDController : MenuBase
     [SerializeField, ShowIf(nameof(settings), Settings.EXPBar)]
     private Image expBarSlider;
 
-    [SerializeField]
+    [SerializeField, ShowIf(nameof(settings), Settings.Minimap)]
     private MiniMapCamera mapCamPrefab;
 
     private MiniMapCamera mapCam;
     #region TESTING
 
-    [SerializeField]
+    [SerializeField, ShowIf(nameof(settings), Settings.Cooldown)]
     private float Ability1MaxCooldown;
 
-    [SerializeField]
+    [SerializeField, ShowIf(nameof(settings), Settings.Cooldown)]
     private float Ability2MaxCooldown;
-
-    [SerializeField]
-    private float DashMaxCooldown;
 
     private Coroutine healthAnimCoroutine;
 
@@ -87,7 +81,6 @@ public class PlayerHUDController : MenuBase
         base.SetUpPublicEvents();
         InputPublicEvents.AbilityOnePressed += Ability1Wrapper;
         InputPublicEvents.AbilityTwoPressed += Ability2Wrapper;
-        InputPublicEvents.InteractPressed += DashWrapper;
         InputPublicEvents.ShootPressed += ImmediatelyRefreshAllCooldowns;
         UIPublicEvents.UpdatePlayerHealthSlider += UpdatePlayerHealthBarValue;
         UIPublicEvents.UpdatePlayerEXPSlider += UpdatePlayerEXPBarValue;
@@ -101,7 +94,6 @@ public class PlayerHUDController : MenuBase
         base.TearDownPublicEvents();
         InputPublicEvents.AbilityOnePressed -= Ability1Wrapper;
         InputPublicEvents.AbilityTwoPressed -= Ability2Wrapper;
-        InputPublicEvents.InteractPressed -= DashWrapper;
         InputPublicEvents.ShootPressed -= ImmediatelyRefreshAllCooldowns;
         UIPublicEvents.UpdatePlayerHealthSlider -= UpdatePlayerHealthBarValue;
         UIPublicEvents.UpdatePlayerEXPSlider -= UpdatePlayerEXPBarValue;
@@ -119,12 +111,9 @@ public class PlayerHUDController : MenuBase
 
     #region Testing
 
-    /// <summary>
-    /// testing - turns on the dash cooldown
-    /// </summary>
-    private void DashWrapper()
+    private void NewWeaponEnabled(BaseWeaponBehaviour weapon)
     {
-        UIPublicEvents.UpdateHUDCooldownUI?.Invoke(CooldownUIController.CooldownToUpdate.Dash, DashMaxCooldown);
+        //add ability to change images here
     }
 
     /// <summary>
@@ -148,7 +137,6 @@ public class PlayerHUDController : MenuBase
     /// </summary>
     private void ImmediatelyRefreshAllCooldowns()
     {
-        UIPublicEvents.ImmediatelyRefreshCooldown?.Invoke(CooldownUIController.CooldownToUpdate.Dash);
         UIPublicEvents.ImmediatelyRefreshCooldown?.Invoke(CooldownUIController.CooldownToUpdate.Ability2);
         UIPublicEvents.ImmediatelyRefreshCooldown?.Invoke(CooldownUIController.CooldownToUpdate.Ability1);
     }
