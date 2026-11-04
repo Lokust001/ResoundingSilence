@@ -46,7 +46,7 @@ GameObject:
   - component: {fileID: 4290740931282374433}
   - component: {fileID: 7926469360574205891}
   - component: {fileID: 2523750841278123657}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: EndEncounterPedestal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -86,6 +86,7 @@ MonoBehaviour:
   timeBetweenWaves: 0.5
   timeBetweenEnemySpawns: 0.15
   enemyScaleValue: 18
+  finalEncounterWalls: {fileID: 0}
   enemyWaves:
   - groupName: Wave 1 Sample
     enemies:
