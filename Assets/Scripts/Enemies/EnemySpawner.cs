@@ -45,7 +45,7 @@ public class EnemySpawner : MonoBehaviour
 
 
     [Header("[Debug] Don't edit these fields"), SerializeField]
-    List<Enemy> generatedEnemies;
+    public List<Enemy> generatedEnemies;
 
     [SerializeField]
     List<Transform> spawnLocations;
@@ -128,7 +128,7 @@ public class EnemySpawner : MonoBehaviour
     /// Spawns a group of enemies at random spawn locations.
     /// If a group of enemies has not been chosen yet, choose one.
     /// </summary>
-    private void SpawnEnemies()
+    public void SpawnEnemies()
     {
         //If there is no chosen enemy picked, generate some
         if (generatedEnemies.Count == 0 && generationReadyFlag)

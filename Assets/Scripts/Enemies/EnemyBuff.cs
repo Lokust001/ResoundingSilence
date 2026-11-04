@@ -78,7 +78,8 @@ public class EnemyBuff : MonoBehaviour, ISharedEnemyBehaviors, ICustomDisabler
         }
 
         //Stop charing up the buff if it is active
-        StopCoroutine(interruptableCharge);
+        if (interruptableCharge != null) 
+            StopCoroutine(interruptableCharge);
 
         ClearBuffFromAllies();
 
