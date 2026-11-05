@@ -153,15 +153,20 @@ MonoBehaviour:
   - Enemies
   - EnemyProjectile
   invincibilityDuration: 2
-  dashRange: 6
+  BasedashRange: 10
   dashDuration: 0.5
   dashCooldown: 0.5
   totalDashes: 1
   chainDashWindow: 1
+  TimeToStartRegen: 0
+  RegenTickRate: 0
+  BaseRegenAmount: 0
   ignoreWhileInvincible:
     serializedVersion: 2
     m_Bits: 7296
-  healingPotency: 0
+  DashLayersIgnore:
+    serializedVersion: 2
+    m_Bits: 31872
   InGodMode: 0
   MoveActive: 1
   canDash: 0

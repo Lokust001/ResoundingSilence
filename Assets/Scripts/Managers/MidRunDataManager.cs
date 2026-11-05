@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
-* Contributors: Brenden
-* Last Modified: 10/21/2026
+* Contributors: Brenden, Brad Dixon
+* Last Modified: 11/3/2026
 * Summary: This is a database that will hold all of the data needed mid run.
 * To Do:   N/A
 */
@@ -10,6 +10,26 @@ using System.Collections.Generic;
 using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.InputSystem;
+
+[System.Serializable]
+public struct LevelUpData
+{
+    public float ExpToLevelUp;
+    public List<StatIncreaseTypes> LevelUpStats;
+}
+
+[System.Serializable]
+public struct StatIncreaseTypes
+{
+    public enum Stats
+    {
+        Health
+    }
+
+    public Stats StatType;
+    public float StatChange;
+}
+
 
 public class MidRunDataManager : BaseManager
 {
@@ -22,6 +42,12 @@ public class MidRunDataManager : BaseManager
         Exp,
         Health,
         Dash
+    }
+
+    private enum ValueChange
+    {
+        ExactValue,
+        Multiply
     }
 
     [SerializeField]
@@ -46,12 +72,27 @@ public class MidRunDataManager : BaseManager
     public float HealingPotency;
 
     [ShowIf(nameof(settings), Settings.Exp)]
-    public float CurrentPlayerEXP;
+    [SerializeField] ValueChange XpNeededIncrease;
 
     [ShowIf(nameof(settings), Settings.Exp)]
+    [SerializeField] ValueChange LvlUpStatIncrease;
+
+    [ShowIf(nameof(settings), Settings.Exp)]
+    [SerializeField] private List<LevelUpData> playerLvls = new List<LevelUpData>();
+
+    [ShowIf(nameof(settings), Settings.Exp)]
+    [SerializeField] bool capLvl;
+
+    private int playerLvl;
+
+    [ShowIf(nameof(settings), Settings.Exp)]
+    public float CurrentPlayerEXP;
+
     public float ExpNeededToLevelUp;
 
-    
+    [ShowIf(nameof(settings), Settings.Exp)]
+    public int GiveXpAmount;
+
     [SerializeField]
     [ShowIf(nameof(settings), Settings.Pins)]
     public List<PinScriptable> PinScriptableObjects;
@@ -66,6 +107,12 @@ public class MidRunDataManager : BaseManager
 
     [SerializeField, ShowIf(nameof(EnableTestingMode))]
     private List<PinScriptable> testingPinInventory = new();
+
+    [Button]
+    void GiveXP()
+    {
+        GainXP(GiveXpAmount);
+    }
 
     /// <summary>
     /// initializes the manager
@@ -94,6 +141,8 @@ public class MidRunDataManager : BaseManager
         }
 
         CurrentPlayerHealth = MaxPlayerHealth;
+        playerLvl = 1;
+        ExpNeededToLevelUp = playerLvls[playerLvl - 1].ExpToLevelUp;
 
         UnequipAllWeapons();
     }
@@ -236,15 +285,50 @@ public class MidRunDataManager : BaseManager
     /// <param name="xpAmount"></param>
     public void GainXP(int xpAmount)
     {
+        if(playerLvl >= playerLvls.Count && capLvl)
+        {
+            return;
+        }
+
         CurrentPlayerEXP += xpAmount;
 
         if(CurrentPlayerEXP >= ExpNeededToLevelUp)
         {
             CurrentPlayerEXP -= ExpNeededToLevelUp;
+
+            if (playerLvl < playerLvls.Count)
+            {
+                ++playerLvl;
+            }
+
+            ExpNeededToLevelUp = XpNeededIncrease == ValueChange.ExactValue ? playerLvls[playerLvl - 1].ExpToLevelUp : ExpNeededToLevelUp + Mathf.FloorToInt(ExpNeededToLevelUp * ConvertToPercentage(playerLvls[playerLvl - 1].ExpToLevelUp));
             //level up player. This will probably need to move to the health bar controller so
             //the player levels up when the bar reaches full as opposed to before
+
+            foreach(StatIncreaseTypes i in playerLvls[playerLvl - 1].LevelUpStats)
+            {
+                //If lvl up should affect other stats, add to switch statement
+                switch(i.StatType)
+                {
+                    case StatIncreaseTypes.Stats.Health:
+                        float sIncrease = LvlUpStatIncrease == ValueChange.ExactValue ? i.StatChange : Mathf.CeilToInt(MaxPlayerHealth * ConvertToPercentage(i.StatChange));
+                        MaxPlayerHealth += sIncrease;
+                        CurrentPlayerHealth += sIncrease;
+                        break;
+                }
+            }
         }
 
         UIPublicEvents.UpdatePlayerEXPSlider?.Invoke();
+    }
+
+    /// <summary>
+    /// Converts the inspector variable to it's percentage value if it isn't already a percent
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    protected float ConvertToPercentage(float value)
+    {
+        return value >= 1 ? value / 100 : value;
     }
 }
