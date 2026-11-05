@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors:
-* Last Modified: 09/29/2026
+* Last Modified: 11/5/2026
 * Summary: Controls the player's hud
 * To Do:   N/A
 */
@@ -9,6 +9,8 @@
 using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,7 +23,8 @@ public class PlayerHUDController : MenuBase
         EXPBar,
         Cooldown,
         Testing,
-        Minimap
+        Minimap,
+        HuntBoard
     }
 
     [SerializeField]
@@ -55,6 +58,16 @@ public class PlayerHUDController : MenuBase
 
     private bool mapIsCurrentlyMini;
 
+    [SerializeField, ShowIf(nameof(settings), Settings.HuntBoard)]
+    private TMP_Text prefabHuntText;
+
+    [SerializeField, ShowIf(nameof(settings), Settings.HuntBoard)]
+    private Color huntCompleteColor;
+
+    [SerializeField, ShowIf(nameof(settings), Settings.HuntBoard)]
+    private GameObject huntBoardContainer;
+    private List<(SideObjective, TMP_Text)> huntTexts;
+
     /// <summary>
     /// debug command to force the ui to take one damage
     /// </summary>
@@ -84,6 +97,7 @@ public class PlayerHUDController : MenuBase
         InputPublicEvents.ShootPressed += ImmediatelyRefreshAllCooldowns;
         UIPublicEvents.UpdatePlayerHealthSlider += UpdatePlayerHealthBarValue;
         UIPublicEvents.UpdatePlayerEXPSlider += UpdatePlayerEXPBarValue;
+        UIPublicEvents.UpdateHUDHuntObjs += UpdateHuntObjective;
     }
 
     /// <summary>
@@ -96,7 +110,8 @@ public class PlayerHUDController : MenuBase
         InputPublicEvents.AbilityTwoPressed -= Ability2Wrapper;
         InputPublicEvents.ShootPressed -= ImmediatelyRefreshAllCooldowns;
         UIPublicEvents.UpdatePlayerHealthSlider -= UpdatePlayerHealthBarValue;
-        UIPublicEvents.UpdatePlayerEXPSlider -= UpdatePlayerEXPBarValue;
+        UIPublicEvents.UpdatePlayerEXPSlider -= UpdatePlayerEXPBarValue; 
+        UIPublicEvents.UpdateHUDHuntObjs += UpdateHuntObjective;
     }
 
     /// <summary>
@@ -201,6 +216,60 @@ public class PlayerHUDController : MenuBase
     {
         //add animation
         expBarSlider.fillAmount = MidRunDataManager.Instance.CurrentPlayerEXP / MidRunDataManager.Instance.ExpNeededToLevelUp;
+    }
+
+    /// <summary>
+    /// creates a new text obj to track hunt board
+    /// </summary>
+    /// <param name="obj"></param>
+    private void CreateNewHuntObjective(SideObjective obj)
+    {
+        if (obj == null)
+        {
+            return;
+        }
+
+        TMP_Text NewHuntText = Instantiate(prefabHuntText, huntBoardContainer.transform);
+        huntTexts.Add(new (obj, NewHuntText));
+
+        NewHuntText.text = $"Defeat {obj.huntedEnemiesGoal} {obj.enemyType} enemies: 0/{obj.huntedEnemiesGoal}";
+    }
+
+    /// <summary>
+    /// updates a text tracker for hunt board
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <exception cref="System.Exception"></exception>
+    private void UpdateHuntObjective(SideObjective obj)
+    {
+        if (obj == null)
+        {
+            return;
+        }
+
+        TMP_Text textToUpdate = huntTexts.FirstOrDefault(x => x.Item1 == obj).Item2;
+
+        if (textToUpdate == null)
+        {
+            CreateNewHuntObjective(obj);
+            return;
+        }
+
+        string huntProgress = $"{obj.huntEnemiesProgress}/{obj.huntedEnemiesGoal}";
+
+        if (obj.huntEnemiesProgress >= obj.huntedEnemiesGoal)
+        {
+            huntProgress = $"<color=#{ColorUtility.ToHtmlStringRGB(huntCompleteColor)}>Complete!</color>";
+        }
+
+        try
+        {
+            textToUpdate.text = $"Defeat {obj.huntedEnemiesGoal} {obj.enemyType} enemies:\n{huntProgress}";
+        }
+        catch
+        {
+            throw new System.Exception($"Could not find a text for hunt objective {obj.name}, and couldnt make a new one");
+        }
     }
     #endregion
     #endregion
