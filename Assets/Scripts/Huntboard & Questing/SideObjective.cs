@@ -65,8 +65,12 @@ public class SideObjective : BaseScriptableObject
         }
 
         //It doesn't always progress because an enemy may be the wrong type of HuntObjective
-        if(progress)
+        if (progress)
+        {
             huntEnemiesProgress++;
+            UIPublicEvents.UpdateHUDHuntObjs(this);
+        }
+            
 
         return huntEnemiesProgress >= huntedEnemiesGoal;
     }
