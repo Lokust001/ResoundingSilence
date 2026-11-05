@@ -25,6 +25,8 @@ public static class UIPublicEvents
 
     #region PlayerHUD
 
+    public static Action<SideObjective> UpdateHUDHuntObjs;
+
     public static Action UpdatePlayerHealthSlider;
 
     public static Action UpdatePlayerEXPSlider;
