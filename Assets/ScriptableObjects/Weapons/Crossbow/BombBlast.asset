@@ -30,8 +30,8 @@ MonoBehaviour:
     StatValue: 500
   - StatType: 6
     StatValue: 600
-  AbilityDamage: 0
-  BaseAbilityDamage: 0
+  AbilityDamage: 20
+  BaseAbilityDamage: 20
   AbilityDamageTicks: 0
   BaseAbilityDamageTicks: 0
   AbilityDuration: 0
@@ -44,14 +44,14 @@ MonoBehaviour:
   BaseAbilityWeaponSpeed: 0
   AbilityLifeSteal: 0
   BaseAbilityLifeSteal: 0
-  AbilityAOESize: 1
-  BaseAbilityAOESize: 1
-  AbilityDelay: 0
-  BaseAbilityDelay: 0
-  AbilityEnemyKnockback: 0
-  BaseAbilityEnemyKnockback: 0
-  AbilityPlayerKnockback: 0
-  BaseAbilityPlayerKnockback: 0
+  AbilityAOESize: 5
+  BaseAbilityAOESize: 5
+  AbilityDelay: 1
+  BaseAbilityDelay: 1
+  AbilityEnemyKnockback: 600
+  BaseAbilityEnemyKnockback: 600
+  AbilityPlayerKnockback: 500
+  BaseAbilityPlayerKnockback: 500
   AbilityCooldown: 3
   AbilityEndLag: 0.5
   AbilityRange: 3.5
@@ -67,7 +67,7 @@ MonoBehaviour:
   CancelOnRecast: 0
   AbilityLayerMask:
     serializedVersion: 2
-    m_Bits: 1024
+    m_Bits: 1088
   BaseAbilitySize: {x: 0, y: 0, z: 0}
   AbilityPos: {x: 0, y: 0, z: 0}
   AbilityAnim:
