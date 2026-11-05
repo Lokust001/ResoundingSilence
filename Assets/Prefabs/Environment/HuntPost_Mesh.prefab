@@ -168,6 +168,12 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3007418dea65b424a8d00b22fa137323, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1137295095175946829}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3007418dea65b424a8d00b22fa137323, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1361445080536943793}
     - targetCorrespondingSourceObject: {fileID: 1644758952426362052, guid: 3007418dea65b424a8d00b22fa137323, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2399227192261213464}
@@ -181,6 +187,37 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 2176401018413400680}
   m_SourcePrefab: {fileID: 100100000, guid: 3007418dea65b424a8d00b22fa137323, type: 3}
+--- !u!1 &2600937709789982979 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 3007418dea65b424a8d00b22fa137323, type: 3}
+  m_PrefabInstance: {fileID: 2943395655357172818}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1137295095175946829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2600937709789982979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85b9912475489c14bb38d6edd43eddb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SideObjectiveAssigner
+  objective: {fileID: 0}
+--- !u!114 &1361445080536943793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2600937709789982979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d64ddf4282f7884c83f3d814902098e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RewardGiver
+  possibleRewards: []
 --- !u!1 &4470474973327808662 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1644758952426362052, guid: 3007418dea65b424a8d00b22fa137323, type: 3}
