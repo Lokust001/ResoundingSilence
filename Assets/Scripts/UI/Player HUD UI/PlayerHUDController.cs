@@ -218,6 +218,10 @@ public class PlayerHUDController : MenuBase
         expBarSlider.fillAmount = MidRunDataManager.Instance.CurrentPlayerEXP / MidRunDataManager.Instance.ExpNeededToLevelUp;
     }
 
+    /// <summary>
+    /// creates a new text obj to track hunt board
+    /// </summary>
+    /// <param name="obj"></param>
     private void CreateNewHuntObjective(SideObjective obj)
     {
         if (obj == null)
@@ -231,6 +235,11 @@ public class PlayerHUDController : MenuBase
         NewHuntText.text = $"Defeat {obj.huntedEnemiesGoal} {obj.enemyType} enemies: 0/{obj.huntedEnemiesGoal}";
     }
 
+    /// <summary>
+    /// updates a text tracker for hunt board
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <exception cref="System.Exception"></exception>
     private void UpdateHuntObjective(SideObjective obj)
     {
         if (obj == null)
