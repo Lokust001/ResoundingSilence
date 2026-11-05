@@ -32,6 +32,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] int totalDashes;
     [SerializeField] float chainDashWindow;
 
+
     [SerializeField] float TimeToStartRegen;
     [SerializeField] float RegenTickRate;
     [SerializeField, Tooltip("this is in % of max health")] float BaseRegenAmount;
@@ -39,6 +40,8 @@ public class PlayerController : MonoBehaviour
 
     [Tooltip("What layers the player shouldn't collide with while they are invinvible.")]
     [SerializeField] LayerMask ignoreWhileInvincible;
+    [Tooltip("What layers the player shouldn't collide with while they are invinvible.")]
+    [SerializeField] LayerMask DashLayersIgnore;
 
     #region Debug Console Variables
 
@@ -221,7 +224,7 @@ public class PlayerController : MonoBehaviour
     private void PlayerDashPressed()
     {
         //Makes sure you can't dash while in the air
-        if (rigidbody.linearVelocity.y == 0 && (canDash || chainDashing))
+        if (Mathf.Abs(rigidbody.linearVelocity.y) <= 0.01 && (canDash || chainDashing))
         {
              StartCoroutine(PlayerDash());
         }
@@ -245,7 +248,9 @@ public class PlayerController : MonoBehaviour
             StopCoroutine(dashWindowCoroutine);
         }
 
-        Vector3 dashPoint = Physics.Raycast(transform.position, dashDir.normalized, out RaycastHit hit, dashRange, ~ignoreWhileInvincible) ? hit.point : transform.position + (dashDir.normalized * dashRange);
+        Vector3 dashPoint = Physics.Raycast(transform.position, dashDir.normalized, out RaycastHit hit, dashRange, ~DashLayersIgnore) ? hit.point : transform.position + (dashDir.normalized * dashRange);
+        if(hit.collider != null)
+        Debug.Log(hit.collider.name);
         StopCoroutine(playerMovementCoroutine);
 
         for (float t = 0; t < dashDuration; t += Time.deltaTime)
@@ -270,7 +275,6 @@ public class PlayerController : MonoBehaviour
             chainDashing = false;
             StartCoroutine(ResetDash(dashCooldown));
         }
-
         RestartPlayerMovementAndInput();
 
         yield return null;
