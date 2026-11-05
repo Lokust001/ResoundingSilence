@@ -38,7 +38,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
     //[SerializeField] protected List<AbilityData> WeaponAbilities = new List<AbilityData>();
     [SerializeField] protected List<GameObject> abilityAOEs = new List<GameObject>();
 
-    protected GameObject activePreview;
+    [SerializeField] protected GameObject activePreview;
     [SerializeField] protected int currentAbilityIndex;
 
     bool continuouslyUpdatePreview;
@@ -82,6 +82,19 @@ public class BaseWeaponBehaviour : MonoBehaviour
 
         currentAttackSpeed = ThisWeaponData.AttackSpeed;
         UpdateAttackSpeed();
+
+        int i = 0;
+        foreach (GameObject g in abilityAOEs)
+        {
+            if(g != null)
+            {
+                activePreview = g;
+
+                ThisWeaponData.editableAbilities[i].BaseAbilitySize = g.transform.localScale;
+            }
+
+            ++i;
+        }
 
         //foreach (AbilityBaseScriptable ability in ThisWeaponData.editableAbilities)
         //{
@@ -237,8 +250,8 @@ public class BaseWeaponBehaviour : MonoBehaviour
     {
         if (aimingAbilityOne || aimingAbilityTwo)
         {
-            weaponAnimator.Play(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAnim.AnimClip.name, ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
-            //CastingAbility();
+            //weaponAnimator.Play(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAnim.AnimClip.name, ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
+            CastingAbility();
         }
         else
         {
@@ -517,6 +530,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// <param name="sizeIsRange"></param>
     public void DisplayAbilityPreview()
     {
+        Debug.Log("REACHED!!!");
         continuouslyUpdatePreview = !ThisWeaponData.editableAbilities[currentAbilityIndex].PreviewData.OrbitsPlayer;
 
         float sizeValue = ThisWeaponData.editableAbilities[currentAbilityIndex].PreviewData.SizeIsRange ? 

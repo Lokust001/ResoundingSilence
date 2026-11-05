@@ -173,7 +173,11 @@ MonoBehaviour:
   - {fileID: 7400000, guid: e90138978acc5f241830b30f92ca801f, type: 2}
   comboIndex: 0
   meleeHitboxes: []
-  abilityAOEs: []
+  abilityAOEs:
+  - {fileID: 7590928629485323880}
+  - {fileID: 7347509225486067769}
+  - {fileID: 5277897699482532973}
+  - {fileID: 417958859510438225}
   currentAbilityIndex: 0
   aimDir: {x: 0, y: 0, z: 1}
   playerAiming: 0
@@ -260,6 +264,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a1f33ca49684a5444a61e04b07012ae1, type: 3}
+--- !u!1 &7590928629485323880 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7689218904197164709, guid: a1f33ca49684a5444a61e04b07012ae1, type: 3}
+  m_PrefabInstance: {fileID: 283149000665934029}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8652583829300903847 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8933406228398724970, guid: a1f33ca49684a5444a61e04b07012ae1, type: 3}
@@ -325,6 +334,11 @@ PrefabInstance:
 --- !u!4 &4298004810466838347 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4354660225646677267, guid: 6c49ee599b65f5d4f8d0ff5eb9a4eaf5, type: 3}
+  m_PrefabInstance: {fileID: 561622831242840664}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7347509225486067769 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7078761736756142689, guid: 6c49ee599b65f5d4f8d0ff5eb9a4eaf5, type: 3}
   m_PrefabInstance: {fileID: 561622831242840664}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3183072095461115056
@@ -393,6 +407,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 412911143400385422, guid: 780e4ba22d2b3f04caf88256ef30778b, type: 3}
   m_PrefabInstance: {fileID: 3183072095461115056}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &5277897699482532973 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7282972377182042333, guid: 780e4ba22d2b3f04caf88256ef30778b, type: 3}
+  m_PrefabInstance: {fileID: 3183072095461115056}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5087465422107751905
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -450,6 +469,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8b108235bab812c42ac6a49607b740bc, type: 3}
+--- !u!1 &417958859510438225 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4852256441924873392, guid: 8b108235bab812c42ac6a49607b740bc, type: 3}
+  m_PrefabInstance: {fileID: 5087465422107751905}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1191660545496851316 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6202562980687681173, guid: 8b108235bab812c42ac6a49607b740bc, type: 3}

@@ -355,7 +355,7 @@ public class BaseWeaponScriptable : BaseScriptableObject
     [Expandable]
     [SerializeField]
     private List<AbilityBaseScriptable> abilities = new();
-    [HideInInspector]
+    //[HideInInspector]
     public List<AbilityBaseScriptable> editableAbilities = new();
 
     

@@ -16,6 +16,8 @@ MonoBehaviour:
   UsePresetTooltip: 0
   PresetTooltip: 
   AbilityName: Splinter Shot
+  AbilityImage: {fileID: 0}
+  BackgroundImage: {fileID: 0}
   PrimaryStats:
   - StatType: 0
     StatValue: 40
@@ -26,12 +28,12 @@ MonoBehaviour:
   SecondaryStats:
   - StatType: 4
     StatValue: 5
-  AbilityDamage: 0
-  BaseAbilityDamage: 0
-  AbilityDamageTicks: 0
-  BaseAbilityDamageTicks: 0
-  AbilityDuration: 0
-  BaseAbilityDuration: 0
+  AbilityDamage: 40
+  BaseAbilityDamage: 40
+  AbilityDamageTicks: 10
+  BaseAbilityDamageTicks: 10
+  AbilityDuration: 5
+  BaseAbilityDuration: 5
   AbilityAggroRange: 0
   BaseAbilityAggroRange: 0
   AbilityPlayerSpeed: 0
@@ -40,8 +42,8 @@ MonoBehaviour:
   BaseAbilityWeaponSpeed: 0
   AbilityLifeSteal: 0
   BaseAbilityLifeSteal: 0
-  AbilityAOESize: 1
-  BaseAbilityAOESize: 1
+  AbilityAOESize: 5
+  BaseAbilityAOESize: 5
   AbilityDelay: 0
   BaseAbilityDelay: 0
   AbilityEnemyKnockback: 0
@@ -53,8 +55,7 @@ MonoBehaviour:
   AbilityRange: 6
   HasPreview: 1
   PreviewData:
-    ShapeType: 0
-    AbilityAOE: {fileID: 7689218904197164709, guid: a1f33ca49684a5444a61e04b07012ae1, type: 3}
+    ShapeType: 1
     OrbitsPlayer: 0
     SizeIsRange: 0
     ScaleXOnly: 0
