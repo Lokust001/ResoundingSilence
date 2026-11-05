@@ -265,7 +265,6 @@ public class Enemy : MonoBehaviour
                 if (allowNonImmediateBehavior) 
                 {
                     allowNonImmediateBehavior = false;
-                    Debug.Log("Following player");
                     movementBeahvior.FollowPlayer();
                 }
                 break;
@@ -328,7 +327,7 @@ public class Enemy : MonoBehaviour
         enemyData.atkBoostFactor = atkModifier;
         enemyData.dmgReductionFactor = dmgModifier;
 
-        Debug.Log("I've been buffed! My attacks now deal: " + EnemyDealDamage() + "dmg, and if an attack hits me that is " + dmgToTake + " dmg, I only take " + EnemyTakeDamage(dmgToTake));
+        //Debug.Log("I've been buffed! My attacks now deal: " + EnemyDealDamage() + "dmg, and if an attack hits me that is " + dmgToTake + " dmg, I only take " + EnemyTakeDamage(dmgToTake));
     }
 
     /// <summary>
@@ -339,7 +338,7 @@ public class Enemy : MonoBehaviour
     {
         enemyData.atkBoostFactor = enemyData.dmgReductionFactor = 0;
 
-        Debug.Log("I've lost my buff! My attacks now deal: " + EnemyDealDamage() + "dmg, and if an attack hits me that is " + dmgToTake + " dmg, I only take " + EnemyTakeDamage(dmgToTake));
+        //Debug.Log("I've lost my buff! My attacks now deal: " + EnemyDealDamage() + "dmg, and if an attack hits me that is " + dmgToTake + " dmg, I only take " + EnemyTakeDamage(dmgToTake));
     }
     /// <summary>
     /// Scales the enemy's HP and Damage values
@@ -366,7 +365,6 @@ public class Enemy : MonoBehaviour
 
         if (!isAggro)
             AggroEnemy();
-
         return finalDmgTaken;
     }
 
