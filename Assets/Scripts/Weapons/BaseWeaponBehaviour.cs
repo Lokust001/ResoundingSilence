@@ -96,18 +96,6 @@ public class BaseWeaponBehaviour : MonoBehaviour
             ++i;
         }
 
-        //foreach (AbilityBaseScriptable ability in ThisWeaponData.editableAbilities)
-        //{
-        //    if (ability.HasPreview)
-        //    {
-        //        activePreview = ability.PreviewData.AbilityPreview;
-        //    }
-        //    ability.BaseAbilitySize = new Vector3(ability.PreviewData.AbilityPreview.transform.localScale.x,
-        //        ability.PreviewData.AbilityPreview.transform.localScale.y, ability.PreviewData.AbilityPreview.transform.localScale.z);
-        //    SetAbilityStats(ability, ability.PrimaryStats);
-        //    SetAbilityStats(ability, ability.SecondaryStats);
-        //}
-
         if (!abilityOneReady)
         {
             StartCoroutine(AbilityDelay(abilityOneReady, ThisWeaponData.editableAbilities[abilityOneIndex].AbilityCooldown));
@@ -192,55 +180,6 @@ public class BaseWeaponBehaviour : MonoBehaviour
         InputPublicEvents.MouseMoved -= GetMousPos;
         InputPublicEvents.PlayerAimed -= PlayerAimed;
     }
-
-    /// <summary>
-    /// Sets the stats for each of the abilities
-    /// </summary>
-    //virtual protected void SetAbilityStats(AbilityBaseScriptable ability, List<StatValues> stats)
-    //{
-    //    foreach (StatValues value in stats)
-    //    {
-    //        switch (value.StatType)
-    //        {
-    //            case AbilityBaseScriptable.Stats.Damage:
-    //                ability.AbilityDamage = Mathf.CeilToInt(value.StatValue);
-    //                break;
-    //            case AbilityBaseScriptable.Stats.DamageTicks:
-    //                ability.AbilityDamageTicks = Mathf.CeilToInt(value.StatValue);
-    //                break;
-    //            case AbilityBaseScriptable.Stats.Duration:
-    //                ability.AbilityDuration = value.StatValue;
-    //                break;
-    //            //case AbilityBaseScriptable.Stats.AggroRange:
-    //            //    ability.AbilityAggroRange = value.StatValue;
-    //            //    break;
-    //            //case AbilityBaseScriptable.Stats.PlayerSpeed:s
-    //            //    ability.AbilityPlayerSpeed = value.StatValue;
-    //            //    break;
-    //            //case AbilityBaseScriptable.Stats.WeaponSpeed:
-    //            //    ability.AbilityWeaponSpeed = value.StatValue;
-    //            //    break;
-    //            case AbilityBaseScriptable.Stats.LifeSteal:
-    //                ability.AbilityLifeSteal = value.StatValue;
-    //                break;
-    //            case AbilityBaseScriptable.Stats.AOESize:
-    //                ability.AbilityAOESize = value.StatValue;
-    //                break;
-    //            case AbilityBaseScriptable.Stats.Delay:
-    //                ability.AbilityDelay = value.StatValue;
-    //                break;
-    //            case AbilityBaseScriptable.Stats.EnemyKnockback:
-    //                ability.AbilityEnemyKnockback = value.StatValue;
-    //                break;
-    //            case AbilityBaseScriptable.Stats.PlayerKnockback:
-    //                ability.AbilityPlayerKnockback = value.StatValue;
-    //                break;
-    //            default:
-    //                Debug.Log(value.StatType);
-    //                break;
-    //        }
-    //    }
-    //}
 
     #region Attacking
     /// <summary>
@@ -510,17 +449,6 @@ public class BaseWeaponBehaviour : MonoBehaviour
 
         activePreview = abilityAOEs[currentAbilityIndex];
         weaponAnimator.Play(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.AnimClip.name, ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
-
-        //if (WeaponAbilities[currentAbilityIndex].HasPreview)
-        //{
-        //    activePreview = WeaponAbilities[currentAbilityIndex].PreviewData.AbilityPreview;
-        //    weaponAnimator.Play(WeaponAbilities[currentAbilityIndex].AbilityReadyAnim.AnimClip.name, WeaponAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
-        //}
-        //else
-        //{
-        //    weaponAnimator.Play(WeaponAbilities[currentAbilityIndex].AbilityAnim.AnimClip.name, WeaponAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
-        //    //CastingAbility();
-        //}
     }
 
     /// <summary>
@@ -697,11 +625,6 @@ public class BaseWeaponBehaviour : MonoBehaviour
         } while (elapsed < ThisWeaponData.editableAbilities[abilityIndex].AbilityDuration);
 
         Destroy(tempAbility);
-
-        //if (WeaponAbilities[abilityIndex].PersistingAbility)
-        //{
-        //    Destroy(tempAbility);
-        //}
     }
 
     /// <summary>
