@@ -153,7 +153,7 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
         Transform playerTransform = playerReference.transform;
 
 
-        while (true)
+        while (navMeshAgent.isActiveAndEnabled)
         {
             navMeshAgent.destination = playerTransform.position;
             yield return new WaitForFixedUpdate();
