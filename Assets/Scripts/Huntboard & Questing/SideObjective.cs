@@ -1,7 +1,7 @@
 /*
 * Author: Dalsten Yan
 * Contributors:
-* Last Modified: 10/27/2026
+* Last Modified: 11/5/2026
 * Summary: The objective ScriptableObject that can be tailored to HuntObjectives and much more
 * To Do:   Add more objectives as needed.
 */
@@ -68,7 +68,7 @@ public class SideObjective : BaseScriptableObject
         if (progress)
         {
             huntEnemiesProgress++;
-            UIPublicEvents.UpdateHUDHuntObjs(this);
+            UIPublicEvents.UpdateHUDHuntObjs?.Invoke(this);
         }
             
 
