@@ -7,9 +7,10 @@
 */
 using NaughtyAttributes;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
-public class SideObjectiveManager : MonoBehaviour
+public class SideObjectiveManager : BaseService
 {
     public static SideObjectiveManager Instance;
 
@@ -25,7 +26,7 @@ public class SideObjectiveManager : MonoBehaviour
     /// <summary>
     /// Implement singleton interface and overwrite referenced SO's with non-refs instead
     /// </summary>
-    private void Awake()
+    public override async Awaitable InitService()
     {
         if (Instance == null)
         {
@@ -38,10 +39,13 @@ public class SideObjectiveManager : MonoBehaviour
 
         completedObjectives = new();
 
-        for(int i = 0; i < currentHuntObjectives.Count; i++)
+        for (int i = 0; i < currentHuntObjectives.Count; i++)
         {
             currentHuntObjectives[i] = currentHuntObjectives[i].CreateNonRefCopy<SideObjective>();
         }
+
+        await base.InitService();
+        await Task.CompletedTask;
     }
 
     /// <summary>
