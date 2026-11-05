@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors: Brenden, Brad Dixon
-* Last Modified: 11/3/2026
+* Last Modified: 11/5/2026
 * Summary: This is a database that will hold all of the data needed mid run.
 * To Do:   N/A
 */
@@ -253,6 +253,11 @@ public class MidRunDataManager : BaseManager
     /// <param name="amountToChange"></param>
     public void ChangePlayerHealth(int amountToChange)
     {
+        if (amountToChange == 0)
+        {
+            return;
+        }
+
         if (amountToChange > 0)
         {
             //ceil cus we are healing the player
@@ -266,6 +271,7 @@ public class MidRunDataManager : BaseManager
             InputManager.Instance.DisablePlayerInputs();
         }
 
+        
         UIPublicEvents.UpdatePlayerHealthSlider?.Invoke();
     }
 
