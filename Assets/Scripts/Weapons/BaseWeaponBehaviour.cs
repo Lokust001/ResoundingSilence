@@ -1,7 +1,7 @@
 /******************************************************************************
  * Author: Brad Dixon
  * Contributors: Tyler Hayes
- * Last Modified: 11/4/2026
+ * Last Modified: 11/5/2026
  * Brief: Calls the specific weapon attack
  * TODO:
  * ***************************************************************************/
@@ -35,7 +35,8 @@ public class BaseWeaponBehaviour : MonoBehaviour
     [Header("Base Ability Variables"), HorizontalLine(height: 4, EColor.Red)]
     //[SerializeField] protected AbilitySettings abilitySettings;
 
-    [SerializeField] protected List<AbilityData> WeaponAbilities = new List<AbilityData>();
+    //[SerializeField] protected List<AbilityData> WeaponAbilities = new List<AbilityData>();
+    [SerializeField] protected List<GameObject> abilityAOEs = new List<GameObject>();
 
     protected GameObject activePreview;
     [SerializeField] protected int currentAbilityIndex;
@@ -82,26 +83,26 @@ public class BaseWeaponBehaviour : MonoBehaviour
         currentAttackSpeed = ThisWeaponData.AttackSpeed;
         UpdateAttackSpeed();
 
-        foreach (AbilityData ability in WeaponAbilities)
-        {
-            if (ability.HasPreview)
-            {
-                activePreview = ability.PreviewData.AbilityPreview;
-            }
-            ability.BaseAbilitySize = new Vector3(ability.PreviewData.AbilityPreview.transform.localScale.x,
-                ability.PreviewData.AbilityPreview.transform.localScale.y, ability.PreviewData.AbilityPreview.transform.localScale.z);
-            SetAbilityStats(ability, ability.PrimaryStats);
-            SetAbilityStats(ability, ability.SecondaryStats);
-        }
+        //foreach (AbilityBaseScriptable ability in ThisWeaponData.editableAbilities)
+        //{
+        //    if (ability.HasPreview)
+        //    {
+        //        activePreview = ability.PreviewData.AbilityPreview;
+        //    }
+        //    ability.BaseAbilitySize = new Vector3(ability.PreviewData.AbilityPreview.transform.localScale.x,
+        //        ability.PreviewData.AbilityPreview.transform.localScale.y, ability.PreviewData.AbilityPreview.transform.localScale.z);
+        //    SetAbilityStats(ability, ability.PrimaryStats);
+        //    SetAbilityStats(ability, ability.SecondaryStats);
+        //}
 
         if (!abilityOneReady)
         {
-            StartCoroutine(AbilityDelay(abilityOneReady, WeaponAbilities[abilityOneIndex].AbilityCooldown));
+            StartCoroutine(AbilityDelay(abilityOneReady, ThisWeaponData.editableAbilities[abilityOneIndex].AbilityCooldown));
         }
 
         if (!abilityTwoReady)
         {
-            StartCoroutine(AbilityDelay(abilityTwoReady, WeaponAbilities[abilityTwoIndex].AbilityCooldown));
+            StartCoroutine(AbilityDelay(abilityTwoReady, ThisWeaponData.editableAbilities[abilityTwoIndex].AbilityCooldown));
         }
     }
 
@@ -182,51 +183,51 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// <summary>
     /// Sets the stats for each of the abilities
     /// </summary>
-    virtual protected void SetAbilityStats(AbilityData ability, List<StatValues> stats)
-    {
-        foreach (StatValues value in stats)
-        {
-            switch (value.StatType)
-            {
-                case AbilityData.Stats.Damage:
-                    ability.AbilityDamage = Mathf.CeilToInt(value.StatValue);
-                    break;
-                case AbilityData.Stats.DamageTicks:
-                    ability.AbilityDamageTicks = Mathf.CeilToInt(value.StatValue);
-                    break;
-                case AbilityData.Stats.Duration:
-                    ability.AbilityDuration = value.StatValue;
-                    break;
-                //case AbilityData.Stats.AggroRange:
-                //    ability.AbilityAggroRange = value.StatValue;
-                //    break;
-                //case AbilityData.Stats.PlayerSpeed:s
-                //    ability.AbilityPlayerSpeed = value.StatValue;
-                //    break;
-                //case AbilityData.Stats.WeaponSpeed:
-                //    ability.AbilityWeaponSpeed = value.StatValue;
-                //    break;
-                case AbilityData.Stats.LifeSteal:
-                    ability.AbilityLifeSteal = value.StatValue;
-                    break;
-                case AbilityData.Stats.AOESize:
-                    ability.AbilityAOESize = value.StatValue;
-                    break;
-                case AbilityData.Stats.Delay:
-                    ability.AbilityDelay = value.StatValue;
-                    break;
-                case AbilityData.Stats.EnemyKnockback:
-                    ability.AbilityEnemyKnockback = value.StatValue;
-                    break;
-                case AbilityData.Stats.PlayerKnockback:
-                    ability.AbilityPlayerKnockback = value.StatValue;
-                    break;
-                default:
-                    Debug.Log(value.StatType);
-                    break;
-            }
-        }
-    }
+    //virtual protected void SetAbilityStats(AbilityBaseScriptable ability, List<StatValues> stats)
+    //{
+    //    foreach (StatValues value in stats)
+    //    {
+    //        switch (value.StatType)
+    //        {
+    //            case AbilityBaseScriptable.Stats.Damage:
+    //                ability.AbilityDamage = Mathf.CeilToInt(value.StatValue);
+    //                break;
+    //            case AbilityBaseScriptable.Stats.DamageTicks:
+    //                ability.AbilityDamageTicks = Mathf.CeilToInt(value.StatValue);
+    //                break;
+    //            case AbilityBaseScriptable.Stats.Duration:
+    //                ability.AbilityDuration = value.StatValue;
+    //                break;
+    //            //case AbilityBaseScriptable.Stats.AggroRange:
+    //            //    ability.AbilityAggroRange = value.StatValue;
+    //            //    break;
+    //            //case AbilityBaseScriptable.Stats.PlayerSpeed:s
+    //            //    ability.AbilityPlayerSpeed = value.StatValue;
+    //            //    break;
+    //            //case AbilityBaseScriptable.Stats.WeaponSpeed:
+    //            //    ability.AbilityWeaponSpeed = value.StatValue;
+    //            //    break;
+    //            case AbilityBaseScriptable.Stats.LifeSteal:
+    //                ability.AbilityLifeSteal = value.StatValue;
+    //                break;
+    //            case AbilityBaseScriptable.Stats.AOESize:
+    //                ability.AbilityAOESize = value.StatValue;
+    //                break;
+    //            case AbilityBaseScriptable.Stats.Delay:
+    //                ability.AbilityDelay = value.StatValue;
+    //                break;
+    //            case AbilityBaseScriptable.Stats.EnemyKnockback:
+    //                ability.AbilityEnemyKnockback = value.StatValue;
+    //                break;
+    //            case AbilityBaseScriptable.Stats.PlayerKnockback:
+    //                ability.AbilityPlayerKnockback = value.StatValue;
+    //                break;
+    //            default:
+    //                Debug.Log(value.StatType);
+    //                break;
+    //        }
+    //    }
+    //}
 
     #region Attacking
     /// <summary>
@@ -236,7 +237,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
     {
         if (aimingAbilityOne || aimingAbilityTwo)
         {
-            weaponAnimator.Play(WeaponAbilities[currentAbilityIndex].AbilityAnim.AnimClip.name, WeaponAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
+            weaponAnimator.Play(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAnim.AnimClip.name, ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
             //CastingAbility();
         }
         else
@@ -316,13 +317,13 @@ public class BaseWeaponBehaviour : MonoBehaviour
 
                     pos = transform.position + Vector3.ClampMagnitude(
                         (activePreview.transform.position - transform.position) + currentAimVel,
-                        WeaponAbilities[currentAbilityIndex].AbilityRange);
+                        ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityRange);
                 }
 
             }
             else
             {
-                pos = transform.position + Vector3.ClampMagnitude(mousePos, WeaponAbilities[currentAbilityIndex].AbilityRange);
+                pos = transform.position + Vector3.ClampMagnitude(mousePos, ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityRange);
             }
 
             pos.y = staticY;
@@ -451,7 +452,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
             weaponAnimator.SetBool("AbilityCast", !aimingAbilityOne);
             aimingAbilityTwo = false;
             currentAbilityIndex = abilityOneIndex;
-            if (WeaponAbilities[currentAbilityIndex].HasPreview)
+            if (ThisWeaponData.editableAbilities[currentAbilityIndex].HasPreview)
             {
                 AimingAbility();
             }
@@ -474,7 +475,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
             weaponAnimator.SetBool("AbilityCast", !aimingAbilityTwo);
             aimingAbilityOne = false;
             currentAbilityIndex = abilityTwoIndex;
-            if (WeaponAbilities[currentAbilityIndex].HasPreview)
+            if (ThisWeaponData.editableAbilities[currentAbilityIndex].HasPreview)
             {
                 AimingAbility();
             }
@@ -494,8 +495,8 @@ public class BaseWeaponBehaviour : MonoBehaviour
     {
         activePreview.SetActive(false);
 
-        activePreview = WeaponAbilities[currentAbilityIndex].PreviewData.AbilityPreview;
-        weaponAnimator.Play(WeaponAbilities[currentAbilityIndex].AbilityReadyAnim.AnimClip.name, WeaponAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
+        activePreview = abilityAOEs[currentAbilityIndex];
+        weaponAnimator.Play(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.AnimClip.name, ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
 
         //if (WeaponAbilities[currentAbilityIndex].HasPreview)
         //{
@@ -516,18 +517,19 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// <param name="sizeIsRange"></param>
     public void DisplayAbilityPreview()
     {
-        continuouslyUpdatePreview = !WeaponAbilities[currentAbilityIndex].PreviewData.OrbitsPlayer;
+        continuouslyUpdatePreview = !ThisWeaponData.editableAbilities[currentAbilityIndex].PreviewData.OrbitsPlayer;
 
-        float sizeValue = WeaponAbilities[currentAbilityIndex].PreviewData.SizeIsRange ? WeaponAbilities[currentAbilityIndex].AbilityRange : WeaponAbilities[currentAbilityIndex].AbilityAOESize;
+        float sizeValue = ThisWeaponData.editableAbilities[currentAbilityIndex].PreviewData.SizeIsRange ? 
+            ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityRange : ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAOESize;
 
-        Vector3 abilitySize = WeaponAbilities[currentAbilityIndex].BaseAbilitySize;
+        Vector3 abilitySize = ThisWeaponData.editableAbilities[currentAbilityIndex].BaseAbilitySize;
         Vector3 pos = Vector3.zero;
 
-        if (WeaponAbilities[currentAbilityIndex].PreviewData.ScaleXOnly)
+        if (ThisWeaponData.editableAbilities[currentAbilityIndex].PreviewData.ScaleXOnly)
         {
             abilitySize.x *= sizeValue;
         }
-        else if (WeaponAbilities[currentAbilityIndex].PreviewData.ScaleZOnly)
+        else if (ThisWeaponData.editableAbilities[currentAbilityIndex].PreviewData.ScaleZOnly)
         {
             abilitySize.z *= sizeValue;
         }
@@ -535,13 +537,13 @@ public class BaseWeaponBehaviour : MonoBehaviour
         {
             abilitySize *= sizeValue;
 
-            if (WeaponAbilities[currentAbilityIndex].PreviewData.ShapeType != PreviewShape.Shape.Cone)
+            if (ThisWeaponData.editableAbilities[currentAbilityIndex].PreviewData.ShapeType != PreviewShape.Shape.Cone)
             {
-                abilitySize.y = WeaponAbilities[currentAbilityIndex].BaseAbilitySize.y;
+                abilitySize.y = ThisWeaponData.editableAbilities[currentAbilityIndex].BaseAbilitySize.y;
             }
         }
 
-        switch (WeaponAbilities[currentAbilityIndex].PreviewData.ShapeType)
+        switch (ThisWeaponData.editableAbilities[currentAbilityIndex].PreviewData.ShapeType)
         {
             case PreviewShape.Shape.Square:
             case PreviewShape.Shape.Sphere:
@@ -554,7 +556,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
 
         activePreview.transform.localScale = abilitySize;
 
-        if (WeaponAbilities[currentAbilityIndex].PreviewData.OrbitsPlayer)
+        if (ThisWeaponData.editableAbilities[currentAbilityIndex].PreviewData.OrbitsPlayer)
         {
             activePreview.transform.localPosition = pos;
         }
@@ -575,8 +577,8 @@ public class BaseWeaponBehaviour : MonoBehaviour
 
         StartCoroutine(AbilityDamage(currentAbilityIndex));
 
-        StartCoroutine(AbilityEndLag(WeaponAbilities[currentAbilityIndex].AbilityEndLag));
-        StartCoroutine(AbilityDelay(currentAbilityIndex == abilityOneIndex, WeaponAbilities[currentAbilityIndex].AbilityCooldown));
+        StartCoroutine(AbilityEndLag(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityEndLag));
+        StartCoroutine(AbilityDelay(currentAbilityIndex == abilityOneIndex, ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityCooldown));
     }
 
     /// <summary>
@@ -585,21 +587,21 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// <returns></returns>
     protected IEnumerator AbilityDamage(int abilityIndex)
     {
-        GameObject tempAbility = Instantiate(WeaponAbilities[abilityIndex].PreviewData.AbilityPreview, activePreview.transform.position, activePreview.transform.rotation);
-        if (WeaponAbilities[abilityIndex].PreviewData.OrbitsPlayer)
+        GameObject tempAbility = Instantiate(abilityAOEs[currentAbilityIndex], activePreview.transform.position, activePreview.transform.rotation);
+        if (ThisWeaponData.editableAbilities[abilityIndex].PreviewData.OrbitsPlayer)
         {
             tempAbility.transform.parent = weaponModel.transform;
             tempAbility.transform.localScale = activePreview.transform.localScale;
         }
         activePreview.SetActive(false);
 
-        yield return new WaitForSeconds(WeaponAbilities[abilityIndex].AbilityDelay);
+        yield return new WaitForSeconds(ThisWeaponData.editableAbilities[abilityIndex].AbilityDelay);
 
-        int damage = WeaponAbilities[abilityIndex].AbilityDuration > 0 ?
-            Mathf.CeilToInt(WeaponAbilities[abilityIndex].AbilityDamage / WeaponAbilities[abilityIndex].AbilityDamageTicks)
-            : WeaponAbilities[abilityIndex].AbilityDamage;
-        float delay = WeaponAbilities[abilityIndex].AbilityDamageTicks > 0 ?
-            WeaponAbilities[abilityIndex].AbilityDuration / WeaponAbilities[abilityIndex].AbilityDamageTicks : 0;
+        int damage = ThisWeaponData.editableAbilities[abilityIndex].AbilityDuration > 0 ?
+            Mathf.CeilToInt(ThisWeaponData.editableAbilities[abilityIndex].AbilityDamage / ThisWeaponData.editableAbilities[abilityIndex].AbilityDamageTicks)
+            : ThisWeaponData.editableAbilities[abilityIndex].AbilityDamage;
+        float delay = ThisWeaponData.editableAbilities[abilityIndex].AbilityDamageTicks > 0 ?
+            ThisWeaponData.editableAbilities[abilityIndex].AbilityDuration / ThisWeaponData.editableAbilities[abilityIndex].AbilityDamageTicks : 0;
         float elapsed = 0;
 
         Collider[] targets;
@@ -608,7 +610,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
         Vector3 center = Vector3.zero;
         Vector3 extents = Vector3.zero;
 
-        switch (WeaponAbilities[abilityIndex].PreviewData.ShapeType)
+        switch (ThisWeaponData.editableAbilities[abilityIndex].PreviewData.ShapeType)
         {
             case PreviewShape.Shape.Square:
             case PreviewShape.Shape.Cone:
@@ -616,40 +618,40 @@ public class BaseWeaponBehaviour : MonoBehaviour
                 extents = Vector3.Scale(tempAbility.GetComponent<BoxCollider>().size, tempAbility.GetComponent<BoxCollider>().transform.lossyScale) * .5f;
 
                 targets = Physics.OverlapBox(center, extents, tempAbility.GetComponent<BoxCollider>().transform.rotation,
-                WeaponAbilities[abilityIndex].AbilityLayerMask);
+                ThisWeaponData.editableAbilities[abilityIndex].AbilityLayerMask);
                 break;
             case PreviewShape.Shape.Sphere:
                 r = tempAbility.GetComponent<SphereCollider>() ? tempAbility.GetComponent<SphereCollider>().radius :
                     tempAbility.GetComponent<CapsuleCollider>().radius;
                 targets = Physics.OverlapSphere(tempAbility.transform.position,
-                    r * WeaponAbilities[abilityIndex].AbilityAOESize,
-                    WeaponAbilities[abilityIndex].AbilityLayerMask);
+                    r * ThisWeaponData.editableAbilities[abilityIndex].AbilityAOESize,
+                    ThisWeaponData.editableAbilities[abilityIndex].AbilityLayerMask);
                 break;
             default:
                 targets = new Collider[0];
                 break;
         }
 
-        if (!WeaponAbilities[abilityIndex].PersistingAbility)
+        if (!ThisWeaponData.editableAbilities[abilityIndex].PersistingAbility)
         {
             tempAbility.SetActive(false);
         }
 
         do
         {
-            if (WeaponAbilities[abilityIndex].PersistingAbility)
+            if (ThisWeaponData.editableAbilities[abilityIndex].PersistingAbility)
             {
-                switch (WeaponAbilities[abilityIndex].PreviewData.ShapeType)
+                switch (ThisWeaponData.editableAbilities[abilityIndex].PreviewData.ShapeType)
                 {
                     case PreviewShape.Shape.Square:
                     case PreviewShape.Shape.Cone:
                         targets = Physics.OverlapBox(center, extents, tempAbility.GetComponent<BoxCollider>().transform.rotation,
-                        WeaponAbilities[abilityIndex].AbilityLayerMask);
+                        ThisWeaponData.editableAbilities[abilityIndex].AbilityLayerMask);
                         break;
                     case PreviewShape.Shape.Sphere:
                         targets = Physics.OverlapSphere(tempAbility.transform.position,
-                            r * WeaponAbilities[abilityIndex].AbilityAOESize,
-                            WeaponAbilities[abilityIndex].AbilityLayerMask);
+                            r * ThisWeaponData.editableAbilities[abilityIndex].AbilityAOESize,
+                            ThisWeaponData.editableAbilities[abilityIndex].AbilityLayerMask);
                         break;
                     default:
                         targets = new Collider[0];
@@ -659,26 +661,26 @@ public class BaseWeaponBehaviour : MonoBehaviour
 
             foreach (Collider t in targets)
             {
-                Vector3 originPosition = WeaponAbilities[abilityIndex].PreviewData.KnockBackFromPreviewCenter ? tempAbility.transform.position : this.transform.position;
+                Vector3 originPosition = ThisWeaponData.editableAbilities[abilityIndex].PreviewData.KnockBackFromPreviewCenter ? tempAbility.transform.position : this.transform.position;
                 Vector3 forceDir = new Vector3(t.transform.position.x - originPosition.x, 0,
                 t.transform.position.z - originPosition.z).normalized;
 
                 if (t.GetComponent<Enemy>())
                 {
                     //replace with the enemy taking damage
-                    t.GetComponent<Rigidbody>().AddForce(WeaponAbilities[abilityIndex].AbilityEnemyKnockback * forceDir, ForceMode.Impulse);
+                    t.GetComponent<Rigidbody>().AddForce(ThisWeaponData.editableAbilities[abilityIndex].AbilityEnemyKnockback * forceDir, ForceMode.Impulse);
                     t.GetComponent<Enemy>().EnemyTakeDamage(damage);
                     Debug.Log(t.name + " took " + damage + " damage!");
                 }
                 else
                 {
-                    t.GetComponentInParent<Rigidbody>().AddForce(WeaponAbilities[abilityIndex].AbilityPlayerKnockback * forceDir, ForceMode.Impulse);
+                    t.GetComponentInParent<Rigidbody>().AddForce(ThisWeaponData.editableAbilities[abilityIndex].AbilityPlayerKnockback * forceDir, ForceMode.Impulse);
                 }
             }
 
             yield return new WaitForSeconds(delay);
             elapsed += delay;
-        } while (elapsed < WeaponAbilities[abilityIndex].AbilityDuration);
+        } while (elapsed < ThisWeaponData.editableAbilities[abilityIndex].AbilityDuration);
 
         Destroy(tempAbility);
 
