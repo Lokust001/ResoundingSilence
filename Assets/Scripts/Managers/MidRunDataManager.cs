@@ -253,6 +253,11 @@ public class MidRunDataManager : BaseManager
     /// <param name="amountToChange"></param>
     public void ChangePlayerHealth(int amountToChange)
     {
+        if (amountToChange == 0)
+        {
+            return;
+        }
+
         if (amountToChange > 0)
         {
             //ceil cus we are healing the player
@@ -266,6 +271,7 @@ public class MidRunDataManager : BaseManager
             InputManager.Instance.DisablePlayerInputs();
         }
 
+        
         UIPublicEvents.UpdatePlayerHealthSlider?.Invoke();
     }
 
