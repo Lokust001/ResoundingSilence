@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors:
-* Last Modified: 09/22/2026
+* Last Modified: 11/6/2026
 * Summary: Manages which UI menus are open at any given time. 
 *          If there's anything that pertains to the UI as a whole, it's here.
 * To Do:   N/A
@@ -41,7 +41,7 @@ public class UIManager : BaseManager
 
     public static UIManager Instance;
 
-    
+
     private Stack<UiMenuType> currentlyOpenedMenus = new Stack<UiMenuType>();
 
     private GameObject debugConsole;
@@ -69,7 +69,7 @@ public class UIManager : BaseManager
             Destroy(this);
         }
 
-        
+
         await SetUpCanvas();
         await SetUpMenus();
         await SetupPublicEvents();
@@ -106,7 +106,7 @@ public class UIManager : BaseManager
 
             instantiatedMenus.Clear();
         }
-        
+
 
         foreach (MenuBase menuPrefab in menuPrefabs)
         {
@@ -127,7 +127,7 @@ public class UIManager : BaseManager
             GenericPublicEvents.AllManagersInitialized += GoToMainMenu;
         }
 
-       
+
         UIPublicEvents.UpdateUIManagerStack += UpdateUiManagerStack;
         InputPublicEvents.ToggleUpgradeMenuPressed += ToggleUpgradeMenu;
         InputPublicEvents.ToggleDebugConsole += ToggleDebugConsole;
@@ -161,15 +161,15 @@ public class UIManager : BaseManager
     /// </summary>
     private void GoToMainMenu()
     {
-        
+
         if (currentlyOpenedMenus.Count > 0)
         {
             //hide the menus that are open rn
             UIPublicEvents.HideOpenMenus?.Invoke();
             currentlyOpenedMenus.Clear();
         }
-        
-        UpdateUiManagerStack(UiMenuType.MainMenu); 
+
+        UpdateUiManagerStack(UiMenuType.MainMenu);
     }
 
     /// <summary>
@@ -245,7 +245,7 @@ public class UIManager : BaseManager
     /// <param name="menuType"> the new menu to open </param>
     /// <exception cref="System.Exception"></exception>
     private void UpdateUiManagerStack(UiMenuType menuType = UiMenuType.None)
-    { 
+    {
         //edge case exceptions
         if (menuType == UiMenuType.None)
         {
@@ -282,7 +282,7 @@ public class UIManager : BaseManager
             if (unInstantiatedMenu.GetMenuType() == currentlyOpenedMenus.Peek())
             {
                 tempSwapList.Add(unInstantiatedMenu);
-                
+
             }
         }
 
@@ -294,7 +294,7 @@ public class UIManager : BaseManager
             instantiatedMenus.Add(instantiatedMenu);
 
             //sets up the menu
-            instantiatedMenu.InitMenu(); 
+            instantiatedMenu.InitMenu();
         }
 
         //tells all the menus that theyve been opened
@@ -362,8 +362,8 @@ public class UIManager : BaseManager
 
         return (currentlyOpenedMenus.Peek() == UiMenuType.MainMenu ||
                 currentlyOpenedMenus.Peek() == UiMenuType.UpgradeMenu ||
-                currentlyOpenedMenus.Peek() == UiMenuType.Settings || 
-                currentlyOpenedMenus.Peek() == UiMenuType.Pause || 
+                currentlyOpenedMenus.Peek() == UiMenuType.Settings ||
+                currentlyOpenedMenus.Peek() == UiMenuType.Pause ||
                 currentlyOpenedMenus.Peek() == UiMenuType.Tarot);
     }
 
@@ -385,6 +385,26 @@ public class UIManager : BaseManager
         }
 
         return (currentlyOpenedMenus.Peek() == UiMenuType.WeaponSwapping);
+    }
+
+    /// <summary>
+    /// returns if the player's movements should be blocked or not
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="System.Exception"></exception>
+    public bool IsPlayerInMenuThatBlocksMovement()
+    {
+        if (currentlyOpenedMenus.Count <= 0)
+        {
+            if (AppManager.Instance.EnableTestingMode)
+            {
+                return false;
+            }
+
+            throw new System.Exception("No menus opened");
+        }
+
+        return (currentlyOpenedMenus.Peek() == UiMenuType.PlayerHUD);
     }
 
     #endregion
