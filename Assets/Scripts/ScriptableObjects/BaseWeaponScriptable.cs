@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors: Brad Dixon, Brenden
-* Last Modified: 10/21/2026
+* Last Modified: 11/6/2026
 * Summary: This is the base scriptable object for all weapon scriptable objects.
 *          Handles the data for the weapons. Acts as a tool to make any kind of weapon.
 * To Do:   Add more variables as needed. Change status effects as needed. 
@@ -87,31 +87,20 @@ public class BaseWeaponScriptable : BaseScriptableObject
     #region Weapon
 
     #region General Variables
+
+    public List<AttackData> ComboAttacks = new List<AttackData>();
+
     [HideInInspector] public List<int> WeaponDamage = new List<int>();
 
     [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
     [Tooltip("How much damage the weapon does. Is a list in case the weapon has multiple hits in a combo.")]
-    public List<int> BaseWeaponDamage = new List<int>();
+    [HideInInspector] public List<int> BaseWeaponDamage = new List<int>();
 
     [HideInInspector] public List<float> AttackCooldown = new List<float>();
 
     [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
     [Tooltip("How much damage the weapon does. Is a list in case the weapon has multiple hits in a combo.")]
-    public List<float> BaseAttackCooldown = new List<float>();
-
-    //[HideInInspector] public List<float> MovementSpeedChange = new List<float>();
-
-    //[ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
-    //[Tooltip("How much attacking should change the player's move speed by. Use negative values to make player slower. " +
-    //    "Is a list in case the weapon's combo attacks should change the player's speed by a different amount.")]
-    //public List<float> BaseMovementSpeedChange = new List<float>();
-
-    //[HideInInspector]  public List<Vector2> PlayerDisplacement = new List<Vector2>();
-
-    //[ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
-    //[Tooltip("The direction, and by how much, the player should be moved by when attacking. " +
-    //    "Is a list in case the weapon's combo attacks should change the player's speed by a different amount.")]
-    //public List<Vector2> BasePlayerDisplacement = new List<Vector2>();
+    [HideInInspector] public List<float> BaseAttackCooldown = new List<float>();
 
     //Defaults to 1 so the animation plays at normal speed.
     [HideInInspector] public float AttackSpeed = 1;
@@ -120,67 +109,67 @@ public class BaseWeaponScriptable : BaseScriptableObject
 
     [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
     [Tooltip("When making an attack, how many times the attack should occur. Is a list in case the weapon's combo attacks should cause different amount of bursts.")]
-    public List<int> BaseAttackBursts = new List<int>();
+    [HideInInspector] public List<int> BaseAttackBursts = new List<int>();
 
     [HideInInspector] public List<float> TimeBetweenBursts = new List<float>();
 
     [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
     [Tooltip("How much time passes between each burst. Set to 0 for weapons that unleash a burst of attacks at once. Is a list in case you want different timings for combo attacks.")]
-    public List<float> BaseTimeBetweenBursts = new List<float>();
+    [HideInInspector] public List<float> BaseTimeBetweenBursts = new List<float>();
 
     [HideInInspector] public List<float> BurstDamageAmount = new List<float>();
 
     [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
     [Tooltip("How much % damage the burst does compared to the base attack")]
-    public List<float> BaseBurstDamageAmount = new List<float>();
+    [HideInInspector] public List<float> BaseBurstDamageAmount = new List<float>();
 
     [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
     [Tooltip("Whether or not a weapon has lifesteal.")]
-    public bool HasLifesteal;
+    [HideInInspector] public bool HasLifesteal;
 
     [ShowIf(nameof(WeaponLifeSteal))]
     [Tooltip("How much lifesteal a weapon has. Made as a list in case you want combo attacks to have multiple life steal values.")]
-    public List<float> BaseLifestealAmount = new List<float>();
+    [HideInInspector] public List<float> BaseLifestealAmount = new List<float>();
 
     [HideInInspector] public List<float> LifestealAmount = new List<float>();
 
     [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
     [Tooltip("If the weapon has an AOE attack attached.")]
-    public bool HasAOEAttack;
+    [HideInInspector] public bool HasAOEAttack;
 
     [ShowIf(nameof(WeaponAOE))]
     [Tooltip("What the weapon's AOE looks like. List in case we want multiple different kinds.")]
-    public List<GameObject> WeaponAOEs = new List<GameObject>();
+    [HideInInspector] public List<GameObject> WeaponAOEs = new List<GameObject>();
 
     [HideInInspector] public List<int> AOEDamage = new List<int>();
 
     [ShowIf(nameof(WeaponAOE))]
     [Tooltip("The most amount of damage the AOE can do.")]
-    public List<int> BaseAOEDamage = new List<int>();
+    [HideInInspector] public List<int> BaseAOEDamage = new List<int>();
 
     [HideInInspector] public List<float> AOESize = new List<float>();
 
     [ShowIf(nameof(WeaponAOE))]
     [Tooltip("How big the AOE is.")]
-    public List<float> BaseAOESize = new List<float>();
+    [HideInInspector] public List<float> BaseAOESize = new List<float>();
 
     [HideInInspector] public List<float> AOEDuration = new List<float>();
 
     [ShowIf(nameof(WeaponAOE))]
     [Tooltip("How long the AOE lasts.")]
-    public List<float> BaseAOEDuration = new List<float>();
+    [HideInInspector] public List<float> BaseAOEDuration = new List<float>();
 
     [HideInInspector] public List<int> AOEDamageTicks = new List<int>();
 
     [ShowIf(nameof(WeaponAOE))]
     [Tooltip("How many times the AOE should damage.")]
-    public List<int> BaseAOEDamageTicks = new List<int>();
+    [HideInInspector] public List<int> BaseAOEDamageTicks = new List<int>();
 
     [HideInInspector] public List<float> AOEDelay = new List<float>();
 
     [ShowIf(nameof(WeaponAOE))]
     [Tooltip("How much of a delay there is before the AOE goes off. 0 is instant.")]
-    public List<float> BaseAOEDelay = new List<float>();
+    [HideInInspector] public List<float> BaseAOEDelay = new List<float>();
 
     #endregion
 
@@ -385,7 +374,7 @@ public class BaseWeaponScriptable : BaseScriptableObject
     /// Custom bool for multiple enum values
     /// </summary>
     /// <returns></returns>
-    private bool RangedWeaponSettings()
+    public bool RangedWeaponSettings()
     {
         return weaponType == WeaponType.Ranged && shownSettings == ShownSettings.BaseWeaponData;
     }
@@ -616,3 +605,77 @@ public class BaseWeaponScriptable : BaseScriptableObject
     }
     #endregion
 }
+
+#region Structs
+
+[System.Serializable]
+public struct AttackData
+{
+    public int WeaponDamage;
+    [HideInInspector] public int BaseWeaponDamage;
+    public float AttackCooldown;
+    [HideInInspector] public float BaseAttackCooldown;
+    [Tooltip("IMPORTANT!!! Make sure burst attacks has at least one entry!")]
+    public List<BurstData> BurstAttacks;
+}
+
+[System.Serializable]
+public struct BurstData
+{
+    [Tooltip("If you want the bursts to do the same amount of damage, you can leave this at 0.")]
+    public int BurstDamagePercent;
+    [HideInInspector] public int BaseBurstDamagePercent;
+    [Tooltip("How much time in seconds elapses before the next attack in the burst happens. Does nothing if the final entry.")]
+    public float TimeTillNextBurst;
+    [HideInInspector] public float BaseTimeTillNextBurst;
+    [Tooltip("The type of projectile that gets fired in this part of the burst.")]
+    public GameObject BurstProjectile;
+
+    public bool HasLifesteal;
+    [ShowIf(nameof(HasLifesteal)), AllowNesting]
+    public LifestealData WeaponLifeSteal;
+
+    public bool HasAoe;
+    [ShowIf(nameof(HasAoe)), AllowNesting]
+    public AoeData WeaponAoe;
+}
+
+[System.Serializable]
+public struct LifestealData
+{
+    public int LifestealPercent;
+    [HideInInspector] public int BaseLifestealPercent;
+}
+
+[System.Serializable]
+public struct AoeData
+{
+    public GameObject AoePrefab;
+    [Tooltip("If true, the aoe does less damage the further an enemy is from the center.")]
+    public bool HasDamageFalloff;
+    public int AoeDamagePercent;
+    [HideInInspector] public int BaseAoeDamagePercent;
+    [ShowIf(nameof(HasDamageFalloff)), AllowNesting]
+    public bool MinAoeDamagePercent;
+    [HideInInspector] public int BaseMinAoeDamagePercent;
+    public float AoeSize;
+    [HideInInspector] public float BaseAoeSize;
+    public float AoeDelay;
+    [HideInInspector] public float BaseAoeDelay;
+    public float AoeDuration;
+    [HideInInspector] public float BaseAoeDuration;
+    [ShowIf(nameof(HasDuration)), AllowNesting]
+    public int AoeDamageTicks;
+    [HideInInspector] public int BaseAoeDamageTicks;
+
+    /// <summary>
+    /// Custom show if bool to see if the aoe has a duration
+    /// </summary>
+    /// <returns></returns>
+    private bool HasDuration()
+    {
+        return AoeDuration > 0;
+    }
+}
+
+#endregion

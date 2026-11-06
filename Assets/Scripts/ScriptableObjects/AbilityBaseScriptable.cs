@@ -10,7 +10,6 @@
 using NaughtyAttributes;
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.UI;
 
 [CreateAssetMenu(fileName = "NewAbility", menuName = "Scriptables/AbilityBase")]
 public class AbilityBaseScriptable : BaseScriptableObject
