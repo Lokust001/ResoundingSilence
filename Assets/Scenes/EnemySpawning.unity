@@ -127,6 +127,50 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2527771668252924122, guid: b6a511eadfb9c2a4e94bf9760871deea, type: 3}
+      propertyPath: possibleRewards.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2527771668252924122, guid: b6a511eadfb9c2a4e94bf9760871deea, type: 3}
+      propertyPath: possibleRewards.Array.data[0].type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2527771668252924122, guid: b6a511eadfb9c2a4e94bf9760871deea, type: 3}
+      propertyPath: possibleRewards.Array.data[1].type
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2527771668252924122, guid: b6a511eadfb9c2a4e94bf9760871deea, type: 3}
+      propertyPath: possibleRewards.Array.data[0].prefab
+      value: 
+      objectReference: {fileID: 4058568919098926793, guid: c2e6770781064864a888b6642baeedc9, type: 3}
+    - target: {fileID: 2527771668252924122, guid: b6a511eadfb9c2a4e94bf9760871deea, type: 3}
+      propertyPath: possibleRewards.Array.data[1].prefab
+      value: 
+      objectReference: {fileID: 8440715527100584874, guid: cf81080ab31936a4eaa28b2fe66fb82c, type: 3}
+    - target: {fileID: 2527771668252924122, guid: b6a511eadfb9c2a4e94bf9760871deea, type: 3}
+      propertyPath: possibleRewards.Array.data[0].dropChance
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 2527771668252924122, guid: b6a511eadfb9c2a4e94bf9760871deea, type: 3}
+      propertyPath: possibleRewards.Array.data[0].maxDropAmt
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2527771668252924122, guid: b6a511eadfb9c2a4e94bf9760871deea, type: 3}
+      propertyPath: possibleRewards.Array.data[0].minDropAmt
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2527771668252924122, guid: b6a511eadfb9c2a4e94bf9760871deea, type: 3}
+      propertyPath: possibleRewards.Array.data[1].dropChance
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 2527771668252924122, guid: b6a511eadfb9c2a4e94bf9760871deea, type: 3}
+      propertyPath: possibleRewards.Array.data[1].maxDropAmt
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2527771668252924122, guid: b6a511eadfb9c2a4e94bf9760871deea, type: 3}
+      propertyPath: possibleRewards.Array.data[1].minDropAmt
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2600937709789982979, guid: b6a511eadfb9c2a4e94bf9760871deea, type: 3}
       propertyPath: m_Name
       value: HuntBoardPost

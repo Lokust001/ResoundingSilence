@@ -16,6 +16,10 @@ public class RewardGiver : MonoBehaviour
     [Tooltip("The transforms where gameobjects will be instantiated and can be picked up by the player. If empty, will use own transform")]
     private List<Transform> dropItemsTransforms;
 
+    [Header("[Debug]")]
+    public bool logRNGNumber;
+    public bool logRewardedQty;
+
     private void Awake()
     {
         if (dropItemsTransforms.Count == 0)
@@ -39,7 +43,9 @@ public class RewardGiver : MonoBehaviour
 
         foreach (var loot in possibleRewards)
         {
-            float independentRoll = Random.Range(0, 101) * 0.01f;
+            int independentRoll = Random.Range(1, 101);
+            if (logRNGNumber)
+                Debug.Log($"Rolled: {independentRoll} against the reward ({loot.type}'s) {loot.dropChance} chance");
             if (independentRoll <= loot.dropChance)
                 rewards.Add(loot);
         }
@@ -59,6 +65,9 @@ public class RewardGiver : MonoBehaviour
         foreach (var reward in gainedRewards)
         {
             int rewardedQuantity = Random.Range(reward.minDropAmt, reward.maxDropAmt + 1);
+
+            if (logRewardedQty)
+                Debug.Log($"Quantity of {reward.type} rolled to be {rewardedQuantity} in a range of [{reward.minDropAmt} , {reward.maxDropAmt}]");
 
             switch (reward.type)
             {
