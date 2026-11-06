@@ -47,6 +47,6 @@ public class SideObjectiveAssigner : MonoBehaviour
     /// </summary>
     public void ClaimRewards()
     {
-        GetComponent<RewardGiver>().StartGivingRewards(transform.position);
+        GetComponent<RewardGiver>().StartGivingRewards();
     }
 }

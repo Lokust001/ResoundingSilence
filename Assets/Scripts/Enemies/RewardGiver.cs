@@ -8,18 +8,25 @@
 using NaughtyAttributes;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.InputSystem.LowLevel.InputStateHistory;
 
 public class RewardGiver : MonoBehaviour
 {
 
     [SerializeField]
     private List<Reward> possibleRewards;
+    [SerializeField, Header("Drag Transforms in here")]
+    [Tooltip("The transforms where gameobjects will be instantiated and can be picked up by the player. If empty, will use own transform")]
+    private List<Transform> dropItemsTransforms;
 
-    private Vector3 instantiationPosition;
-
-    public void StartGivingRewards(Vector3 dispenseLocation) 
+    private void Awake()
     {
-        instantiationPosition = dispenseLocation;
+        if (dropItemsTransforms.Count == 0)
+            dropItemsTransforms.Add(transform.root);
+    }
+
+    public void StartGivingRewards() 
+    {
         if (possibleRewards.Count > 0)
             RollRewards();
     }
@@ -44,27 +51,35 @@ public class RewardGiver : MonoBehaviour
     }
 
     /// <summary>
-    /// Drops/spawns loot at the position where the enemy dies
+    /// Drops/spawns loot at various positions or adds them directly to the player
     /// </summary>
     /// <param name="gainedRewards"></param>
     private void RewardHandler(List<Reward> gainedRewards) 
     {
         PlayerController playerRef = FindAnyObjectByType<PlayerController>();
+        Stack<Transform> rewardDropLocations = new(dropItemsTransforms);
+
         foreach (var reward in gainedRewards)
         {
+            int rewardedQuantity = Random.Range(reward.minDropAmt, reward.maxDropAmt + 1);
+
             switch (reward.type)
             {
                 case Reward.RewardType.Gold:
-                    int goldAmt = Random.Range(reward.minDropAmt, reward.maxDropAmt + 1);
+                    int goldAmt = rewardedQuantity;
                     playerRef.GainGold(goldAmt);
                     break;
                 case Reward.RewardType.XP:
-                    int xpAmt = Random.Range(reward.minDropAmt, reward.maxDropAmt + 1);
+                    int xpAmt = rewardedQuantity;
                     playerRef.GainXP(xpAmt);
                     break;
                 case Reward.RewardType.Weapon:
                 case Reward.RewardType.Pin:
-                    Instantiate(reward.prefab, instantiationPosition, Quaternion.identity);
+                    for (int i = 0; i < rewardedQuantity; i++) 
+                    {
+                        Vector3 instantiatePos = rewardDropLocations.Pop().position;
+                        Instantiate(reward.prefab, instantiatePos, Quaternion.identity);
+                    }
                     break;
                 default:
                     break;

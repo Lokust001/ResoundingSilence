@@ -396,7 +396,7 @@ public class Enemy : MonoBehaviour
     public void EnemyDeath() 
     {
         GenericPublicEvents.EnemyDies?.Invoke(enemyData);
-        GetComponent<RewardGiver>().StartGivingRewards(transform.position);
+        GetComponent<RewardGiver>().StartGivingRewards();
         Destroy(gameObject);
     }
 
