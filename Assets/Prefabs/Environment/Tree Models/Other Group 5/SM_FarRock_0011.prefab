@@ -1,0 +1,99 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &8642870295963765983
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
+      propertyPath: m_RootOrder
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.8008571
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.8008571
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.8008571
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -69.9
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.51
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -95.7
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.44717935
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.54060245
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.57573545
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.41989097
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 75.236
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 166.168
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 75.715
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
+      propertyPath: m_Name
+      value: SM_FarRock_0011
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4457945977068932781}
+  m_SourcePrefab: {fileID: 100100000, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
+--- !u!1 &8876820745976492430 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
+  m_PrefabInstance: {fileID: 8642870295963765983}
+  m_PrefabAsset: {fileID: 0}
+--- !u!208 &4457945977068932781
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8876820745976492430}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 1.1350001, y: 2.058, z: 1.0380001}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0.108, y: 1.9970001, z: -0.031000001}
+  m_TimeToStationary: 0.5
