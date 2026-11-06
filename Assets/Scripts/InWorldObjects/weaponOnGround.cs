@@ -1,11 +1,10 @@
 /*
 * Author: Brenden
-* Contributors:
-* Last Modified: 10/21/2026
+* Contributors: Tyler
+* Last Modified: 11/6/2026
 * Summary: Weapon Pickups on the ground
 * To Do:   N/A
 */
-using System.Data.SqlTypes;
 using UnityEngine;
 
 public class weaponOnGround : MonoBehaviour
@@ -22,7 +21,7 @@ public class weaponOnGround : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        Instantiate(weapon.weaponModel, this.transform).transform.localScale = new Vector3(20,20,20);
+        Instantiate(weapon.weaponModel, this.transform).transform.localScale = new Vector3(20, 20, 20);
     }
 
 
@@ -32,8 +31,6 @@ public class weaponOnGround : MonoBehaviour
     private void OnEnable()
     {
         InputPublicEvents.InteractPressed += TryPickup;
-        InputPublicEvents.AbilityOnePressed += ReplaceWeaponOne;
-        InputPublicEvents.AbilityTwoPressed += ReplaceWeaponTwo;
         MRM = MidRunDataManager.Instance;
     }
 
@@ -43,8 +40,6 @@ public class weaponOnGround : MonoBehaviour
     private void OnDisable()
     {
         InputPublicEvents.InteractPressed -= TryPickup;
-        InputPublicEvents.AbilityOnePressed -= ReplaceWeaponOne;
-        InputPublicEvents.AbilityTwoPressed -= ReplaceWeaponTwo;
     }
 
     /// <summary>
@@ -81,42 +76,42 @@ public class weaponOnGround : MonoBehaviour
         {
             MRM = MidRunDataManager.Instance;
         }
-        if (inRange)
+        if (inPickup)
         {
-            if (MRM.equippedWeapons[1] == null)
+            inPickup = false;
+        }
+        else
+        {
+            if (inRange)
             {
-                MRM.equippedWeapons[1] = weapon;
-                Destroy(this.gameObject);
-            }
-            else
-            {
-                inPickup = true;
+                int i = MRM.equippedWeapons.FindIndex(x => x == null);
+
+                if (i >= 0)
+                {
+                    GenericPublicEvents.EquipWeaponInSlot?.Invoke(i, weapon);
+                    Destroy(this.gameObject);
+                }
+                else
+                {
+                    inPickup = true;
+                    MRM.weaponSwappingContainer = this;
+                    UIPublicEvents.UpdateUIManagerStack?.Invoke(UiMenuType.WeaponSwapping);
+                }
             }
         }
+
     }
 
     /// <summary>
-    /// takes the input and replaces weapon based on weapon selection
+    /// replaces the spawned dropped weapon with this one
     /// </summary>
-    private void ReplaceWeaponOne()
+    /// <param name="i"></param>
+    public void ReplaceDroppedWeapon(int i = -1)
     {
-        if (inPickup)
+        if (inPickup && i != -1)
         {
-            Instantiate(DroppedWeaponPrefab, transform.position, transform.rotation).GetComponent<weaponOnGround>().weapon = MRM.equippedWeapons[0];
-            MRM.equippedWeapons[0] = weapon;
-            Destroy(this.gameObject);
-        }
-    }
-
-    /// <summary>
-    /// takes the input and replaces weapon based on weapon selection
-    /// </summary>
-    private void ReplaceWeaponTwo()
-    {
-        if (inPickup)
-        {
-            Instantiate(DroppedWeaponPrefab, transform.position, transform.rotation).GetComponent<weaponOnGround>().weapon = MRM.equippedWeapons[1];
-            MRM.equippedWeapons[1] = weapon;
+            Instantiate(DroppedWeaponPrefab, transform.position, transform.rotation).GetComponent<weaponOnGround>().weapon = MRM.equippedWeapons[i];
+            GenericPublicEvents.EquipWeaponInSlot?.Invoke(i, weapon);
             Destroy(this.gameObject);
         }
     }
