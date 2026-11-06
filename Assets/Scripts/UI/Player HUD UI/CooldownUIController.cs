@@ -43,12 +43,18 @@ public class CooldownUIController : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// turns on cooldown UI events
+    /// </summary>
     private void OnEnable()
     {
         UIPublicEvents.UpdateHUDCooldownUI += SetNewCooldown;
         UIPublicEvents.ImmediatelyRefreshCooldown += ImmediatelyRefreshCooldown;
     }
 
+    /// <summary>
+    /// Turns off cooldown UI events
+    /// </summary>
     private void OnDisable()
     {
         UIPublicEvents.ImmediatelyRefreshCooldown -= ImmediatelyRefreshCooldown;

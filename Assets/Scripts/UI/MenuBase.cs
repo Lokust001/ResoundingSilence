@@ -67,7 +67,7 @@ public class MenuBase : MonoBehaviour
     {
         if (UIManager.Instance != null)
         {
-            if (UIManager.Instance.IsCurrentMenuPopup())
+            if (UIManager.Instance.IsCurrentMenuFullscreenPopup())
             {
                 return;
             }

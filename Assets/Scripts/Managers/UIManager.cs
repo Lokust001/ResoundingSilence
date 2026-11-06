@@ -367,7 +367,12 @@ public class UIManager : BaseManager
                 currentlyOpenedMenus.Peek() == UiMenuType.Tarot);
     }
 
-    public bool IsCurrentMenuPopup()
+    /// <summary>
+    /// Returns if the current menu is a popup that requires another menu below it
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="System.Exception"></exception>
+    public bool IsCurrentMenuFullscreenPopup()
     {
         if (currentlyOpenedMenus.Count <= 0)
         {
@@ -394,5 +399,7 @@ public enum UiMenuType
     Settings,
     Pause,
     Tarot,
-    WeaponSwapping
+    WeaponSwapping,
+    HuntBoard,
+    FirstWeaponMenu
 }
