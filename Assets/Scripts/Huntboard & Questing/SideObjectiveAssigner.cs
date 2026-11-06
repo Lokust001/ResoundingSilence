@@ -17,7 +17,10 @@ public class SideObjectiveAssigner : MonoBehaviour
 
     private void Awake()
     {
-        objective = objective.CreateNonRefCopy<SideObjective>();
+        if (objective != null)
+            objective = objective.CreateNonRefCopy<SideObjective>();
+        else
+            Debug.LogWarning("Warning, a HuntBoardPost does not have a SideObjective assigned");
         rewarder = transform.root.GetComponentInChildren<RewardGiver>();
     }
 
@@ -48,6 +51,10 @@ public class SideObjectiveAssigner : MonoBehaviour
         return SideObjectiveManager.Instance.CheckObjectiveCompleted(objective);
     }
 
+    /// <summary>
+    /// Gives information about the objective's rewards
+    /// </summary>
+    /// <returns></returns>
     public List<Reward> GetObjectiveRewards()
     {
         return rewarder.possibleRewards;

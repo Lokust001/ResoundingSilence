@@ -20,12 +20,18 @@ public class RewardGiver : MonoBehaviour
     public bool logRNGNumber;
     public bool logRewardedQty;
 
+    /// <summary>
+    /// Fail-safe if no transforms were specified
+    /// </summary>
     private void Awake()
     {
         if (dropItemsTransforms.Count == 0)
             dropItemsTransforms.Add(transform.root);
     }
 
+    /// <summary>
+    /// Public method to initiate reward dispensing
+    /// </summary>
     public void StartGivingRewards()
     {
         if (possibleRewards.Count > 0)
@@ -60,7 +66,12 @@ public class RewardGiver : MonoBehaviour
     private void RewardHandler(List<Reward> gainedRewards)
     {
         PlayerController playerRef = FindAnyObjectByType<PlayerController>();
+
+        if (gainedRewards.Count > dropItemsTransforms.Count)
+            InsufficientTransformsFailsafe(gainedRewards.Count - dropItemsTransforms.Count);
+
         Stack<Transform> rewardDropLocations = new(dropItemsTransforms);
+
 
         foreach (var reward in gainedRewards)
         {
@@ -90,6 +101,26 @@ public class RewardGiver : MonoBehaviour
                 default:
                     break;
             }
+        }
+    }
+
+    /// <summary>
+    /// Duplicates the Transform objects in dropItemsTransforms to accomodate the difference between 
+    /// the number of rewarded items & the provided spawn locations. It is then set permanently
+    /// for the run
+    /// </summary>
+    /// <param name="missingTransformDiff"></param>
+    private void InsufficientTransformsFailsafe(int missingTransformDiff) 
+    {
+        Debug.LogWarning("Not enough Transforms in RewardGiver to accomodate the given rewards, creating " + missingTransformDiff + " new Transform(s)");
+
+        //This for loop will try to do uniform duplication
+        //If dropItemsTransforms has [Transform1, Transform2];
+        //Then, it will result in [Transform1, Transform2, Transform1, Transform2, ...]
+        for (int i = 0; i < missingTransformDiff; i++) 
+        {
+            Transform duplicateTransform = dropItemsTransforms[i];
+            dropItemsTransforms.Add(duplicateTransform);
         }
     }
 }
