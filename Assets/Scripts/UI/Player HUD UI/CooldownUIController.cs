@@ -147,6 +147,6 @@ public class CooldownUIController : MonoBehaviour
         }
 
         //1 is off cooldown - fully filled
-        cooldownImage.fillAmount = 1;
+        cooldownImage.fillAmount = 0;
     }
 }
