@@ -1,3 +1,11 @@
+/*
+* Author: Tyler
+* Contributors:
+* Last Modified: 11/5/2026
+* Summary: Controls the UI menu for weapon swapping
+* To Do:   N/A
+*/
+
 using System;
 using System.Collections.Generic;
 using TMPro;
@@ -16,7 +24,9 @@ public class WeaponSwappingManager : MenuBase
     private bool firstWeaponSelect = true;
     private Vector2 defaultWeaponSelectPos;
 
-
+    /// <summary>
+    /// initializes the menu
+    /// </summary>
     public override void InitMenu()
     {
         base.InitMenu();
@@ -24,6 +34,9 @@ public class WeaponSwappingManager : MenuBase
         defaultWeaponSelectPos = weaponSelectionSlider.transform.position;
     }
 
+    /// <summary>
+    /// sets the text on the buttons when the menu opens
+    /// </summary>
     protected override void MenuOpenedSucessfully()
     {
         base.MenuOpenedSucessfully();
@@ -39,6 +52,10 @@ public class WeaponSwappingManager : MenuBase
         }
     }
 
+    /// <summary>
+    /// waits for players input then sets it properly
+    /// </summary>
+    /// <param name="aim"></param>
     private void MoveFirstFocus(Vector2 aim)
     {
         int aimDir = Mathf.RoundToInt(aim.x);
@@ -53,6 +70,10 @@ public class WeaponSwappingManager : MenuBase
         }
     }
 
+    /// <summary>
+    /// moves the slider of the new weapon
+    /// </summary>
+    /// <param name="index"></param>
     public void MoveWeaponSelectionSlider(int index)
     {
         if (!weaponSelectionSlider.gameObject.activeInHierarchy)
@@ -63,6 +84,9 @@ public class WeaponSwappingManager : MenuBase
         weaponSelectionSlider.transform.position = new Vector2( weaponSelectButtons[index].transform.position.x, defaultWeaponSelectPos.y);
     }
 
+    /// <summary>
+    /// closes the menu
+    /// </summary>
     protected override void MenuClosedSucessfully()
     {
         base.MenuClosedSucessfully();
