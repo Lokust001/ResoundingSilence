@@ -582,8 +582,38 @@ public class BaseWeaponBehaviour : MonoBehaviour
             tempAbility.SetActive(false);
         }
 
+        List<Collider> tars = new List<Collider>();
+
         do
         {
+            tars.Clear();
+
+            foreach (Collider t in targets)
+            {
+                if (t != null)
+                {
+                    Vector3 originPosition = ThisWeaponData.editableAbilities[abilityIndex].PreviewData.KnockBackFromPreviewCenter ? tempAbility.transform.position : this.transform.position;
+                    Vector3 forceDir = new Vector3(t.transform.position.x - originPosition.x, 0,
+                    t.transform.position.z - originPosition.z).normalized;
+
+                    if (t.GetComponent<Enemy>())
+                    {
+                        //replace with the enemy taking damage
+                        t.GetComponent<Rigidbody>().AddForce(ThisWeaponData.editableAbilities[abilityIndex].AbilityEnemyKnockback * forceDir, ForceMode.Impulse);
+                        t.GetComponent<Enemy>().EnemyTakeDamage(damage);
+                        Debug.Log(t.name + " took " + damage + " damage!");
+                    }
+                    else
+                    {
+                        t.GetComponentInParent<Rigidbody>().AddForce(ThisWeaponData.editableAbilities[abilityIndex].AbilityPlayerKnockback * forceDir, ForceMode.Impulse);
+                    }
+                    tars.Add(t);
+                }
+            }
+
+            yield return new WaitForSeconds(delay);
+            elapsed += delay;
+
             if (ThisWeaponData.editableAbilities[abilityIndex].PersistingAbility)
             {
                 switch (ThisWeaponData.editableAbilities[abilityIndex].PreviewData.ShapeType)
@@ -603,28 +633,11 @@ public class BaseWeaponBehaviour : MonoBehaviour
                         break;
                 }
             }
-
-            foreach (Collider t in targets)
+            else
             {
-                Vector3 originPosition = ThisWeaponData.editableAbilities[abilityIndex].PreviewData.KnockBackFromPreviewCenter ? tempAbility.transform.position : this.transform.position;
-                Vector3 forceDir = new Vector3(t.transform.position.x - originPosition.x, 0,
-                t.transform.position.z - originPosition.z).normalized;
-
-                if (t.GetComponent<Enemy>())
-                {
-                    //replace with the enemy taking damage
-                    t.GetComponent<Rigidbody>().AddForce(ThisWeaponData.editableAbilities[abilityIndex].AbilityEnemyKnockback * forceDir, ForceMode.Impulse);
-                    t.GetComponent<Enemy>().EnemyTakeDamage(damage);
-                    Debug.Log(t.name + " took " + damage + " damage!");
-                }
-                else
-                {
-                    t.GetComponentInParent<Rigidbody>().AddForce(ThisWeaponData.editableAbilities[abilityIndex].AbilityPlayerKnockback * forceDir, ForceMode.Impulse);
-                }
+                targets = tars.ToArray();
             }
 
-            yield return new WaitForSeconds(delay);
-            elapsed += delay;
         } while (elapsed < ThisWeaponData.editableAbilities[abilityIndex].AbilityDuration);
 
         Destroy(tempAbility);
