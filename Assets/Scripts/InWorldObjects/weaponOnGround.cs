@@ -31,8 +31,6 @@ public class weaponOnGround : MonoBehaviour
     private void OnEnable()
     {
         InputPublicEvents.InteractPressed += TryPickup;
-        //InputPublicEvents.AbilityOnePressed += ReplaceWeaponOne;
-        //InputPublicEvents.AbilityTwoPressed += ReplaceWeaponTwo;
         MRM = MidRunDataManager.Instance;
     }
 
@@ -42,8 +40,6 @@ public class weaponOnGround : MonoBehaviour
     private void OnDisable()
     {
         InputPublicEvents.InteractPressed -= TryPickup;
-        //InputPublicEvents.AbilityOnePressed -= ReplaceWeaponOne;
-        //InputPublicEvents.AbilityTwoPressed -= ReplaceWeaponTwo;
     }
 
     /// <summary>
@@ -103,7 +99,7 @@ public class weaponOnGround : MonoBehaviour
                 }
             }
         }
-        
+
     }
 
     public void ReplaceDroppedWeapon(int i = -1)

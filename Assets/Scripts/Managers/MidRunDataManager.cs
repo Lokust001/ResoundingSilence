@@ -6,11 +6,10 @@
 * To Do:   N/A
 */
 
+using NaughtyAttributes;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using NaughtyAttributes;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 [System.Serializable]
 public struct LevelUpData
@@ -98,7 +97,7 @@ public class MidRunDataManager : BaseManager
     [ShowIf(nameof(settings), Settings.Pins)]
     public List<PinScriptable> PinScriptableObjects;
 
-    
+
     public List<PinScriptable> pinInventory { get; private set; } = new();
 
     public List<BaseWeaponScriptable> equippedWeapons { get; private set; } = new(2);
@@ -224,7 +223,7 @@ public class MidRunDataManager : BaseManager
             Debug.Log($"Equipped weapon slot {slot} is swapping " +
                 $"{equippedWeapons[slot].WeaponName} for {equippedWeapons[slot].WeaponName}");
         }
-        
+
     }
 
     /// <summary>
@@ -288,7 +287,7 @@ public class MidRunDataManager : BaseManager
             InputManager.Instance.DisablePlayerInputs();
         }
 
-        
+
         UIPublicEvents.UpdatePlayerHealthSlider?.Invoke();
     }
 
@@ -298,7 +297,7 @@ public class MidRunDataManager : BaseManager
     public void KillPlayer()
     {
         Instantiate(tempDeathMenu, UIManager.Instance.GetMainCanvas().transform);
-        
+
         Time.timeScale = 0f;
     }
 
@@ -308,14 +307,14 @@ public class MidRunDataManager : BaseManager
     /// <param name="xpAmount"></param>
     public void GainXP(int xpAmount)
     {
-        if(playerLvl >= playerLvls.Count && capLvl)
+        if (playerLvl >= playerLvls.Count && capLvl)
         {
             return;
         }
 
         CurrentPlayerEXP += xpAmount;
 
-        if(CurrentPlayerEXP >= ExpNeededToLevelUp)
+        if (CurrentPlayerEXP >= ExpNeededToLevelUp)
         {
             CurrentPlayerEXP -= ExpNeededToLevelUp;
 
@@ -328,10 +327,10 @@ public class MidRunDataManager : BaseManager
             //level up player. This will probably need to move to the health bar controller so
             //the player levels up when the bar reaches full as opposed to before
 
-            foreach(StatIncreaseTypes i in playerLvls[playerLvl - 1].LevelUpStats)
+            foreach (StatIncreaseTypes i in playerLvls[playerLvl - 1].LevelUpStats)
             {
                 //If lvl up should affect other stats, add to switch statement
-                switch(i.StatType)
+                switch (i.StatType)
                 {
                     case StatIncreaseTypes.Stats.Health:
                         float sIncrease = LvlUpStatIncrease == ValueChange.ExactValue ? i.StatChange : Mathf.CeilToInt(MaxPlayerHealth * ConvertToPercentage(i.StatChange));

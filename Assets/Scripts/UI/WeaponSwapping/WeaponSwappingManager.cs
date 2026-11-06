@@ -1,12 +1,11 @@
 /*
 * Author: Tyler
 * Contributors:
-* Last Modified: 11/5/2026
+* Last Modified: 11/6/2026
 * Summary: Controls the UI menu for weapon swapping
 * To Do:   N/A
 */
 
-using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -40,7 +39,7 @@ public class WeaponSwappingManager : MenuBase
     protected override void MenuOpenedSucessfully()
     {
         base.MenuOpenedSucessfully();
-       
+
         InputPublicEvents.MovePressed += MoveFirstFocus;
         InputPublicEvents.InteractPressed += CloseMenu;
         EventSystem.current.SetSelectedGameObject(null);
@@ -82,7 +81,7 @@ public class WeaponSwappingManager : MenuBase
             return;
         }
 
-        weaponSelectionSlider.transform.position = new Vector2( weaponSelectButtons[index].transform.position.x, defaultWeaponSelectPos.y);
+        weaponSelectionSlider.transform.position = new Vector2(weaponSelectButtons[index].transform.position.x, defaultWeaponSelectPos.y);
     }
 
     /// <summary>
@@ -102,12 +101,19 @@ public class WeaponSwappingManager : MenuBase
         weaponSelectionSlider.transform.position = defaultWeaponSelectPos;
     }
 
+    /// <summary>
+    /// Triggers when a weapon is selected - tries to equip it
+    /// </summary>
+    /// <param name="i"></param>
     public void SelectWeapon(int i)
     {
         MidRunDataManager.Instance.weaponSwappingContainer.ReplaceDroppedWeapon(i);
         CloseMenu();
     }
 
+    /// <summary>
+    /// closes the menu
+    /// </summary>
     private void CloseMenu()
     {
         UIPublicEvents.CurrentMenuClosed?.Invoke();
