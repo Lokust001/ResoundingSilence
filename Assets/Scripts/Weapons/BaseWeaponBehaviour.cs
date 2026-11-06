@@ -59,6 +59,9 @@ public class BaseWeaponBehaviour : MonoBehaviour
     protected bool aimingAbilityOne;
     protected bool aimingAbilityTwo;
 
+    protected bool abilityOneActive;
+    protected bool abilityTwoActive;
+
     [SerializeField] public int abilityOneIndex;
     [SerializeField] public int abilityTwoIndex;
 
@@ -369,6 +372,14 @@ public class BaseWeaponBehaviour : MonoBehaviour
                     if (t.GetComponent<Enemy>())
                     {
                         t.GetComponent<Enemy>().EnemyTakeDamage(ThisWeaponData.WeaponDamage[comboIndex - 1]);
+
+                        if (ThisWeaponData.HasLifesteal)
+                        {
+                            int healValue = Mathf.CeilToInt(ThisWeaponData.WeaponDamage[comboIndex - 1] * ConvertToPercentage(ThisWeaponData.LifestealAmount[comboIndex - 1]));
+
+                            //TODO Replace with heal player
+                            FindAnyObjectByType<MidRunDataManager>().ChangePlayerHealth(healValue);
+                        }
                     }
                     Debug.Log(t.name + " took " + ThisWeaponData.WeaponDamage[comboIndex - 1] + " damage!");
                 }
@@ -405,7 +416,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
             weaponAnimator.SetBool("AbilityCast", !aimingAbilityOne);
             aimingAbilityTwo = false;
             currentAbilityIndex = abilityOneIndex;
-            if (ThisWeaponData.editableAbilities[currentAbilityIndex].HasPreview)
+            if (ThisWeaponData.editableAbilities[abilityOneIndex].HasPreview)
             {
                 AimingAbility();
             }
@@ -414,6 +425,10 @@ public class BaseWeaponBehaviour : MonoBehaviour
                 //weaponAnimator.Play(WeaponAbilities[currentAbilityIndex].AbilityAnim.AnimClip.name, WeaponAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
                 CastingAbility();
             }
+        }
+        else if(ThisWeaponData.editableAbilities[abilityOneIndex].CancelOnRecast && abilityOneActive)
+        {
+            weaponAnimator.SetBool("AbilityOver", true);
         }
     }
 
@@ -437,6 +452,10 @@ public class BaseWeaponBehaviour : MonoBehaviour
                 //weaponAnimator.Play(WeaponAbilities[currentAbilityIndex].AbilityAnim.AnimClip.name, WeaponAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
                 CastingAbility();
             }
+        }
+        else if (ThisWeaponData.editableAbilities[abilityTwoIndex].CancelOnRecast && abilityTwoActive)
+        {
+            weaponAnimator.SetBool("AbilityOver", true);
         }
     }
 
@@ -601,6 +620,14 @@ public class BaseWeaponBehaviour : MonoBehaviour
                         //replace with the enemy taking damage
                         t.GetComponent<Rigidbody>().AddForce(ThisWeaponData.editableAbilities[abilityIndex].AbilityEnemyKnockback * forceDir, ForceMode.Impulse);
                         t.GetComponent<Enemy>().EnemyTakeDamage(damage);
+
+                        if (ThisWeaponData.editableAbilities[abilityIndex].AbilityLifeSteal > 0)
+                        {
+                            int healValue = Mathf.CeilToInt(damage * ConvertToPercentage(ThisWeaponData.editableAbilities[abilityIndex].AbilityLifeSteal));
+
+                            //TODO Replace with heal player
+                            FindAnyObjectByType<MidRunDataManager>().ChangePlayerHealth(healValue);
+                        }
                         Debug.Log(t.name + " took " + damage + " damage!");
                     }
                     else

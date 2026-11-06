@@ -92,7 +92,7 @@ public class BaseProjectileBehaviour : MonoBehaviour
                 int healValue = Mathf.CeilToInt(myDamage * ConvertToPercentage(weaponRef.LifestealAmount[pierceDamageIndex]));
 
                 //TODO Replace with heal player
-                FindAnyObjectByType<DummyPlayerBehaviour>().Heal(healValue);
+                FindAnyObjectByType<MidRunDataManager>().ChangePlayerHealth(healValue);
             }
 
             //Don't want to destroy projectile if it pierces
