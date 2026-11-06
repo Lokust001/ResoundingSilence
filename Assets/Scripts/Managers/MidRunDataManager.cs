@@ -7,6 +7,7 @@
 */
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -102,6 +103,9 @@ public class MidRunDataManager : BaseManager
 
     public List<BaseWeaponScriptable> equippedWeapons { get; private set; } = new(2);
 
+    [HideInInspector]
+    public weaponOnGround weaponSwappingContainer;
+
     [SerializeField]
     private bool EnableTestingMode;
 
@@ -145,6 +149,10 @@ public class MidRunDataManager : BaseManager
         ExpNeededToLevelUp = playerLvls[playerLvl - 1].ExpToLevelUp;
 
         UnequipAllWeapons();
+
+        GenericPublicEvents.EquipWeaponInSlot += EquipWeaponInSlot;
+
+        await Task.CompletedTask;
     }
 
     /// <summary>
@@ -207,7 +215,16 @@ public class MidRunDataManager : BaseManager
             return;
         }
 
-        equippedWeapons[slot] = weapon;
+        if (equippedWeapons[slot] == null)
+        {
+            equippedWeapons[slot] = weapon;
+        }
+        else
+        {
+            Debug.Log($"Equipped weapon slot {slot} is swapping " +
+                $"{equippedWeapons[slot].WeaponName} for {equippedWeapons[slot].WeaponName}");
+        }
+        
     }
 
     /// <summary>

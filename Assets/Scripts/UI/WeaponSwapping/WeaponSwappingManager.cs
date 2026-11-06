@@ -42,7 +42,8 @@ public class WeaponSwappingManager : MenuBase
         base.MenuOpenedSucessfully();
        
         InputPublicEvents.MovePressed += MoveFirstFocus;
-
+        InputPublicEvents.InteractPressed += CloseMenu;
+        EventSystem.current.SetSelectedGameObject(null);
         for (int i = 0; i < MidRunDataManager.Instance.equippedWeapons.Count; i++)
         {
             if (MidRunDataManager.Instance.equippedWeapons[i] != null)
@@ -95,7 +96,20 @@ public class WeaponSwappingManager : MenuBase
             firstWeaponSelect = false;
             weaponSelectionSlider.gameObject.SetActive(true);
         }
+        MidRunDataManager.Instance.weaponSwappingContainer = null;
         InputPublicEvents.MovePressed -= MoveFirstFocus;
+        InputPublicEvents.InteractPressed -= CloseMenu;
         weaponSelectionSlider.transform.position = defaultWeaponSelectPos;
+    }
+
+    public void SelectWeapon(int i)
+    {
+        MidRunDataManager.Instance.weaponSwappingContainer.ReplaceDroppedWeapon(i);
+        CloseMenu();
+    }
+
+    private void CloseMenu()
+    {
+        UIPublicEvents.CurrentMenuClosed?.Invoke();
     }
 }

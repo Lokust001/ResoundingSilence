@@ -387,6 +387,21 @@ public class UIManager : BaseManager
         return (currentlyOpenedMenus.Peek() == UiMenuType.WeaponSwapping);
     }
 
+    public bool IsPlayerInMenuThatBlocksMovement()
+    {
+        if (currentlyOpenedMenus.Count <= 0)
+        {
+            if (AppManager.Instance.EnableTestingMode)
+            {
+                return false;
+            }
+
+            throw new System.Exception("No menus opened");
+        }
+
+        return (currentlyOpenedMenus.Peek() == UiMenuType.PlayerHUD);
+    }
+
     #endregion
 }
 

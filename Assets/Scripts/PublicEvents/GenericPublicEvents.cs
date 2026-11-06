@@ -13,6 +13,8 @@ using UnityEngine;
 public static class GenericPublicEvents
 {
     public static Action<BaseWeaponBehaviour> SetCurrentWeapon;
+
+    public static Action<int, BaseWeaponScriptable> EquipWeaponInSlot;
     public static Action AllManagersInitialized;
 
     public static Action StartGamePressed;
