@@ -1,15 +1,15 @@
 /*
 * Author: Tyler
 * Contributors: Brenden, Brad Dixon
-* Last Modified: 11/5/2026
+* Last Modified: 11/6/2026
 * Summary: This is a database that will hold all of the data needed mid run.
 * To Do:   N/A
 */
 
-using System.Collections.Generic;
 using NaughtyAttributes;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 [System.Serializable]
 public struct LevelUpData
@@ -97,10 +97,13 @@ public class MidRunDataManager : BaseManager
     [ShowIf(nameof(settings), Settings.Pins)]
     public List<PinScriptable> PinScriptableObjects;
 
-    
+
     public List<PinScriptable> pinInventory { get; private set; } = new();
 
     public List<BaseWeaponScriptable> equippedWeapons { get; private set; } = new(2);
+
+    [HideInInspector]
+    public weaponOnGround weaponSwappingContainer;
 
     [SerializeField]
     private bool EnableTestingMode;
@@ -145,6 +148,10 @@ public class MidRunDataManager : BaseManager
         ExpNeededToLevelUp = playerLvls[playerLvl - 1].ExpToLevelUp;
 
         UnequipAllWeapons();
+
+        GenericPublicEvents.EquipWeaponInSlot += EquipWeaponInSlot;
+
+        await Task.CompletedTask;
     }
 
     /// <summary>
@@ -207,7 +214,16 @@ public class MidRunDataManager : BaseManager
             return;
         }
 
-        equippedWeapons[slot] = weapon;
+        if (equippedWeapons[slot] == null)
+        {
+            equippedWeapons[slot] = weapon;
+        }
+        else
+        {
+            Debug.Log($"Equipped weapon slot {slot} is swapping " +
+                $"{equippedWeapons[slot].WeaponName} for {equippedWeapons[slot].WeaponName}");
+        }
+
     }
 
     /// <summary>
@@ -271,7 +287,7 @@ public class MidRunDataManager : BaseManager
             InputManager.Instance.DisablePlayerInputs();
         }
 
-        
+
         UIPublicEvents.UpdatePlayerHealthSlider?.Invoke();
     }
 
@@ -281,7 +297,7 @@ public class MidRunDataManager : BaseManager
     public void KillPlayer()
     {
         Instantiate(tempDeathMenu, UIManager.Instance.GetMainCanvas().transform);
-        
+
         Time.timeScale = 0f;
     }
 
@@ -291,14 +307,14 @@ public class MidRunDataManager : BaseManager
     /// <param name="xpAmount"></param>
     public void GainXP(int xpAmount)
     {
-        if(playerLvl >= playerLvls.Count && capLvl)
+        if (playerLvl >= playerLvls.Count && capLvl)
         {
             return;
         }
 
         CurrentPlayerEXP += xpAmount;
 
-        if(CurrentPlayerEXP >= ExpNeededToLevelUp)
+        if (CurrentPlayerEXP >= ExpNeededToLevelUp)
         {
             CurrentPlayerEXP -= ExpNeededToLevelUp;
 
@@ -311,10 +327,10 @@ public class MidRunDataManager : BaseManager
             //level up player. This will probably need to move to the health bar controller so
             //the player levels up when the bar reaches full as opposed to before
 
-            foreach(StatIncreaseTypes i in playerLvls[playerLvl - 1].LevelUpStats)
+            foreach (StatIncreaseTypes i in playerLvls[playerLvl - 1].LevelUpStats)
             {
                 //If lvl up should affect other stats, add to switch statement
-                switch(i.StatType)
+                switch (i.StatType)
                 {
                     case StatIncreaseTypes.Stats.Health:
                         float sIncrease = LvlUpStatIncrease == ValueChange.ExactValue ? i.StatChange : Mathf.CeilToInt(MaxPlayerHealth * ConvertToPercentage(i.StatChange));
