@@ -65,6 +65,14 @@ public class MenuBase : MonoBehaviour
     /// </summary>
     private void CloseMenu()
     {
+        if (UIManager.Instance != null)
+        {
+            if (UIManager.Instance.IsCurrentMenuPopup())
+            {
+                return;
+            }
+        }
+
         if (gameObject.activeInHierarchy)
         {
             gameObject.SetActive(false);

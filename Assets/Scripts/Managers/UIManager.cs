@@ -367,6 +367,21 @@ public class UIManager : BaseManager
                 currentlyOpenedMenus.Peek() == UiMenuType.Tarot);
     }
 
+    public bool IsCurrentMenuPopup()
+    {
+        if (currentlyOpenedMenus.Count <= 0)
+        {
+            if (AppManager.Instance.EnableTestingMode)
+            {
+                return false;
+            }
+
+            throw new System.Exception("No menus opened");
+        }
+
+        return (currentlyOpenedMenus.Peek() == UiMenuType.WeaponSwapping);
+    }
+
     #endregion
 }
 
@@ -378,5 +393,6 @@ public enum UiMenuType
     PlayerHUD,
     Settings,
     Pause,
-    Tarot
+    Tarot,
+    WeaponSwapping
 }
