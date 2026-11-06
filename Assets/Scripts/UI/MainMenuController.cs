@@ -6,6 +6,7 @@
 * To Do:   N/A
 */
 
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -34,6 +35,7 @@ public class MainMenuController : MenuBase
         }
 
     }
+
 
     /// <summary>
     /// quits the game

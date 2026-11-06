@@ -367,6 +367,26 @@ public class UIManager : BaseManager
                 currentlyOpenedMenus.Peek() == UiMenuType.Tarot);
     }
 
+    /// <summary>
+    /// Returns if the current menu is a popup that requires another menu below it
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="System.Exception"></exception>
+    public bool IsCurrentMenuFullscreenPopup()
+    {
+        if (currentlyOpenedMenus.Count <= 0)
+        {
+            if (AppManager.Instance.EnableTestingMode)
+            {
+                return false;
+            }
+
+            throw new System.Exception("No menus opened");
+        }
+
+        return (currentlyOpenedMenus.Peek() == UiMenuType.WeaponSwapping);
+    }
+
     #endregion
 }
 
@@ -378,5 +398,8 @@ public enum UiMenuType
     PlayerHUD,
     Settings,
     Pause,
-    Tarot
+    Tarot,
+    WeaponSwapping,
+    HuntBoard,
+    FirstWeaponMenu
 }

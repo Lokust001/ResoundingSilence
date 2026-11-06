@@ -12,6 +12,7 @@ using UnityEngine;
 
 public static class GenericPublicEvents
 {
+    public static Action<BaseWeaponBehaviour> SetCurrentWeapon;
     public static Action AllManagersInitialized;
 
     public static Action StartGamePressed;
@@ -21,4 +22,6 @@ public static class GenericPublicEvents
     public static Action ReturnToMainMenu;
 
     public static Action<BaseEnemyScriptable> EnemyDies;
+
+    
 }

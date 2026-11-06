@@ -92,12 +92,10 @@ public class PlayerHUDController : MenuBase
     protected override void SetUpPublicEvents()
     {
         base.SetUpPublicEvents();
-        InputPublicEvents.AbilityOnePressed += Ability1Wrapper;
-        InputPublicEvents.AbilityTwoPressed += Ability2Wrapper;
-        InputPublicEvents.ShootPressed += ImmediatelyRefreshAllCooldowns;
         UIPublicEvents.UpdatePlayerHealthSlider += UpdatePlayerHealthBarValue;
         UIPublicEvents.UpdatePlayerEXPSlider += UpdatePlayerEXPBarValue;
         UIPublicEvents.UpdateHUDHuntObjs += UpdateHuntObjective;
+        GenericPublicEvents.SetCurrentWeapon += NewWeaponEnabled;
     }
 
     /// <summary>
@@ -106,12 +104,10 @@ public class PlayerHUDController : MenuBase
     protected override void TearDownPublicEvents()
     {
         base.TearDownPublicEvents();
-        InputPublicEvents.AbilityOnePressed -= Ability1Wrapper;
-        InputPublicEvents.AbilityTwoPressed -= Ability2Wrapper;
-        InputPublicEvents.ShootPressed -= ImmediatelyRefreshAllCooldowns;
         UIPublicEvents.UpdatePlayerHealthSlider -= UpdatePlayerHealthBarValue;
         UIPublicEvents.UpdatePlayerEXPSlider -= UpdatePlayerEXPBarValue; 
-        UIPublicEvents.UpdateHUDHuntObjs += UpdateHuntObjective;
+        UIPublicEvents.UpdateHUDHuntObjs -= UpdateHuntObjective;
+        GenericPublicEvents.SetCurrentWeapon -= NewWeaponEnabled;
     }
 
     /// <summary>
@@ -128,7 +124,16 @@ public class PlayerHUDController : MenuBase
 
     private void NewWeaponEnabled(BaseWeaponBehaviour weapon)
     {
-        //add ability to change images here
+        UIPublicEvents.ChangeCooldownImages?.Invoke(
+            weapon.ThisWeaponData.editableAbilities[weapon.abilityOneIndex].AbilityImage,
+            weapon.ThisWeaponData.editableAbilities[weapon.abilityOneIndex].BackgroundImage,
+            CooldownUIController.CooldownToUpdate.Ability1);
+        UIPublicEvents.ChangeCooldownImages?.Invoke(
+            weapon.ThisWeaponData.editableAbilities[weapon.abilityTwoIndex].AbilityImage,
+            weapon.ThisWeaponData.editableAbilities[weapon.abilityTwoIndex].BackgroundImage,
+            CooldownUIController.CooldownToUpdate.Ability2);
+
+        ImmediatelyRefreshAllCooldowns();
     }
 
     /// <summary>
