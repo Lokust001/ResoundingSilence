@@ -14,55 +14,55 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.1768
+      value: 1.8008571
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.1768
+      value: 1.8008571
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.1768
+      value: 1.8008571
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 95.51401
+      value: -69.9
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.08
+      value: 0.51
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -6.49
+      value: -95.7
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.6134149
+      value: 0.44717935
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.000000013406609
+      value: 0.54060245
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.7897609
+      value: 0.57573545
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.000000017260776
+      value: -0.41989097
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: 75.236
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 104.326
+      value: 166.168
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
+      value: 75.715
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
       propertyPath: m_Name
@@ -71,5 +71,29 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4457945977068932781}
   m_SourcePrefab: {fileID: 100100000, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
+--- !u!1 &8876820745976492430 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 52c9911378fd6c044bd0381bb05350f6, type: 3}
+  m_PrefabInstance: {fileID: 8642870295963765983}
+  m_PrefabAsset: {fileID: 0}
+--- !u!208 &4457945977068932781
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8876820745976492430}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 1.1350001, y: 2.058, z: 1.0380001}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0.108, y: 1.9970001, z: -0.031000001}
+  m_TimeToStationary: 0.5
