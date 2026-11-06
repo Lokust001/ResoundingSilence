@@ -45,10 +45,9 @@ public class BaseWeaponBehaviour : MonoBehaviour
 
     protected Vector3 mousePos = Vector3.forward;
 
-    [HorizontalLine(4, EColor.Red)]
-    public Vector3 aimDir = Vector3.forward;
+    protected Vector3 aimDir = Vector3.forward;
 
-    public bool playerAiming;
+    protected bool playerAiming;
 
     protected float currentAttackSpeed;
 
@@ -60,8 +59,8 @@ public class BaseWeaponBehaviour : MonoBehaviour
     protected bool aimingAbilityOne;
     protected bool aimingAbilityTwo;
 
-    [SerializeField] protected int abilityOneIndex;
-    [SerializeField] protected int abilityTwoIndex;
+    [SerializeField] public int abilityOneIndex;
+    [SerializeField] public int abilityTwoIndex;
 
     [SerializeField] protected bool abilityOneReady;
     [SerializeField] protected bool abilityTwoReady;
@@ -86,7 +85,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
         int i = 0;
         foreach (GameObject g in abilityAOEs)
         {
-            if(g != null)
+            if (g != null)
             {
                 activePreview = g;
 
@@ -105,6 +104,8 @@ public class BaseWeaponBehaviour : MonoBehaviour
         {
             StartCoroutine(AbilityDelay(abilityTwoReady, ThisWeaponData.editableAbilities[abilityTwoIndex].AbilityCooldown));
         }
+
+        GenericPublicEvents.SetCurrentWeapon?.Invoke(this);
     }
 
     /// <summary>
@@ -461,7 +462,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
         Debug.Log("REACHED!!!");
         continuouslyUpdatePreview = !ThisWeaponData.editableAbilities[currentAbilityIndex].PreviewData.OrbitsPlayer;
 
-        float sizeValue = ThisWeaponData.editableAbilities[currentAbilityIndex].PreviewData.SizeIsRange ? 
+        float sizeValue = ThisWeaponData.editableAbilities[currentAbilityIndex].PreviewData.SizeIsRange ?
             ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityRange : ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAOESize;
 
         Vector3 abilitySize = ThisWeaponData.editableAbilities[currentAbilityIndex].BaseAbilitySize;
@@ -516,6 +517,8 @@ public class BaseWeaponBehaviour : MonoBehaviour
         attackReady = false;
         aimingAbilityOne = false;
         aimingAbilityTwo = false;
+
+
 
         StartCoroutine(AbilityDamage(currentAbilityIndex));
 
@@ -646,6 +649,11 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// <returns></returns>
     virtual protected IEnumerator AbilityDelay(bool isAbilityOne, float time)
     {
+        UIPublicEvents.UpdateHUDCooldownUI?.Invoke(
+            currentAbilityIndex == abilityOneIndex ?
+            CooldownUIController.CooldownToUpdate.Ability1 : CooldownUIController.CooldownToUpdate.Ability2,
+            ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityCooldown);
+
         if (isAbilityOne)
         {
             abilityOneReady = false;

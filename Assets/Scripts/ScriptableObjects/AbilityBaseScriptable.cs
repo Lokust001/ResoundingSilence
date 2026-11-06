@@ -32,8 +32,8 @@ public class AbilityBaseScriptable : BaseScriptableObject
         PlayerKnockback
     }
 
-    public Image AbilityImage;
-    public Image BackgroundImage;
+    public Sprite AbilityImage;
+    public Sprite BackgroundImage;
 
     public List<StatValues> PrimaryStats = new List<StatValues>();
     public List<StatValues> SecondaryStats = new List<StatValues>();
