@@ -1,7 +1,7 @@
 /*
 * Author: Brenden
-* Contributors:
-* Last Modified: 10/21/2026
+* Contributors: Tyler
+* Last Modified: 11/6/2026
 * Summary: Weapon Pickups on the ground
 * To Do:   N/A
 */
@@ -102,6 +102,10 @@ public class weaponOnGround : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// replaces the spawned dropped weapon with this one
+    /// </summary>
+    /// <param name="i"></param>
     public void ReplaceDroppedWeapon(int i = -1)
     {
         if (inPickup && i != -1)
