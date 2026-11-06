@@ -39,8 +39,26 @@ public class CooldownUIController : MonoBehaviour
     /// </summary>
     private void Awake()
     {
+        UIPublicEvents.ChangeCooldownImages += ChangeCooldownImage;
+
+    }
+
+    /// <summary>
+    /// turns on cooldown UI events
+    /// </summary>
+    private void OnEnable()
+    {
         UIPublicEvents.UpdateHUDCooldownUI += SetNewCooldown;
         UIPublicEvents.ImmediatelyRefreshCooldown += ImmediatelyRefreshCooldown;
+    }
+
+    /// <summary>
+    /// Turns off cooldown UI events
+    /// </summary>
+    private void OnDisable()
+    {
+        UIPublicEvents.ImmediatelyRefreshCooldown -= ImmediatelyRefreshCooldown;
+        UIPublicEvents.ChangeCooldownImages -= ChangeCooldownImage;
     }
 
     /// <summary>
@@ -49,7 +67,7 @@ public class CooldownUIController : MonoBehaviour
     private void OnDestroy()
     {
         UIPublicEvents.UpdateHUDCooldownUI -= SetNewCooldown;
-        UIPublicEvents.ImmediatelyRefreshCooldown -= ImmediatelyRefreshCooldown;
+
     }
 
     /// <summary>
@@ -58,7 +76,7 @@ public class CooldownUIController : MonoBehaviour
     /// <param name="backgroundImage"></param>
     /// <param name="cooldownSliderImage"></param>
     /// <param name="cooldownType"></param>
-    public void ChangeCooldownImage(Image backgroundImage, Image cooldownSliderImage, CooldownToUpdate cooldownType)
+    public void ChangeCooldownImage(Sprite backgroundImage, Sprite cooldownSliderImage, CooldownToUpdate cooldownType)
     {
         if (thisCooldownType != cooldownType)
         {
@@ -70,8 +88,8 @@ public class CooldownUIController : MonoBehaviour
             return;
         }
 
-        this.backgroundImage = backgroundImage;
-        cooldownImage = cooldownSliderImage;
+        this.backgroundImage.sprite = backgroundImage;
+        cooldownImage.sprite = cooldownSliderImage;
     }
 
     /// <summary>
@@ -96,12 +114,12 @@ public class CooldownUIController : MonoBehaviour
     /// <returns></returns>
     private IEnumerator AbilityCooldown(float maxCooldown)
     {
-        float timer = 0.0f;
+        float timer = maxCooldown;
 
         //the cooldown itself
-        while (timer < maxCooldown)
+        while (timer > 0)
         {
-            timer += Time.deltaTime;
+            timer -= Time.deltaTime;
 
             //updates the slider - has to be between 0 and 1 so we divide to get the percentage
             cooldownImage.fillAmount = timer / maxCooldown;
@@ -129,6 +147,6 @@ public class CooldownUIController : MonoBehaviour
         }
 
         //1 is off cooldown - fully filled
-        cooldownImage.fillAmount = 1;
+        cooldownImage.fillAmount = 0;
     }
 }
