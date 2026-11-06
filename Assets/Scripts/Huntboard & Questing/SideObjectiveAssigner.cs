@@ -4,6 +4,8 @@
 * Last Modified: 11/5/2026
 * Summary: Allows a SideObjective to be taken up
 */
+using NaughtyAttributes;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SideObjectiveAssigner : MonoBehaviour
@@ -11,9 +13,12 @@ public class SideObjectiveAssigner : MonoBehaviour
     [SerializeField]
     private SideObjective objective;
 
+    private RewardGiver rewarder;
+
     private void Awake()
     {
         objective = objective.CreateNonRefCopy<SideObjective>();
+        rewarder = transform.root.GetComponentInChildren<RewardGiver>();
     }
 
     /// <summary>
@@ -28,6 +33,7 @@ public class SideObjectiveAssigner : MonoBehaviour
     /// <summary>
     /// Accepts the objective and starts tracking progress
     /// </summary>
+    [Button("Debug Accept Side Objective")]
     public void AcceptSideObjective()
     {
         SideObjectiveManager.Instance.AddNewSideObjective(objective);
@@ -42,11 +48,18 @@ public class SideObjectiveAssigner : MonoBehaviour
         return SideObjectiveManager.Instance.CheckObjectiveCompleted(objective);
     }
 
+    public List<Reward> GetObjectiveRewards()
+    {
+        return rewarder.possibleRewards;
+    }
+
     /// <summary>
     /// Method to claim the reward, either by directly assigining the reward or creating it in scene
     /// </summary>
+    /// 
+    [Button("Debug Claim Rewards")]
     public void ClaimRewards()
     {
-        GetComponent<RewardGiver>().StartGivingRewards();
+        rewarder.StartGivingRewards();
     }
 }

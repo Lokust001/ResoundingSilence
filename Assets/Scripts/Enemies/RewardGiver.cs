@@ -5,16 +5,13 @@
 * Summary: Makes the entity drop loot when it is destroyed
 */
 
-using NaughtyAttributes;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.InputSystem.LowLevel.InputStateHistory;
 
 public class RewardGiver : MonoBehaviour
 {
 
-    [SerializeField]
-    private List<Reward> possibleRewards;
+    public List<Reward> possibleRewards;
     [SerializeField, Header("Drag Transforms in here")]
     [Tooltip("The transforms where gameobjects will be instantiated and can be picked up by the player. If empty, will use own transform")]
     private List<Transform> dropItemsTransforms;
@@ -25,7 +22,7 @@ public class RewardGiver : MonoBehaviour
             dropItemsTransforms.Add(transform.root);
     }
 
-    public void StartGivingRewards() 
+    public void StartGivingRewards()
     {
         if (possibleRewards.Count > 0)
             RollRewards();
@@ -36,11 +33,11 @@ public class RewardGiver : MonoBehaviour
     /// Loops through the loot table and rolls for each loot item independently. 
     /// Loot is acquired if the rolled value is within the range of the random number
     /// </summary>
-    private void RollRewards() 
+    private void RollRewards()
     {
         List<Reward> rewards = new();
 
-        foreach(var loot in possibleRewards) 
+        foreach (var loot in possibleRewards)
         {
             float independentRoll = Random.Range(0, 101) * 0.01f;
             if (independentRoll <= loot.dropChance)
@@ -54,7 +51,7 @@ public class RewardGiver : MonoBehaviour
     /// Drops/spawns loot at various positions or adds them directly to the player
     /// </summary>
     /// <param name="gainedRewards"></param>
-    private void RewardHandler(List<Reward> gainedRewards) 
+    private void RewardHandler(List<Reward> gainedRewards)
     {
         PlayerController playerRef = FindAnyObjectByType<PlayerController>();
         Stack<Transform> rewardDropLocations = new(dropItemsTransforms);
@@ -75,7 +72,7 @@ public class RewardGiver : MonoBehaviour
                     break;
                 case Reward.RewardType.Weapon:
                 case Reward.RewardType.Pin:
-                    for (int i = 0; i < rewardedQuantity; i++) 
+                    for (int i = 0; i < rewardedQuantity; i++)
                     {
                         Vector3 instantiatePos = rewardDropLocations.Pop().position;
                         Instantiate(reward.prefab, instantiatePos, Quaternion.identity);

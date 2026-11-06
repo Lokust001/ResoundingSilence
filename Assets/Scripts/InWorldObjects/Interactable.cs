@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -19,7 +18,7 @@ public class Interactable : MonoBehaviour
 
     private void Interact()
     {
-        if (inRange) 
+        if (inRange)
         {
             Debug.Log("Interact");
             interactionAction?.Invoke();
@@ -29,7 +28,7 @@ public class Interactable : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.GetComponent<PlayerController>())
+        if (other.GetComponent<PlayerController>())
             inRange = true;
     }
 
