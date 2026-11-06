@@ -20,6 +20,9 @@ public class PlayerController : MonoBehaviour
     int currentXP;
 
     [SerializeField]
+    int currentGold;
+
+    [SerializeField]
     string[] invincibilityLayerNamesToIgnore;
 
     [SerializeField]
@@ -541,5 +544,14 @@ public class PlayerController : MonoBehaviour
     public void GainXP(int xpAmount) 
     {
         currentXP += xpAmount;
+    }
+
+    /// <summary>
+    /// Used to gain gold after a huntboard quest
+    /// </summary>
+    /// <param name="amount"></param>
+    public void GainGold(int amount) 
+    {
+        currentGold += amount;
     }
 }

@@ -37,6 +37,7 @@ public class SideObjectiveManager : BaseService
             Destroy(this);
         }
 
+        GenericPublicEvents.EnemyDies += AttemptHuntObjectivesProgression;
         completedObjectives = new();
 
         for (int i = 0; i < currentHuntObjectives.Count; i++)
@@ -46,6 +47,43 @@ public class SideObjectiveManager : BaseService
 
         await base.InitService();
         await Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// Removes listeners after manager is destroyed
+    /// </summary>
+    private void OnDestroy()
+    {
+        GenericPublicEvents.EnemyDies -= AttemptHuntObjectivesProgression;
+    }
+
+    /// <summary>
+    /// Adds a new objective to an objectivelist depending on what kind of quest it is
+    /// </summary>
+    /// <param name="sideObjective"></param>
+    public void AddNewSideObjective(SideObjective sideObjective) 
+    {
+
+        switch (sideObjective.objectiveType)
+        {
+            case SideObjective.ObjectiveType.HuntObjective:
+                currentHuntObjectives.Add(sideObjective);
+                break;
+            default:
+                Debug.LogError("Invalid Objective Type Detected!");
+                break;
+        }
+
+    }
+
+    /// <summary>
+    /// Returns a boolean of whether or not the objective given has been finished
+    /// </summary>
+    /// <param name="sideObjectiveToCheck"></param>
+    /// <returns></returns>
+    public bool CheckObjectiveCompleted(SideObjective sideObjectiveToCheck) 
+    {
+        return completedObjectives.Contains(sideObjectiveToCheck);
     }
 
     /// <summary>
