@@ -54,7 +54,8 @@ public class BaseWeaponBehaviour : MonoBehaviour
     protected bool isAttacking;
     protected bool attackReady;
 
-    bool burstAttacking;
+    protected bool burstAttacking;
+    protected int burstIndex;
 
     protected bool aimingAbilityOne;
     protected bool aimingAbilityTwo;
@@ -339,11 +340,29 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// </summary>
     public void SpawnProjectile()
     {
+        BurstData rData;
+        int damage;
+        if(abilityOneActive)
+        {
+            rData = ThisWeaponData.editableAbilities[abilityOneIndex].AbilityProjectile;
+            damage = ThisWeaponData.editableAbilities[abilityOneIndex].AbilityDamage;
+        }
+        else if(abilityTwoActive)
+        {
+            rData = ThisWeaponData.editableAbilities[abilityTwoIndex].AbilityProjectile;
+            damage = ThisWeaponData.editableAbilities[abilityTwoIndex].AbilityDamage;
+        }
+        else
+        {
+            rData = ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks[burstIndex];
+            damage = ThisWeaponData.ComboAttacks[comboIndex - 1].WeaponDamage;
+        }
+
         Vector3 bulletDir = aimDir;
         bulletDir.y = 0;
 
         GameObject spawnedProjectile = Instantiate(ThisWeaponData.Projectiles[comboIndex - 1], transform.position, Quaternion.LookRotation(bulletDir.normalized, Vector3.up));
-        spawnedProjectile.GetComponent<BaseProjectileBehaviour>().SetData(ThisWeaponData);
+        spawnedProjectile.GetComponent<BaseProjectileBehaviour>().SetData(rData, damage, ThisWeaponData.EnemyLayer);
         spawnedProjectile.GetComponent<Rigidbody>().linearVelocity = bulletDir.normalized * ThisWeaponData.ProjectileSpeed[comboIndex - 1];
 
         //If the weapon has multiple bursts fire them

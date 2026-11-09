@@ -63,7 +63,13 @@ public class AbilityBaseScriptable : BaseScriptableObject
     public float AbilityCooldown;
     public float AbilityEndLag;
     public float AbilityRange;
+
+    public bool HasProjectile;
+    [ShowIf(nameof(HasProjectile))]
+    public BurstData AbilityProjectile;
+
     public bool HasPreview;
+    [ShowIf(nameof(HasPreview))]
     public PreviewShape PreviewData;
 
     public bool PersistingAbility;
@@ -74,6 +80,7 @@ public class AbilityBaseScriptable : BaseScriptableObject
     [HideInInspector] public Vector3 AbilityPos;
 
     public AnimationPath AbilityAnim;
+    [ShowIf(nameof(HasPreview))]
     public AnimationPath AbilityReadyAnim;
 
     /// <summary>

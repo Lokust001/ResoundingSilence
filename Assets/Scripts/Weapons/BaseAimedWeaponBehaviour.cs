@@ -18,11 +18,11 @@ public class BaseAimedWeaponBehaviour : BaseWeaponBehaviour
     /// </summary>
     override protected void Attack()
     {
-        Vector3 bulletDir = mousePos;
-        bulletDir.y = 0;
+        //Vector3 bulletDir = mousePos;
+        //bulletDir.y = 0;
 
-        GameObject spawnedProjectile = Instantiate(weaponProjectile, transform.position, Quaternion.LookRotation(bulletDir.normalized, Vector3.up));
-        spawnedProjectile.GetComponent<BaseProjectileBehaviour>().SetData(ThisWeaponData);
-        spawnedProjectile.GetComponent<Rigidbody>().linearVelocity = bulletDir.normalized * ThisWeaponData.ProjectileSpeed[0];
+        //GameObject spawnedProjectile = Instantiate(weaponProjectile, transform.position, Quaternion.LookRotation(bulletDir.normalized, Vector3.up));
+        //spawnedProjectile.GetComponent<BaseProjectileBehaviour>().SetData(ThisWeaponData);
+        //spawnedProjectile.GetComponent<Rigidbody>().linearVelocity = bulletDir.normalized * ThisWeaponData.ProjectileSpeed[0];
     }
 }
