@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors: Brad Dixon, Brenden
-* Last Modified: 11/6/2026
+* Last Modified: 11/9/2026
 * Summary: This is the base scriptable object for all weapon scriptable objects.
 *          Handles the data for the weapons. Acts as a tool to make any kind of weapon.
 * To Do:   Add more variables as needed. Change status effects as needed. 
@@ -88,6 +88,7 @@ public class BaseWeaponScriptable : BaseScriptableObject
 
     #region General Variables
 
+    [ReorderableList]
     public List<AttackData> ComboAttacks = new List<AttackData>();
 
     [HideInInspector] public List<int> WeaponDamage = new List<int>();
@@ -374,7 +375,7 @@ public class BaseWeaponScriptable : BaseScriptableObject
     /// Custom bool for multiple enum values
     /// </summary>
     /// <returns></returns>
-    public bool RangedWeaponSettings()
+    private bool RangedWeaponSettings()
     {
         return weaponType == WeaponType.Ranged && shownSettings == ShownSettings.BaseWeaponData;
     }
@@ -616,7 +617,11 @@ public struct AttackData
     public float AttackCooldown;
     [HideInInspector] public float BaseAttackCooldown;
     [Tooltip("IMPORTANT!!! Make sure burst attacks has at least one entry!")]
+    [ReorderableList]
     public List<BurstData> BurstAttacks;
+    [Tooltip("How long you have in seconds to attack again to continue the combo. " +
+        "If no combo or end of combo, doesn't do anything.")]
+    public float ComboTime;
 }
 
 [System.Serializable]
@@ -628,8 +633,6 @@ public struct BurstData
     [Tooltip("How much time in seconds elapses before the next attack in the burst happens. Does nothing if the final entry.")]
     public float TimeTillNextBurst;
     [HideInInspector] public float BaseTimeTillNextBurst;
-    [Tooltip("The type of projectile that gets fired in this part of the burst.")]
-    public GameObject BurstProjectile;
 
     public bool HasLifesteal;
     [ShowIf(nameof(HasLifesteal)), AllowNesting]
@@ -638,6 +641,10 @@ public struct BurstData
     public bool HasAoe;
     [ShowIf(nameof(HasAoe)), AllowNesting]
     public AoeData WeaponAoe;
+
+    public bool HasRangeAttack;
+    [ShowIf(nameof(HasRangeAttack)), AllowNesting]
+    public RangedData BurstRangedAttack;
 }
 
 [System.Serializable]
@@ -676,6 +683,120 @@ public struct AoeData
     {
         return AoeDuration > 0;
     }
+}
+
+[System.Serializable]
+public struct RangedData
+{
+    [Tooltip("If empty, will be hitscan.")]
+    public List<ProjectileData> AttackProjectiles;
+
+    [ShowIf(nameof(MultipleProjectiles)), AllowNesting]
+    public bool RandomizeProjectile;
+
+    [ShowIf(nameof(MultipleProjectiles)), AllowNesting]
+    public bool FireAllProjectiles;
+
+    public bool HasPierce;
+
+    [ShowIf(nameof(HasPierce)), AllowNesting]
+    public PierceData BurstPierce;
+
+    public bool HasRicochet;
+
+    [ShowIf(nameof(HasRicochet)), AllowNesting]
+    public RicochetData BurstRicochet;
+
+    /// <summary>
+    /// Custom show if bool to determine if there are more than one projectile prefab
+    /// </summary>
+    /// <returns></returns>
+    private bool MultipleProjectiles()
+    {
+        if (AttackProjectiles != null)
+        {
+            return AttackProjectiles.Count > 1;
+        }
+        return false;
+    }
+}
+
+[System.Serializable]
+public struct ProjectileData
+{
+    [Tooltip("The type of projectile that gets fired in this part of the burst.")]
+    public GameObject ProjectilePrefabs;
+
+    public float ProjectileSpeed;
+    [HideInInspector] public float BaseProjectileSpeed;
+
+    public float ProjectileLifetime;
+    [HideInInspector] public float BaseProjectileLifetime;
+
+    public int ProjectileDeviation;
+    [HideInInspector] public int BaseProjectileDeviation;
+
+    public int TotalProjectiles;
+    [HideInInspector] public int BaseTotalProjectiles;
+
+    [ShowIf(nameof(NeedSpread)), AllowNesting]
+    public int SpreadDegree;
+    [HideInInspector] public int BaseSpreadDegree;
+
+    /// <summary>
+    /// Custom show if bool to determine if the projectiles have spread
+    /// </summary>
+    /// <returns></returns>
+    private bool NeedSpread()
+    {
+        return TotalProjectiles > 1;
+    }
+}
+
+[System.Serializable]
+public struct PierceData
+{
+    public int PierceAmount;
+    [HideInInspector] public int BasePierceAmount;
+
+    public List<int> PierceDamageFalloffPercent;
+    [HideInInspector] public List<int> BasePierceDamageFalloffPercent;
+
+    [ShowIf(nameof(HasFalloff)), AllowNesting]
+    public int MinPierceDamage;
+    [HideInInspector] public int BaseMinPierceDamage;
+
+    public List<int> PierceLifetimeFalloffPercent;
+    [HideInInspector] public List<int> BasePierceLifetimeFalloffPercent;
+
+    /// <summary>
+    /// Custom bool to determine if there is damage falloff for pierce
+    /// </summary>
+    /// <returns></returns>
+    private bool HasFalloff()
+    {
+        if(PierceDamageFalloffPercent != null)
+        {
+            foreach(int i in PierceDamageFalloffPercent)
+            {
+                if(i > 0)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+}
+
+[System.Serializable]
+public struct RicochetData
+{
+    public int RicochetCount;
+    [HideInInspector] public int BaseRicochetCount;
+
+    public float RicochetRange;
+    [HideInInspector] public float BaseRicochetRange;
 }
 
 #endregion

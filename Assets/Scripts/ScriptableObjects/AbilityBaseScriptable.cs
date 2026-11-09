@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors: Brad Dixon
-* Last Modified: 11/5/2026
+* Last Modified: 11/9/2026
 * Summary: Scriptable object for the abilities. Will havbe specific abilities derive from this as needed, but these 
 *          vars are on every ability scriptable
 * To Do:   N/A
