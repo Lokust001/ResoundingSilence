@@ -130,15 +130,17 @@ public class DebugConsole : MonoBehaviour
     {
         string Command = inputs.text.ToLower();
         Command = Command.Trim();
-        AppendConsoleLine(Command);
-        inputs.text = "";
-        inputs.ActivateInputField();
-
         if (Command.Length == 0)
         {
             Debug.LogWarning("Empty debug command");
             return;
         }
+
+        AppendConsoleLine(Command);
+        inputs.text = "";
+        inputs.ActivateInputField();
+
+        
 
         if (Command == "help")
         {
@@ -494,7 +496,11 @@ public class DebugConsole : MonoBehaviour
         }
         textArea.text += $"<color=#{ColorUtility.ToHtmlStringRGB(TextColor)}>{line}</color>";
 
-        StartCoroutine(ScrollToBottomNextFrame());
+        if (isActiveAndEnabled)
+        {
+            StartCoroutine(ScrollToBottomNextFrame());
+        }
+        
     }
 
     /// <summary>
@@ -503,6 +509,10 @@ public class DebugConsole : MonoBehaviour
     /// <returns></returns>
     private IEnumerator ScrollToBottomNextFrame()
     {
+        if (!isActiveAndEnabled)
+        {
+            yield break;
+        }
         yield return null;
         logScrollRect.verticalNormalizedPosition = 0;
     }
