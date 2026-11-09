@@ -65,7 +65,6 @@ public class RewardGiver : MonoBehaviour
     /// <param name="gainedRewards"></param>
     private void RewardHandler(List<Reward> gainedRewards)
     {
-        PlayerController playerRef = FindAnyObjectByType<PlayerController>();
 
         if (gainedRewards.Count > dropItemsTransforms.Count)
             InsufficientTransformsFailsafe(gainedRewards.Count - dropItemsTransforms.Count);
@@ -83,12 +82,10 @@ public class RewardGiver : MonoBehaviour
             switch (reward.type)
             {
                 case Reward.RewardType.Gold:
-                    int goldAmt = rewardedQuantity;
-                    playerRef.GainGold(goldAmt);
+                    MidRunDataManager.Instance.Money += rewardedQuantity;
                     break;
                 case Reward.RewardType.XP:
-                    int xpAmt = rewardedQuantity;
-                    playerRef.GainXP(xpAmt);
+                    MidRunDataManager.Instance.GainXP(rewardedQuantity);
                     break;
                 case Reward.RewardType.Weapon:
                 case Reward.RewardType.Pin:

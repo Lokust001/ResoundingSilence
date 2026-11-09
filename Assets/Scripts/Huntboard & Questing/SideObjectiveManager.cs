@@ -1,7 +1,7 @@
 /*
 * Author: Dalsten Yan
 * Contributors:
-* Last Modified: 10/27/2026
+* Last Modified: 11/09/2026
 * Summary: The singleton manager for all objectives throughout the game
 * To Do:   Add more objective progression as needed.
 */

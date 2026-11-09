@@ -15,6 +15,9 @@ public class SideObjectiveAssigner : MonoBehaviour
 
     private RewardGiver rewarder;
 
+    /// <summary>
+    /// Creates a non-referencing copy of the objective and tries to find the RewardGiver on this object
+    /// </summary>
     private void Awake()
     {
         if (objective != null)

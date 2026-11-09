@@ -536,22 +536,4 @@ public class PlayerController : MonoBehaviour
         _ = enemy;
         enemy.SetInRangedArea(enteredTrigger);
     }
-
-    /// <summary>
-    /// Used to gain XP after defeating an enemy
-    /// </summary>
-    /// <param name="xpAmount"></param>
-    public void GainXP(int xpAmount) 
-    {
-        currentXP += xpAmount;
-    }
-
-    /// <summary>
-    /// Used to gain gold after a huntboard quest
-    /// </summary>
-    /// <param name="amount"></param>
-    public void GainGold(int amount) 
-    {
-        currentGold += amount;
-    }
 }
