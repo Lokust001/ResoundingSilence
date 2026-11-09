@@ -19,7 +19,7 @@ MonoBehaviour:
   enemyName: Test Buff Enemy
   enemyHealth: 120
   enemyATKDmg: 5
-  timeBetweenAttacks: 9
+  timeBetweenAttacks: 3
   reAggroCooldown: 3
   maxVariabilityDestinationAttempts: 50
   approachDestinationVariabilityDegrees: 0
@@ -42,8 +42,8 @@ MonoBehaviour:
   chargeDestinationAccuracy: 0
   playerHitKnockbackDuration: 0
   playerHitKnockbackDistance: 0
-  buffChargeDuration: 6
-  retreatHealthPercent: 50
+  buffChargeDuration: 3
+  retreatHealthPercent: 35
   allyATKIncreasePercent: 20
   allyReducedDmgPercent: 20
   healthScaling:
@@ -72,7 +72,25 @@ MonoBehaviour:
     m_RotationOrder: 4
   damageScaling:
     serializedVersion: 2
-    m_Curve: []
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
