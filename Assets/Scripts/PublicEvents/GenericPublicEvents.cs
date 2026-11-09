@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors:
-* Last Modified: 09/15/2026
+* Last Modified: 11/6/2026
 * Summary: Stores the public events that don't fit in other public 
 *          event scripts.
 * To Do:   Add more events as needed.
@@ -12,6 +12,9 @@ using UnityEngine;
 
 public static class GenericPublicEvents
 {
+    public static Action<BaseWeaponBehaviour> SetCurrentWeapon;
+
+    public static Action<int, BaseWeaponScriptable> EquipWeaponInSlot;
     public static Action AllManagersInitialized;
 
     public static Action StartGamePressed;
@@ -19,4 +22,8 @@ public static class GenericPublicEvents
     public static Action<PlayerController> PlayerSpawnedIn;
 
     public static Action ReturnToMainMenu;
+
+    public static Action<BaseEnemyScriptable> EnemyDies;
+
+    
 }

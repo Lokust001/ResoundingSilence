@@ -16,7 +16,7 @@ MonoBehaviour:
   UsePresetTooltip: 0
   PresetTooltip: 
   weaponType: 1
-  shownSettings: 4
+  shownSettings: 2
   EnemyLayer:
     serializedVersion: 2
     m_Bits: 1024
@@ -32,13 +32,13 @@ MonoBehaviour:
     - rowTiles: 0000000100
     playerController: {fileID: 0}
   weaponModel: {fileID: 919132149155446097, guid: 8d91757f73797504e9fb596ceaeee14b, type: 3}
-  WeaponName: 
+  WeaponName: Crossbow
   WeaponDamage: 28000000
   BaseWeaponDamage: 28000000
   AttackCooldown:
   - 1.1
   BaseAttackCooldown:
-  - 1.1
+  - 0.4
   AttackSpeed: 1
   AttackBursts: 01000000
   BaseAttackBursts: 01000000
@@ -86,7 +86,7 @@ MonoBehaviour:
   PierceDamageFalloff:
   - 0
   BasePierceDamageFalloff:
-  - 0
+  - 20
   PierceLifetimeFalloff:
   - 0
   BasePierceLifetimeFalloff:
@@ -125,5 +125,8 @@ MonoBehaviour:
   IgniteSize: 0
   IgniteChancePerStack: 0
   abilities:
-  - {fileID: 11400000, guid: 85cfda095c6c67542b6b37e91792c2a0, type: 2}
-  - {fileID: 11400000, guid: 85cfda095c6c67542b6b37e91792c2a0, type: 2}
+  - {fileID: 11400000, guid: 6f506cd0c438fb241bb1c11a0ff72b75, type: 2}
+  - {fileID: 11400000, guid: 831494a4c8517704aa00fb7727784a4d, type: 2}
+  - {fileID: 11400000, guid: 9bc03b9e96d57e849b1c6a98ed4ec0d1, type: 2}
+  - {fileID: 11400000, guid: 58734adf819814e419182fa88cc266af, type: 2}
+  editableAbilities: []

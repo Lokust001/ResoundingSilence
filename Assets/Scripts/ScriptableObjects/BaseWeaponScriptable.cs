@@ -67,7 +67,10 @@ public class BaseWeaponScriptable : BaseScriptableObject
     public UpgradeTileGrid upgradeGrid;
 
     [Tooltip("This is used by the weapons that are dropped on the ground")]
-    public GameObject weaponModel; 
+    public GameObject weaponModel;
+
+    [Tooltip("This is the prefab of the weapon to attach to the player")]
+    public GameObject weaponBehavPrefab;
 
     #endregion
 
@@ -355,7 +358,8 @@ public class BaseWeaponScriptable : BaseScriptableObject
     [Expandable]
     [SerializeField]
     private List<AbilityBaseScriptable> abilities = new();
-    private List<AbilityBaseScriptable> editableAbilities = new();
+    //[HideInInspector]
+    public List<AbilityBaseScriptable> editableAbilities = new();
 
     
     /// <summary>

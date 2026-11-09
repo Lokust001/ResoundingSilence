@@ -31,7 +31,7 @@ public class MapSectionSpawner : MonoBehaviour
         foreach (GameObject point in spawnPoints)
         {
             int prefabNumber = Random.Range(0, Spawnlist.Count);
-            GameObject temp = Instantiate(Spawnlist[prefabNumber], point.transform.position, point.transform.rotation);
+            GameObject temp = Instantiate(Spawnlist[prefabNumber], point.transform.position, point.transform.rotation, point.transform);
             temp.GetComponent<IslandData>().Spawner = this.GetComponent<MapSectionSpawner>();
             temp.GetComponent<IslandData>().SpawnPoint = point;
             worldpoints.Add(temp);
@@ -48,7 +48,7 @@ public class MapSectionSpawner : MonoBehaviour
     /// <returns></returns>
     public GameObject SpawnSingleIsland(GameObject SpawnPoint, int Layout)
     {
-        GameObject temp = Instantiate(prefabs[Layout], SpawnPoint.transform.position, SpawnPoint.transform.rotation);
+        GameObject temp = Instantiate(prefabs[Layout], SpawnPoint.transform.position, SpawnPoint.transform.rotation, SpawnPoint.transform);
         temp.GetComponent<IslandData>().Spawner = this;
         temp.GetComponent<IslandData>().SpawnPoint = SpawnPoint;
         return temp;

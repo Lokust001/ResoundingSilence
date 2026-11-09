@@ -1,7 +1,7 @@
 /*
 * Author: Dalsten Yan
 * Contributors:
-* Last Modified: 10/27/2026
+* Last Modified: 11/5/2026
 * Summary: The objective ScriptableObject that can be tailored to HuntObjectives and much more
 * To Do:   Add more objectives as needed.
 */
@@ -65,8 +65,12 @@ public class SideObjective : BaseScriptableObject
         }
 
         //It doesn't always progress because an enemy may be the wrong type of HuntObjective
-        if(progress)
+        if (progress)
+        {
             huntEnemiesProgress++;
+            UIPublicEvents.UpdateHUDHuntObjs?.Invoke(this);
+        }
+            
 
         return huntEnemiesProgress >= huntedEnemiesGoal;
     }

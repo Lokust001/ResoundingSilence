@@ -13,17 +13,20 @@ public class Chests : MonoBehaviour
     public int Goldmin;
     public int PinMax;
     public int PinMin;
+    public GameObject emptyWeaponGameObject;
     public GameObject emptyPinGameObject;
     [Tooltip("% chance to get weapon")] public float WeaponDropChance;
 
     private bool inChestRange;
     private MidRunDataManager MRM;
+    private bool chestOpened;
 
     /// <summary>
     /// makes the chest listen to the public events for interaction
     /// </summary>
     private void OnEnable()
     {
+        chestOpened = false;
         InputPublicEvents.InteractPressed += TryOpenChest;
         MRM = MidRunDataManager.Instance;
     }
@@ -69,7 +72,7 @@ public class Chests : MonoBehaviour
         {
             MRM = MidRunDataManager.Instance;
         }
-        if (inChestRange)
+        if (inChestRange && !chestOpened)
         {
             MRM.Money += Random.Range(Goldmin, Goldmax + 1);
             int PinSpawn = Random.Range(PinMin, PinMax + 1);
@@ -80,8 +83,9 @@ public class Chests : MonoBehaviour
             }
             if (Random.Range(0, 100) < WeaponDropChance)
             {
-                //TODO drop Weapon
+                GameObject emptyWeapon = Instantiate(emptyWeaponGameObject, transform.position + new Vector3(1, 0, 1), transform.rotation, transform);
             }
+            chestOpened = true;
         }
     }
 }

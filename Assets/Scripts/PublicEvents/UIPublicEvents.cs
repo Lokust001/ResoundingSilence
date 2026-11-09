@@ -25,9 +25,18 @@ public static class UIPublicEvents
 
     #region PlayerHUD
 
+    public static Action<SideObjective> UpdateHUDHuntObjs;
+
     public static Action UpdatePlayerHealthSlider;
 
     public static Action UpdatePlayerEXPSlider;
+
+    public static Action<CooldownUIController.CooldownToUpdate, float> UpdateHUDCooldownUI;
+    public static Action<CooldownUIController.CooldownToUpdate> ImmediatelyRefreshCooldown;
+
+    public static Action<Sprite, Sprite, CooldownUIController.CooldownToUpdate> ChangeCooldownImages;
+
+    
 
     #endregion
 
@@ -48,15 +57,6 @@ public static class UIPublicEvents
     public static Action<PinScriptable> PinChangedOnWeapon;
 
     public static Action InventoryUpdated;
-
-    #endregion
-
-    #region Player HUD
-
-    public static Action<CooldownUIController.CooldownToUpdate, float> UpdateHUDCooldownUI;
-    public static Action<CooldownUIController.CooldownToUpdate> ImmediatelyRefreshCooldown;
-
-    public static Action<Image, Image, CooldownUIController.CooldownToUpdate> ChangeCooldownImages;
 
     #endregion
 

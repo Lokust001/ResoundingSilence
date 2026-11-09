@@ -107,6 +107,7 @@ RectTransform:
   - {fileID: 2551775040404194926}
   - {fileID: 7248665209374358365}
   - {fileID: 1032012882061231407}
+  - {fileID: 3378289253302665240}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -128,7 +129,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHUDController
   menuType: 3
   defaultSelectedGameobject: {fileID: 0}
-  settings: 3
+  settings: 6
   healthBarSlider: {fileID: 2869840550695607072}
   healthBarAnimation:
     serializedVersion: 2
@@ -168,6 +169,9 @@ MonoBehaviour:
   mapCamPrefab: {fileID: -1809554380819732707, guid: 9d7b098084c7562428ee563553a9f832, type: 3}
   Ability1MaxCooldown: 5
   Ability2MaxCooldown: 10
+  prefabHuntText: {fileID: 8957066912145487211, guid: f04cabd8910f10e4ea12b67ad1a56388, type: 3}
+  huntCompleteColor: {r: 0.09198114, g: 0.5, b: 0.13829613, a: 1}
+  huntBoardContainer: {fileID: 5716370214964323187}
 --- !u!1 &965689333218128576
 GameObject:
   m_ObjectHideFlags: 0
@@ -425,7 +429,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 1
-  m_FillAmount: 1
+  m_FillAmount: 0
   m_FillClockwise: 1
   m_FillOrigin: 1
   m_UseSpriteMesh: 0
@@ -865,9 +869,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0781813ac22e61e45a7594bd89af53b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CooldownUIController
-  thisCooldownType: 3
-  cooldownImage: {fileID: 6341217750160062614}
-  backgroundImage: {fileID: 6346286204389305716}
+  thisCooldownType: 2
+  cooldownImage: {fileID: 6346286204389305716}
+  backgroundImage: {fileID: 6341217750160062614}
 --- !u!1 &5309337031681836522
 GameObject:
   m_ObjectHideFlags: 0
@@ -981,6 +985,68 @@ MonoBehaviour:
   m_FillOrigin: 1
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &5716370214964323187
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3378289253302665240}
+  - component: {fileID: 6464492956500456806}
+  m_Layer: 5
+  m_Name: HuntObjectives
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &3378289253302665240
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5716370214964323187}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3344162509967469557}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -176.52002, y: -343.26398}
+  m_SizeDelta: {x: 353.05, y: 47.918}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &6464492956500456806
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5716370214964323187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.VerticalLayoutGroup
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 1
+  m_Spacing: 36
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1 &6502926884310465755
 GameObject:
   m_ObjectHideFlags: 0
@@ -1198,7 +1264,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 1
-  m_FillAmount: 1
+  m_FillAmount: 0
   m_FillClockwise: 1
   m_FillOrigin: 1
   m_UseSpriteMesh: 0
@@ -1487,5 +1553,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CooldownUIController
   thisCooldownType: 3
-  cooldownImage: {fileID: 7369757926646715460}
-  backgroundImage: {fileID: 3813474593887612717}
+  cooldownImage: {fileID: 3813474593887612717}
+  backgroundImage: {fileID: 7369757926646715460}
