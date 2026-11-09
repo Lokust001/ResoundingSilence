@@ -1,15 +1,19 @@
 /*
 * Author: Tyler
 * Contributors: Brenden, Brad Dixon
-* Last Modified: 11/6/2026
+* Last Modified: 11/9/2026
 * Summary: This is a database that will hold all of the data needed mid run.
 * To Do:   N/A
 */
 
-using NaughtyAttributes;
+using System.Collections;
 using System.Collections.Generic;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
+using NaughtyAttributes;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 [System.Serializable]
 public struct LevelUpData
@@ -110,6 +114,22 @@ public class MidRunDataManager : BaseManager
 
     [SerializeField, ShowIf(nameof(EnableTestingMode))]
     private List<PinScriptable> testingPinInventory = new();
+
+    #region TerotVariables
+    bool MagicianBool;
+    [SerializeField, Tooltip("Where the player will stop scaling, in %, base is 100")] int MagicianMaxDamageBuff;
+    [SerializeField, Tooltip("Where the damage buff will be at after the player takes damage, in %, base is 100")] int MagicianMinDamageBuff;
+    [SerializeField, Tooltip("How long between the ticks of buffs, in seconds")] float MagicianTimeBetween;
+    [SerializeField, Tooltip("How much gets added each tick off time undamaged, in %, no scaling would be 0")] int MagicianAmountAdded;
+    [HideInInspector] public int MagicianDamageBuff = 1;
+
+    bool DevilBool;
+    [SerializeField, Tooltip("Where the player will stop scaling, in %, base is 100")] int DevilMaxDamageBuff;
+    [SerializeField, Tooltip("Where the damage buff will be at when hitting the min health missing threshold, in %, base is 100")] int DevilMinDamageBuff;
+    [SerializeField, Tooltip("what percent health does the player have the max damage boost")] int DevilMaxBuffHealthPercent;
+    [SerializeField, Tooltip("What percent health does the player have to start giving damage buff")] int DevilMinBuffHealthPercent;
+    [HideInInspector] public int DevilDamageBuff = 1;
+    #endregion
 
     [Button]
     void GiveXP()
@@ -213,7 +233,6 @@ public class MidRunDataManager : BaseManager
         {
             return;
         }
-
         if (equippedWeapons[slot] == null)
         {
             equippedWeapons[slot] = weapon;
@@ -274,6 +293,11 @@ public class MidRunDataManager : BaseManager
             return;
         }
 
+        if (amountToChange < 0 && MagicianBool)
+        {
+            MagicianDamageBuff = MagicianMinDamageBuff;
+        }
+
         if (amountToChange > 0)
         {
             //ceil cus we are healing the player
@@ -287,6 +311,28 @@ public class MidRunDataManager : BaseManager
             InputManager.Instance.DisablePlayerInputs();
         }
 
+        if (CurrentPlayerHealth / MaxPlayerHealth < DevilMinBuffHealthPercent / 100)
+        {
+            if (CurrentPlayerHealth / MaxPlayerHealth < DevilMaxBuffHealthPercent / 100)
+            {
+                DevilDamageBuff = DevilMaxDamageBuff;
+            }
+            else
+            {
+                float differanceBetweenminandmaxbuff = DevilMaxDamageBuff - DevilMinDamageBuff;
+                float differanceBetweenminandmaxhealth = DevilMaxBuffHealthPercent - DevilMinBuffHealthPercent;
+                float CurrentPlayerHealthpercent = CurrentPlayerHealth / MaxPlayerHealth;
+
+                float percentHealth = CurrentPlayerHealthpercent  - DevilMinBuffHealthPercent;
+                float percentBuff = percentHealth / differanceBetweenminandmaxhealth;
+                float buffamount = percentBuff * differanceBetweenminandmaxbuff;
+                DevilDamageBuff = Mathf.CeilToInt(DevilMinDamageBuff + buffamount);
+            }
+        }
+        else
+        {
+            DevilDamageBuff = 100;
+        }
 
         UIPublicEvents.UpdatePlayerHealthSlider?.Invoke();
     }
@@ -353,4 +399,20 @@ public class MidRunDataManager : BaseManager
     {
         return value >= 1 ? value / 100 : value;
     }
+
+    private IEnumerator Magician()
+    {
+        while (MagicianBool)
+        {
+            MagicianDamageBuff += MagicianAmountAdded;
+            if (MagicianDamageBuff > MagicianMaxDamageBuff)
+            {
+                MagicianDamageBuff = MagicianMaxDamageBuff;
+            }
+            yield return new WaitForSecondsRealtime(MagicianTimeBetween);
+        }
+        yield return null;
+    }
+
+
 }
