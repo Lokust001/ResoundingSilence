@@ -95,13 +95,13 @@ public class BaseWeaponScriptable : BaseScriptableObject
 
     [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
     [Tooltip("How much damage the weapon does. Is a list in case the weapon has multiple hits in a combo.")]
-    [HideInInspector] public List<int> BaseWeaponDamage = new List<int>();
+ public List<int> BaseWeaponDamage = new List<int>();
 
     [HideInInspector] public List<float> AttackCooldown = new List<float>();
 
     [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
     [Tooltip("How much damage the weapon does. Is a list in case the weapon has multiple hits in a combo.")]
-    [HideInInspector] public List<float> BaseAttackCooldown = new List<float>();
+ public List<float> BaseAttackCooldown = new List<float>();
 
     //Defaults to 1 so the animation plays at normal speed.
     [HideInInspector] public float AttackSpeed = 1;
@@ -110,67 +110,67 @@ public class BaseWeaponScriptable : BaseScriptableObject
 
     [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
     [Tooltip("When making an attack, how many times the attack should occur. Is a list in case the weapon's combo attacks should cause different amount of bursts.")]
-    [HideInInspector] public List<int> BaseAttackBursts = new List<int>();
+ public List<int> BaseAttackBursts = new List<int>();
 
     [HideInInspector] public List<float> TimeBetweenBursts = new List<float>();
 
     [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
     [Tooltip("How much time passes between each burst. Set to 0 for weapons that unleash a burst of attacks at once. Is a list in case you want different timings for combo attacks.")]
-    [HideInInspector] public List<float> BaseTimeBetweenBursts = new List<float>();
+ public List<float> BaseTimeBetweenBursts = new List<float>();
 
     [HideInInspector] public List<float> BurstDamageAmount = new List<float>();
 
     [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
     [Tooltip("How much % damage the burst does compared to the base attack")]
-    [HideInInspector] public List<float> BaseBurstDamageAmount = new List<float>();
+ public List<float> BaseBurstDamageAmount = new List<float>();
 
     [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
     [Tooltip("Whether or not a weapon has lifesteal.")]
-    [HideInInspector] public bool HasLifesteal;
+ public bool HasLifesteal;
 
     [ShowIf(nameof(WeaponLifeSteal))]
     [Tooltip("How much lifesteal a weapon has. Made as a list in case you want combo attacks to have multiple life steal values.")]
-    [HideInInspector] public List<float> BaseLifestealAmount = new List<float>();
+ public List<float> BaseLifestealAmount = new List<float>();
 
     [HideInInspector] public List<float> LifestealAmount = new List<float>();
 
     [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
     [Tooltip("If the weapon has an AOE attack attached.")]
-    [HideInInspector] public bool HasAOEAttack;
+ public bool HasAOEAttack;
 
     [ShowIf(nameof(WeaponAOE))]
     [Tooltip("What the weapon's AOE looks like. List in case we want multiple different kinds.")]
-    [HideInInspector] public List<GameObject> WeaponAOEs = new List<GameObject>();
+ public List<GameObject> WeaponAOEs = new List<GameObject>();
 
     [HideInInspector] public List<int> AOEDamage = new List<int>();
 
     [ShowIf(nameof(WeaponAOE))]
     [Tooltip("The most amount of damage the AOE can do.")]
-    [HideInInspector] public List<int> BaseAOEDamage = new List<int>();
+ public List<int> BaseAOEDamage = new List<int>();
 
     [HideInInspector] public List<float> AOESize = new List<float>();
 
     [ShowIf(nameof(WeaponAOE))]
     [Tooltip("How big the AOE is.")]
-    [HideInInspector] public List<float> BaseAOESize = new List<float>();
+ public List<float> BaseAOESize = new List<float>();
 
     [HideInInspector] public List<float> AOEDuration = new List<float>();
 
     [ShowIf(nameof(WeaponAOE))]
     [Tooltip("How long the AOE lasts.")]
-    [HideInInspector] public List<float> BaseAOEDuration = new List<float>();
+ public List<float> BaseAOEDuration = new List<float>();
 
     [HideInInspector] public List<int> AOEDamageTicks = new List<int>();
 
     [ShowIf(nameof(WeaponAOE))]
     [Tooltip("How many times the AOE should damage.")]
-    [HideInInspector] public List<int> BaseAOEDamageTicks = new List<int>();
+ public List<int> BaseAOEDamageTicks = new List<int>();
 
     [HideInInspector] public List<float> AOEDelay = new List<float>();
 
     [ShowIf(nameof(WeaponAOE))]
     [Tooltip("How much of a delay there is before the AOE goes off. 0 is instant.")]
-    [HideInInspector] public List<float> BaseAOEDelay = new List<float>();
+ public List<float> BaseAOEDelay = new List<float>();
 
     #endregion
 
