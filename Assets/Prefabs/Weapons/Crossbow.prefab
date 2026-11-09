@@ -178,11 +178,10 @@ MonoBehaviour:
   - {fileID: 7347509225486067769}
   - {fileID: 5277897699482532973}
   - {fileID: 417958859510438225}
+  activePreview: {fileID: 0}
   currentAbilityIndex: 0
-  aimDir: {x: 0, y: 0, z: 1}
-  playerAiming: 0
-  abilityOneIndex: 1
-  abilityTwoIndex: 2
+  abilityOneIndex: 3
+  abilityTwoIndex: 0
   abilityOneReady: 1
   abilityTwoReady: 1
 --- !u!95 &4470947134498793366
@@ -218,6 +217,10 @@ PrefabInstance:
     - target: {fileID: 7689218904197164709, guid: a1f33ca49684a5444a61e04b07012ae1, type: 3}
       propertyPath: m_Name
       value: SplinterShotPreview
+      objectReference: {fileID: 0}
+    - target: {fileID: 7689218904197164709, guid: a1f33ca49684a5444a61e04b07012ae1, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 8933406228398724970, guid: a1f33ca49684a5444a61e04b07012ae1, type: 3}
       propertyPath: m_LocalPosition.x
@@ -326,6 +329,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BombBlastPreview
       objectReference: {fileID: 0}
+    - target: {fileID: 7078761736756142689, guid: 6c49ee599b65f5d4f8d0ff5eb9a4eaf5, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -397,6 +404,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ScatterShotPreview
       objectReference: {fileID: 0}
+    - target: {fileID: 7282972377182042333, guid: 780e4ba22d2b3f04caf88256ef30778b, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -423,6 +434,10 @@ PrefabInstance:
     - target: {fileID: 4852256441924873392, guid: 8b108235bab812c42ac6a49607b740bc, type: 3}
       propertyPath: m_Name
       value: StakeShotPreview
+      objectReference: {fileID: 0}
+    - target: {fileID: 4852256441924873392, guid: 8b108235bab812c42ac6a49607b740bc, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6202562980687681173, guid: 8b108235bab812c42ac6a49607b740bc, type: 3}
       propertyPath: m_LocalPosition.x
