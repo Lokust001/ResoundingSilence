@@ -18,6 +18,8 @@ public class AppManager : MonoBehaviour
     private List<BaseManager> managers = new List<BaseManager>();
     public List<BaseManager> initializedManagers = new List<BaseManager>();
 
+    [SerializeField]
+    private List<CombinedCollisions> CollisionsToSetAtStart = new();
     public static AppManager Instance;
 
     public bool EnableTestingMode;
@@ -45,6 +47,11 @@ public class AppManager : MonoBehaviour
         catch
         {
             throw new System.Exception("Failed to initialize");
+        }
+
+        foreach (CombinedCollisions c in CollisionsToSetAtStart)
+        {
+            Physics.IgnoreLayerCollision(c.layer1, c.layer2, false);
         }
 
         Time.timeScale = 1.0f;
@@ -82,4 +89,14 @@ public class AppManager : MonoBehaviour
         }
     }
 
+}
+
+[System.Serializable]
+public struct CombinedCollisions
+{
+    [Layer, AllowNesting]
+    public int layer1;
+
+    [Layer, AllowNesting]
+    public int layer2;
 }
