@@ -196,7 +196,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85b9912475489c14bb38d6edd43eddb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SideObjectiveAssigner
-  objective: {fileID: 0}
+  objective: {fileID: 11400000, guid: efa519fd47f09dd40a1479a325d8ab77, type: 2}
   rewarder: {fileID: 439661272741415426}
 --- !u!114 &6356527859961721033
 MonoBehaviour:
@@ -212,7 +212,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Interactable
   interactionAction:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5805842371882105554}
+        m_TargetAssemblyTypeName: SideObjectiveAssigner, Assembly-CSharp
+        m_MethodName: OpenHuntMenu
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!135 &5386985114801368779
 SphereCollider:
   m_ObjectHideFlags: 0

@@ -1,10 +1,28 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 public class TempDeathScreen : MonoBehaviour
 {
+    [SerializeField]
+    private GameObject button;
+
+    private void OnEnable()
+    {
+        if (InputManager.Instance.ControllerIsEnabled)
+        {
+            SelectRestartBtn();   
+        }
+        InputPublicEvents.ControllerEnabled += SelectRestartBtn;
+    }
+
+    private void SelectRestartBtn()
+    {
+        EventSystem.current.SetSelectedGameObject(button);
+    }
+
     public void RestartGame()
     {
         AppManager.Instance = null;

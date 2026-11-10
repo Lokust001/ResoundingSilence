@@ -81,4 +81,10 @@ public static class UIPublicEvents
     public static Action TarotMenuClosed;
 
     #endregion
+
+    #region HuntBoard
+
+    public static Action<SideObjective> UpdateHuntBoardData;
+
+    #endregion
 }
