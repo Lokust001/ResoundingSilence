@@ -20,6 +20,9 @@ public class PlayerController : MonoBehaviour
     int currentXP;
 
     [SerializeField]
+    int currentGold;
+
+    [SerializeField]
     string[] invincibilityLayerNamesToIgnore;
 
     [SerializeField]
@@ -532,14 +535,5 @@ public class PlayerController : MonoBehaviour
     {
         _ = enemy;
         enemy.SetInRangedArea(enteredTrigger);
-    }
-
-    /// <summary>
-    /// Used to gain XP after defeating an enemy
-    /// </summary>
-    /// <param name="xpAmount"></param>
-    public void GainXP(int xpAmount) 
-    {
-        currentXP += xpAmount;
     }
 }

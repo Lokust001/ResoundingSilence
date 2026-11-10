@@ -34519,7 +34519,7 @@ Transform:
   m_GameObject: {fileID: 8515502077694769622}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.7899971, y: 3.83, z: 47.36}
+  m_LocalPosition: {x: -3.2, y: 3, z: 51.17}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -36215,7 +36215,7 @@ Transform:
   m_GameObject: {fileID: 9049389217217786335}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 53.62, y: 3.11, z: 3.66}
+  m_LocalPosition: {x: 53.62, y: 3, z: 3.66}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -39767,6 +39767,14 @@ PrefabInstance:
     - target: {fileID: 6718902476573017054, guid: 9c86bc2b840ea8840842d54849c8753c, type: 3}
       propertyPath: m_Name
       value: EnemySpawnArea (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6721339875766835798, guid: 9c86bc2b840ea8840842d54849c8753c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.06
+      objectReference: {fileID: 0}
+    - target: {fileID: 6721339875766835798, guid: 9c86bc2b840ea8840842d54849c8753c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 9.49
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
