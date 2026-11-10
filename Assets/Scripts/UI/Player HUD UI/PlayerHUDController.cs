@@ -124,14 +124,14 @@ public class PlayerHUDController : MenuBase
 
     private void NewWeaponEnabled(BaseWeaponBehaviour weapon)
     {
-        UIPublicEvents.ChangeCooldownImages?.Invoke(
-            weapon.ThisWeaponData.editableAbilities[weapon.abilityOneIndex].AbilityImage,
-            weapon.ThisWeaponData.editableAbilities[weapon.abilityOneIndex].BackgroundImage,
-            CooldownUIController.CooldownToUpdate.Ability1);
-        UIPublicEvents.ChangeCooldownImages?.Invoke(
-            weapon.ThisWeaponData.editableAbilities[weapon.abilityTwoIndex].AbilityImage,
-            weapon.ThisWeaponData.editableAbilities[weapon.abilityTwoIndex].BackgroundImage,
-            CooldownUIController.CooldownToUpdate.Ability2);
+        //UIPublicEvents.ChangeCooldownImages?.Invoke(
+        //    weapon.ThisWeaponData.editableAbilities[weapon.abilityOneIndex].AbilityImage,
+        //    weapon.ThisWeaponData.editableAbilities[weapon.abilityOneIndex].BackgroundImage,
+        //    CooldownUIController.CooldownToUpdate.Ability1);
+        //UIPublicEvents.ChangeCooldownImages?.Invoke(
+        //    weapon.ThisWeaponData.editableAbilities[weapon.abilityTwoIndex].AbilityImage,
+        //    weapon.ThisWeaponData.editableAbilities[weapon.abilityTwoIndex].BackgroundImage,
+        //    CooldownUIController.CooldownToUpdate.Ability2);
 
         ImmediatelyRefreshAllCooldowns();
     }

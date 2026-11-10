@@ -165,6 +165,7 @@ public struct AnimationPath
 {
     public AnimationClip AnimClip;
     public int LayerIndex;
+    public Animator AnimatorUsed;
 }
 
 [System.Serializable]

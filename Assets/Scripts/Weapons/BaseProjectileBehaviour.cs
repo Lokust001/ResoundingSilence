@@ -105,8 +105,8 @@ public class BaseProjectileBehaviour : MonoBehaviour
                 Debug.Log(Mathf.CeilToInt(baseDamage * ConvertToPercentage(attackRef.BurstRangedAttack.BurstPierce.PierceAmount)));
 
                 myDamage = myDamage - Mathf.CeilToInt(baseDamage * ConvertToPercentage(attackRef.BurstRangedAttack.BurstPierce.PierceDamageFalloffPercent[pierceDamageIndex]))
-                    >= attackRef.BurstRangedAttack.BurstPierce.MinPierceDamage ? myDamage - Mathf.CeilToInt(baseDamage * ConvertToPercentage(attackRef.BurstRangedAttack.BurstPierce.PierceDamageFalloffPercent[pierceDamageIndex]))
-                    : attackRef.BurstRangedAttack.BurstPierce.MinPierceDamage;
+                    >= (myDamage * attackRef.BurstRangedAttack.BurstPierce.MinPierceDamagePercent) ? myDamage - Mathf.CeilToInt(baseDamage * ConvertToPercentage(attackRef.BurstRangedAttack.BurstPierce.PierceDamageFalloffPercent[pierceDamageIndex]))
+                    : (myDamage * attackRef.BurstRangedAttack.BurstPierce.MinPierceDamagePercent);
 
                 myLifetime -= (baseLifetime * ConvertToPercentage(attackRef.BurstRangedAttack.BurstPierce.PierceLifetimeFalloffPercent[pierceLifetimeIndex]));
 

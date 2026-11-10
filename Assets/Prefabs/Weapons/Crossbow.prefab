@@ -123,8 +123,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7236322570925161113}
-  - component: {fileID: 1506777356380557928}
   - component: {fileID: 4470947134498793366}
+  - component: {fileID: 3267022538273132329}
   m_Layer: 7
   m_Name: Crossbow
   m_TagString: Untagged
@@ -150,40 +150,6 @@ Transform:
   - {fileID: 4298004810466838347}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1506777356380557928
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8556073844088731136}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 579420d72e9042b4bad5d8251cab5b62, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BaseWeaponBehaviour
-  ThisWeaponData: {fileID: 0}
-  weaponDataID: 0
-  weaponModel: {fileID: 7187170942483594616}
-  groundLayerMask:
-    serializedVersion: 2
-    m_Bits: 512
-  weaponAnimator: {fileID: 4470947134498793366}
-  attackAnimations:
-  - {fileID: 7400000, guid: e90138978acc5f241830b30f92ca801f, type: 2}
-  comboIndex: 0
-  meleeHitboxes: []
-  abilityAOEs:
-  - {fileID: 7590928629485323880}
-  - {fileID: 7347509225486067769}
-  - {fileID: 5277897699482532973}
-  - {fileID: 417958859510438225}
-  activePreview: {fileID: 0}
-  currentAbilityIndex: 0
-  abilityOneIndex: 3
-  abilityTwoIndex: 0
-  abilityOneReady: 1
-  abilityTwoReady: 1
 --- !u!95 &4470947134498793366
 Animator:
   serializedVersion: 7
@@ -206,6 +172,41 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &3267022538273132329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8556073844088731136}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b3606c8610380f40b1632a040142f69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BaseWeaponAbilityBehaviour
+  ThisWeaponData: {fileID: 0}
+  weaponDataID: 0
+  groundLayerMask:
+    serializedVersion: 2
+    m_Bits: 512
+  weaponAnimator: {fileID: 4470947134498793366}
+  attackAnimations:
+  - AnimClip: {fileID: 7400000, guid: e90138978acc5f241830b30f92ca801f, type: 2}
+    LayerIndex: 0
+    AnimatorUsed: {fileID: 0}
+  comboIndex: 0
+  meleeHitboxes: []
+  abilityAOEs:
+  - {fileID: 7590928629485323880}
+  - {fileID: 7347509225486067769}
+  - {fileID: 5277897699482532973}
+  - {fileID: 417958859510438225}
+  activePreview: {fileID: 0}
+  currentAbilityIndex: 0
+  abilityOneIndex: 3
+  abilityTwoIndex: 0
+  abilityOneReady: 1
+  abilityTwoReady: 1
 --- !u!1001 &283149000665934029
 PrefabInstance:
   m_ObjectHideFlags: 0
