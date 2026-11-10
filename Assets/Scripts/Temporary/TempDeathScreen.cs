@@ -1,5 +1,11 @@
-using System.Collections.Generic;
-using System.Linq;
+/*
+* Author: Tyler
+* Contributors:
+* Last Modified: 11/10/2026
+* Summary: temp death screen manager
+* To Do:   N/A
+*/
+
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -9,6 +15,9 @@ public class TempDeathScreen : MonoBehaviour
     [SerializeField]
     private GameObject button;
 
+    /// <summary>
+    /// controller support for when the menu opens
+    /// </summary>
     private void OnEnable()
     {
         if (InputManager.Instance.ControllerIsEnabled)
@@ -18,11 +27,17 @@ public class TempDeathScreen : MonoBehaviour
         InputPublicEvents.ControllerEnabled += SelectRestartBtn;
     }
 
+    /// <summary>
+    /// Selects the restart button
+    /// </summary>
     private void SelectRestartBtn()
     {
         EventSystem.current.SetSelectedGameObject(button);
     }
 
+    /// <summary>
+    /// restarts da game
+    /// </summary>
     public void RestartGame()
     {
         AppManager.Instance = null;

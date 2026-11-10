@@ -75,6 +75,11 @@ public class SideObjective : BaseScriptableObject
         return huntEnemiesProgress >= huntedEnemiesGoal;
     }
     
+    /// <summary>
+    /// Calculates the tooltip for the objective
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="System.Exception"></exception>
     public string GetSideObjectiveTooltipText()
     {
         string retStr = "";
@@ -90,6 +95,10 @@ public class SideObjective : BaseScriptableObject
         return retStr;
     }
 
+    /// <summary>
+    /// Calculates the hunt tooltip text
+    /// </summary>
+    /// <returns></returns>
     private string GetHuntTooltipText()
     {
         string retStr = $"Defeat {huntedEnemiesGoal} ";
