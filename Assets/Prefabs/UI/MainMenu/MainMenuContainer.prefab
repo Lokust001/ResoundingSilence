@@ -436,7 +436,7 @@ PrefabInstance:
     - target: {fileID: 7356014633753987730, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
       propertyPath: m_Navigation.m_SelectOnDown
       value: 
-      objectReference: {fileID: 3964618638077312586}
+      objectReference: {fileID: 6898427381513225469}
     - target: {fileID: 7356014633753987730, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
@@ -594,7 +594,7 @@ PrefabInstance:
     - target: {fileID: 7356014633753987730, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
       propertyPath: m_Navigation.m_SelectOnUp
       value: 
-      objectReference: {fileID: 3964618638077312586}
+      objectReference: {fileID: 8446344035455997711}
     - target: {fileID: 7356014633753987730, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
       propertyPath: m_Navigation.m_SelectOnDown
       value: 
@@ -664,6 +664,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Settings
       objectReference: {fileID: 0}
+    - target: {fileID: 3608999156079659134, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5377152887758933488, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -678,7 +682,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5377152887758933488, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5377152887758933488, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
       propertyPath: m_AnchorMin.x
@@ -686,7 +690,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5377152887758933488, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5377152887758933488, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
       propertyPath: m_SizeDelta.x
@@ -726,11 +730,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5377152887758933488, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 960
       objectReference: {fileID: 0}
     - target: {fileID: 5377152887758933488, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -257.18076
       objectReference: {fileID: 0}
     - target: {fileID: 5377152887758933488, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -745,6 +749,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7356014633753987730, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7356014633753987730, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
       propertyPath: m_Navigation.m_Mode
       value: 4
       objectReference: {fileID: 0}
@@ -752,6 +760,18 @@ PrefabInstance:
       propertyPath: m_Navigation.m_SelectOnUp
       value: 
       objectReference: {fileID: 8446344035455997711}
+    - target: {fileID: 7356014633753987730, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
+      propertyPath: m_Colors.m_DisabledColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7356014633753987730, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
+      propertyPath: m_Colors.m_DisabledColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7356014633753987730, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
+      propertyPath: m_Colors.m_DisabledColor.r
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7356014633753987730, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
       propertyPath: m_Navigation.m_SelectOnDown
       value: 
@@ -798,17 +818,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5377152887758933488, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
   m_PrefabInstance: {fileID: 5841441330068649176}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &3964618638077312586 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7356014633753987730, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
-  m_PrefabInstance: {fileID: 5841441330068649176}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!1001 &6840413657948920011
 PrefabInstance:
   m_ObjectHideFlags: 0

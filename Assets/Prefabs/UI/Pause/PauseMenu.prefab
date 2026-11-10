@@ -973,7 +973,7 @@ PrefabInstance:
     - target: {fileID: 7356014633753987730, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
       propertyPath: m_Navigation.m_SelectOnDown
       value: 
-      objectReference: {fileID: 854317637673674107}
+      objectReference: {fileID: 917208039181153779}
     - target: {fileID: 7356014633753987730, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
@@ -1300,7 +1300,7 @@ PrefabInstance:
     - target: {fileID: 7356014633753987730, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
       propertyPath: m_Navigation.m_SelectOnUp
       value: 
-      objectReference: {fileID: 854317637673674107}
+      objectReference: {fileID: 4687783985302043703}
     - target: {fileID: 7356014633753987730, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
       propertyPath: m_Colors.m_SelectedColor.b
       value: 0.46226418
@@ -1382,6 +1382,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DefaultButton (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 3608999156079659134, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5377152887758933488, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1396,7 +1400,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5377152887758933488, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5377152887758933488, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
       propertyPath: m_AnchorMin.x
@@ -1404,7 +1408,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5377152887758933488, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5377152887758933488, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
       propertyPath: m_SizeDelta.x
@@ -1444,11 +1448,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5377152887758933488, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 560
       objectReference: {fileID: 0}
     - target: {fileID: 5377152887758933488, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -236.965
       objectReference: {fileID: 0}
     - target: {fileID: 5377152887758933488, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1460,6 +1464,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5377152887758933488, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7356014633753987730, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
+      propertyPath: m_Interactable
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7356014633753987730, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
@@ -1523,17 +1531,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
---- !u!114 &854317637673674107 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7356014633753987730, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
-  m_PrefabInstance: {fileID: 7912531012487786473}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!224 &2833196305634746905 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5377152887758933488, guid: 0e896f70fa1e0f94f93ae7e041c82dfc, type: 3}
