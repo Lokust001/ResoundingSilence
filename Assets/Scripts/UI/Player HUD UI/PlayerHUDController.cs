@@ -7,6 +7,7 @@
 */
 
 using NaughtyAttributes;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -96,6 +97,7 @@ public class PlayerHUDController : MenuBase
         UIPublicEvents.UpdatePlayerEXPSlider += UpdatePlayerEXPBarValue;
         UIPublicEvents.UpdateHUDHuntObjs += UpdateHuntObjective;
         GenericPublicEvents.SetCurrentWeapon += NewWeaponEnabled;
+        UIPublicEvents.RewardsForObjectiveClaimed += RemoveHuntObjective;
     }
 
     /// <summary>
@@ -107,6 +109,7 @@ public class PlayerHUDController : MenuBase
         UIPublicEvents.UpdatePlayerHealthSlider -= UpdatePlayerHealthBarValue;
         UIPublicEvents.UpdatePlayerEXPSlider -= UpdatePlayerEXPBarValue; 
         UIPublicEvents.UpdateHUDHuntObjs -= UpdateHuntObjective;
+        UIPublicEvents.RewardsForObjectiveClaimed -= RemoveHuntObjective;
         GenericPublicEvents.SetCurrentWeapon -= NewWeaponEnabled;
     }
 
@@ -277,6 +280,19 @@ public class PlayerHUDController : MenuBase
         {
             throw new System.Exception($"Could not find a text for hunt objective {obj.name}, and couldnt make a new one");
         }
+    }
+
+    private void RemoveHuntObjective(SideObjective obj)
+    {
+        (SideObjective, TMP_Text) temp = huntTexts.FirstOrDefault(x => x.Item1 == obj);
+
+        if (temp.Item1 == null)
+        {
+            return;
+        }
+
+        huntTexts.Remove(temp);
+        Destroy(temp.Item2);
     }
     #endregion
     #endregion

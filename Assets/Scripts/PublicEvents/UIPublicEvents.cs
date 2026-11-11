@@ -84,7 +84,9 @@ public static class UIPublicEvents
 
     #region HuntBoard
 
-    public static Action<SideObjective> UpdateHuntBoardData;
+    public static Action<SideObjective, RewardGiver> UpdateHuntBoardData;
+
+    public static Action<SideObjective> RewardsForObjectiveClaimed;
 
     #endregion
 }

@@ -109,13 +109,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d64ddf4282f7884c83f3d814902098e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RewardGiver
-  possibleRewards: []
+  possibleRewards:
+  - rewardName: Crossbow
+    type: 2
+    prefab: {fileID: 4058568919098926793, guid: c2e6770781064864a888b6642baeedc9, type: 3}
+    dropChance: 50
+    minDropAmt: 1
+    maxDropAmt: 1
+  - rewardName: EXP
+    type: 1
+    prefab: {fileID: 8556073844088731136, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
+    dropChance: 50
+    minDropAmt: 5
+    maxDropAmt: 15
   dropItemsTransforms:
   - {fileID: 953394943848073113}
   - {fileID: 6731162146256878452}
   - {fileID: 7152906775299298327}
   logRNGNumber: 0
   logRewardedQty: 0
+  RewardsHaveBeenDispensed: 0
 --- !u!1 &5577196182681452268
 GameObject:
   m_ObjectHideFlags: 0
@@ -162,7 +175,7 @@ GameObject:
   - component: {fileID: 5805842371882105554}
   - component: {fileID: 6356527859961721033}
   - component: {fileID: 5386985114801368779}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: ObjectiveInteraction
   m_TagString: Untagged
   m_Icon: {fileID: 0}
