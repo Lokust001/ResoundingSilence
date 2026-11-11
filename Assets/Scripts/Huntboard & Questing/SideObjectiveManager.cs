@@ -68,6 +68,7 @@ public class SideObjectiveManager : BaseService
         {
             case SideObjective.ObjectiveType.HuntObjective:
                 currentHuntObjectives.Add(sideObjective);
+                UIPublicEvents.UpdateHUDHuntObjs?.Invoke(sideObjective);
                 break;
             default:
                 Debug.LogError("Invalid Objective Type Detected!");

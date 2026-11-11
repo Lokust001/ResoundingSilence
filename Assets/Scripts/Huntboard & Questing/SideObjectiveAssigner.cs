@@ -72,4 +72,18 @@ public class SideObjectiveAssigner : MonoBehaviour
     {
         rewarder.StartGivingRewards();
     }
+
+    /// <summary>
+    /// Attempts to open the hunt menu
+    /// </summary>
+    public void OpenHuntMenu()
+    {
+        if (rewarder.RewardsHaveBeenDispensed)
+        {
+            return;
+        }
+
+        UIPublicEvents.UpdateUIManagerStack?.Invoke(UiMenuType.HuntBoard);
+        UIPublicEvents.UpdateHuntBoardData?.Invoke(objective, rewarder);
+    }
 }
