@@ -32,11 +32,12 @@ MonoBehaviour:
     - rowTiles: 0000000100
     playerController: {fileID: 0}
   weaponModel: {fileID: 919132149155446097, guid: 8d91757f73797504e9fb596ceaeee14b, type: 3}
+  weaponBehavPrefab: {fileID: 8556073844088731136, guid: f1166cf9b22624d4c8e5aaae3919744d, type: 3}
   WeaponName: Crossbow
   WeaponDamage: 28000000
   BaseWeaponDamage: 28000000
   AttackCooldown:
-  - 1.1
+  - 0.4
   BaseAttackCooldown:
   - 0.4
   AttackSpeed: 1
@@ -84,7 +85,7 @@ MonoBehaviour:
   - 3
   HasPierce: 0
   PierceDamageFalloff:
-  - 0
+  - 20
   BasePierceDamageFalloff:
   - 20
   PierceLifetimeFalloff:

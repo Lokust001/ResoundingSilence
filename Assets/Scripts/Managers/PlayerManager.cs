@@ -70,7 +70,7 @@ public class PlayerManager : BaseManager
     }
 
     /// <summary>
-    /// 
+    /// set the weapon to true that should be true
     /// </summary>
     private void swapWeapon()
     {
@@ -93,10 +93,11 @@ public class PlayerManager : BaseManager
     }
 
     /// <summary>
-    /// 
+    /// Spawns in the weapon prefab when you pick up a new weapon
     /// </summary>
     public void spawnNewWeapon(int index, BaseWeaponScriptable scriptable)
     {
+        Destroy(WeaponsGameObjects[index]);
         GameObject weapon = Instantiate(scriptable.weaponBehavPrefab, player.transform);
         weapon.GetComponent<BaseWeaponBehaviour>().ThisWeaponData = scriptable;
         WeaponsGameObjects[index] = weapon.GetComponent<BaseWeaponBehaviour>();
