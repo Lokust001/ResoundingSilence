@@ -120,12 +120,13 @@ public class StaticDataManager : BaseManager
     /// <exception cref="System.Exception"></exception>
     public BaseWeaponScriptable GetRandomWeapon()
     {
-        if (possibleGlyphs.Count <= 0)
+        if (weaponDatas.Count <= 0)
         {
             throw new System.Exception("Tried to get a random glyph when none exist.");
         }
-
-        return weaponDatas[Random.Range(0, weaponDatas.Count)].CreateNonRefCopy<BaseWeaponScriptable>();
+        BaseWeaponScriptable temp = weaponDatas[Random.Range(0, weaponDatas.Count)].CreateNonRefCopy<BaseWeaponScriptable>();
+        temp.GetAbilities();
+        return temp;
     }
 
     #endregion
