@@ -71,7 +71,7 @@ MonoBehaviour:
           BaseProjectileSpeed: 75
           LifetimeIsRange: 0
           ProjectileRange: 10
-          BaseProjectileRange: 0
+          BaseProjectileRange: 10
           ProjectileLifetime: 3
           BaseProjectileLifetime: 3
           ProjectileDeviation: 0
@@ -83,14 +83,17 @@ MonoBehaviour:
           HasSizeChange: 0
           ProjectileSizeChange:
             InfinitelyChangeSize: 0
-            NewSize: 0
-            BaseNewSize: 0
-            TimeTillNewSize: 0
-            BaseTimeTillNewSize: 0
+            NewSize: 10
+            BaseNewSize: 10
+            TimeTillNewSize: 0.5
+            BaseTimeTillNewSize: 0.5
             SizeChangePercentage: 0
             BaseSizeChangePercentage: 0
             TimeTillSizeChange: 0
             BaseTimeTillSizeChange: 0
+            ConstXSize: 0
+            ConstYSize: 1
+            ConstZSize: 0
             MinSize: 0
             MaxSize: 0
         ProjectileIndex: 0

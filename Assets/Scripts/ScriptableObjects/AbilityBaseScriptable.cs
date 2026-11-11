@@ -90,6 +90,18 @@ public class AbilityBaseScriptable : BaseScriptableObject
     {
         SetAbilityStats(PrimaryStats);
         SetAbilityStats(SecondaryStats);
+
+        if (AbilityProjectile.BurstRangedAttack.AttackProjectiles != null)
+        {
+            foreach (ProjectileData i in AbilityProjectile.BurstRangedAttack.AttackProjectiles)
+            {
+                if (i.LifetimeIsRange)
+                {
+                    i.ProjectileRange = AbilityRange;
+                    i.BaseProjectileRange = AbilityRange;
+                }
+            }
+        }
     }
 
     /// <summary>

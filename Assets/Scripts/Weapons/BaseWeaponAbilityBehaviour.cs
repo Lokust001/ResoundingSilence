@@ -92,8 +92,21 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     {
         if (aimingAbilityOne || aimingAbilityTwo)
         {
-            //weaponAnimator.Play(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAnim.AnimClip.name, ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
-            CastingAbility();
+            if (ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAnim.AnimatorUsed != null && !weaponAnimator.Equals(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAnim.AnimatorUsed))
+            {
+                weaponAnimator = attackAnimations[comboIndex - 1].AnimatorUsed;
+            }
+
+            if(aimingAbilityOne)
+            {
+                abilityOneActive = true;
+            }
+            else
+            {
+                abilityTwoActive = true;
+            }
+
+            weaponAnimator.Play(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAnim.AnimClip.name, ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
         }
         else
         {
@@ -139,9 +152,10 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     /// <summary>
     /// Anim event that will spawn the projectile of an ability or weapon
     /// </summary>
-    public override void SpawnProjectile()
+    public override void SpawnProjectile(int cIndex)
     {
-        bool hasBurst = ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks.Count > 1 ? true : false;
+        Debug.Log("HAH");
+        bool hasBurst = ThisWeaponData.ComboAttacks[cIndex].BurstAttacks.Count > 1 ? true : false;
         BurstData rData;
         int damage;
 
@@ -158,8 +172,8 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
         }
         else
         {
-            rData = ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks[burstIndex];
-            damage = ThisWeaponData.ComboAttacks[comboIndex - 1].WeaponDamage;
+            rData = ThisWeaponData.ComboAttacks[cIndex].BurstAttacks[burstIndex];
+            damage = ThisWeaponData.ComboAttacks[cIndex].WeaponDamage;
         }
 
         Vector3 bulletDir = aimDir;
@@ -187,20 +201,34 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
         if (hasBurst)
         {
             burstAttacking = true;
-            StartCoroutine(AttackBursts());
+            StartCoroutine(AttackBursts((!abilityOneActive && !abilityTwoActive)));
         }
         else
         {
-            StartCoroutine(AttackDelay());
+            if (!abilityOneActive && !abilityTwoActive)
+            {
+                StartCoroutine(AttackDelay());
+            }
+            if (abilityOneActive)
+            {
+                abilityOneActive = false;
+                CastingAbility();
+            }
+            if (abilityTwoActive)
+            {
+                abilityTwoActive = false;
+                CastingAbility();
+            }
         }
     }
 
     /// <summary>
     /// Anim event that will call a melee attack of an ability or weapon
     /// </summary>
-    public override void MeleeSwing()
+    public override void MeleeSwing(int cIndex)
     {
-        bool hasBurst = ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks.Count > 1 ? true : false;
+        Debug.Log("HEHE");
+        bool hasBurst = ThisWeaponData.ComboAttacks[cIndex].BurstAttacks.Count > 1 ? true : false;
         BurstData rData;
         int damage;
 
@@ -217,8 +245,8 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
         }
         else
         {
-            rData = ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks[burstIndex];
-            damage = ThisWeaponData.ComboAttacks[comboIndex - 1].WeaponDamage;
+            rData = ThisWeaponData.ComboAttacks[cIndex].BurstAttacks[burstIndex];
+            damage = ThisWeaponData.ComboAttacks[cIndex].WeaponDamage;
         }
 
         foreach (Collider c in meleeHitboxes)
@@ -250,11 +278,24 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
         if (hasBurst)
         {
             burstAttacking = true;
-            StartCoroutine(AttackBursts());
+            StartCoroutine(AttackBursts((!abilityOneActive && !abilityTwoActive)));
         }
         else
         {
-            StartCoroutine(AttackDelay());
+            if (!abilityOneActive && !abilityTwoActive)
+            {
+                StartCoroutine(AttackDelay());
+            }
+            if (abilityOneActive)
+            {
+                abilityOneActive = false;
+                CastingAbility();
+            }
+            if (abilityTwoActive)
+            {
+                abilityTwoActive = false;
+                CastingAbility();
+            }
         }
     }
 
@@ -266,7 +307,6 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
         if (abilityOneReady)
         {
             aimingAbilityOne = !aimingAbilityOne;
-            weaponAnimator.SetBool("AbilityCast", !aimingAbilityOne);
             aimingAbilityTwo = false;
             currentAbilityIndex = abilityOneIndex;
             if (ThisWeaponData.editableAbilities[abilityOneIndex].HasPreview)
@@ -275,8 +315,14 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
             }
             else
             {
-                //weaponAnimator.Play(WeaponAbilities[currentAbilityIndex].AbilityAnim.AnimClip.name, WeaponAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
-                CastingAbility();
+                if (ThisWeaponData.editableAbilities[abilityOneIndex].AbilityAnim.AnimatorUsed != null && !weaponAnimator.Equals(ThisWeaponData.editableAbilities[abilityOneIndex].AbilityAnim.AnimatorUsed))
+                {
+                    weaponAnimator = attackAnimations[comboIndex - 1].AnimatorUsed;
+                }
+
+                abilityOneActive = true;
+                weaponAnimator.Play(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAnim.AnimClip.name, ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
+                //CastingAbility();
             }
         }
         else if (ThisWeaponData.editableAbilities[abilityOneIndex].CancelOnRecast && abilityOneActive)
@@ -293,7 +339,6 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
         if (abilityTwoReady)
         {
             aimingAbilityTwo = !aimingAbilityTwo;
-            weaponAnimator.SetBool("AbilityCast", !aimingAbilityTwo);
             aimingAbilityOne = false;
             currentAbilityIndex = abilityTwoIndex;
             if (ThisWeaponData.editableAbilities[currentAbilityIndex].HasPreview)
@@ -302,8 +347,14 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
             }
             else
             {
-                //weaponAnimator.Play(WeaponAbilities[currentAbilityIndex].AbilityAnim.AnimClip.name, WeaponAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
-                CastingAbility();
+                if (ThisWeaponData.editableAbilities[abilityTwoIndex].AbilityAnim.AnimatorUsed != null && !weaponAnimator.Equals(ThisWeaponData.editableAbilities[abilityTwoIndex].AbilityAnim.AnimatorUsed))
+                {
+                    weaponAnimator = attackAnimations[comboIndex - 1].AnimatorUsed;
+                }
+
+                abilityTwoActive = true;
+                weaponAnimator.Play(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAnim.AnimClip.name, ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
+                //CastingAbility();
             }
         }
         else if (ThisWeaponData.editableAbilities[abilityTwoIndex].CancelOnRecast && abilityTwoActive)
@@ -321,6 +372,12 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
         activePreview.SetActive(false);
 
         activePreview = abilityAOEs[currentAbilityIndex];
+
+        if (ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.AnimatorUsed != null && !weaponAnimator.Equals(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.AnimatorUsed))
+        {
+            weaponAnimator = attackAnimations[comboIndex - 1].AnimatorUsed;
+        }
+
         weaponAnimator.Play(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.AnimClip.name, ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
     }
 
@@ -331,7 +388,6 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     /// <param name="sizeIsRange"></param>
     public void DisplayAbilityPreview()
     {
-        Debug.Log("REACHED!!!");
         continuouslyUpdatePreview = !ThisWeaponData.editableAbilities[currentAbilityIndex].PreviewData.OrbitsPlayer;
 
         float sizeValue = ThisWeaponData.editableAbilities[currentAbilityIndex].PreviewData.SizeIsRange ?
@@ -384,15 +440,19 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     /// </summary>
     virtual public void CastingAbility()
     {
-        weaponAnimator.SetBool("AbilityCast", true);
         continuouslyUpdatePreview = false;
         attackReady = false;
         aimingAbilityOne = false;
         aimingAbilityTwo = false;
 
-
-
-        StartCoroutine(AbilityDamage(currentAbilityIndex));
+        if (ThisWeaponData.editableAbilities[currentAbilityIndex].HasProjectile)
+        {
+            activePreview.SetActive(false);
+        }
+        else
+        {
+            StartCoroutine(AbilityDamage(currentAbilityIndex));
+        }
 
         StartCoroutine(AbilityEndLag(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityEndLag));
         StartCoroutine(AbilityDelay(currentAbilityIndex == abilityOneIndex, ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityCooldown));

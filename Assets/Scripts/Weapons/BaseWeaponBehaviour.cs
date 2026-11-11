@@ -246,7 +246,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// Determines if a burst of attacks should be done all at once or if they should be done in order
     /// </summary>
     /// <returns></returns>
-    protected IEnumerator AttackBursts()
+    protected IEnumerator AttackBursts(bool weaponAttack = true)
     {
         yield return new WaitForSeconds(ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks[burstIndex].TimeTillNextBurst);
         ++burstIndex;
@@ -259,14 +259,18 @@ public class BaseWeaponBehaviour : MonoBehaviour
         {
             burstIndex = 0;
             burstAttacking = false;
-            StartCoroutine(AttackDelay());
+
+            if (weaponAttack)
+            {
+                StartCoroutine(AttackDelay());
+            }
         }
     }
 
     /// <summary>
     /// Called by animation event to spawn projectile during attack animation
     /// </summary>
-    virtual public void SpawnProjectile()
+    virtual public void SpawnProjectile(int cIndex)
     {
         bool hasBurst = ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks.Count > 1 ? true : false;
         BurstData rData = ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks[burstIndex];
@@ -308,7 +312,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// <summary>
     /// Called by an animation event to see if a melee swing hit anything
     /// </summary>
-    virtual public void MeleeSwing()
+    virtual public void MeleeSwing(int cIndex)
     {
         bool hasBurst = ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks.Count > 1 ? true : false;
         BurstData rData = ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks[burstIndex];

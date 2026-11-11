@@ -345,7 +345,7 @@ public class BaseWeaponScriptable : BaseScriptableObject
     [Expandable]
     [SerializeField]
     private List<AbilityBaseScriptable> abilities = new();
-    //[HideInInspector]
+    [HideInInspector]
     public List<AbilityBaseScriptable> editableAbilities = new();
 
     
@@ -863,6 +863,13 @@ public class SizeChangeData
     [ShowIf(nameof(InfinitelyChangeSize)), AllowNesting]
     public float TimeTillSizeChange;
     [HideInInspector] public float BaseTimeTillSizeChange;
+
+    [Tooltip("Set true if you don't want the x scale to change.")]
+    public bool ConstXSize;
+    [Tooltip("Set true if you don't want the y scale to change.")]
+    public bool ConstYSize;
+    [Tooltip("Set true if you don't want the z scale to change.")]
+    public bool ConstZSize;
 
     [ShowIf(EConditionOperator.And, nameof(InfinitelyChangeSize), nameof(SetMinSize)), AllowNesting]
     [Tooltip("If you don't want a min size, leave at 0.")]

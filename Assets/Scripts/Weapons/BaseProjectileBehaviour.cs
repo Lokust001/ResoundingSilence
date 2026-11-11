@@ -37,6 +37,7 @@ public class BaseProjectileBehaviour : MonoBehaviour
     /// <param name="combo"></param> Defaults to 0 if there is no combo
     public void SetData(BurstData dataRef, int damage, LayerMask lm, int combo = 0)
     {
+        Debug.Log(gameObject.name);
         attackRef = dataRef;
         comboIndex = combo;
 
@@ -53,6 +54,11 @@ public class BaseProjectileBehaviour : MonoBehaviour
         enemyLayer = lm;
 
         StartCoroutine(ProjectileLifetime());
+
+        if(attackRef.BurstRangedAttack.AttackProjectiles[comboIndex].HasSizeChange)
+        {
+            StartCoroutine(ChangeSize());
+        }
     }
 
     /// <summary>
@@ -64,13 +70,15 @@ public class BaseProjectileBehaviour : MonoBehaviour
         float elapsedTime = 0;
         Vector3 endPoint = Vector3.zero;
         float prevDistance = 0; float newDistance = 0;
+        float lifetime = attackRef.BurstRangedAttack.AttackProjectiles[comboIndex].ProjectileLifetime;
 
         if (attackRef.BurstRangedAttack.AttackProjectiles[comboIndex].LifetimeIsRange)
         {
             endPoint = transform.position + (transform.forward * attackRef.BurstRangedAttack.AttackProjectiles[comboIndex].ProjectileRange);
             prevDistance = newDistance = Vector3.Distance(transform.position, endPoint);
+            lifetime = 30;
         }
-        while (attackRef.BurstRangedAttack.AttackProjectiles[comboIndex].ProjectileLifetime > elapsedTime)
+        while (lifetime > elapsedTime)
         {
             if(attackRef.BurstRangedAttack.AttackProjectiles[comboIndex].LifetimeIsRange)
             {
@@ -155,6 +163,7 @@ public class BaseProjectileBehaviour : MonoBehaviour
         }
         else
         {
+            Debug.Log(other.gameObject.name);
             Destroy(this.gameObject);
         }
     }
@@ -268,17 +277,53 @@ public class BaseProjectileBehaviour : MonoBehaviour
         spawnedAOE.GetComponent<BaseAOEBehaviour>().SetReference(attackRef.WeaponAoe, myDamage, enemyLayer, comboIndex);
     }
 
-    //protected IEnumerator ChangeSize()
-    //{
-
-    //}
-
     /// <summary>
-    /// Converts the inspector variable to it's percentage value if it isn't already a percent
+    /// Changes the projectile's size over time
     /// </summary>
-    /// <param name="value"></param>
     /// <returns></returns>
-    protected float ConvertToPercentage(float value)
+    protected IEnumerator ChangeSize()
+    {
+        SizeChangeData sData = attackRef.BurstRangedAttack.AttackProjectiles[comboIndex].ProjectileSizeChange;
+        if (sData.InfinitelyChangeSize)
+        {
+
+        }
+        else
+        {
+            Vector3 startSize = transform.localScale;
+            Vector3 endSize = transform.localScale * sData.NewSize;
+            float elapsedTime = 0;
+
+            do
+            {
+                Vector3 newSize = Vector3.Lerp(startSize, endSize, (elapsedTime / sData.TimeTillNewSize));
+
+                if(sData.ConstXSize)
+                {
+                    newSize.x = startSize.x;
+                }
+                if(sData.ConstYSize)
+                {
+                    newSize.y = startSize.y;
+                }
+                if(sData.ConstZSize)
+                {
+                    newSize.z = startSize.z;
+                }
+                transform.localScale = newSize;
+
+                yield return new WaitForFixedUpdate();
+                elapsedTime += Time.deltaTime;
+            } while (elapsedTime < sData.TimeTillNewSize);
+        }
+    }
+
+/// <summary>
+/// Converts the inspector variable to it's percentage value if it isn't already a percent
+/// </summary>
+/// <param name="value"></param>
+/// <returns></returns>
+protected float ConvertToPercentage(float value)
     {
         return value >= 1 ? value / 100 : value;
     }
