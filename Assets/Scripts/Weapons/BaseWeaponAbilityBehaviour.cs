@@ -154,7 +154,6 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     /// </summary>
     public override void SpawnProjectile(int cIndex)
     {
-        Debug.Log("HAH");
         bool hasBurst = ThisWeaponData.ComboAttacks[cIndex].BurstAttacks.Count > 1 ? true : false;
         BurstData rData;
         int damage;
@@ -227,7 +226,6 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     /// </summary>
     public override void MeleeSwing(int cIndex)
     {
-        Debug.Log("HEHE");
         bool hasBurst = ThisWeaponData.ComboAttacks[cIndex].BurstAttacks.Count > 1 ? true : false;
         BurstData rData;
         int damage;
