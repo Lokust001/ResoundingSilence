@@ -81,11 +81,13 @@ public class PlayerManager : BaseManager
             {
                 WeaponsGameObjects[0].gameObject.SetActive(true);
                 WeaponsGameObjects[1].gameObject.SetActive(false);
+                GenericPublicEvents.SetCurrentWeapon?.Invoke(WeaponsGameObjects[0]);
             }
             else
             {
                 WeaponsGameObjects[0].gameObject.SetActive(false);
                 WeaponsGameObjects[1].gameObject.SetActive(true);
+                GenericPublicEvents.SetCurrentWeapon?.Invoke(WeaponsGameObjects[1]);
             }
         }
     }
