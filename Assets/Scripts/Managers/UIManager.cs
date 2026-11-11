@@ -297,6 +297,15 @@ public class UIManager : BaseManager
             instantiatedMenu.InitMenu();
         }
 
+        if (CurrentlyInFullscreenMenu() || IsCurrentMenuFullscreenPopup())
+        {
+            Time.timeScale = 0.0f;
+        }
+        else
+        {
+            Time.timeScale = 1.0f;
+        }
+
         //tells all the menus that theyve been opened
         UIPublicEvents.NewMenuOpened?.Invoke();
     }
@@ -384,7 +393,8 @@ public class UIManager : BaseManager
             throw new System.Exception("No menus opened");
         }
 
-        return (currentlyOpenedMenus.Peek() == UiMenuType.WeaponSwapping);
+        return (currentlyOpenedMenus.Peek() == UiMenuType.WeaponSwapping || 
+                currentlyOpenedMenus.Peek() == UiMenuType.HuntBoard);
     }
 
     /// <summary>

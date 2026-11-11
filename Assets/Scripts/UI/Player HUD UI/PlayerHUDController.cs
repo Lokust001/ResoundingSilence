@@ -7,6 +7,7 @@
 */
 
 using NaughtyAttributes;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,7 +67,7 @@ public class PlayerHUDController : MenuBase
 
     [SerializeField, ShowIf(nameof(settings), Settings.HuntBoard)]
     private GameObject huntBoardContainer;
-    private List<(SideObjective, TMP_Text)> huntTexts;
+    private List<(SideObjective, TMP_Text)> huntTexts = new();
 
     /// <summary>
     /// debug command to force the ui to take one damage
@@ -96,6 +97,7 @@ public class PlayerHUDController : MenuBase
         UIPublicEvents.UpdatePlayerEXPSlider += UpdatePlayerEXPBarValue;
         UIPublicEvents.UpdateHUDHuntObjs += UpdateHuntObjective;
         GenericPublicEvents.SetCurrentWeapon += NewWeaponEnabled;
+        UIPublicEvents.RewardsForObjectiveClaimed += RemoveHuntObjective;
     }
 
     /// <summary>
@@ -107,6 +109,7 @@ public class PlayerHUDController : MenuBase
         UIPublicEvents.UpdatePlayerHealthSlider -= UpdatePlayerHealthBarValue;
         UIPublicEvents.UpdatePlayerEXPSlider -= UpdatePlayerEXPBarValue; 
         UIPublicEvents.UpdateHUDHuntObjs -= UpdateHuntObjective;
+        UIPublicEvents.RewardsForObjectiveClaimed -= RemoveHuntObjective;
         GenericPublicEvents.SetCurrentWeapon -= NewWeaponEnabled;
     }
 
@@ -237,7 +240,9 @@ public class PlayerHUDController : MenuBase
         TMP_Text NewHuntText = Instantiate(prefabHuntText, huntBoardContainer.transform);
         huntTexts.Add(new (obj, NewHuntText));
 
-        NewHuntText.text = $"Defeat {obj.huntedEnemiesGoal} {obj.enemyType} enemies: 0/{obj.huntedEnemiesGoal}";
+        NewHuntText.text = $"{obj.GetSideObjectiveTooltipText()}: 0/{obj.huntedEnemiesGoal}";
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(huntBoardContainer.transform as RectTransform);
     }
 
     /// <summary>
@@ -252,7 +257,7 @@ public class PlayerHUDController : MenuBase
             return;
         }
 
-        TMP_Text textToUpdate = huntTexts.FirstOrDefault(x => x.Item1 == obj).Item2;
+        TMP_Text textToUpdate = huntTexts.Count > 0 ? huntTexts.FirstOrDefault(x => x.Item1 == obj).Item2 : null;
 
         if (textToUpdate == null)
         {
@@ -269,12 +274,29 @@ public class PlayerHUDController : MenuBase
 
         try
         {
-            textToUpdate.text = $"Defeat {obj.huntedEnemiesGoal} {obj.enemyType} enemies:\n{huntProgress}";
+            textToUpdate.text = $"{obj.GetSideObjectiveTooltipText()}:\n{huntProgress}";
         }
         catch
         {
             throw new System.Exception($"Could not find a text for hunt objective {obj.name}, and couldnt make a new one");
         }
+    }
+
+    /// <summary>
+    /// removes the hunt text associated with the given objective
+    /// </summary>
+    /// <param name="obj"></param>
+    private void RemoveHuntObjective(SideObjective obj)
+    {
+        (SideObjective, TMP_Text) temp = huntTexts.FirstOrDefault(x => x.Item1 == obj);
+
+        if (temp.Item1 == null)
+        {
+            return;
+        }
+
+        huntTexts.Remove(temp);
+        Destroy(temp.Item2);
     }
     #endregion
     #endregion

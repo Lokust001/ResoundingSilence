@@ -74,4 +74,52 @@ public class SideObjective : BaseScriptableObject
 
         return huntEnemiesProgress >= huntedEnemiesGoal;
     }
+    
+    /// <summary>
+    /// Calculates the tooltip for the objective
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="System.Exception"></exception>
+    public string GetSideObjectiveTooltipText()
+    {
+        string retStr = "";
+
+        switch (objectiveType)
+        {
+            case ObjectiveType.None:
+                throw new System.Exception("Side Objective's obj type is None.");
+            case ObjectiveType.HuntObjective:
+                retStr = GetHuntTooltipText();
+                break;
+        }
+        return retStr;
+    }
+
+    /// <summary>
+    /// Calculates the hunt tooltip text
+    /// </summary>
+    /// <returns></returns>
+    private string GetHuntTooltipText()
+    {
+        string retStr = $"Defeat {huntedEnemiesGoal} ";
+
+        switch (huntObjectiveType)
+        {
+            case HuntObjective.AllEnemies:
+                break;
+            case HuntObjective.RangedEnemies:
+                retStr += $"Ranged ";
+                break;
+            case HuntObjective.MeleeEnemies:
+                retStr += $"Melee ";
+                break;
+            case HuntObjective.OneEnemyTypeOnly:
+                retStr += $"{enemyType.ToString()} ";
+                break;
+        }
+
+        retStr += "Enemies";
+
+        return retStr;
+    }
 }
