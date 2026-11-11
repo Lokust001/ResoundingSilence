@@ -20,6 +20,11 @@ public class RewardGiver : MonoBehaviour
     public bool logRNGNumber;
     public bool logRewardedQty;
 
+    private List<Reward> rolledRewards = new();
+
+    [HideInInspector]
+    public bool RewardsHaveBeenDispensed;
+
     /// <summary>
     /// Fail-safe if no transforms were specified
     /// </summary>
@@ -34,8 +39,12 @@ public class RewardGiver : MonoBehaviour
     /// </summary>
     public void StartGivingRewards()
     {
-        if (possibleRewards.Count > 0)
-            RollRewards();
+        if (possibleRewards.Count <= 0)
+        {
+            return;
+        }
+        RewardHandler(RollRewards());
+        RewardsHaveBeenDispensed = true;
     }
 
 
@@ -43,9 +52,12 @@ public class RewardGiver : MonoBehaviour
     /// Loops through the loot table and rolls for each loot item independently. 
     /// Loot is acquired if the rolled value is within the range of the random number
     /// </summary>
-    private void RollRewards()
+    public List<Reward> RollRewards()
     {
-        List<Reward> rewards = new();
+        if (rolledRewards.Count > 0)
+        {
+            return rolledRewards;
+        }
 
         foreach (var loot in possibleRewards)
         {
@@ -53,10 +65,10 @@ public class RewardGiver : MonoBehaviour
             if (logRNGNumber)
                 Debug.Log($"Rolled: {independentRoll} against the reward ({loot.type}'s) {loot.dropChance} chance");
             if (independentRoll <= loot.dropChance)
-                rewards.Add(loot);
+                rolledRewards.Add(loot);
         }
 
-        RewardHandler(rewards);
+        return rolledRewards;
     }
 
     /// <summary>
