@@ -113,5 +113,20 @@ public class StaticDataManager : BaseManager
         return possibleGlyphs[Random.Range(0, possibleGlyphs.Count)].CreateNonRefCopy<GlyphScriptable>();
     }
 
+    /// <summary>
+    /// Returns a copy of a random Weapon.
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="System.Exception"></exception>
+    public BaseWeaponScriptable GetRandomWeapon()
+    {
+        if (possibleGlyphs.Count <= 0)
+        {
+            throw new System.Exception("Tried to get a random glyph when none exist.");
+        }
+
+        return weaponDatas[Random.Range(0, weaponDatas.Count)].CreateNonRefCopy<BaseWeaponScriptable>();
+    }
+
     #endregion
 }
