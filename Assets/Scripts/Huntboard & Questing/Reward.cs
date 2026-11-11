@@ -23,7 +23,7 @@ public class Reward
     /// <returns></returns>
     public bool DispensesGameObject() => type == RewardType.Weapon || type == RewardType.Pin;
 
-    [Header("(Optional) for organization purposes")]
+    [Header("Name of reward on the hunt rewards menu")]
     public string rewardName = "Reward Entry";
     [Space(8), Header("(Required) Reward Type")]
     public RewardType type;
