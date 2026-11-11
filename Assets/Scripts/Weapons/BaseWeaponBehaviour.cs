@@ -248,15 +248,19 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// <returns></returns>
     protected IEnumerator AttackBursts()
     {
-        for (int i = 1; i < ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks.Count; ++i)
+        yield return new WaitForSeconds(ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks[burstIndex].TimeTillNextBurst);
+        ++burstIndex;
+
+        if(burstIndex < ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks.Count)
         {
-            ++burstIndex;
-            yield return new WaitForSeconds(ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks[i].TimeTillNextBurst);
             Attack();
         }
-
-        burstIndex = 0;
-        burstAttacking = false;
+        else
+        {
+            burstIndex = 0;
+            burstAttacking = false;
+            StartCoroutine(AttackDelay());
+        }
     }
 
     /// <summary>
@@ -282,7 +286,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
             pIndex = rData.BurstRangedAttack.ProjectileIndex;
 
             //Allows the list to wrap around
-            rData.BurstRangedAttack.ProjectileIndex = ++pIndex < rData.BurstRangedAttack.AttackProjectiles.Count ? ++rData.BurstRangedAttack.ProjectileIndex : 0;
+            rData.BurstRangedAttack.ProjectileIndex = pIndex + 1 < rData.BurstRangedAttack.AttackProjectiles.Count ? ++rData.BurstRangedAttack.ProjectileIndex : 0;
         }
 
         GameObject spawnedProjectile = Instantiate(rData.BurstRangedAttack.AttackProjectiles[pIndex].ProjectilePrefab, transform.position, Quaternion.LookRotation(bulletDir.normalized, Vector3.up));
@@ -290,13 +294,15 @@ public class BaseWeaponBehaviour : MonoBehaviour
         spawnedProjectile.GetComponent<Rigidbody>().linearVelocity = bulletDir.normalized * rData.BurstRangedAttack.AttackProjectiles[pIndex].ProjectileSpeed;
 
         //If the weapon has multiple bursts fire them
-        if (hasBurst && !burstAttacking)
+        if (hasBurst)
         {
             burstAttacking = true;
             StartCoroutine(AttackBursts());
         }
-
-        StartCoroutine(AttackDelay());
+        else
+        {
+            StartCoroutine(AttackDelay());
+        }
     }
 
     /// <summary>
@@ -334,13 +340,15 @@ public class BaseWeaponBehaviour : MonoBehaviour
         }
 
         //If the weapon has multiple bursts fire them
-        if (hasBurst && !burstAttacking)
+        if (hasBurst)
         {
             burstAttacking = true;
             StartCoroutine(AttackBursts());
         }
-
-        StartCoroutine(AttackDelay());
+        else
+        {
+            StartCoroutine(AttackDelay());
+        }
     }
     #endregion
 
@@ -366,5 +374,10 @@ public class BaseWeaponBehaviour : MonoBehaviour
     protected float ConvertToPercentage(float value)
     {
         return value >= 1 ? value / 100 : value;
+    }
+
+    public void SpawnVFX(GameObject vfx)
+    {
+        Instantiate(vfx);
     }
 }

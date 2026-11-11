@@ -18,12 +18,6 @@ public class BaseWeaponScriptable : BaseScriptableObject
 {
     #region GeneralData
 
-    private enum WeaponType
-    {
-        Melee,
-        Ranged
-    }
-
     private enum EffectType
     {
         Decay,
@@ -42,11 +36,6 @@ public class BaseWeaponScriptable : BaseScriptableObject
         Abilities,
         UpgradeGrid
     }
-
-    [SerializeField]
-    [Tooltip("Changing this variable has no impact on gameplay.\n\nIt is purely a navigational tool." +
-        "Use to select what type of weapon this one will be.")]
-    private WeaponType weaponType;
 
     [SerializeField]
     [Tooltip("Changing this variable has no impact on gameplay.\n\nIt is purely a navigational tool." +
@@ -88,7 +77,8 @@ public class BaseWeaponScriptable : BaseScriptableObject
 
     //#region General Variables
 
-    public float AttackSpeed = 1;
+    [HideInInspector] public float AttackSpeed = 1;
+    [ShowIf(nameof(shownSettings), ShownSettings.BaseWeaponData)]
     [ReorderableList]
     public List<AttackData> ComboAttacks = new List<AttackData>();
 
@@ -378,14 +368,6 @@ public class BaseWeaponScriptable : BaseScriptableObject
     #endregion
 
     #region CustomBools
-    /// <summary>
-    /// Custom bool for multiple enum values
-    /// </summary>
-    /// <returns></returns>
-    private bool RangedWeaponSettings()
-    {
-        return weaponType == WeaponType.Ranged && shownSettings == ShownSettings.BaseWeaponData;
-    }
 
     /// <summary>
     /// Custom bool for naughty attribute show if
@@ -498,6 +480,11 @@ public class BaseWeaponScriptable : BaseScriptableObject
                     k.BaseProjectileSpeed = k.ProjectileSpeed;
                     k.BaseSpreadDegree = k.SpreadDegree;
                     k.BaseTotalProjectiles = k.TotalProjectiles;
+                    k.BaseProjectileRange = k.ProjectileRange;
+                    k.ProjectileSizeChange.BaseNewSize = k.ProjectileSizeChange.NewSize;
+                    k.ProjectileSizeChange.BaseSizeChangePercentage = k.ProjectileSizeChange.SizeChangePercentage;
+                    k.ProjectileSizeChange.BaseTimeTillNewSize = k.ProjectileSizeChange.TimeTillNewSize;
+                    k.ProjectileSizeChange.BaseTimeTillSizeChange = k.ProjectileSizeChange.TimeTillSizeChange;
                 }
             }
         }
@@ -776,6 +763,13 @@ public class ProjectileData
     public float ProjectileSpeed;
     [HideInInspector] public float BaseProjectileSpeed;
 
+    public bool LifetimeIsRange;
+
+    [ShowIf(nameof(LifetimeIsRange)), AllowNesting]
+    public float ProjectileRange;
+    [HideInInspector] public float BaseProjectileRange;
+
+    [HideIf(nameof(LifetimeIsRange)), AllowNesting]
     public float ProjectileLifetime;
     [HideInInspector] public float BaseProjectileLifetime;
 
@@ -788,6 +782,10 @@ public class ProjectileData
     [ShowIf(nameof(NeedSpread)), AllowNesting]
     public int SpreadDegree;
     [HideInInspector] public int BaseSpreadDegree;
+
+    public bool HasSizeChange;
+    [ShowIf(nameof(HasSizeChange)), AllowNesting]
+    public SizeChangeData ProjectileSizeChange;
 
     /// <summary>
     /// Custom show if bool to determine if the projectiles have spread
@@ -843,6 +841,54 @@ public class RicochetData
 
     public float RicochetRange;
     [HideInInspector] public float BaseRicochetRange;
+}
+
+[System.Serializable]
+public class SizeChangeData
+{
+    public bool InfinitelyChangeSize;
+
+    [HideIf(nameof(InfinitelyChangeSize)), AllowNesting]
+    public float NewSize;
+    [HideInInspector] public float BaseNewSize;
+
+    [HideIf(nameof(InfinitelyChangeSize)), AllowNesting]
+    public float TimeTillNewSize;
+    [HideInInspector] public float BaseTimeTillNewSize;
+
+    [ShowIf(nameof(InfinitelyChangeSize)), AllowNesting]
+    public float SizeChangePercentage;
+    [HideInInspector] public float BaseSizeChangePercentage;
+
+    [ShowIf(nameof(InfinitelyChangeSize)), AllowNesting]
+    public float TimeTillSizeChange;
+    [HideInInspector] public float BaseTimeTillSizeChange;
+
+    [ShowIf(EConditionOperator.And, nameof(InfinitelyChangeSize), nameof(SetMinSize)), AllowNesting]
+    [Tooltip("If you don't want a min size, leave at 0.")]
+    public float MinSize;
+
+    [ShowIf(EConditionOperator.And, nameof(InfinitelyChangeSize), nameof(SetMaxSize)), AllowNesting]
+    [Tooltip("If you don't want a max size, leave at 0.")]
+    public float MaxSize;
+
+    /// <summary>
+    /// Custom show if bool that determines if the size will go infinietely down
+    /// </summary>
+    /// <returns></returns>
+    private bool SetMinSize()
+    {
+        return SizeChangePercentage < 1;
+    }
+
+    /// <summary>
+    /// Custom show if bool that determines if the size will go infinietely up
+    /// </summary>
+    /// <returns></returns>
+    private bool SetMaxSize()
+    {
+        return SizeChangePercentage >= 1;
+    }
 }
 
 #endregion

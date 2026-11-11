@@ -1,7 +1,7 @@
 /******************************************************************************
  * Author: Brad Dixon
  * Contributors:
- * Last Modified: 10/20/2026
+ * Last Modified: 11/11/2026
  * Brief: Handles projectile collision and lifetime
  * TODO:
  * ***************************************************************************/
@@ -62,11 +62,28 @@ public class BaseProjectileBehaviour : MonoBehaviour
     protected IEnumerator ProjectileLifetime()
     {
         float elapsedTime = 0;
+        Vector3 endPoint = Vector3.zero;
+        float prevDistance = 0; float newDistance = 0;
 
-        while(attackRef.BurstRangedAttack.AttackProjectiles[comboIndex].ProjectileLifetime > elapsedTime)
+        if (attackRef.BurstRangedAttack.AttackProjectiles[comboIndex].LifetimeIsRange)
         {
+            endPoint = transform.position + (transform.forward * attackRef.BurstRangedAttack.AttackProjectiles[comboIndex].ProjectileRange);
+            prevDistance = newDistance = Vector3.Distance(transform.position, endPoint);
+        }
+        while (attackRef.BurstRangedAttack.AttackProjectiles[comboIndex].ProjectileLifetime > elapsedTime)
+        {
+            if(attackRef.BurstRangedAttack.AttackProjectiles[comboIndex].LifetimeIsRange)
+            {
+                prevDistance = newDistance;
+                newDistance = Vector3.Distance(transform.position, endPoint);
+
+                if(prevDistance < newDistance)
+                {
+                    break;
+                }
+            }
             elapsedTime += Time.deltaTime;
-            yield return null;
+            yield return new WaitForFixedUpdate();
         }
 
         Destroy(this.gameObject);
@@ -247,14 +264,14 @@ public class BaseProjectileBehaviour : MonoBehaviour
     /// </summary>
     public void SpawnAOE(Vector3 spawnPos)
     {
-        //if (cIndex == -1)
-        //{
-        //    cIndex = Random.Range(0, weaponRef.WeaponAOEs.Count);
-        //}
-
         GameObject spawnedAOE = Instantiate(attackRef.WeaponAoe.AoePrefab, spawnPos, Quaternion.identity);
         spawnedAOE.GetComponent<BaseAOEBehaviour>().SetReference(attackRef.WeaponAoe, myDamage, enemyLayer, comboIndex);
     }
+
+    //protected IEnumerator ChangeSize()
+    //{
+
+    //}
 
     /// <summary>
     /// Converts the inspector variable to it's percentage value if it isn't already a percent

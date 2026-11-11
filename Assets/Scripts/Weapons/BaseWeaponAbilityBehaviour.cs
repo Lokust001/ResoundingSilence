@@ -176,7 +176,7 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
             pIndex = rData.BurstRangedAttack.ProjectileIndex;
 
             //Allows the list to wrap around
-            rData.BurstRangedAttack.ProjectileIndex = ++pIndex < rData.BurstRangedAttack.AttackProjectiles.Count ? ++rData.BurstRangedAttack.ProjectileIndex : 0;
+            rData.BurstRangedAttack.ProjectileIndex = pIndex + 1 < rData.BurstRangedAttack.AttackProjectiles.Count ? ++rData.BurstRangedAttack.ProjectileIndex : 0;
         }
 
         GameObject spawnedProjectile = Instantiate(rData.BurstRangedAttack.AttackProjectiles[pIndex].ProjectilePrefab, transform.position, Quaternion.LookRotation(bulletDir.normalized, Vector3.up));
@@ -184,13 +184,15 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
         spawnedProjectile.GetComponent<Rigidbody>().linearVelocity = bulletDir.normalized * rData.BurstRangedAttack.AttackProjectiles[pIndex].ProjectileSpeed;
 
         //If the weapon has multiple bursts fire them
-        if (hasBurst && !burstAttacking)
+        if (hasBurst)
         {
             burstAttacking = true;
             StartCoroutine(AttackBursts());
         }
-
-        StartCoroutine(AttackDelay());
+        else
+        {
+            StartCoroutine(AttackDelay());
+        }
     }
 
     /// <summary>
@@ -199,8 +201,8 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     public override void MeleeSwing()
     {
         bool hasBurst = ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks.Count > 1 ? true : false;
-        BurstData rData = ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks[burstIndex];
-        int damage = ThisWeaponData.ComboAttacks[comboIndex - 1].WeaponDamage;
+        BurstData rData;
+        int damage;
 
         //Determines if the projectile being spawned belongs to an ability or the weapon attack
         if (abilityOneActive)
@@ -245,13 +247,15 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
         }
 
         //If the weapon has multiple bursts fire them
-        if (hasBurst && !burstAttacking)
+        if (hasBurst)
         {
             burstAttacking = true;
             StartCoroutine(AttackBursts());
         }
-
-        StartCoroutine(AttackDelay());
+        else
+        {
+            StartCoroutine(AttackDelay());
+        }
     }
 
     /// <summary>
