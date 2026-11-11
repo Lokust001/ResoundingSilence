@@ -282,6 +282,10 @@ public class PlayerHUDController : MenuBase
         }
     }
 
+    /// <summary>
+    /// removes the hunt text associated with the given objective
+    /// </summary>
+    /// <param name="obj"></param>
     private void RemoveHuntObjective(SideObjective obj)
     {
         (SideObjective, TMP_Text) temp = huntTexts.FirstOrDefault(x => x.Item1 == obj);

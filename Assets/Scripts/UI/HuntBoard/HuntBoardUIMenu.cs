@@ -113,6 +113,9 @@ public class HuntBoardUIMenu : MenuBase
         UIPublicEvents.CurrentMenuClosed?.Invoke();
     }
 
+    /// <summary>
+    /// Claims the reward from the hunt board
+    /// </summary>
     public void ClaimRewards()
     {
         currentRewardGiver.StartGivingRewards();
