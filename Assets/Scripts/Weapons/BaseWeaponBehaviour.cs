@@ -272,41 +272,41 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// </summary>
     virtual public void SpawnProjectile(int cIndex)
     {
-        bool hasBurst = ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks.Count > 1 ? true : false;
-        BurstData rData = ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks[burstIndex];
-        int damage = ThisWeaponData.ComboAttacks[comboIndex - 1].WeaponDamage;
+        //bool hasBurst = ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks.Count > 1 ? true : false;
+        //BurstData rData = ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks[burstIndex];
+        //int damage = ThisWeaponData.ComboAttacks[comboIndex - 1].WeaponDamage;
 
-        Vector3 bulletDir = aimDir;
-        bulletDir.y = 0;
+        //Vector3 bulletDir = aimDir;
+        //bulletDir.y = 0;
 
-        int pIndex;
+        //int pIndex;
 
-        if(rData.BurstRangedAttack.RandomizeProjectile)
-        {
-            pIndex = Random.Range(0, rData.BurstRangedAttack.AttackProjectiles.Count);
-        }
-        else
-        {
-            pIndex = rData.BurstRangedAttack.ProjectileIndex;
+        //if(rData.BurstRangedAttack.RandomizeProjectile)
+        //{
+        //    pIndex = Random.Range(0, rData.BurstRangedAttack.AttackProjectiles.Count);
+        //}
+        //else
+        //{
+        //    pIndex = rData.BurstRangedAttack.ProjectileIndex;
 
-            //Allows the list to wrap around
-            rData.BurstRangedAttack.ProjectileIndex = pIndex + 1 < rData.BurstRangedAttack.AttackProjectiles.Count ? ++rData.BurstRangedAttack.ProjectileIndex : 0;
-        }
+        //    //Allows the list to wrap around
+        //    rData.BurstRangedAttack.ProjectileIndex = pIndex + 1 < rData.BurstRangedAttack.AttackProjectiles.Count ? ++rData.BurstRangedAttack.ProjectileIndex : 0;
+        //}
 
-        GameObject spawnedProjectile = Instantiate(rData.BurstRangedAttack.AttackProjectiles[pIndex].ProjectilePrefab, transform.position, Quaternion.LookRotation(bulletDir.normalized, Vector3.up));
-        spawnedProjectile.GetComponent<BaseProjectileBehaviour>().SetData(rData, damage, ThisWeaponData.EnemyLayer);
-        spawnedProjectile.GetComponent<Rigidbody>().linearVelocity = bulletDir.normalized * rData.BurstRangedAttack.AttackProjectiles[pIndex].ProjectileSpeed;
+        //GameObject spawnedProjectile = Instantiate(rData.BurstRangedAttack.AttackProjectiles[pIndex].ProjectilePrefab, transform.position, Quaternion.LookRotation(bulletDir.normalized, Vector3.up));
+        //spawnedProjectile.GetComponent<BaseProjectileBehaviour>().SetData(rData, damage, ThisWeaponData.EnemyLayer);
+        //spawnedProjectile.GetComponent<Rigidbody>().linearVelocity = bulletDir.normalized * rData.BurstRangedAttack.AttackProjectiles[pIndex].ProjectileSpeed;
 
-        //If the weapon has multiple bursts fire them
-        if (hasBurst)
-        {
-            burstAttacking = true;
-            StartCoroutine(AttackBursts());
-        }
-        else
-        {
-            StartCoroutine(AttackDelay());
-        }
+        ////If the weapon has multiple bursts fire them
+        //if (hasBurst)
+        //{
+        //    burstAttacking = true;
+        //    StartCoroutine(AttackBursts());
+        //}
+        //else
+        //{
+        //    StartCoroutine(AttackDelay());
+        //}
     }
 
     /// <summary>
@@ -314,45 +314,45 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// </summary>
     virtual public void MeleeSwing(int cIndex)
     {
-        bool hasBurst = ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks.Count > 1 ? true : false;
-        BurstData rData = ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks[burstIndex];
-        int damage = ThisWeaponData.ComboAttacks[comboIndex - 1].WeaponDamage;
+        //bool hasBurst = ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks.Count > 1 ? true : false;
+        //BurstData rData = ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks[burstIndex];
+        //int damage = ThisWeaponData.ComboAttacks[comboIndex - 1].WeaponDamage;
 
-        foreach (Collider c in meleeHitboxes)
-        {
-            if (c.enabled)
-            {
-                Collider[] targets = Physics.OverlapBox(c.bounds.center, c.bounds.extents, Quaternion.identity, ThisWeaponData.EnemyLayer);
+        //foreach (Collider c in meleeHitboxes)
+        //{
+        //    if (c.enabled)
+        //    {
+        //        Collider[] targets = Physics.OverlapBox(c.bounds.center, c.bounds.extents, Quaternion.identity, ThisWeaponData.EnemyLayer);
 
-                foreach (Collider t in targets)
-                {
-                    if (t.GetComponent<Enemy>())
-                    {
-                        t.GetComponent<Enemy>().EnemyTakeDamage(damage);
+        //        foreach (Collider t in targets)
+        //        {
+        //            if (t.GetComponent<Enemy>())
+        //            {
+        //                t.GetComponent<Enemy>().EnemyTakeDamage(damage);
 
-                        if (rData.HasLifesteal)
-                        {
-                            int healValue = Mathf.CeilToInt(damage * ConvertToPercentage(rData.WeaponLifeSteal.LifestealPercent));
+        //                if (rData.HasLifesteal)
+        //                {
+        //                    int healValue = Mathf.CeilToInt(damage * ConvertToPercentage(rData.WeaponLifeSteal.LifestealPercent));
 
-                            //TODO Replace with heal player
-                            FindAnyObjectByType<MidRunDataManager>().ChangePlayerHealth(healValue);
-                        }
-                    }
-                    Debug.Log(t.name + " took " + damage + " damage!");
-                }
-            }
-        }
+        //                    //TODO Replace with heal player
+        //                    FindAnyObjectByType<MidRunDataManager>().ChangePlayerHealth(healValue);
+        //                }
+        //            }
+        //            Debug.Log(t.name + " took " + damage + " damage!");
+        //        }
+        //    }
+        //}
 
-        //If the weapon has multiple bursts fire them
-        if (hasBurst)
-        {
-            burstAttacking = true;
-            StartCoroutine(AttackBursts());
-        }
-        else
-        {
-            StartCoroutine(AttackDelay());
-        }
+        ////If the weapon has multiple bursts fire them
+        //if (hasBurst)
+        //{
+        //    burstAttacking = true;
+        //    StartCoroutine(AttackBursts());
+        //}
+        //else
+        //{
+        //    StartCoroutine(AttackDelay());
+        //}
     }
     #endregion
 

@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
-* Contributors:
-* Last Modified: 11/5/2026
+* Contributors: Brad Dixon
+* Last Modified: 11/12/2026
 * Summary: Controls the player's hud
 * To Do:   N/A
 */
@@ -125,16 +125,20 @@ public class PlayerHUDController : MenuBase
 
     #region Testing
 
+    /// <summary>
+    /// Sets ability images
+    /// </summary>
+    /// <param name="weapon"></param>
     private void NewWeaponEnabled(BaseWeaponBehaviour weapon)
     {
-        //UIPublicEvents.ChangeCooldownImages?.Invoke(
-        //    weapon.ThisWeaponData.editableAbilities[weapon.abilityOneIndex].AbilityImage,
-        //    weapon.ThisWeaponData.editableAbilities[weapon.abilityOneIndex].BackgroundImage,
-        //    CooldownUIController.CooldownToUpdate.Ability1);
-        //UIPublicEvents.ChangeCooldownImages?.Invoke(
-        //    weapon.ThisWeaponData.editableAbilities[weapon.abilityTwoIndex].AbilityImage,
-        //    weapon.ThisWeaponData.editableAbilities[weapon.abilityTwoIndex].BackgroundImage,
-        //    CooldownUIController.CooldownToUpdate.Ability2);
+        UIPublicEvents.ChangeCooldownImages?.Invoke(
+            weapon.ThisWeaponData.editableAbilities[weapon.GetComponent<BaseWeaponAbilityBehaviour>().abilityOneIndex].AbilityImage,
+            weapon.ThisWeaponData.editableAbilities[weapon.GetComponent<BaseWeaponAbilityBehaviour>().abilityOneIndex].BackgroundImage,
+            CooldownUIController.CooldownToUpdate.Ability1);
+        UIPublicEvents.ChangeCooldownImages?.Invoke(
+            weapon.ThisWeaponData.editableAbilities[weapon.GetComponent<BaseWeaponAbilityBehaviour>().abilityTwoIndex].AbilityImage,
+            weapon.ThisWeaponData.editableAbilities[weapon.GetComponent<BaseWeaponAbilityBehaviour>().abilityTwoIndex].BackgroundImage,
+            CooldownUIController.CooldownToUpdate.Ability2);
 
         ImmediatelyRefreshAllCooldowns();
     }

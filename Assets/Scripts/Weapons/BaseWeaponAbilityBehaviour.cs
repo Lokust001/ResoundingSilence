@@ -33,6 +33,9 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     [SerializeField] protected bool abilityOneReady;
     [SerializeField] protected bool abilityTwoReady;
 
+    protected bool spawnAbilityOneProjectile;
+    protected bool spawnAbilityTwoProjectile;
+
     /// <summary>
     /// Does the base weapon startup code and then sets up the abilities
     /// </summary>
@@ -100,10 +103,18 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
             if(aimingAbilityOne)
             {
                 abilityOneActive = true;
+                if (ThisWeaponData.editableAbilities[abilityOneIndex].HasProjectile)
+                {
+                    spawnAbilityOneProjectile = true;
+                }
             }
             else
             {
                 abilityTwoActive = true;
+                if (ThisWeaponData.editableAbilities[abilityTwoIndex].HasProjectile)
+                {
+                    spawnAbilityTwoProjectile = true;
+                }
             }
 
             weaponAnimator.Play(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAnim.AnimClip.name, ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
@@ -159,15 +170,17 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
         int damage;
 
         //Determines if the projectile being spawned belongs to an ability or the weapon attack
-        if (abilityOneActive)
+        if (spawnAbilityOneProjectile)
         {
             rData = ThisWeaponData.editableAbilities[abilityOneIndex].AbilityProjectile;
             damage = ThisWeaponData.editableAbilities[abilityOneIndex].AbilityDamage;
+            spawnAbilityOneProjectile = false;
         }
-        else if (abilityTwoActive)
+        else if (spawnAbilityTwoProjectile)
         {
             rData = ThisWeaponData.editableAbilities[abilityTwoIndex].AbilityProjectile;
             damage = ThisWeaponData.editableAbilities[abilityTwoIndex].AbilityDamage;
+            spawnAbilityTwoProjectile = false;
         }
         else
         {
@@ -204,16 +217,16 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
         }
         else
         {
-            if (!abilityOneActive && !abilityTwoActive)
+            if (!spawnAbilityOneProjectile && !spawnAbilityTwoProjectile)
             {
                 StartCoroutine(AttackDelay());
             }
-            if (abilityOneActive)
+            if (spawnAbilityOneProjectile)
             {
                 abilityOneActive = false;
                 CastingAbility();
             }
-            if (abilityTwoActive)
+            if (spawnAbilityTwoProjectile)
             {
                 abilityTwoActive = false;
                 CastingAbility();
@@ -319,6 +332,10 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
                 }
 
                 abilityOneActive = true;
+                if(ThisWeaponData.editableAbilities[abilityOneIndex].HasProjectile)
+                {
+                    spawnAbilityOneProjectile = true;
+                }
                 weaponAnimator.Play(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAnim.AnimClip.name, ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
                 //CastingAbility();
             }
@@ -351,6 +368,11 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
                 }
 
                 abilityTwoActive = true;
+                if (ThisWeaponData.editableAbilities[abilityTwoIndex].HasProjectile)
+                {
+                    spawnAbilityTwoProjectile = true;
+                }
+
                 weaponAnimator.Play(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAnim.AnimClip.name, ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
                 //CastingAbility();
             }
