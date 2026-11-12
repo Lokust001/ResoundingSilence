@@ -22,7 +22,7 @@ public class PlayerManager : BaseManager
     public PlayerController player;
 
     [HideInInspector]
-    public List<BaseWeaponBehaviour> WeaponsGameObjects { get; private set; } = new(2);
+    public List<BaseWeaponAbilityBehaviour> WeaponsGameObjects { get; private set; } = new(2);
 
     [SerializeField] private float weaponSwapCooldown;
 
@@ -85,14 +85,18 @@ public class PlayerManager : BaseManager
             weaponOnePulledOut = !weaponOnePulledOut;
             if (weaponOnePulledOut)
             {
-                WeaponsGameObjects[0].gameObject.SetActive(true);
-                WeaponsGameObjects[1].gameObject.SetActive(false);
+                WeaponsGameObjects[0].weaponModel.SetActive(true);
+                WeaponsGameObjects[0].activeWeapon = true;
+                WeaponsGameObjects[1].weaponModel.SetActive(false);
+                WeaponsGameObjects[1].DisableWeapon();
                 GenericPublicEvents.SetCurrentWeapon?.Invoke(WeaponsGameObjects[0]);
             }
             else
             {
-                WeaponsGameObjects[0].gameObject.SetActive(false);
-                WeaponsGameObjects[1].gameObject.SetActive(true);
+                WeaponsGameObjects[0].DisableWeapon();
+                WeaponsGameObjects[0].weaponModel.SetActive(false);
+                WeaponsGameObjects[1].activeWeapon = true;
+                WeaponsGameObjects[1].weaponModel.SetActive(true);
                 GenericPublicEvents.SetCurrentWeapon?.Invoke(WeaponsGameObjects[1]);
             }
             StartCoroutine(WeaponSwapCooldown());
@@ -107,14 +111,20 @@ public class PlayerManager : BaseManager
         Destroy(WeaponsGameObjects[index]);
         GameObject weapon = Instantiate(scriptable.weaponBehavPrefab, new Vector3(player.transform.position.x, player.transform.position.y + 0.5f, player.transform.position.z)/*<-temp*/, player.transform.rotation, player.transform);
         weapon.GetComponent<BaseWeaponBehaviour>().ThisWeaponData = scriptable;
-        WeaponsGameObjects[index] = weapon.GetComponent<BaseWeaponBehaviour>();
+        WeaponsGameObjects[index] = weapon.GetComponent<BaseWeaponAbilityBehaviour>();
         if(index == 0 && !weaponOnePulledOut)
         {
-            weapon.SetActive(false);
+            WeaponsGameObjects[0].DisableWeapon();
+            WeaponsGameObjects[0].weaponModel.SetActive(false);
         }
         else if(index == 1 && weaponOnePulledOut)
         {
-            weapon.SetActive(false);
+            WeaponsGameObjects[1].weaponModel.SetActive(false);
+            WeaponsGameObjects[1].DisableWeapon();
+        }
+        else
+        {
+            weapon.GetComponent<BaseWeaponAbilityBehaviour>().activeWeapon = true;
         }
     }
 
@@ -134,7 +144,8 @@ public class PlayerManager : BaseManager
                              MapManager.Instance.spawnedMap.PlayerSpawnpoint.position,
                              Quaternion.identity,
                              transform);
-        WeaponsGameObjects[0] = player.GetComponentInChildren<BaseWeaponBehaviour>();
+        WeaponsGameObjects[0] = player.GetComponentInChildren<BaseWeaponAbilityBehaviour>();
+        WeaponsGameObjects[0].activeWeapon = true;
         GenericPublicEvents.PlayerSpawnedIn?.Invoke(player);
     }
 }
