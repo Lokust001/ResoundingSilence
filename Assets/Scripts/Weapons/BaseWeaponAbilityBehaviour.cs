@@ -44,6 +44,17 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
         aimingAbilityOne = false;
         aimingAbilityTwo = false;
         activeWeapon = false;
+        weaponModel.SetActive(false);
+        if(activePreview != null )
+            activePreview.SetActive(false);
+        weaponAnimator.SetBool("AbilityCast", true);
+    }
+
+    public void EnableWeapon()
+    {
+        activeWeapon = true;
+        weaponModel.SetActive(true);
+        weaponAnimator.SetBool("AbilityCast", false);
     }
 
     /// <summary>

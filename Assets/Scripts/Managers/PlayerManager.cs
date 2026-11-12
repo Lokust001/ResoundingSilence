@@ -85,18 +85,14 @@ public class PlayerManager : BaseManager
             weaponOnePulledOut = !weaponOnePulledOut;
             if (weaponOnePulledOut)
             {
-                WeaponsGameObjects[0].weaponModel.SetActive(true);
-                WeaponsGameObjects[0].activeWeapon = true;
-                WeaponsGameObjects[1].weaponModel.SetActive(false);
+                WeaponsGameObjects[0].EnableWeapon();
                 WeaponsGameObjects[1].DisableWeapon();
                 GenericPublicEvents.SetCurrentWeapon?.Invoke(WeaponsGameObjects[0]);
             }
             else
             {
                 WeaponsGameObjects[0].DisableWeapon();
-                WeaponsGameObjects[0].weaponModel.SetActive(false);
-                WeaponsGameObjects[1].activeWeapon = true;
-                WeaponsGameObjects[1].weaponModel.SetActive(true);
+                WeaponsGameObjects[1].EnableWeapon();
                 GenericPublicEvents.SetCurrentWeapon?.Invoke(WeaponsGameObjects[1]);
             }
             StartCoroutine(WeaponSwapCooldown());
