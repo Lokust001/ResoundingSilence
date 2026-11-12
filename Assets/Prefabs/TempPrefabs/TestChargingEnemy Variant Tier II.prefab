@@ -206,6 +206,30 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6097337471712976449, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: possibleRewards.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097337471712976449, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: possibleRewards.Array.data[0].type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097337471712976449, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: possibleRewards.Array.data[0].dropChance
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097337471712976449, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: possibleRewards.Array.data[0].maxDropAmt
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097337471712976449, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: possibleRewards.Array.data[0].minDropAmt
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097337471712976449, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: possibleRewards.Array.data[0].rewardName
+      value: Exp
+      objectReference: {fileID: 0}
     - target: {fileID: 6325128634737111795, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: m_Name
       value: TestChargingEnemy Variant Tier II
