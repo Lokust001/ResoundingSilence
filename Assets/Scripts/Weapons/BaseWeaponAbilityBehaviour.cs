@@ -36,6 +36,9 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     protected bool spawnAbilityOneProjectile;
     protected bool spawnAbilityTwoProjectile;
 
+    private float AbilityOneCD;
+    private float AbilityTwoCD;
+
     /// <summary>
     /// stops everything when it get's switched off
     /// </summary>
@@ -55,6 +58,14 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
         activeWeapon = true;
         weaponModel.SetActive(true);
         weaponAnimator.SetBool("AbilityCast", false);
+        if (!abilityOneReady)
+            UIPublicEvents.UpdateHUDCooldownUI?.Invoke(CooldownUIController.CooldownToUpdate.Ability1, AbilityOneCD, ThisWeaponData.editableAbilities[abilityOneIndex].AbilityCooldown);
+        else
+            UIPublicEvents.ImmediatelyRefreshCooldown?.Invoke(CooldownUIController.CooldownToUpdate.Ability1);
+        if (!abilityTwoReady)
+            UIPublicEvents.UpdateHUDCooldownUI?.Invoke(CooldownUIController.CooldownToUpdate.Ability2, AbilityTwoCD, ThisWeaponData.editableAbilities[abilityTwoIndex].AbilityCooldown);
+        else
+            UIPublicEvents.ImmediatelyRefreshCooldown?.Invoke(CooldownUIController.CooldownToUpdate.Ability2);
     }
 
     /// <summary>
@@ -654,13 +665,31 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
         if (isAbilityOne)
         {
             abilityOneReady = false;
+            AbilityOneCD = time;
         }
         else
         {
             abilityTwoReady = false;
+            AbilityTwoCD = time;
         }
 
-        yield return new WaitForSeconds(time);
+        if (isAbilityOne)
+        {
+            while(AbilityOneCD > 0)
+            {
+                yield return new WaitForSeconds(0.1f);
+                AbilityOneCD -= 0.1f;
+            }
+        }
+        else
+        {
+            while (AbilityTwoCD > 0)
+            {
+                yield return new WaitForSeconds(0.1f);
+                AbilityTwoCD -= 0.1f;
+            }
+        }
+        
 
         if (isAbilityOne)
         {

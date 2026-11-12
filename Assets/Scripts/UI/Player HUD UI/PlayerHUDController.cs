@@ -140,7 +140,7 @@ public class PlayerHUDController : MenuBase
             weapon.ThisWeaponData.editableAbilities[weapon.GetComponent<BaseWeaponAbilityBehaviour>().abilityTwoIndex].BackgroundImage,
             CooldownUIController.CooldownToUpdate.Ability2);
 
-        ImmediatelyRefreshAllCooldowns();
+        //ImmediatelyRefreshAllCooldowns();
     }
 
     /// <summary>
