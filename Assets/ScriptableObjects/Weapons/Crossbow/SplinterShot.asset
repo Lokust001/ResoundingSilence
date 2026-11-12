@@ -28,12 +28,12 @@ MonoBehaviour:
   SecondaryStats:
   - StatType: 4
     StatValue: 7
-  AbilityDamage: 40
-  BaseAbilityDamage: 40
-  AbilityDamageTicks: 10
-  BaseAbilityDamageTicks: 10
-  AbilityDuration: 5
-  BaseAbilityDuration: 5
+  AbilityDamage: 100
+  BaseAbilityDamage: 100
+  AbilityDamageTicks: 8
+  BaseAbilityDamageTicks: 8
+  AbilityDuration: 4
+  BaseAbilityDuration: 4
   AbilityAggroRange: 0
   BaseAbilityAggroRange: 0
   AbilityPlayerSpeed: 0
@@ -42,8 +42,8 @@ MonoBehaviour:
   BaseAbilityWeaponSpeed: 0
   AbilityLifeSteal: 0
   BaseAbilityLifeSteal: 0
-  AbilityAOESize: 5
-  BaseAbilityAOESize: 5
+  AbilityAOESize: 7
+  BaseAbilityAOESize: 7
   AbilityDelay: 0
   BaseAbilityDelay: 0
   AbilityEnemyKnockback: 0
@@ -53,6 +53,52 @@ MonoBehaviour:
   AbilityCooldown: 5
   AbilityEndLag: 0.5
   AbilityRange: 8
+  HasProjectile: 0
+  AbilityProjectile:
+    BurstDamagePercent: 0
+    TimeTillNextBurst: 0
+    BaseTimeTillNextBurst: 0
+    HasLifesteal: 0
+    WeaponLifeSteal:
+      LifestealPercent: 0
+      BaseLifestealPercent: 0
+    HasAoe: 0
+    WeaponAoe:
+      AoePrefab: {fileID: 0}
+      AoeDamagePercent: 0
+      BaseAoeDamagePercent: 0
+      HasDamageFalloff: 0
+      MinAoeDamagePercent: 0
+      BaseMinAoeDamagePercent: 0
+      AoeSize: 0
+      BaseAoeSize: 0
+      AoeDelay: 0
+      BaseAoeDelay: 0
+      AoeDuration: 0
+      BaseAoeDuration: 0
+      AoeDamageTicks: 0
+      BaseAoeDamageTicks: 0
+    HasRangeAttack: 0
+    BurstRangedAttack:
+      AttackProjectiles: []
+      ProjectileIndex: 0
+      RandomizeProjectile: 0
+      HasPierce: 0
+      BurstPierce:
+        PierceAmount: 0
+        BasePierceAmount: 0
+        PierceDamageFalloffPercent: 
+        BasePierceDamageFalloffPercent: 
+        MinPierceDamagePercent: 0
+        BaseMinPierceDamagePercent: 0
+        PierceLifetimeFalloffPercent: 
+        BasePierceLifetimeFalloffPercent: 
+      HasRicochet: 0
+      BurstRicochet:
+        RicochetCount: 0
+        BaseRicochetCount: 0
+        RicochetRange: 0
+        BaseRicochetRange: 0
   HasPreview: 1
   PreviewData:
     ShapeType: 1
@@ -69,8 +115,10 @@ MonoBehaviour:
   BaseAbilitySize: {x: 0, y: 0, z: 0}
   AbilityPos: {x: 0, y: 0, z: 0}
   AbilityAnim:
-    AnimClip: {fileID: 0}
+    AnimClip: {fileID: 7400000, guid: 48d8f0e9f7196824d91729b3859546ba, type: 2}
     LayerIndex: 0
+    AnimatorUsed: {fileID: 0}
   AbilityReadyAnim:
     AnimClip: {fileID: 7400000, guid: 95bf142e0ad03104ca9c94a63c9531e6, type: 2}
     LayerIndex: 0
+    AnimatorUsed: {fileID: 0}
