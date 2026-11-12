@@ -29,7 +29,10 @@ public class UpgradeTileBehavior : ItemHolderSlot
     {
         controller = GetComponentInParent<UpgradeMenuController>();
     }
-
+    
+    /// <summary>
+    /// requests this glyphs tooltip
+    /// </summary>
     public override void HoveredOver()
     {
         base.HoveredOver();
