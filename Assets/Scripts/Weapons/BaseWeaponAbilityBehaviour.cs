@@ -174,13 +174,11 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
         {
             rData = ThisWeaponData.editableAbilities[abilityOneIndex].AbilityProjectile;
             damage = ThisWeaponData.editableAbilities[abilityOneIndex].AbilityDamage;
-            spawnAbilityOneProjectile = false;
         }
         else if (spawnAbilityTwoProjectile)
         {
             rData = ThisWeaponData.editableAbilities[abilityTwoIndex].AbilityProjectile;
             damage = ThisWeaponData.editableAbilities[abilityTwoIndex].AbilityDamage;
-            spawnAbilityTwoProjectile = false;
         }
         else
         {
@@ -223,12 +221,12 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
             }
             if (spawnAbilityOneProjectile)
             {
-                abilityOneActive = false;
+                spawnAbilityOneProjectile = false;
                 CastingAbility();
             }
             if (spawnAbilityTwoProjectile)
             {
-                abilityTwoActive = false;
+                spawnAbilityTwoProjectile = false;
                 CastingAbility();
             }
         }
