@@ -6,6 +6,7 @@
 * To Do:   N/A
 */
 
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -23,7 +24,11 @@ public class PlayerManager : BaseManager
     [HideInInspector]
     public List<BaseWeaponBehaviour> WeaponsGameObjects { get; private set; } = new(2);
 
+    [SerializeField] private float weaponSwapCooldown;
+
     private bool weaponOnePulledOut;
+    private bool canSwap;
+
     /// <summary>
     /// inits the manager and sets up public events
     /// </summary>
@@ -56,6 +61,7 @@ public class PlayerManager : BaseManager
         GenericPublicEvents.StartGamePressed += SpawnPlayer;
         GenericPublicEvents.EquipWeaponInSlot += spawnNewWeapon;
         weaponOnePulledOut = true;
+        canSwap = true;
         await Task.CompletedTask;
     }
 
@@ -74,7 +80,7 @@ public class PlayerManager : BaseManager
     /// </summary>
     private void swapWeapon()
     {
-        if (WeaponsGameObjects[1] != null)
+        if (WeaponsGameObjects[1] != null && canSwap)
         {
             weaponOnePulledOut = !weaponOnePulledOut;
             if (weaponOnePulledOut)
@@ -89,6 +95,7 @@ public class PlayerManager : BaseManager
                 WeaponsGameObjects[1].gameObject.SetActive(true);
                 GenericPublicEvents.SetCurrentWeapon?.Invoke(WeaponsGameObjects[1]);
             }
+            StartCoroutine(WeaponSwapCooldown());
         }
     }
 
@@ -98,7 +105,7 @@ public class PlayerManager : BaseManager
     public void spawnNewWeapon(int index, BaseWeaponScriptable scriptable)
     {
         Destroy(WeaponsGameObjects[index]);
-        GameObject weapon = Instantiate(scriptable.weaponBehavPrefab, player.transform);
+        GameObject weapon = Instantiate(scriptable.weaponBehavPrefab, new Vector3(player.transform.position.x, player.transform.position.y + 0.5f, player.transform.position.z)/*<-temp*/, player.transform.rotation, player.transform);
         weapon.GetComponent<BaseWeaponBehaviour>().ThisWeaponData = scriptable;
         WeaponsGameObjects[index] = weapon.GetComponent<BaseWeaponBehaviour>();
         if(index == 0 && !weaponOnePulledOut)
@@ -111,7 +118,12 @@ public class PlayerManager : BaseManager
         }
     }
 
-
+    private IEnumerator WeaponSwapCooldown()
+    {
+        canSwap = false;
+        yield return new WaitForSecondsRealtime(weaponSwapCooldown);
+        canSwap = true;
+    }
 
     /// <summary>
     /// spawns in the player prefab

@@ -119,6 +119,8 @@ public class BaseWeaponBehaviour : MonoBehaviour
         InputPublicEvents.ControllerEnabled += ControllerEnabled;
         InputPublicEvents.AbilityOnePressed += AimingAbilityOne;
         InputPublicEvents.AbilityTwoPressed += AimingAbilityTwo;
+        attackReady = true;
+        comboIndex = 0;
 
         StartCoroutine(EnableInputs());
     }
