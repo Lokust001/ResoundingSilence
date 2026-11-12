@@ -1,7 +1,7 @@
 /******************************************************************************
  * Author: Brad Dixon
  * Contributors:
- * Last Modified: 10/20/2026
+ * Last Modified: 11/11/2026
  * Brief: Handles projectile collision and lifetime
  * TODO:
  * ***************************************************************************/
@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 public class BaseProjectileBehaviour : MonoBehaviour
 {
-    BaseWeaponScriptable weaponRef;
+    BurstData attackRef;
     int comboIndex;
     int pierceDamageIndex;
     int pierceLifetimeIndex;
@@ -28,18 +28,21 @@ public class BaseProjectileBehaviour : MonoBehaviour
     [SerializeField] List<GameObject> enemiesNotHit = new List<GameObject>();
     List<GameObject> enemiesHit = new List<GameObject>();
 
+    LayerMask enemyLayer;
+
     /// <summary>
     /// Sets it's own variables to the scriptable object copy ref
     /// </summary>
     /// <param name="dataRef"></param> Ref to the SO with the up to date weapon stats
     /// <param name="combo"></param> Defaults to 0 if there is no combo
-    public void SetData(BaseWeaponScriptable dataRef, int combo = 0)
+    public void SetData(BurstData dataRef, int damage, LayerMask lm, int combo = 0)
     {
-        weaponRef = dataRef;
+        Debug.Log(gameObject.name);
+        attackRef = dataRef;
         comboIndex = combo;
 
-        myDamage = dataRef.WeaponDamage[combo];
-        myLifetime = dataRef.ProjectileLifetime[combo];
+        myDamage = damage;
+        myLifetime = dataRef.BurstRangedAttack.AttackProjectiles[combo].ProjectileLifetime;
 
         baseDamage = myDamage;
         baseLifetime = myLifetime;
@@ -48,7 +51,14 @@ public class BaseProjectileBehaviour : MonoBehaviour
 
         ricochetCount = 0;
 
+        enemyLayer = lm;
+
         StartCoroutine(ProjectileLifetime());
+
+        if(attackRef.BurstRangedAttack.AttackProjectiles[comboIndex].HasSizeChange)
+        {
+            StartCoroutine(ChangeSize());
+        }
     }
 
     /// <summary>
@@ -58,11 +68,30 @@ public class BaseProjectileBehaviour : MonoBehaviour
     protected IEnumerator ProjectileLifetime()
     {
         float elapsedTime = 0;
+        Vector3 endPoint = Vector3.zero;
+        float prevDistance = 0; float newDistance = 0;
+        float lifetime = attackRef.BurstRangedAttack.AttackProjectiles[comboIndex].ProjectileLifetime;
 
-        while(weaponRef.ProjectileLifetime[comboIndex] > elapsedTime)
+        if (attackRef.BurstRangedAttack.AttackProjectiles[comboIndex].LifetimeIsRange)
         {
+            endPoint = transform.position + (transform.forward * attackRef.BurstRangedAttack.AttackProjectiles[comboIndex].ProjectileRange);
+            prevDistance = newDistance = Vector3.Distance(transform.position, endPoint);
+            lifetime = 30;
+        }
+        while (lifetime > elapsedTime)
+        {
+            if(attackRef.BurstRangedAttack.AttackProjectiles[comboIndex].LifetimeIsRange)
+            {
+                prevDistance = newDistance;
+                newDistance = Vector3.Distance(transform.position, endPoint);
+
+                if(prevDistance < newDistance)
+                {
+                    break;
+                }
+            }
             elapsedTime += Time.deltaTime;
-            yield return null;
+            yield return new WaitForFixedUpdate();
         }
 
         Destroy(this.gameObject);
@@ -87,24 +116,24 @@ public class BaseProjectileBehaviour : MonoBehaviour
             //replace with the enemy taking damage
             other.GetComponent<Enemy>().EnemyTakeDamage(myDamage);
 
-            if(weaponRef.HasLifesteal)
+            if(attackRef.HasLifesteal)
             {
-                int healValue = Mathf.CeilToInt(myDamage * ConvertToPercentage(weaponRef.LifestealAmount[pierceDamageIndex]));
+                int healValue = Mathf.CeilToInt(myDamage * ConvertToPercentage(attackRef.WeaponLifeSteal.LifestealPercent));
 
                 //TODO Replace with heal player
-                FindAnyObjectByType<DummyPlayerBehaviour>().Heal(healValue);
+                FindAnyObjectByType<MidRunDataManager>().ChangePlayerHealth(healValue);
             }
 
             //Don't want to destroy projectile if it pierces
-            if(weaponRef.HasPierce)
+            if(attackRef.BurstRangedAttack.HasPierce)
             {
-                Debug.Log(Mathf.CeilToInt(baseDamage * ConvertToPercentage(weaponRef.PierceDamageFalloff[pierceDamageIndex])));
+                Debug.Log(Mathf.CeilToInt(baseDamage * ConvertToPercentage(attackRef.BurstRangedAttack.BurstPierce.PierceAmount)));
 
-                myDamage = myDamage - Mathf.CeilToInt(baseDamage * ConvertToPercentage(weaponRef.PierceDamageFalloff[pierceDamageIndex]))
-                    >= weaponRef.MinPierceDamage[pierceDamageIndex] ? myDamage - Mathf.CeilToInt(baseDamage * ConvertToPercentage(weaponRef.PierceDamageFalloff[pierceDamageIndex]))
-                    : weaponRef.MinPierceDamage[pierceDamageIndex];
+                myDamage = myDamage - Mathf.CeilToInt(baseDamage * ConvertToPercentage(attackRef.BurstRangedAttack.BurstPierce.PierceDamageFalloffPercent[pierceDamageIndex]))
+                    >= (myDamage * attackRef.BurstRangedAttack.BurstPierce.MinPierceDamagePercent) ? myDamage - Mathf.CeilToInt(baseDamage * ConvertToPercentage(attackRef.BurstRangedAttack.BurstPierce.PierceDamageFalloffPercent[pierceDamageIndex]))
+                    : (myDamage * attackRef.BurstRangedAttack.BurstPierce.MinPierceDamagePercent);
 
-                myLifetime -= (baseLifetime * ConvertToPercentage(weaponRef.PierceLifetimeFalloff[pierceLifetimeIndex]));
+                myLifetime -= (baseLifetime * ConvertToPercentage(attackRef.BurstRangedAttack.BurstPierce.PierceLifetimeFalloffPercent[pierceLifetimeIndex]));
 
                 //Destroy when pierce projectile stops doing damage
                 if(myDamage <= 0)
@@ -113,27 +142,28 @@ public class BaseProjectileBehaviour : MonoBehaviour
                 }
                 
                 //If stat changes from piercing aren't linear, update what stat change will be
-                pierceDamageIndex = pierceDamageIndex + 1 < weaponRef.PierceDamageFalloff.Count ? ++pierceDamageIndex : pierceDamageIndex;
-                pierceLifetimeIndex = pierceLifetimeIndex + 1 < weaponRef.PierceLifetimeFalloff.Count ? ++pierceLifetimeIndex : pierceLifetimeIndex;
+                pierceDamageIndex = pierceDamageIndex + 1 < attackRef.BurstRangedAttack.BurstPierce.PierceDamageFalloffPercent.Count ? ++pierceDamageIndex : pierceDamageIndex;
+                pierceLifetimeIndex = pierceLifetimeIndex + 1 < attackRef.BurstRangedAttack.BurstPierce.PierceLifetimeFalloffPercent.Count ? ++pierceLifetimeIndex : pierceLifetimeIndex;
             }
 
-            if(weaponRef.Ricochets)
+            if(attackRef.BurstRangedAttack.HasRicochet)
             {
                 RicochetProjectile(other.gameObject);
             }
 
-            if(weaponRef.HasAOEAttack)
+            if(attackRef.HasAoe)
             {
                 SpawnAOE(other.ClosestPoint(transform.position));
             }
 
-            if(!weaponRef.HasPierce && !weaponRef.Ricochets)
+            if(!attackRef.BurstRangedAttack.HasPierce && !attackRef.BurstRangedAttack.HasRicochet)
             {
                 Destroy(this.gameObject);
             }
         }
         else
         {
+            Debug.Log(other.gameObject.name);
             Destroy(this.gameObject);
         }
     }
@@ -143,13 +173,13 @@ public class BaseProjectileBehaviour : MonoBehaviour
     /// </summary>
     protected void RicochetProjectile(GameObject hitEnemy)
     {
-        if (ricochetCount < weaponRef.RicochetCount[comboIndex])
+        if (ricochetCount < attackRef.BurstRangedAttack.BurstRicochet.RicochetCount)
         {
             ++ricochetCount;
             enemiesInRange.Clear();
             enemiesNotHit.Clear();
 
-            RaycastHit[] enemies = Physics.SphereCastAll(transform.position, weaponRef.RicochetRange[comboIndex], transform.forward, 0, weaponRef.EnemyLayer);
+            RaycastHit[] enemies = Physics.SphereCastAll(transform.position, attackRef.BurstRangedAttack.BurstRicochet.RicochetRange, transform.forward, 0, enemyLayer);
 
             if (enemies.Length <= 1)
             {
@@ -230,7 +260,7 @@ public class BaseProjectileBehaviour : MonoBehaviour
                 break;
             }
 
-            GetComponent<Rigidbody>().linearVelocity = (enemy.transform.position - transform.position).normalized * weaponRef.ProjectileSpeed[comboIndex];
+            GetComponent<Rigidbody>().linearVelocity = (enemy.transform.position - transform.position).normalized * attackRef.BurstRangedAttack.AttackProjectiles[comboIndex].ProjectileSpeed;
             transform.LookAt(enemy.transform.position);
 
             yield return new WaitForFixedUpdate();
@@ -243,21 +273,57 @@ public class BaseProjectileBehaviour : MonoBehaviour
     /// </summary>
     public void SpawnAOE(Vector3 spawnPos)
     {
-        //if (cIndex == -1)
-        //{
-        //    cIndex = Random.Range(0, weaponRef.WeaponAOEs.Count);
-        //}
-
-        GameObject spawnedAOE = Instantiate(weaponRef.WeaponAOEs[comboIndex], spawnPos, Quaternion.identity);
-        spawnedAOE.GetComponent<BaseAOEBehaviour>().SetReference(weaponRef, comboIndex);
+        GameObject spawnedAOE = Instantiate(attackRef.WeaponAoe.AoePrefab, spawnPos, Quaternion.identity);
+        spawnedAOE.GetComponent<BaseAOEBehaviour>().SetReference(attackRef.WeaponAoe, myDamage, enemyLayer, comboIndex);
     }
 
     /// <summary>
-    /// Converts the inspector variable to it's percentage value if it isn't already a percent
+    /// Changes the projectile's size over time
     /// </summary>
-    /// <param name="value"></param>
     /// <returns></returns>
-    protected float ConvertToPercentage(float value)
+    protected IEnumerator ChangeSize()
+    {
+        SizeChangeData sData = attackRef.BurstRangedAttack.AttackProjectiles[comboIndex].ProjectileSizeChange;
+        if (sData.InfinitelyChangeSize)
+        {
+
+        }
+        else
+        {
+            Vector3 startSize = transform.localScale;
+            Vector3 endSize = transform.localScale * sData.NewSize;
+            float elapsedTime = 0;
+
+            do
+            {
+                Vector3 newSize = Vector3.Lerp(startSize, endSize, (elapsedTime / sData.TimeTillNewSize));
+
+                if(sData.ConstXSize)
+                {
+                    newSize.x = startSize.x;
+                }
+                if(sData.ConstYSize)
+                {
+                    newSize.y = startSize.y;
+                }
+                if(sData.ConstZSize)
+                {
+                    newSize.z = startSize.z;
+                }
+                transform.localScale = newSize;
+
+                yield return new WaitForFixedUpdate();
+                elapsedTime += Time.deltaTime;
+            } while (elapsedTime < sData.TimeTillNewSize);
+        }
+    }
+
+/// <summary>
+/// Converts the inspector variable to it's percentage value if it isn't already a percent
+/// </summary>
+/// <param name="value"></param>
+/// <returns></returns>
+protected float ConvertToPercentage(float value)
     {
         return value >= 1 ? value / 100 : value;
     }

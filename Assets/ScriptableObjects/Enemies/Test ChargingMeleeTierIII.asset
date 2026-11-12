@@ -40,7 +40,7 @@ MonoBehaviour:
   attackUptimeDuration: 0
   chargeSpeedForce: 280
   chargeDestinationAccuracy: 0.01
-  playerHitKnockbackDuration: 2.5
+  playerHitKnockbackDuration: 0.7
   playerHitKnockbackDistance: 5
   buffChargeDuration: 0
   retreatHealthPercent: 0
@@ -52,17 +52,17 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 160
-      inSlope: 10
-      outSlope: 10
+      inSlope: 8
+      outSlope: 8
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 8
+      time: 10
       value: 240
-      inSlope: 10
-      outSlope: 10
+      inSlope: 8
+      outSlope: 8
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
@@ -76,17 +76,17 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 60
-      inSlope: 7.5
-      outSlope: 7.5
+      inSlope: 3
+      outSlope: 3
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 8
-      value: 120
-      inSlope: 7.5
-      outSlope: 7.5
+      time: 10
+      value: 90
+      inSlope: 3
+      outSlope: 3
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334

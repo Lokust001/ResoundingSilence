@@ -24,8 +24,8 @@ MonoBehaviour:
   SecondaryStats:
   - StatType: 3
     StatValue: 0
-  AbilityDamage: 200
-  BaseAbilityDamage: 200
+  AbilityDamage: 60
+  BaseAbilityDamage: 60
   AbilityDamageTicks: 0
   BaseAbilityDamageTicks: 0
   AbilityDuration: 0
@@ -36,8 +36,8 @@ MonoBehaviour:
   BaseAbilityPlayerSpeed: 0
   AbilityWeaponSpeed: 0
   BaseAbilityWeaponSpeed: 0
-  AbilityLifeSteal: 10
-  BaseAbilityLifeSteal: 10
+  AbilityLifeSteal: 0
+  BaseAbilityLifeSteal: 0
   AbilityAOESize: 1
   BaseAbilityAOESize: 1
   AbilityDelay: 0
@@ -49,6 +49,52 @@ MonoBehaviour:
   AbilityCooldown: 6
   AbilityEndLag: 0.5
   AbilityRange: 10
+  HasProjectile: 0
+  AbilityProjectile:
+    BurstDamagePercent: 0
+    TimeTillNextBurst: 0
+    BaseTimeTillNextBurst: 0
+    HasLifesteal: 0
+    WeaponLifeSteal:
+      LifestealPercent: 0
+      BaseLifestealPercent: 0
+    HasAoe: 0
+    WeaponAoe:
+      AoePrefab: {fileID: 0}
+      AoeDamagePercent: 0
+      BaseAoeDamagePercent: 0
+      HasDamageFalloff: 0
+      MinAoeDamagePercent: 0
+      BaseMinAoeDamagePercent: 0
+      AoeSize: 0
+      BaseAoeSize: 0
+      AoeDelay: 0
+      BaseAoeDelay: 0
+      AoeDuration: 0
+      BaseAoeDuration: 0
+      AoeDamageTicks: 0
+      BaseAoeDamageTicks: 0
+    HasRangeAttack: 0
+    BurstRangedAttack:
+      AttackProjectiles: []
+      ProjectileIndex: 0
+      RandomizeProjectile: 0
+      HasPierce: 0
+      BurstPierce:
+        PierceAmount: 0
+        BasePierceAmount: 0
+        PierceDamageFalloffPercent: 
+        BasePierceDamageFalloffPercent: 
+        MinPierceDamagePercent: 0
+        BaseMinPierceDamagePercent: 0
+        PierceLifetimeFalloffPercent: 
+        BasePierceLifetimeFalloffPercent: 
+      HasRicochet: 0
+      BurstRicochet:
+        RicochetCount: 0
+        BaseRicochetCount: 0
+        RicochetRange: 0
+        BaseRicochetRange: 0
   HasPreview: 1
   PreviewData:
     ShapeType: 2
@@ -65,8 +111,10 @@ MonoBehaviour:
   BaseAbilitySize: {x: 0, y: 0, z: 0}
   AbilityPos: {x: 0, y: 0, z: 0}
   AbilityAnim:
-    AnimClip: {fileID: 0}
+    AnimClip: {fileID: 7400000, guid: d3a3822473cf4db4085e40d788020096, type: 2}
     LayerIndex: 0
+    AnimatorUsed: {fileID: 0}
   AbilityReadyAnim:
     AnimClip: {fileID: 7400000, guid: 6e4ba02038ef92048a60caca727721dc, type: 2}
     LayerIndex: 0
+    AnimatorUsed: {fileID: 0}
