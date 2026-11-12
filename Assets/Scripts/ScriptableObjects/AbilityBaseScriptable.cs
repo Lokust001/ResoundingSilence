@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors: Brad Dixon
-* Last Modified: 11/5/2026
+* Last Modified: 11/9/2026
 * Summary: Scriptable object for the abilities. Will havbe specific abilities derive from this as needed, but these 
 *          vars are on every ability scriptable
 * To Do:   N/A
@@ -10,7 +10,6 @@
 using NaughtyAttributes;
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.UI;
 
 [CreateAssetMenu(fileName = "NewAbility", menuName = "Scriptables/AbilityBase")]
 public class AbilityBaseScriptable : BaseScriptableObject
@@ -64,7 +63,13 @@ public class AbilityBaseScriptable : BaseScriptableObject
     public float AbilityCooldown;
     public float AbilityEndLag;
     public float AbilityRange;
+
+    public bool HasProjectile;
+    [ShowIf(nameof(HasProjectile))]
+    public BurstData AbilityProjectile;
+
     public bool HasPreview;
+    [ShowIf(nameof(HasPreview))]
     public PreviewShape PreviewData;
 
     public bool PersistingAbility;
@@ -75,6 +80,7 @@ public class AbilityBaseScriptable : BaseScriptableObject
     [HideInInspector] public Vector3 AbilityPos;
 
     public AnimationPath AbilityAnim;
+    [ShowIf(nameof(HasPreview))]
     public AnimationPath AbilityReadyAnim;
 
     /// <summary>
@@ -84,6 +90,18 @@ public class AbilityBaseScriptable : BaseScriptableObject
     {
         SetAbilityStats(PrimaryStats);
         SetAbilityStats(SecondaryStats);
+
+        if (AbilityProjectile.BurstRangedAttack.AttackProjectiles != null)
+        {
+            foreach (ProjectileData i in AbilityProjectile.BurstRangedAttack.AttackProjectiles)
+            {
+                if (i.LifetimeIsRange)
+                {
+                    i.ProjectileRange = AbilityRange;
+                    i.BaseProjectileRange = AbilityRange;
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -159,6 +177,7 @@ public struct AnimationPath
 {
     public AnimationClip AnimClip;
     public int LayerIndex;
+    public Animator AnimatorUsed;
 }
 
 [System.Serializable]
