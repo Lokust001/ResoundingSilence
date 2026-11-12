@@ -637,6 +637,7 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
         UIPublicEvents.UpdateHUDCooldownUI?.Invoke(
             currentAbilityIndex == abilityOneIndex ?
             CooldownUIController.CooldownToUpdate.Ability1 : CooldownUIController.CooldownToUpdate.Ability2,
+            ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityCooldown,
             ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityCooldown);
 
         if (isAbilityOne)
