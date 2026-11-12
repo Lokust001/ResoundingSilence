@@ -9,6 +9,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class HuntBoardUIMenu : MenuBase
 {
@@ -28,6 +29,10 @@ public class HuntBoardUIMenu : MenuBase
     [SerializeField]
     private TMP_Text rewardText;
 
+    [SerializeField]
+    private GameObject acceptQuestButton;
+
+
     /// <summary>
     /// enables public events
     /// </summary>
@@ -35,7 +40,8 @@ public class HuntBoardUIMenu : MenuBase
     {
         base.SetUpPublicEvents();
         UIPublicEvents.UpdateHuntBoardData += UpdateHuntBoardData;
-        InputPublicEvents.InteractPressed += CloseMenu;
+        InputPublicEvents.KeyboardMouseEnabled += KBMEnabled;
+        InputPublicEvents.ControllerEnabled += ControllerSupportEnabled;
     }
 
     /// <summary>
@@ -46,6 +52,8 @@ public class HuntBoardUIMenu : MenuBase
         base.TearDownPublicEvents();
         UIPublicEvents.UpdateHuntBoardData -= UpdateHuntBoardData;
         InputPublicEvents.InteractPressed -= CloseMenu;
+        InputPublicEvents.ControllerEnabled -= ControllerSupportEnabled; 
+        InputPublicEvents.KeyboardMouseEnabled -= KBMEnabled;
     }
 
     /// <summary>
@@ -64,18 +72,40 @@ public class HuntBoardUIMenu : MenuBase
         if (SideObjectiveManager.Instance.currentHuntObjectives.Contains(obj)) 
         {
             ObjectiveText.text += $"\nProgress: {obj.huntEnemiesProgress} / {obj.huntedEnemiesGoal}";
+            InputPublicEvents.InteractPressed += CloseMenu;
             return;
         }
 
         if (!SideObjectiveManager.Instance.completedObjectives.Contains(obj))
         {
             acceptButtons.SetActive(true);
+            defaultSelectedGameobject = acceptQuestButton;
+            if (InputManager.Instance.ControllerIsEnabled)
+            {
+                ControllerSupportEnabled();
+            }
+            else
+            {
+                InputPublicEvents.InteractPressed += CloseMenu;
+            }
+
             return;
         }
         
         //at this point, we know the quest is complete
         ObjectiveText.text += $"\nComplete!";
         claimRewardButton.SetActive(true);
+
+        defaultSelectedGameobject = claimRewardButton;
+        if (InputManager.Instance.ControllerIsEnabled)
+        {
+            ControllerSupportEnabled();
+        }
+        else
+        {
+            InputPublicEvents.InteractPressed += CloseMenu;
+        }
+
         rewardText.gameObject.SetActive(true);
         rewardText.text = $"Rewards: ";
 
@@ -110,6 +140,7 @@ public class HuntBoardUIMenu : MenuBase
     {
         currentObj = null;
         currentRewardGiver = null;
+        defaultSelectedGameobject = null;
         UIPublicEvents.CurrentMenuClosed?.Invoke();
     }
 
@@ -121,5 +152,22 @@ public class HuntBoardUIMenu : MenuBase
         currentRewardGiver.StartGivingRewards();
         UIPublicEvents.RewardsForObjectiveClaimed?.Invoke(currentObj);
         CloseMenu();
+    }
+
+    /// <summary>
+    /// when controller is selected, select the right obj
+    /// </summary>
+    private void ControllerSupportEnabled()
+    {
+        InputPublicEvents.InteractPressed -= CloseMenu;
+        EventSystem.current.SetSelectedGameObject(defaultSelectedGameobject);
+    }
+
+    /// <summary>
+    /// Allows the player to close the menu with controller
+    /// </summary>
+    private void KBMEnabled()
+    {
+        InputPublicEvents.InteractPressed += CloseMenu;
     }
 }
