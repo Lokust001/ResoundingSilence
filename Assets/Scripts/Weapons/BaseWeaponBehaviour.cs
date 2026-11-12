@@ -74,6 +74,9 @@ public class BaseWeaponBehaviour : MonoBehaviour
         InputPublicEvents.ShootReleased += PlayerStoppedAttacking;
         InputPublicEvents.KeyboardMouseEnabled += KBMEnabled;
         InputPublicEvents.ControllerEnabled += ControllerEnabled;
+        attackReady = true;
+        comboIndex = 0;
+        burstIndex = 0;
 
         StartCoroutine(EnableInputs());
     }
