@@ -79,7 +79,6 @@ public class Chests : MonoBehaviour
             for (int i = 0; i < PinSpawn; i++)
             {
                 GameObject temp = Instantiate(emptyPinGameObject, transform.position + new Vector3(1, 0, 1), transform.rotation, transform);
-                temp.GetComponent<PinWorldObject>().pin = MRM.PickDroppedPin();
             }
             if (Random.Range(0, 100) < WeaponDropChance)
             {
