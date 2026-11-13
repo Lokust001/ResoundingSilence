@@ -23,7 +23,7 @@ public static class UIPublicEvents
 
     public static Action<ControllerSupportedClickable> SelectSpecificClickable;
 
-    #region PlayerHUD
+   #region PlayerHUD
 
     public static Action<SideObjective> UpdateHUDHuntObjs;
 
