@@ -76,7 +76,8 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
     /// <param name="other"></param>
     private void HandleVariousAttackTriggers(PlayerController player) 
     {
-        player.TakeDamage(enemyData.enemyATKDmg);
+        SetAttackTriggersEnabled(false);
+        player.TakeDamage(enemyData.enemyATKDmg, IsEnemyCurrentlyCharging() ? CalculateKnockbackInfo(player.transform.position) : null);
     }
 
     /// <summary>
@@ -253,13 +254,45 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
         //over time makes the actual indicator "grow" over time.
         ResetIndicatorParent();
 
+        SetAttackTriggersEnabled(true);
+
         //Pass the Charging behavior towards enemyMovement to handle the sudden burst of movement
         enemyCharging = StartCoroutine(queuedMeleeAttack);
         yield return enemyCharging;
+        SetAttackTriggersEnabled(false);
+
+        yield return null;
+
         enemyCharging = null;
 
         //Start a Cooldown Coroutine
         activeATKorCooldown = StartCoroutine(AttackCooldownCoroutine());
+    }
+
+    /// <summary>
+    /// Enables or disables all of the TriggerObjects on this Enemy at once
+    /// </summary>
+    /// <param name="state"></param>
+    private void SetAttackTriggersEnabled(bool state)
+    {
+        foreach (var trigger in onTriggerEnterObjects)
+        {
+            trigger.enabled = state;
+        }
+    }
+
+    /// <summary>
+    /// Calculates the direction to knock back the player in and sends it as a tuple along with duration
+    /// </summary>
+    /// <param name="hitPlayerPosition"></param>
+    /// <returns></returns>
+    private (Vector3 knockbackDirection, float knockbackDuration) CalculateKnockbackInfo(Vector3 hitPlayerPosition)
+    {
+        Vector3 kbDirection = hitPlayerPosition - transform.position;
+        kbDirection.y = 0;
+        kbDirection = kbDirection.normalized * enemyData.playerHitKnockbackDistance;
+
+        return (kbDirection, enemyData.playerHitKnockbackDuration);
     }
 
     /// <summary>

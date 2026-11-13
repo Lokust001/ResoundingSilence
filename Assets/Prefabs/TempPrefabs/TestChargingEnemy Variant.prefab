@@ -1,5 +1,74 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2843093359259245482
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1694581450140014261}
+  - component: {fileID: 4641903683218079586}
+  - component: {fileID: 7069951946775059294}
+  m_Layer: 10
+  m_Name: ChargeATKHitbox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1694581450140014261
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2843093359259245482}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1559063943498428022}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4641903683218079586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2843093359259245482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6725d744f418194b805c2aba199566f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TriggerObjects
+  triggerShapeColor: {r: 0, g: 0, b: 0, a: 0}
+--- !u!136 &7069951946775059294
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2843093359259245482}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.6
+  m_Height: 2.1
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &4966845799910261743
 GameObject:
   m_ObjectHideFlags: 0
@@ -142,6 +211,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 825c19d7baa51654b8416d0e67a5a1bb, type: 2}
+    - target: {fileID: 2326147083794828989, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: chargeStopLayers.m_Bits
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2892623662654031983, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: m_LocalPosition.x
       value: -12.81
@@ -206,6 +279,14 @@ PrefabInstance:
       propertyPath: attackIndicatorArea
       value: 
       objectReference: {fileID: 8958158588805100568}
+    - target: {fileID: 5437595391178199074, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: onTriggerEnterObjects.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5437595391178199074, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: 'onTriggerEnterObjects.Array.data[0]'
+      value: 
+      objectReference: {fileID: 4641903683218079586}
     - target: {fileID: 5994382746196217271, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -241,41 +322,13 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2892623662654031983, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1039440861565897380}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8564224598725686547, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+    - targetCorrespondingSourceObject: {fileID: 2892623662654031983, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4263264113501922702}
+      addedObject: {fileID: 1694581450140014261}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
 --- !u!4 &1559063943498428022 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2892623662654031983, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
   m_PrefabInstance: {fileID: 4433302902533383705}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &5430353127616353034 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8564224598725686547, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
-  m_PrefabInstance: {fileID: 4433302902533383705}
-  m_PrefabAsset: {fileID: 0}
---- !u!136 &4263264113501922702
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5430353127616353034}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 64
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 1
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}

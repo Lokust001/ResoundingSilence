@@ -5,8 +5,10 @@
 * Summary: Player input, stats, and damage are handled here
 * To Do:   Add more variables as needed.
 */
+using NaughtyAttributes;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 public class PlayerController : MonoBehaviour
 {
     public float defaultSpeed;
@@ -15,15 +17,6 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     float playerHealth;
-
-    [SerializeField]
-    int currentXP;
-
-    [SerializeField]
-    int currentGold;
-
-    [SerializeField]
-    string[] invincibilityLayerNamesToIgnore;
 
     [SerializeField]
     float invincibilityDuration;
@@ -45,6 +38,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] LayerMask ignoreWhileInvincible;
     [Tooltip("What layers the player shouldn't collide with while they are invinvible.")]
     [SerializeField] LayerMask DashLayersIgnore;
+
+    [SerializeField] LayerMask stopKnockbackLayers;
+
+    private const float WALL_COLLISION_CAST_OFFSET = 0.2f;
+
 
     #region Debug Console Variables
 
@@ -81,6 +79,9 @@ public class PlayerController : MonoBehaviour
     float healingPotency = 1.0f;
     float damageResistance = 1.0f;
     float KnockbackAmount = 1.0f;
+
+    private Vector3 topColliderLocalPos;
+    private Vector3 bottomColliderLocalPos;
     #endregion
 
     #region Unity Methods
@@ -109,8 +110,8 @@ public class PlayerController : MonoBehaviour
 
         meleeRangeTrigger.PlayerTriggerActivated -= MeleeZoneHandler;
         rangedRangeTrigger.PlayerTriggerActivated -= RangedZoneHandler;
-    }
 
+    }
     /// <summary>
     /// Sets components
     /// </summary>
@@ -118,6 +119,10 @@ public class PlayerController : MonoBehaviour
     {
         rigidbody = GetComponent<Rigidbody>();
         playerModelCollider = GetComponent<CapsuleCollider>();
+
+        float modelThickness = playerModelCollider.height / 2 - playerModelCollider.radius;
+        topColliderLocalPos = playerModelCollider.center - Vector3.up * modelThickness;
+        bottomColliderLocalPos = playerModelCollider.center + Vector3.up * modelThickness;
 
         moveSpeed = defaultSpeed;
         dashRange = BasedashRange;
@@ -379,7 +384,7 @@ public class PlayerController : MonoBehaviour
     private IEnumerator PlayerInvincibilityFrames() 
     {
         //Make the player intangible to collisions from specified layers
-        SetInvincibilityIntangible(true);
+        SetPlayerInvincibility(true);
 
         Renderer playerRenderer = GetComponent<Renderer>();
         Color original = playerRenderer.material.color;
@@ -392,7 +397,7 @@ public class PlayerController : MonoBehaviour
             
             yield return null;
         }
-        SetInvincibilityIntangible(false);
+        SetPlayerInvincibility(false);
 
         playerRenderer.material.color = original;
         dmgCoroutine = null;
@@ -403,11 +408,32 @@ public class PlayerController : MonoBehaviour
     /// and either toggles the collision on or off for those layers all at once
     /// </summary>
     /// <param name="value"></param>
-    private void SetInvincibilityIntangible(bool value) 
+    private void SetPlayerInvincibility(bool value) 
     {
-        foreach (string layerName in invincibilityLayerNamesToIgnore) 
+        if (value)
+            rigidbody.excludeLayers += ignoreWhileInvincible;
+        else
+            rigidbody.excludeLayers -= ignoreWhileInvincible;
+
+        
+    }
+
+    [Button("DebugCasting")]
+    public void DebugKBCasting() 
+    {
+        StartCoroutine(test());
+    }
+
+    private IEnumerator test() 
+    {
+        
+        while (true) 
         {
-            Physics.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer(layerName), value);
+            Vector3 point1 = transform.TransformPoint(topColliderLocalPos);
+            Vector3 point2 = transform.TransformPoint(bottomColliderLocalPos);
+            Physics.CapsuleCast(point1, point2, playerModelCollider.radius, -transform.forward, out RaycastHit hit, 10, stopKnockbackLayers, QueryTriggerInteraction.Ignore);
+
+            yield return new WaitForFixedUpdate();
         }
     }
 
@@ -418,17 +444,40 @@ public class PlayerController : MonoBehaviour
     /// <returns></returns>
     public IEnumerator TakePlayerKnockback((Vector3 knockbackDistance, float knockbackDuration) knockbackInfo)
     {
+        //Nullify the insane force that would've otherwise been applied by the enemy
+        NegateAllForces();
+
         //Stop player input
         StopPlayerMovementAndInput();
 
         //Retrieve a local copy of the player's transform
         Transform playerTransform = transform;
 
+
         //Calculate the knockback destination, which is the player's current position plus its calculated offset after knockback
         Vector3 knockbackDestination = playerTransform.position + (knockbackInfo.knockbackDistance * KnockbackAmount);
 
         //Total distance between the player and the destination of the knockback
         float maxDistance = Vector3.Distance(playerTransform.position, knockbackDestination);
+
+        Vector3 colliderWallOffset = new(0, 0, WALL_COLLISION_CAST_OFFSET);
+
+        //Calculate new world transforms for the top and bottom half of the player collider during this moment in time
+        Vector3 point1 = transform.TransformPoint(topColliderLocalPos) + colliderWallOffset;
+        Vector3 point2 = transform.TransformPoint(bottomColliderLocalPos) + colliderWallOffset;
+        Debug.Break();
+        bool insufficientSpace = Physics.CapsuleCast(point1, point2, playerModelCollider.radius, -transform.forward, out RaycastHit hit, maxDistance + WALL_COLLISION_CAST_OFFSET, stopKnockbackLayers, QueryTriggerInteraction.Ignore);
+        
+        if (insufficientSpace)
+        {
+            Debug.Break();
+            Debug.LogWarning("Knockback distance decreased due to insufficient space");
+            insufficientSpace = true;
+            knockbackDestination = hit.collider.transform.position;
+            maxDistance = Vector3.Distance(playerTransform.position, knockbackDestination);
+        }
+        else { Debug.Log("Knockback went on as usual" + hit.point); }
+
 
         //Tracker for remaining distance between player and knockback position
         float distance = maxDistance;
@@ -460,15 +509,12 @@ public class PlayerController : MonoBehaviour
         //The maximum speed the will initially be applied to the player
         float maximumKnockbackSpeed = 2 * linearUniformKnockbackSpeed;
 
-        //Nullify the insane force that would've otherwise been applied by the enemy
-        NegateAllForces();
 
         //For the duration of knockback,
         //Incrementally move the player towards the destination distance while dynamically calculating its speed on every FixedUpdate tick
         //The dynamic speed allows for the player to be initially fast, then slow down
         while (timer < timeLimit) 
         {
-
             //Tick FixedUpdate while we haven't reached duration yet
             //On the initial start of this loop, the time would be 0, so the player wouldn't move anywhere
             //To maintain as much precision as possible, wait first, and then move the player
@@ -494,8 +540,10 @@ public class PlayerController : MonoBehaviour
         //Nullify once more the insane force that would've otherwise been applied by the enemy
         NegateAllForces();
 
-        //The final move for 100% accuracy
-        rigidbody.MovePosition(knockbackDestination);
+        //The final move for 100% accuracy, only move if there's enough space,
+        //otherwise don't clip into the wall
+        if (!insufficientSpace)
+            rigidbody.MovePosition(knockbackDestination);
 
         //Let player move again
         RestartPlayerMovementAndInput();

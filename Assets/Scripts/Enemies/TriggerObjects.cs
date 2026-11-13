@@ -22,6 +22,9 @@ public class TriggerObjects : MonoBehaviour
     /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
+        if (!enabled)
+            return;
+
         if (other.TryGetComponent<PlayerController>(out var player)) 
         {
             EnemyTriggerActivated?.Invoke(player);
@@ -39,6 +42,9 @@ public class TriggerObjects : MonoBehaviour
     /// <param name="other"></param>
     private void OnTriggerExit(Collider other)
     {
+        if (!enabled)
+            return;
+
         if (other.TryGetComponent<PlayerController>(out var player)) 
         {
             EnemyTriggerActivated?.Invoke(player);

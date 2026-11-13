@@ -149,9 +149,7 @@ MonoBehaviour:
   moveSpeed: 10
   playerHealth: 100
   currentXP: 0
-  invincibilityLayerNamesToIgnore:
-  - Enemies
-  - EnemyProjectile
+  currentGold: 0
   invincibilityDuration: 2
   BasedashRange: 10
   dashDuration: 0.5
@@ -167,6 +165,9 @@ MonoBehaviour:
   DashLayersIgnore:
     serializedVersion: 2
     m_Bits: 31872
+  stopKnockbackLayers:
+    serializedVersion: 2
+    m_Bits: 1
   InGodMode: 0
   MoveActive: 1
   canDash: 0
@@ -221,7 +222,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 2
 --- !u!1 &4748310726457846114
 GameObject:
