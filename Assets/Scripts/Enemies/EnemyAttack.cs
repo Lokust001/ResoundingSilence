@@ -277,7 +277,8 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
     {
         foreach (var trigger in onTriggerEnterObjects)
         {
-            trigger.enabled = state;
+            trigger.SetTriggerEnabled(state);
+            Debug.Log(trigger.name + ": " + trigger.GetComponent<Collider>().enabled);
         }
     }
 

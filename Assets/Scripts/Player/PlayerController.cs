@@ -438,6 +438,8 @@ public class PlayerController : MonoBehaviour
         //Calculate the knockback destination, which is the player's current position plus its calculated offset after knockback
         Vector3 knockbackDestination = playerTransform.position + (knockbackInfo.knockbackDistance * KnockbackAmount);
 
+        Vector3 knockbackDirection = (knockbackDestination - playerTransform.position).normalized;
+
         //Total distance between the player and the destination of the knockback
         float maxDistance = Vector3.Distance(playerTransform.position, knockbackDestination);
 
@@ -449,14 +451,14 @@ public class PlayerController : MonoBehaviour
 
         //CapsuleCast to see if there is enough space to be knocked back towards the destination
         //(Kept in a variable instead of if statement to ease future debugging)
-        bool insufficientKnockbackSpace = Physics.CapsuleCast(point1, point2, playerModelCollider.radius, -transform.forward, 
+        bool insufficientKnockbackSpace = Physics.CapsuleCast(point1, point2, playerModelCollider.radius, knockbackDirection, 
             out RaycastHit hit, maxDistance + WALL_COLLISION_CAST_OFFSET, stopKnockbackLayers, QueryTriggerInteraction.Ignore);
         
         //If there is not enough space for the player knockback to travel all the way to the destination,
         //Use the farthest point instead
         if (insufficientKnockbackSpace)
         {
-            knockbackDestination = hit.collider.transform.position;
+            knockbackDestination = hit.point;
             maxDistance = Vector3.Distance(playerTransform.position, knockbackDestination);
         }
 
