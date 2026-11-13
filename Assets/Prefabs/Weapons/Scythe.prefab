@@ -101,7 +101,7 @@ GameObject:
   - component: {fileID: 8739173952069691815}
   - component: {fileID: 8326145414121803055}
   m_Layer: 7
-  m_Name: HitboxA (1)
+  m_Name: HitboxB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -246,7 +246,7 @@ GameObject:
   - component: {fileID: 3818179240127852105}
   - component: {fileID: 6676578357272315662}
   m_Layer: 7
-  m_Name: HitboxA (2)
+  m_Name: HitboxC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -659,6 +659,10 @@ MonoBehaviour:
   comboIndex: 0
   meleeHitboxes:
   - {fileID: 430306415606310012}
+  - {fileID: 8326145414121803055}
+  - {fileID: 6676578357272315662}
+  weaponModel: {fileID: 0}
+  activeWeapon: 0
   abilityAOEs:
   - {fileID: 3530598901094387889}
   - {fileID: 3530598901094387889}
