@@ -100,9 +100,14 @@ public class CooldownUIController : MonoBehaviour
     private void SetNewCooldown(CooldownToUpdate cooldownType = CooldownToUpdate.None, 
         float currentCooldownValue = 1f, float maxCooldownValue = 1.0f)
     {
-        if (cooldownType != thisCooldownType || cooldownCoroutine != null)
+        if (cooldownType != thisCooldownType /*|| cooldownCoroutine != null*/)
         {
             return;
+        }
+
+        if(cooldownCoroutine != null)
+        {
+            StopCoroutine(cooldownCoroutine);
         }
 
         cooldownCoroutine = StartCoroutine(AbilityCooldown(currentCooldownValue, maxCooldownValue));

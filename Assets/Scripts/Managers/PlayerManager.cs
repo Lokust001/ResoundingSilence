@@ -124,6 +124,10 @@ public class PlayerManager : BaseManager
         }
     }
 
+    /// <summary>
+    /// make it so the player can't switch too much
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator WeaponSwapCooldown()
     {
         canSwap = false;

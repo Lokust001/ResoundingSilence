@@ -53,6 +53,9 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
         weaponAnimator.SetBool("AbilityCast", true);
     }
 
+    /// <summary>
+    /// turns everything on when the weapon is switched to
+    /// </summary>
     public void EnableWeapon()
     {
         activeWeapon = true;
