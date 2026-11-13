@@ -501,6 +501,12 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
         aimingAbilityOne = false;
         aimingAbilityTwo = false;
 
+        if(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityVFX != null 
+            && ThisWeaponData.editableAbilities[currentAbilityIndex].PreviewData.OrbitsPlayer)
+        {
+            Instantiate(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityVFX, transform.position, transform.rotation);
+        }
+
         if (ThisWeaponData.editableAbilities[currentAbilityIndex].HasProjectile)
         {
             activePreview.SetActive(false);
@@ -521,6 +527,9 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     protected IEnumerator AbilityDamage(int abilityIndex)
     {
         GameObject tempAbility = Instantiate(abilityAOEs[currentAbilityIndex], activePreview.transform.position, activePreview.transform.rotation);
+
+        GameObject tempAbilityVfx = new GameObject();
+
         Vector3 ls = tempAbility.transform.localScale;
         if (ThisWeaponData.editableAbilities[abilityIndex].PreviewData.OrbitsPlayer)
         {
@@ -566,9 +575,23 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
                 break;
         }
 
-        if (!ThisWeaponData.editableAbilities[abilityIndex].PersistingAbility)
+        if (ThisWeaponData.editableAbilities[abilityIndex].AbilityVFX != null)
         {
-            tempAbility.SetActive(false);
+            if (!ThisWeaponData.editableAbilities[abilityIndex].PersistingAbility)
+            {
+                tempAbility.SetActive(false);
+                Instantiate(ThisWeaponData.editableAbilities[abilityIndex].AbilityVFX, transform.position, transform.rotation);
+            }
+            else
+            {
+                tempAbilityVfx = Instantiate(ThisWeaponData.editableAbilities[abilityIndex].AbilityVFX, tempAbility.transform.position, tempAbility.transform.rotation);
+                tempAbilityVfx.transform.parent = tempAbility.transform;
+
+                Vector3 vfxScale = new Vector3(tempAbility.transform.localScale.x, tempAbility.transform.localScale.z, 1);
+                var vfxRadius = tempAbilityVfx.GetComponentInChildren<ParticleSystem>().shape;
+                vfxRadius.scale = vfxScale;
+                vfxRadius.radius = r;
+            }
         }
 
         List<Collider> tars = new List<Collider>();
@@ -633,6 +656,20 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
             else
             {
                 targets = tars.ToArray();
+            }
+
+            if (ThisWeaponData.editableAbilities[abilityIndex].AbilityVFX != null && ThisWeaponData.editableAbilities[abilityIndex].PersistingAbility)
+            {
+                ParticleSystem[] pFXs = tempAbilityVfx.GetComponentsInChildren<ParticleSystem>();
+
+                foreach (ParticleSystem i in pFXs)
+                {
+                    if (i.main.duration > (ThisWeaponData.editableAbilities[abilityIndex].AbilityDuration - elapsed))
+                    {
+                        var vfxLoop = i.main;
+                        vfxLoop.loop = false;
+                    }
+                }
             }
 
         } while (elapsed < ThisWeaponData.editableAbilities[abilityIndex].AbilityDuration);

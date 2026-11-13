@@ -1,7 +1,7 @@
 /******************************************************************************
  * Author: Brad Dixon
  * Contributors:
- * Last Modified: 11/11/2026
+ * Last Modified: 11/13/2026
  * Brief: Handles projectile collision and lifetime
  * TODO:
  * ***************************************************************************/
@@ -24,9 +24,12 @@ public class BaseProjectileBehaviour : MonoBehaviour
     int ricochetCount;
     bool hitEnemy;
 
-    [SerializeField] List<GameObject> enemiesInRange = new List<GameObject>();
-    [SerializeField] List<GameObject> enemiesNotHit = new List<GameObject>();
+    List<GameObject> enemiesInRange = new List<GameObject>();
+    List<GameObject> enemiesNotHit = new List<GameObject>();
     List<GameObject> enemiesHit = new List<GameObject>();
+
+    [SerializeField] GameObject projectileDestroyVFX;
+    [SerializeField] GameObject projectilePierceVFX;
 
     LayerMask enemyLayer;
 
@@ -94,7 +97,7 @@ public class BaseProjectileBehaviour : MonoBehaviour
             yield return new WaitForFixedUpdate();
         }
 
-        Destroy(this.gameObject);
+        DestroyProjectile();
     }
 
     /// <summary>
@@ -127,7 +130,10 @@ public class BaseProjectileBehaviour : MonoBehaviour
             //Don't want to destroy projectile if it pierces
             if(attackRef.BurstRangedAttack.HasPierce)
             {
-                Debug.Log(Mathf.CeilToInt(baseDamage * ConvertToPercentage(attackRef.BurstRangedAttack.BurstPierce.PierceAmount)));
+                if(projectilePierceVFX != null)
+                {
+                    Instantiate(projectilePierceVFX, transform.position, Quaternion.identity);
+                }
 
                 myDamage = myDamage - Mathf.CeilToInt(baseDamage * ConvertToPercentage(attackRef.BurstRangedAttack.BurstPierce.PierceDamageFalloffPercent[pierceDamageIndex]))
                     >= (myDamage * attackRef.BurstRangedAttack.BurstPierce.MinPierceDamagePercent) ? myDamage - Mathf.CeilToInt(baseDamage * ConvertToPercentage(attackRef.BurstRangedAttack.BurstPierce.PierceDamageFalloffPercent[pierceDamageIndex]))
@@ -138,7 +144,7 @@ public class BaseProjectileBehaviour : MonoBehaviour
                 //Destroy when pierce projectile stops doing damage
                 if(myDamage <= 0)
                 {
-                    Destroy(this.gameObject);
+                    DestroyProjectile();
                 }
                 
                 //If stat changes from piercing aren't linear, update what stat change will be
@@ -158,13 +164,13 @@ public class BaseProjectileBehaviour : MonoBehaviour
 
             if(!attackRef.BurstRangedAttack.HasPierce && !attackRef.BurstRangedAttack.HasRicochet)
             {
-                Destroy(this.gameObject);
+                DestroyProjectile();
             }
         }
         else
         {
             Debug.Log(other.gameObject.name);
-            Destroy(this.gameObject);
+            DestroyProjectile();
         }
     }
 
@@ -175,6 +181,10 @@ public class BaseProjectileBehaviour : MonoBehaviour
     {
         if (ricochetCount < attackRef.BurstRangedAttack.BurstRicochet.RicochetCount)
         {
+            if (projectilePierceVFX != null)
+            {
+                Instantiate(projectilePierceVFX, transform.position, Quaternion.identity);
+            }
             ++ricochetCount;
             enemiesInRange.Clear();
             enemiesNotHit.Clear();
@@ -204,7 +214,7 @@ public class BaseProjectileBehaviour : MonoBehaviour
         }
         else
         {
-            Destroy(this.gameObject);
+            DestroyProjectile();
         }
     }
 
@@ -318,13 +328,26 @@ public class BaseProjectileBehaviour : MonoBehaviour
         }
     }
 
-/// <summary>
-/// Converts the inspector variable to it's percentage value if it isn't already a percent
-/// </summary>
-/// <param name="value"></param>
-/// <returns></returns>
-protected float ConvertToPercentage(float value)
+    /// <summary>
+    /// Converts the inspector variable to it's percentage value if it isn't already a percent
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    protected float ConvertToPercentage(float value)
     {
         return value >= 1 ? value / 100 : value;
+    }
+
+    /// <summary>
+    /// Handles what all needs to happen when the projectile is going to be destroyed
+    /// </summary>
+    protected void DestroyProjectile()
+    {
+        if(projectileDestroyVFX != null)
+        {
+            Instantiate(projectileDestroyVFX, transform.position, Quaternion.identity);
+        }
+
+        Destroy(this.gameObject);
     }
 }
