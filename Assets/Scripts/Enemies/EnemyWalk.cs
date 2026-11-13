@@ -97,16 +97,16 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
 
         //Find the distance from the enemy's current position to the destination of the charge
         //using square magnitude for more efficiency
-        float magnitudalDistanceToGoal = (chargeDestination - enemyTransform.position).sqrMagnitude;
+        float destinationDistance = Vector3.Distance(enemyTransform.position, chargeDestination);
 
         Vector3 point1 = transform.TransformPoint(topColliderLocalPos);
         Vector3 point2 = transform.TransformPoint(bottomColliderLocalPos);
 
         //CapsuleCast to see if there is enough space to charge towards destination
         //(kept in variable instead of if statement for easier debugging in the future)
-        Debug.Break();
-        bool insufficientChargingSpace = Physics.CapsuleCast(point1, point2, capsuleCollider.radius, transform.forward, out RaycastHit hit, Vector3.Distance(chargeDestination, enemyTransform.position), chargeStopLayers, QueryTriggerInteraction.Ignore);
-        Debug.Break();
+        //Debug.Break();
+        bool insufficientChargingSpace = Physics.CapsuleCast(point1, point2, capsuleCollider.radius, transform.forward, out RaycastHit hit, chargeDistance, chargeStopLayers, QueryTriggerInteraction.Ignore);
+        //Debug.Break();
         //Make the rigidbody on the enemy temporarily kinematic to avoid letting it be interrupted by the player
         if (insufficientChargingSpace)
         {
@@ -114,21 +114,24 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
             Vector3 chargeDirection = (chargeDestination - transform.position).normalized;
             Vector3 colliderOffsetDirection = 2 * capsuleCollider.radius * chargeDirection;
             chargeDestination = hit.point - colliderOffsetDirection;
-            Debug.DrawLine(chargeDestination, Vector3.up * 10, Color.red, 15);
-            magnitudalDistanceToGoal = (chargeDestination - enemyTransform.position).sqrMagnitude;
+            var debugline = chargeDestination;
+            debugline.y = 10f;
+            Debug.DrawLine(chargeDestination, debugline, Color.red, 15);
+            destinationDistance = Vector3.Distance(enemyTransform.position, chargeDestination);
         }
         else { Debug.Log("Normal Charge");  }
+
 
         //While there is still a significant gap or distance between the enemy and its charge destination,
         //calculate its current distance from its goal, move the enemy towards the goal by a factor of its chargeSpeedForce,
         //and finally wait a frame then repeat
-        while (magnitudalDistanceToGoal > enemyData.chargeDestinationAccuracy) 
+        while (destinationDistance > enemyData.chargeDestinationAccuracy) 
         {
-            Debug.Log(magnitudalDistanceToGoal);
-            magnitudalDistanceToGoal =  (chargeDestination - enemyTransform.position).sqrMagnitude;
-            Vector3 goalOverTime = Vector3.MoveTowards(enemyTransform.position, chargeDestination, enemyData.chargeSpeedForce * Time.deltaTime);
+            Debug.Log(destinationDistance + " Distance: ");
+            destinationDistance = Vector3.Distance(enemyTransform.position, chargeDestination);
+            Vector3 goalOverTime = Vector3.MoveTowards(enemyTransform.position, chargeDestination, enemyData.chargeSpeedForce * Time.fixedDeltaTime);
             rigidbody.MovePosition(goalOverTime);
-            yield return null;
+            yield return new WaitForFixedUpdate();
         }
 
         //Restore properties and velocity

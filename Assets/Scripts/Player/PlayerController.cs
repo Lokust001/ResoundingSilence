@@ -43,6 +43,8 @@ public class PlayerController : MonoBehaviour
 
     private const float WALL_COLLISION_CAST_OFFSET = 0.2f;
 
+    private Vector3 wallOffset;
+
 
     #region Debug Console Variables
 
@@ -132,6 +134,8 @@ public class PlayerController : MonoBehaviour
         dashDir = Vector3.right;
         currentDash = 0;
         canDash = true;
+
+        wallOffset = new(0, 0, WALL_COLLISION_CAST_OFFSET);
 
         //Original movement speed is zero + start move coroutine
         PlayerInputEnded();
@@ -399,8 +403,21 @@ public class PlayerController : MonoBehaviour
         }
         SetPlayerInvincibility(false);
 
+        ResetRangeTriggers();
+
         playerRenderer.material.color = original;
         dmgCoroutine = null;
+    }
+
+    /// <summary>
+    /// Resets the Trigger when enemies become too close
+    /// </summary>
+    private void ResetRangeTriggers() 
+    {
+        meleeRangeTrigger.SetTriggerEnabled(false);
+        meleeRangeTrigger.SetTriggerEnabled(true);
+        rangedRangeTrigger.SetTriggerEnabled(false);
+        rangedRangeTrigger.SetTriggerEnabled(true);
     }
 
     /// <summary>
@@ -443,11 +460,10 @@ public class PlayerController : MonoBehaviour
         //Total distance between the player and the destination of the knockback
         float maxDistance = Vector3.Distance(playerTransform.position, knockbackDestination);
 
-        Vector3 colliderWallOffset = new(0, 0, WALL_COLLISION_CAST_OFFSET);
 
         //Calculate new world transforms for the top and bottom half of the player collider during this moment in time
-        Vector3 point1 = transform.TransformPoint(topColliderLocalPos) + colliderWallOffset;
-        Vector3 point2 = transform.TransformPoint(bottomColliderLocalPos) + colliderWallOffset;
+        Vector3 point1 = transform.TransformPoint(topColliderLocalPos) + wallOffset;
+        Vector3 point2 = transform.TransformPoint(bottomColliderLocalPos) + wallOffset;
 
         //CapsuleCast to see if there is enough space to be knocked back towards the destination
         //(Kept in a variable instead of if statement to ease future debugging)
