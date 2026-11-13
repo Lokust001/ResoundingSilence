@@ -1,7 +1,7 @@
 /*
 * Author: Brenden
 * Contributors:
-* Last Modified: 10/21/2026
+* Last Modified: 11/13/2026
 * Summary: what the pin has when it spawns in and flys to the player for collection
 * To Do:   N/A
 */
