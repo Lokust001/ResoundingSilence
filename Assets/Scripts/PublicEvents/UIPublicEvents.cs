@@ -36,7 +36,7 @@ public static class UIPublicEvents
 
     public static Action<Sprite, Sprite, CooldownUIController.CooldownToUpdate> ChangeCooldownImages;
 
-    
+    public static Action<string> UpdateCollectionBanner;
 
     #endregion
 
