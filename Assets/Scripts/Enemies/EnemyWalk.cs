@@ -1,6 +1,6 @@
 /* Author: Dalsten Yan
  * Contributors:
- * Last Modified: 9/28/26
+ * Last Modified: 11/13/26
  * Summary: Script that simulates enemy movement, seeking, charing down, and retreating
  * TODO: More as needed
  */
@@ -101,19 +101,17 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
 
         Vector3 point1 = transform.TransformPoint(topColliderLocalPos);
         Vector3 point2 = transform.TransformPoint(bottomColliderLocalPos);
-        Debug.Break();
-        bool insufficientSpace = Physics.CapsuleCast(point1, point2, capsuleCollider.radius, transform.forward, out RaycastHit hit, distanceToGoal, chargeStopLayers, QueryTriggerInteraction.Ignore);
+
+        //CapsuleCast to see if there is enough space to charge towards destination
+        //(kept in variable instead of if statement for easier debugging in the future)
+        bool insufficientChargingSpace = Physics.CapsuleCast(point1, point2, capsuleCollider.radius, transform.forward, out RaycastHit hit, distanceToGoal, chargeStopLayers, QueryTriggerInteraction.Ignore);
 
         //Make the rigidbody on the enemy temporarily kinematic to avoid letting it be interrupted by the player
-        if (insufficientSpace)
+        if (insufficientChargingSpace)
         {
-            Debug.Break();
-            Debug.LogWarning("Knockback distance decreased due to insufficient space");
-            insufficientSpace = true;
             chargeDestination = hit.collider.transform.position;
             distanceToGoal = Vector3.Distance(enemyTransform.position, chargeDestination);
         }
-        else { Debug.Log("Knockback went on as usual" + hit.point); }
 
         //While there is still a significant gap or distance between the enemy and its charge destination,
         //calculate its current distance from its goal, move the enemy towards the goal by a factor of its chargeSpeedForce,

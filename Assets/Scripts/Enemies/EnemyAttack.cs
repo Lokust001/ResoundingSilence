@@ -1,6 +1,6 @@
 /* Author: Dalsten Yan
  * Contributors:
- * Last Modified: 9/28/26
+ * Last Modified: 11/13/26
  * Summary: Handles most of the player attacking logic for each type of enemy
  * TODO: More as needed
  */

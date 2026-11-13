@@ -1,6 +1,6 @@
 /* Author: Dalsten Yan
  * Contributors:
- * Last Modified: 9/28/26
+ * Last Modified: 11/13/26
  * Summary: Helper script allowing for any player-contacting collider to be able to propagate their actions up to another script
  * TODO: More as needed
  */

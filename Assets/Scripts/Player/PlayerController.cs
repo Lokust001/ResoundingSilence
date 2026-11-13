@@ -1,7 +1,7 @@
 /*
 * Author: Dalsten Yan
 * Contributors: Brad Dixon, Brenden Burtz
-* Last Modified: 10/06/2026
+* Last Modified: 11/13/2026
 * Summary: Player input, stats, and damage are handled here
 * To Do:   Add more variables as needed.
 */
@@ -418,25 +418,6 @@ public class PlayerController : MonoBehaviour
         
     }
 
-    [Button("DebugCasting")]
-    public void DebugKBCasting() 
-    {
-        StartCoroutine(test());
-    }
-
-    private IEnumerator test() 
-    {
-        
-        while (true) 
-        {
-            Vector3 point1 = transform.TransformPoint(topColliderLocalPos);
-            Vector3 point2 = transform.TransformPoint(bottomColliderLocalPos);
-            Physics.CapsuleCast(point1, point2, playerModelCollider.radius, -transform.forward, out RaycastHit hit, 10, stopKnockbackLayers, QueryTriggerInteraction.Ignore);
-
-            yield return new WaitForFixedUpdate();
-        }
-    }
-
     /// <summary>
     /// Physics-based Coroutine to find the distance 
     /// </summary>
@@ -465,19 +446,19 @@ public class PlayerController : MonoBehaviour
         //Calculate new world transforms for the top and bottom half of the player collider during this moment in time
         Vector3 point1 = transform.TransformPoint(topColliderLocalPos) + colliderWallOffset;
         Vector3 point2 = transform.TransformPoint(bottomColliderLocalPos) + colliderWallOffset;
-        Debug.Break();
-        bool insufficientSpace = Physics.CapsuleCast(point1, point2, playerModelCollider.radius, -transform.forward, out RaycastHit hit, maxDistance + WALL_COLLISION_CAST_OFFSET, stopKnockbackLayers, QueryTriggerInteraction.Ignore);
+
+        //CapsuleCast to see if there is enough space to be knocked back towards the destination
+        //(Kept in a variable instead of if statement to ease future debugging)
+        bool insufficientKnockbackSpace = Physics.CapsuleCast(point1, point2, playerModelCollider.radius, -transform.forward, 
+            out RaycastHit hit, maxDistance + WALL_COLLISION_CAST_OFFSET, stopKnockbackLayers, QueryTriggerInteraction.Ignore);
         
-        if (insufficientSpace)
+        //If there is not enough space for the player knockback to travel all the way to the destination,
+        //Use the farthest point instead
+        if (insufficientKnockbackSpace)
         {
-            Debug.Break();
-            Debug.LogWarning("Knockback distance decreased due to insufficient space");
-            insufficientSpace = true;
             knockbackDestination = hit.collider.transform.position;
             maxDistance = Vector3.Distance(playerTransform.position, knockbackDestination);
         }
-        else { Debug.Log("Knockback went on as usual" + hit.point); }
-
 
         //Tracker for remaining distance between player and knockback position
         float distance = maxDistance;
@@ -542,7 +523,7 @@ public class PlayerController : MonoBehaviour
 
         //The final move for 100% accuracy, only move if there's enough space,
         //otherwise don't clip into the wall
-        if (!insufficientSpace)
+        if (!insufficientKnockbackSpace)
             rigidbody.MovePosition(knockbackDestination);
 
         //Let player move again
