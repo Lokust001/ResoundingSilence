@@ -4826,12 +4826,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6097337471712976449, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: possibleRewards.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6097337471712976449, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: possibleRewards.Array.data[0].type
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6097337471712976449, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: possibleRewards.Array.data[1].type
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097337471712976449, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: possibleRewards.Array.data[1].prefab
+      value: 
+      objectReference: {fileID: 8440715527100584874, guid: cf81080ab31936a4eaa28b2fe66fb82c, type: 3}
     - target: {fileID: 6097337471712976449, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: possibleRewards.Array.data[0].dropChance
       value: 100
@@ -4847,6 +4855,22 @@ PrefabInstance:
     - target: {fileID: 6097337471712976449, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: possibleRewards.Array.data[0].rewardName
       value: Exp
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097337471712976449, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: possibleRewards.Array.data[1].dropChance
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097337471712976449, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: possibleRewards.Array.data[1].maxDropAmt
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097337471712976449, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: possibleRewards.Array.data[1].minDropAmt
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097337471712976449, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: possibleRewards.Array.data[1].rewardName
+      value: Pin
       objectReference: {fileID: 0}
     - target: {fileID: 6325128634737111795, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: m_Name
