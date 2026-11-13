@@ -96,25 +96,31 @@ public class CooldownUIController : MonoBehaviour
     /// Turns on a new cooldown
     /// </summary>
     /// <param name="cooldownType">the type of cooldown to turn on - if it's not this object's type, it doesnt turn it on</param>
-    /// <param name="maxCooldownValue">how much to cool down</param>
-    private void SetNewCooldown(CooldownToUpdate cooldownType = CooldownToUpdate.None, float maxCooldownValue = 1f)
+    /// <param name="currentCooldownValue">how much to cool down</param>
+    private void SetNewCooldown(CooldownToUpdate cooldownType = CooldownToUpdate.None, 
+        float currentCooldownValue = 1f, float maxCooldownValue = 1.0f)
     {
-        if (cooldownType != thisCooldownType || cooldownCoroutine != null)
+        if (cooldownType != thisCooldownType /*|| cooldownCoroutine != null*/)
         {
             return;
         }
 
-        cooldownCoroutine = StartCoroutine(AbilityCooldown(maxCooldownValue));
+        if(cooldownCoroutine != null)
+        {
+            StopCoroutine(cooldownCoroutine);
+        }
+
+        cooldownCoroutine = StartCoroutine(AbilityCooldown(currentCooldownValue, maxCooldownValue));
     }
 
     /// <summary>
     /// the actual cooldown tracker - constantly updates the slider
     /// </summary>
-    /// <param name="maxCooldown">how much the cooldown should be</param>
+    /// <param name="currentCooldown">how much the cooldown should be</param>
     /// <returns></returns>
-    private IEnumerator AbilityCooldown(float maxCooldown)
+    private IEnumerator AbilityCooldown(float currentCooldown, float maxCooldownValue)
     {
-        float timer = maxCooldown;
+        float timer = currentCooldown;
 
         //the cooldown itself
         while (timer > 0)
@@ -122,7 +128,8 @@ public class CooldownUIController : MonoBehaviour
             timer -= Time.deltaTime;
 
             //updates the slider - has to be between 0 and 1 so we divide to get the percentage
-            cooldownImage.fillAmount = timer / maxCooldown;
+            cooldownImage.fillAmount = timer / maxCooldownValue;
+            Debug.Log(timer/maxCooldownValue);
             yield return null;
         }
 

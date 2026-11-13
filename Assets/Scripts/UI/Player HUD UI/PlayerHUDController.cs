@@ -140,23 +140,7 @@ public class PlayerHUDController : MenuBase
             weapon.ThisWeaponData.editableAbilities[weapon.GetComponent<BaseWeaponAbilityBehaviour>().abilityTwoIndex].BackgroundImage,
             CooldownUIController.CooldownToUpdate.Ability2);
 
-        ImmediatelyRefreshAllCooldowns();
-    }
-
-    /// <summary>
-    /// testing - turns on the ability 1 cooldown
-    /// </summary>
-    private void Ability1Wrapper()
-    {
-        UIPublicEvents.UpdateHUDCooldownUI?.Invoke(CooldownUIController.CooldownToUpdate.Ability1, Ability1MaxCooldown);
-    }
-
-    /// <summary>
-    /// testing - turns on the ability 2 cooldown
-    /// </summary>
-    private void Ability2Wrapper()
-    {
-        UIPublicEvents.UpdateHUDCooldownUI?.Invoke(CooldownUIController.CooldownToUpdate.Ability2, Ability2MaxCooldown);
+        //ImmediatelyRefreshAllCooldowns();
     }
 
     /// <summary>
