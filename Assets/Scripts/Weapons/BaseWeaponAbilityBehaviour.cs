@@ -36,6 +36,41 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     protected bool spawnAbilityOneProjectile;
     protected bool spawnAbilityTwoProjectile;
 
+    private float AbilityOneCD;
+    private float AbilityTwoCD;
+
+    /// <summary>
+    /// stops everything when it get's switched off
+    /// </summary>
+    public void DisableWeapon()
+    {
+        aimingAbilityOne = false;
+        aimingAbilityTwo = false;
+        activeWeapon = false;
+        weaponModel.SetActive(false);
+        if(activePreview != null )
+            activePreview.SetActive(false);
+        weaponAnimator.SetBool("AbilityCast", true);
+    }
+
+    /// <summary>
+    /// turns everything on when the weapon is switched to
+    /// </summary>
+    public void EnableWeapon()
+    {
+        activeWeapon = true;
+        weaponModel.SetActive(true);
+        weaponAnimator.SetBool("AbilityCast", false);
+        if (!abilityOneReady)
+            UIPublicEvents.UpdateHUDCooldownUI?.Invoke(CooldownUIController.CooldownToUpdate.Ability1, AbilityOneCD, ThisWeaponData.editableAbilities[abilityOneIndex].AbilityCooldown);
+        else
+            UIPublicEvents.ImmediatelyRefreshCooldown?.Invoke(CooldownUIController.CooldownToUpdate.Ability1);
+        if (!abilityTwoReady)
+            UIPublicEvents.UpdateHUDCooldownUI?.Invoke(CooldownUIController.CooldownToUpdate.Ability2, AbilityTwoCD, ThisWeaponData.editableAbilities[abilityTwoIndex].AbilityCooldown);
+        else
+            UIPublicEvents.ImmediatelyRefreshCooldown?.Invoke(CooldownUIController.CooldownToUpdate.Ability2);
+    }
+
     /// <summary>
     /// Does the base weapon startup code and then sets up the abilities
     /// </summary>
@@ -130,33 +165,36 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     /// </summary>
     protected override void FixedUpdate()
     {
-        base.FixedUpdate();
-
-        if (continuouslyUpdatePreview)
+        if (activeWeapon)
         {
-            float staticY = activePreview.transform.position.y;
+            base.FixedUpdate();
 
-            Vector3 pos = activePreview.transform.position;
-
-            if (InputManager.Instance.ControllerIsEnabled)
+            if (continuouslyUpdatePreview)
             {
-                if (playerAiming)
-                {
-                    Vector3 currentAimVel = aimDir * StaticDataManager.Instance.playerAimSpeed;
+                float staticY = activePreview.transform.position.y;
 
-                    pos = transform.position + Vector3.ClampMagnitude(
-                        (activePreview.transform.position - transform.position) + currentAimVel,
-                        ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityRange);
+                Vector3 pos = activePreview.transform.position;
+
+                if (InputManager.Instance.ControllerIsEnabled)
+                {
+                    if (playerAiming)
+                    {
+                        Vector3 currentAimVel = aimDir * StaticDataManager.Instance.playerAimSpeed;
+
+                        pos = transform.position + Vector3.ClampMagnitude(
+                            (activePreview.transform.position - transform.position) + currentAimVel,
+                            ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityRange);
+                    }
+
+                }
+                else
+                {
+                    pos = transform.position + Vector3.ClampMagnitude(mousePos, ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityRange);
                 }
 
+                pos.y = staticY;
+                activePreview.transform.position = pos;
             }
-            else
-            {
-                pos = transform.position + Vector3.ClampMagnitude(mousePos, ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityRange);
-            }
-
-            pos.y = staticY;
-            activePreview.transform.position = pos;
         }
     }
 
@@ -349,7 +387,7 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     /// </summary>
     virtual protected void AimingAbilityTwo()
     {
-        if (abilityTwoReady)
+        if (abilityTwoReady && activeWeapon)
         {
             aimingAbilityTwo = !aimingAbilityTwo;
             aimingAbilityOne = false;
@@ -624,18 +662,37 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
         UIPublicEvents.UpdateHUDCooldownUI?.Invoke(
             currentAbilityIndex == abilityOneIndex ?
             CooldownUIController.CooldownToUpdate.Ability1 : CooldownUIController.CooldownToUpdate.Ability2,
+            ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityCooldown,
             ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityCooldown);
 
         if (isAbilityOne)
         {
             abilityOneReady = false;
+            AbilityOneCD = time;
         }
         else
         {
             abilityTwoReady = false;
+            AbilityTwoCD = time;
         }
 
-        yield return new WaitForSeconds(time);
+        if (isAbilityOne)
+        {
+            while(AbilityOneCD > 0)
+            {
+                yield return new WaitForSeconds(0.1f);
+                AbilityOneCD -= 0.1f;
+            }
+        }
+        else
+        {
+            while (AbilityTwoCD > 0)
+            {
+                yield return new WaitForSeconds(0.1f);
+                AbilityTwoCD -= 0.1f;
+            }
+        }
+        
 
         if (isAbilityOne)
         {
