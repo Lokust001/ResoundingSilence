@@ -13,6 +13,7 @@ public class SideObjectiveAssigner : MonoBehaviour
     [SerializeField]
     private SideObjective objective;
 
+    [SerializeField]
     private RewardGiver rewarder;
 
     /// <summary>
@@ -24,7 +25,6 @@ public class SideObjectiveAssigner : MonoBehaviour
             objective = objective.CreateNonRefCopy<SideObjective>();
         else
             Debug.LogWarning("Warning, a HuntBoardPost does not have a SideObjective assigned");
-        rewarder = transform.root.GetComponentInChildren<RewardGiver>();
     }
 
     /// <summary>
@@ -71,5 +71,19 @@ public class SideObjectiveAssigner : MonoBehaviour
     public void ClaimRewards()
     {
         rewarder.StartGivingRewards();
+    }
+
+    /// <summary>
+    /// Attempts to open the hunt menu
+    /// </summary>
+    public void OpenHuntMenu()
+    {
+        if (rewarder.RewardsHaveBeenDispensed)
+        {
+            return;
+        }
+
+        UIPublicEvents.UpdateUIManagerStack?.Invoke(UiMenuType.HuntBoard);
+        UIPublicEvents.UpdateHuntBoardData?.Invoke(objective, rewarder);
     }
 }

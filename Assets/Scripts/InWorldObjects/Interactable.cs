@@ -30,7 +30,7 @@ public class Interactable : MonoBehaviour
     /// </summary>
     private void Interact()
     {
-        if (inRange)
+        if (inRange && UIManager.Instance.GetCurrentMenu() == UiMenuType.PlayerHUD)
         {
             Debug.Log("Interact");
             interactionAction?.Invoke();
