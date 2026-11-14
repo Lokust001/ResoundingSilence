@@ -5,6 +5,7 @@
  * TODO: More as needed
  */
 using System;
+using Unity.Cinemachine;
 using UnityEditor.Build;
 using UnityEngine;
 
@@ -64,7 +65,11 @@ public class TriggerObjects : MonoBehaviour
         }
     }
 
-    public void SetTriggerEnabled(bool state) 
+    /// <summary>
+    /// Enables or disables the Collider component
+    /// </summary>
+    /// <param name="state"></param>
+    public void SetColliderComponentEnabled(bool state) 
     {
         triggerCollider.enabled = state;
     }

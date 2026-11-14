@@ -402,7 +402,6 @@ public class PlayerController : MonoBehaviour
             yield return null;
         }
         SetPlayerInvincibility(false);
-
         ResetRangeTriggers();
 
         playerRenderer.material.color = original;
@@ -414,10 +413,10 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void ResetRangeTriggers() 
     {
-        meleeRangeTrigger.SetTriggerEnabled(false);
-        meleeRangeTrigger.SetTriggerEnabled(true);
-        rangedRangeTrigger.SetTriggerEnabled(false);
-        rangedRangeTrigger.SetTriggerEnabled(true);
+        meleeRangeTrigger.SetColliderComponentEnabled(false);
+        meleeRangeTrigger.SetColliderComponentEnabled(true);
+        rangedRangeTrigger.SetColliderComponentEnabled(false);
+        rangedRangeTrigger.SetColliderComponentEnabled(true);
     }
 
     /// <summary>
@@ -432,7 +431,7 @@ public class PlayerController : MonoBehaviour
         else
             rigidbody.excludeLayers -= ignoreWhileInvincible;
 
-        
+        rigidbody.WakeUp();
     }
 
     /// <summary>

@@ -104,22 +104,20 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
 
         //CapsuleCast to see if there is enough space to charge towards destination
         //(kept in variable instead of if statement for easier debugging in the future)
-        //Debug.Break();
         bool insufficientChargingSpace = Physics.CapsuleCast(point1, point2, capsuleCollider.radius, transform.forward, out RaycastHit hit, chargeDistance, chargeStopLayers, QueryTriggerInteraction.Ignore);
-        //Debug.Break();
         //Make the rigidbody on the enemy temporarily kinematic to avoid letting it be interrupted by the player
         if (insufficientChargingSpace)
         {
-            Debug.Log("No Space Charge");
+            //Debug.Log("No Space Charge");
             Vector3 chargeDirection = (chargeDestination - transform.position).normalized;
             Vector3 colliderOffsetDirection = 2 * capsuleCollider.radius * chargeDirection;
             chargeDestination = hit.point - colliderOffsetDirection;
-            var debugline = chargeDestination;
-            debugline.y = 10f;
-            Debug.DrawLine(chargeDestination, debugline, Color.red, 15);
+            //var debugline = chargeDestination;
+            //debugline.y = 10f;
+            //Debug.DrawLine(chargeDestination, debugline, Color.red, 15);
             destinationDistance = Vector3.Distance(enemyTransform.position, chargeDestination);
         }
-        else { Debug.Log("Normal Charge");  }
+        //else { Debug.Log("Normal Charge");  }
 
 
         //While there is still a significant gap or distance between the enemy and its charge destination,
@@ -127,17 +125,24 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
         //and finally wait a frame then repeat
         while (destinationDistance > enemyData.chargeDestinationAccuracy) 
         {
-            Debug.Log(destinationDistance + " Distance: ");
+            //Debug.Log(destinationDistance + " Distance: ");
             destinationDistance = Vector3.Distance(enemyTransform.position, chargeDestination);
             Vector3 goalOverTime = Vector3.MoveTowards(enemyTransform.position, chargeDestination, enemyData.chargeSpeedForce * Time.fixedDeltaTime);
             rigidbody.MovePosition(goalOverTime);
             yield return new WaitForFixedUpdate();
         }
 
+        SetIgnorePlayerCollision(false);;
+
         //Restore properties and velocity
         //rigidbody.isKinematic = false;
         rigidbody.linearVelocity = rigidbody.angularVelocity = Vector3.zero;
         
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        enemyAttack.HandleVariousAttackColliders(collision);
     }
 
     /// <summary>
@@ -269,6 +274,19 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
         enemyTransform.position = retreatPosition;
         navMeshAgent.isStopped = true;
         Debug.Log("Finished Retreat");
+    }
+
+    public void SetIgnorePlayerCollision(bool value) 
+    {
+        if (value)
+        {
+            rigidbody.excludeLayers |= 1 << LayerMask.NameToLayer("Player");
+        }
+        else 
+        {
+            rigidbody.excludeLayers &= ~(1 << LayerMask.NameToLayer("Player"));
+        }
+        rigidbody.WakeUp();
     }
 
     /// <summary>

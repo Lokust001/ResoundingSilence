@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1694581450140014261}
   - component: {fileID: 4641903683218079586}
-  - component: {fileID: 7069951946775059294}
+  - component: {fileID: 1169945535967542989}
   m_Layer: 10
   m_Name: ChargeATKHitbox
   m_TagString: Untagged
@@ -46,8 +46,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TriggerObjects
   triggerShapeColor: {r: 0, g: 0, b: 0, a: 0}
---- !u!136 &7069951946775059294
-CapsuleCollider:
+--- !u!65 &1169945535967542989
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -64,10 +64,8 @@ CapsuleCollider:
   m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.55
-  m_Height: 2
-  m_Direction: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 2, z: 1.1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &4966845799910261743
 GameObject:
@@ -203,6 +201,18 @@ PrefabInstance:
       propertyPath: m_UseGravity
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 428448680879319751, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: m_Interpolate
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 428448680879319751, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 428448680879319751, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: m_ExcludeLayers.m_Bits
+      value: 128
+      objectReference: {fileID: 0}
     - target: {fileID: 1939381331358990405, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: m_IncludeLayers.m_Bits
       value: 64
@@ -270,6 +280,10 @@ PrefabInstance:
     - target: {fileID: 5338943625410773033, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: avoidancePriority
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5338943625410773033, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: m_StoppingDistance
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 5437595391178199074, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: enemyData

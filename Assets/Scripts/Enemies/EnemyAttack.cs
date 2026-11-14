@@ -69,15 +69,26 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
         }
     }
 
+    public void HandleVariousAttackColliders(Collision collision)
+    {
+        if (collision.gameObject.TryGetComponent<PlayerController>(out var player) && IsEnemyCurrentlyCharging()) 
+        {
+            //SetAttackTriggersEnabled(false);
+            enemyMovement.SetIgnorePlayerCollision(true);
+            player.TakeDamage(enemyData.enemyATKDmg, CalculateKnockbackInfo(player.transform.position));
+        }
+    }
+
     /// <summary>
     /// Makes the player take damage after running into the triggers
     /// (can be changed in the future)
     /// </summary>
     /// <param name="other"></param>
-    private void HandleVariousAttackTriggers(PlayerController player) 
+    public void HandleVariousAttackTriggers(PlayerController player) 
     {
-        SetAttackTriggersEnabled(false);
-        player.TakeDamage(enemyData.enemyATKDmg, IsEnemyCurrentlyCharging() ? CalculateKnockbackInfo(player.transform.position) : null);
+        //enemyMovement.SetIgnorePlayerCollision(true);
+        
+        player.TakeDamage(enemyData.enemyATKDmg);
     }
 
     /// <summary>
@@ -219,6 +230,7 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
     /// <returns></returns>
     private IEnumerator AtkIndicatorWindupAndAction() 
     {
+
         //Retrieve the MeshRenderer from the attack indicator
         MeshRenderer indicatorRenderer = attackIndicatorArea.GetComponent<MeshRenderer>();
 
@@ -249,12 +261,13 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
 
             yield return new WaitForFixedUpdate();
         }
+        //enemyMovement.SetIgnorePlayerCollision(false);
         //The parent's scale is mostly irrelevant, it acts as the pivot for the actual indicator.
         //Setting the z scale to 0 makes the indicator invisible, and increasing the z scale
         //over time makes the actual indicator "grow" over time.
         ResetIndicatorParent();
 
-        SetAttackTriggersEnabled(true);
+        //SetAttackTriggersEnabled(true);
 
         //Pass the Charging behavior towards enemyMovement to handle the sudden burst of movement
         enemyCharging = StartCoroutine(queuedMeleeAttack);
@@ -277,8 +290,8 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
     {
         foreach (var trigger in onTriggerEnterObjects)
         {
-            trigger.SetTriggerEnabled(state);
-            Debug.Log(trigger.name + ": " + trigger.GetComponent<Collider>().enabled);
+            trigger.SetColliderComponentEnabled(state);
+            //Debug.Log(trigger.name + ": " + trigger.GetComponent<Collider>().enabled);
         }
     }
 
