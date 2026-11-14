@@ -119,6 +119,7 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
         }
         //else { Debug.Log("Normal Charge");  }
 
+        rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
 
         //While there is still a significant gap or distance between the enemy and its charge destination,
         //calculate its current distance from its goal, move the enemy towards the goal by a factor of its chargeSpeedForce,
@@ -131,6 +132,7 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
             rigidbody.MovePosition(goalOverTime);
             yield return new WaitForFixedUpdate();
         }
+        rigidbody.interpolation = RigidbodyInterpolation.None;
 
         SetIgnorePlayerCollision(false);;
 

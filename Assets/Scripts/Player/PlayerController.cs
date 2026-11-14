@@ -41,7 +41,7 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] LayerMask stopKnockbackLayers;
 
-    private const float WALL_COLLISION_CAST_OFFSET = 0.2f;
+    private const float WALL_COLLISION_CAST_OFFSET = 0.25f;
 
     private Vector3 wallOffset;
 
@@ -459,10 +459,11 @@ public class PlayerController : MonoBehaviour
         //Total distance between the player and the destination of the knockback
         float maxDistance = Vector3.Distance(playerTransform.position, knockbackDestination);
 
+        Vector3 physicsCastWallOffset = WALL_COLLISION_CAST_OFFSET * knockbackDirection;
 
         //Calculate new world transforms for the top and bottom half of the player collider during this moment in time
-        Vector3 point1 = transform.TransformPoint(topColliderLocalPos) + wallOffset;
-        Vector3 point2 = transform.TransformPoint(bottomColliderLocalPos) + wallOffset;
+        Vector3 point1 = transform.TransformPoint(topColliderLocalPos) - physicsCastWallOffset;
+        Vector3 point2 = transform.TransformPoint(bottomColliderLocalPos) - physicsCastWallOffset;
 
         //CapsuleCast to see if there is enough space to be knocked back towards the destination
         //(Kept in a variable instead of if statement to ease future debugging)
