@@ -267,14 +267,9 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
         //over time makes the actual indicator "grow" over time.
         ResetIndicatorParent();
 
-        //SetAttackTriggersEnabled(true);
-
         //Pass the Charging behavior towards enemyMovement to handle the sudden burst of movement
         enemyCharging = StartCoroutine(queuedMeleeAttack);
         yield return enemyCharging;
-        SetAttackTriggersEnabled(false);
-
-        yield return null;
 
         enemyCharging = null;
 
