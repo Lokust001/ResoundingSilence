@@ -1,14 +1,18 @@
 /* Author: Dalsten Yan
  * Contributors:
- * Last Modified: 9/28/26
+ * Last Modified: 11/13/26
  * Summary: Helper script allowing for any player-contacting collider to be able to propagate their actions up to another script
  * TODO: More as needed
  */
 using System;
+using Unity.Cinemachine;
+using UnityEditor.Build;
 using UnityEngine;
 
 public class TriggerObjects : MonoBehaviour
 {
+    private Collider triggerCollider;
+
     [SerializeField]
     private Color triggerShapeColor;
 
@@ -16,12 +20,20 @@ public class TriggerObjects : MonoBehaviour
     public event Action<Enemy, bool> PlayerTriggerActivated;
     public event Action<bool> PlayerEnterOrExit;
 
+    private void Awake()
+    {
+        triggerCollider = GetComponent<Collider>();
+    }
+
     /// <summary>
     /// Propagates its OnTriggerEnter event onto other listeners attached to ChildTriggerActivated or PlayerTriggerActivated
     /// </summary>
     /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
+        if (!enabled)
+            return;
+
         if (other.TryGetComponent<PlayerController>(out var player)) 
         {
             EnemyTriggerActivated?.Invoke(player);
@@ -39,6 +51,9 @@ public class TriggerObjects : MonoBehaviour
     /// <param name="other"></param>
     private void OnTriggerExit(Collider other)
     {
+        if (!enabled)
+            return;
+
         if (other.TryGetComponent<PlayerController>(out var player)) 
         {
             EnemyTriggerActivated?.Invoke(player);
@@ -51,14 +66,23 @@ public class TriggerObjects : MonoBehaviour
     }
 
     /// <summary>
+    /// Enables or disables the Collider component
+    /// </summary>
+    /// <param name="state"></param>
+    public void SetColliderComponentEnabled(bool state) 
+    {
+        triggerCollider.enabled = state;
+    }
+
+    /// <summary>
     /// Draws a wiresphere for visualization and differentiaion purposes when the object is selected in the scene
     /// </summary>
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = triggerShapeColor;
-        if(GetComponent<SphereCollider>())
+        if(triggerCollider is SphereCollider)
             Gizmos.DrawWireSphere(transform.position, GetComponent<SphereCollider>().radius * transform.root.localScale.y);
-        if(GetComponent<MeshCollider>())
+        if(triggerCollider is MeshCollider)
             Gizmos.DrawWireMesh(GetComponent<MeshCollider>().sharedMesh, transform.position, transform.rotation, transform.localScale);
     }
 }
