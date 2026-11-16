@@ -140,6 +140,10 @@ public class PlayerManager : BaseManager
     /// </summary>
     private void SpawnPlayer()
     {
+        if (player != null)
+        {
+            Destroy(player);
+        }
         player = Instantiate(playerPrefab,
                              MapManager.Instance.spawnedMap.PlayerSpawnpoint.position,
                              Quaternion.identity,

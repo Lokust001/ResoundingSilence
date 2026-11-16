@@ -101,7 +101,7 @@ public class TrappedChests : MonoBehaviour
                 GameObject temp = Instantiate(emptyPinGameObject, transform.position + new Vector3(1, 0, 1), transform.rotation, transform);
                 temp.GetComponent<PinWorldObject>().pin = MRM.PickDroppedPin();
             }
-            GameObject emptyWeapon = Instantiate(emptyWeaponGameObject, transform.position + new Vector3(1, 0, 1), transform.rotation, transform);
+            //GameObject emptyWeapon = Instantiate(emptyWeaponGameObject, transform.position + new Vector3(1, 0, 1), transform.rotation, transform);
             chestOpened=true;
         }
     }
