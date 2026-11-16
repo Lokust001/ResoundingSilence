@@ -1,6 +1,6 @@
 /* Author: Dalsten Yan
  * Contributors: 11/13/2026
- * Last Modified: 11/13/26
+ * Last Modified: 11/16/26
  * Summary: Supervising enemy script that decides non-physics behaviors & shares enemyData among other scripts
  * TODO: More as needed
  */
@@ -371,6 +371,7 @@ public class Enemy : MonoBehaviour
         enemyData.enemyHealth -= finalDmgTaken;
         if (enemyData.enemyHealth <= 0)
         {
+            GetComponent<CapsuleCollider>().enabled = false;
             if (EnemyAnimator != null)
             {
                 EnemyAnimator.SetTrigger("Dead");

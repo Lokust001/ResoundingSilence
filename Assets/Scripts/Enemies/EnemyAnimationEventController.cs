@@ -1,7 +1,7 @@
 /******************************************************************************
  * Author: Brad Dixon
  * Contributors:
- * Last Modified: 11/13/2026
+ * Last Modified: 11/16/2026
  * Brief: Allows for animation events in the enemy animator.
  * TODO: Ideally, this should be removed later. I'm using this for now because 
  * we don't have a way to call anim event for the enemies. It'll take too long to 
@@ -11,6 +11,9 @@ using UnityEngine;
 
 public class EnemyAnimationEventController : MonoBehaviour
 {
+    /// <summary>
+    /// Calls the enemy death function
+    /// </summary>
     public void EnemyDie()
     {
         GetComponentInParent<Enemy>().EnemyDeath();
