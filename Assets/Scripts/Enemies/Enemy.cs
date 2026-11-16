@@ -1,5 +1,6 @@
 /* Author: Dalsten Yan
- * Last Modified: 9/28/26
+ * Contributors: 11/13/2026
+ * Last Modified: 11/13/26
  * Summary: Supervising enemy script that decides non-physics behaviors & shares enemyData among other scripts
  * TODO: More as needed
  */
@@ -23,6 +24,9 @@ public class Enemy : MonoBehaviour
     private EnemyAttack attackBehavior;
     private EnemyWalk movementBeahvior;
     private EnemyBuff buffBehavior;
+
+    public GameObject EnemyModel;
+    public Animator EnemyAnimator;
 
     [SerializeField, Header("Debug Variables")]
     private int dmgToTake;
@@ -55,6 +59,11 @@ public class Enemy : MonoBehaviour
         {
             EnableEnemy();
             attackBehavior.EnableAggroChecking();
+        }
+
+        if (EnemyModel != null)
+        {
+            EnemyAnimator = EnemyModel.GetComponent<Animator>();
         }
     }
 
@@ -361,7 +370,25 @@ public class Enemy : MonoBehaviour
         int finalDmgTaken = Mathf.RoundToInt(damageToTake - (damageToTake * enemyData.dmgReductionFactor));
         enemyData.enemyHealth -= finalDmgTaken;
         if (enemyData.enemyHealth <= 0)
-            EnemyDeath();
+        {
+            if (EnemyAnimator != null)
+            {
+                EnemyAnimator.SetTrigger("Dead");
+                if (GetComponent<EnemyWalk>())
+                {
+                    GetComponent<EnemyWalk>().StopApproachingPlayer();
+                }
+            }
+            else
+            {
+                EnemyDeath();
+            }
+        }
+        else
+        {
+            if (EnemyAnimator != null)
+                EnemyAnimator.SetTrigger("Hit");
+        }
 
         if (!isAggro)
             AggroEnemy();
@@ -399,6 +426,5 @@ public class Enemy : MonoBehaviour
         GetComponent<RewardGiver>().StartGivingRewards();
         Destroy(gameObject);
     }
-
 }
 

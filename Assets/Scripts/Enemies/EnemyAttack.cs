@@ -91,9 +91,19 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
         {
             case BaseEnemyScriptable.EnemyType.SingleShooter:
                 FireBullet(Quaternion.identity, true);
+                try
+                {
+                    GetComponentInParent<Enemy>().EnemyAnimator.SetTrigger("Attacking");
+                }
+                catch { }
                 break;
             case BaseEnemyScriptable.EnemyType.ConeShooter:
                 FireBulletsCone();
+                try
+                {
+                    GetComponentInParent<Enemy>().EnemyAnimator.SetTrigger("Attacking");
+                }
+                catch { }
                 break;
             case BaseEnemyScriptable.EnemyType.ChargingMelee:
                 float chargingMeleeDistance = attackIndicatorArea.transform.localPosition.z;
@@ -233,6 +243,12 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
 
         //Changed 10/19/2026: Lock onto the player once
         enemyMovement.transform.LookAt(playerTransform);
+
+        try
+        {
+            GetComponentInParent<Enemy>().EnemyAnimator.SetTrigger("Attacking");
+        }
+        catch { }
 
         //Count-up timer to LERP for both the material and parent-scale
         while (countupTimer < goalTime) 
