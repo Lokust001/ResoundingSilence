@@ -1,7 +1,7 @@
 /*
 * Author: Brenden
 * Contributors:
-* Last Modified: 10/21/2026
+* Last Modified: 11/13/2026
 * Summary: Chest Objects around the world that the player can interact with
 * To Do:   N/A
 */
@@ -79,7 +79,6 @@ public class Chests : MonoBehaviour
             for (int i = 0; i < PinSpawn; i++)
             {
                 GameObject temp = Instantiate(emptyPinGameObject, transform.position + new Vector3(1, 0, 1), transform.rotation, transform);
-                temp.GetComponent<PinWorldObject>().pin = MRM.PickDroppedPin();
             }
             if (Random.Range(0, 100) < WeaponDropChance)
             {

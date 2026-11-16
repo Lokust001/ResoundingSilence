@@ -199,6 +199,7 @@ public class MidRunDataManager : BaseManager
     {
         pinInventory.Add(pin);
         UIPublicEvents.InventoryUpdated?.Invoke();
+        UIPublicEvents.UpdateCollectionBanner?.Invoke(pin.PinName);
         return pinInventory.Count - 1;
     }
 

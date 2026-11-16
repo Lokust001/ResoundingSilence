@@ -31,6 +31,9 @@ public class BaseWeaponBehaviour : MonoBehaviour
 
     [SerializeField] protected List<Collider> meleeHitboxes = new List<Collider>();
 
+    public GameObject weaponModel;
+    public bool activeWeapon;
+
     protected Vector3 mousePos = Vector3.forward;
 
     protected Vector3 aimDir = Vector3.forward;
@@ -232,17 +235,20 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// </summary>
     virtual protected void Attack()
     {
-        if (!burstAttacking)
+        if (activeWeapon)
         {
-            ++comboIndex;
-        }
+            if (!burstAttacking)
+            {
+                ++comboIndex;
+            }
 
-        if(attackAnimations[comboIndex - 1].AnimatorUsed != null && !weaponAnimator.Equals(attackAnimations[comboIndex - 1].AnimatorUsed))
-        {
-            weaponAnimator = attackAnimations[comboIndex - 1].AnimatorUsed;
-        }
+            if (attackAnimations[comboIndex - 1].AnimatorUsed != null && !weaponAnimator.Equals(attackAnimations[comboIndex - 1].AnimatorUsed))
+            {
+                weaponAnimator = attackAnimations[comboIndex - 1].AnimatorUsed;
+            }
 
-        weaponAnimator.Play(attackAnimations[comboIndex - 1].AnimClip.name, attackAnimations[comboIndex - 1].LayerIndex);
+            weaponAnimator.Play(attackAnimations[comboIndex - 1].AnimClip.name, attackAnimations[comboIndex - 1].LayerIndex);
+        }
     }
 
     /// <summary>
@@ -251,23 +257,27 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// <returns></returns>
     protected IEnumerator AttackBursts(bool weaponAttack = true)
     {
-        yield return new WaitForSeconds(ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks[burstIndex].TimeTillNextBurst);
-        ++burstIndex;
-
-        if(burstIndex < ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks.Count)
+        if (activeWeapon)
         {
-            Attack();
-        }
-        else
-        {
-            burstIndex = 0;
-            burstAttacking = false;
+            yield return new WaitForSeconds(ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks[burstIndex].TimeTillNextBurst);
+            ++burstIndex;
 
-            if (weaponAttack)
+            if (burstIndex < ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks.Count)
             {
-                StartCoroutine(AttackDelay());
+                Attack();
+            }
+            else
+            {
+                burstIndex = 0;
+                burstAttacking = false;
+
+                if (weaponAttack)
+                {
+                    StartCoroutine(AttackDelay());
+                }
             }
         }
+        yield return null;
     }
 
     /// <summary>

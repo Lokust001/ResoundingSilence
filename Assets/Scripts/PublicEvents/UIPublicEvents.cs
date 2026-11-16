@@ -23,7 +23,7 @@ public static class UIPublicEvents
 
     public static Action<ControllerSupportedClickable> SelectSpecificClickable;
 
-    #region PlayerHUD
+   #region PlayerHUD
 
     public static Action<SideObjective> UpdateHUDHuntObjs;
 
@@ -31,12 +31,12 @@ public static class UIPublicEvents
 
     public static Action UpdatePlayerEXPSlider;
 
-    public static Action<CooldownUIController.CooldownToUpdate, float> UpdateHUDCooldownUI;
+    public static Action<CooldownUIController.CooldownToUpdate, float, float> UpdateHUDCooldownUI;
     public static Action<CooldownUIController.CooldownToUpdate> ImmediatelyRefreshCooldown;
 
     public static Action<Sprite, Sprite, CooldownUIController.CooldownToUpdate> ChangeCooldownImages;
 
-    
+    public static Action<string> UpdateCollectionBanner;
 
     #endregion
 
