@@ -346,6 +346,7 @@ public class MidRunDataManager : BaseManager
             }
 
             UIPublicEvents.UpdatePlayerHealthSlider?.Invoke();
+            UIPublicEvents.UpdateCollectionBanner?.Invoke("Level Up!");
         }
 
         UIPublicEvents.UpdatePlayerEXPSlider?.Invoke();
