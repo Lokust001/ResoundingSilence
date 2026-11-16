@@ -8,6 +8,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NaughtyAttributes;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [System.Serializable]
@@ -321,7 +322,8 @@ public class UpgradeTileGrid
         attachedWeapon.UpdateWeaponSpeed(AttackSpeedBuff);
         attachedWeapon.UpdateWeaponDamage(damagebuff);
         attachedWeapon.UpdateLifestealPercent(lifestealBuff);
-        attachedWeapon.AddBurst((int)((BurstBuff * 100) / 100));
+        if(BurstBuff > 1.0f)
+            attachedWeapon.AddBurst((int)((BurstBuff * 100) / 100));
         attachedWeapon.UpdateAbilityDamage(damagebuff);
         attachedWeapon.ProjectileSpeedBoost(ProjectileSpeed);
         attachedWeapon.getPlayerModifiers(DashBuff, DamageResistance, MoveSpeedBuff, HealingPotency, knockbackAmount, regenAmount);
