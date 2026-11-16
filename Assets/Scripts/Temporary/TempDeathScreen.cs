@@ -6,6 +6,8 @@
 * To Do:   N/A
 */
 
+using TMPro;
+using TMPro.EditorUtilities;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -15,11 +17,23 @@ public class TempDeathScreen : MonoBehaviour
     [SerializeField]
     private GameObject button;
 
+    [SerializeField]
+    private TMP_Text titleText;
+
     /// <summary>
     /// controller support for when the menu opens
     /// </summary>
     private void OnEnable()
     {
+        if (MidRunDataManager.Instance.CurrentPlayerHealth <= 0)
+        {
+            titleText.text = $"You Died";
+        }
+        else
+        {
+            titleText.text = $"You Win!";
+        }
+
         if (InputManager.Instance.ControllerIsEnabled)
         {
             SelectRestartBtn();   
