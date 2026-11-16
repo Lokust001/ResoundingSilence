@@ -69,6 +69,10 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
         }
     }
 
+    /// <summary>
+    /// Takes care of the various actions performed when the enemy collides with the player or vice versa
+    /// </summary>
+    /// <param name="collision"></param>
     public void HandleVariousAttackColliders(Collision collision)
     {
         if (collision.gameObject.TryGetComponent<PlayerController>(out var player) && IsEnemyCurrentlyCharging()) 
