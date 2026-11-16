@@ -22,7 +22,7 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
     Transform enemyTransform;
     CapsuleCollider capsuleCollider;
 
-    private MeshRenderer meshRenderer;
+    private GameObject enemyModel;
     private Rigidbody rigidbody;
 
     private Vector3 topColliderLocalPos;
@@ -41,7 +41,10 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
         enemyAttack = GetComponentInChildren<EnemyAttack>();
         capsuleCollider = GetComponent<CapsuleCollider>();
 
-        meshRenderer = GetComponent<MeshRenderer>();
+        if (GetComponent<Enemy>().EnemyModel != null)
+        {
+            enemyModel = GetComponent<Enemy>().EnemyModel;
+        }
         rigidbody = GetComponent<Rigidbody>();
         enemyTransform = transform;
 
@@ -73,6 +76,8 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
     /// </summary>
     public void StopApproachingPlayer() 
     {
+        if (GetComponent<Enemy>().EnemyModel != null)
+            GetComponent<Enemy>().EnemyAnimator.SetFloat("EnemySpeed", 0);
         navMeshAgent.isStopped = true;
         if (walkingCoroutine != null) 
         {
@@ -139,7 +144,6 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
         //Restore properties and velocity
         //rigidbody.isKinematic = false;
         rigidbody.linearVelocity = rigidbody.angularVelocity = Vector3.zero;
-        
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -155,6 +159,8 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
     {
         navMeshAgent.isStopped = false;
         navMeshAgent.destination = CalculateMovementVariability();
+        if (GetComponent<Enemy>().EnemyModel != null)
+            GetComponent<Enemy>().EnemyAnimator.SetFloat("EnemySpeed", 0.5f);
 
         while (navMeshAgent.hasPath) 
         {
@@ -170,7 +176,8 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
     {
         navMeshAgent.isStopped = false;
         Transform playerTransform = playerReference.transform;
-
+        if (GetComponent<Enemy>().EnemyModel != null)
+            GetComponent<Enemy>().EnemyAnimator.SetFloat("EnemySpeed", 0.5f);
 
         while (navMeshAgent.isActiveAndEnabled)
         {
@@ -235,6 +242,8 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
     {
         navMeshAgent.isStopped = false;
         navMeshAgent.destination = CalculateMovementVariability(180);
+        if (GetComponent<Enemy>().EnemyModel != null)
+            GetComponent<Enemy>().EnemyAnimator.SetFloat("EnemySpeed", 0.5f);
 
         while (navMeshAgent.hasPath)
         {
@@ -306,7 +315,14 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
     /// </summary>
     public void EnableEntity()
     {
-        meshRenderer.enabled = true;
+        if (enemyModel != null)
+        {
+            enemyModel.SetActive(true);
+        }
+        else
+        {
+            GetComponent<MeshRenderer>().enabled = true;
+        }
         capsuleCollider.enabled = true;
     }
 
@@ -316,7 +332,14 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
     public void DisableEntity()
     {
         DeAggroEnemy();
-        meshRenderer.enabled = false;
+        if (enemyModel != null)
+        {
+            enemyModel.SetActive(false);
+        }
+        else
+        {
+            GetComponent<MeshRenderer>().enabled = false;
+        }
         capsuleCollider.enabled = false;
     }
 
