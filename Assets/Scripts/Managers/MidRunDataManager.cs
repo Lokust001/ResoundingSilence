@@ -288,6 +288,10 @@ public class MidRunDataManager : BaseManager
             InputManager.Instance.DisablePlayerInputs();
         }
 
+        if (CurrentPlayerHealth >= MaxPlayerHealth)
+        {
+            CurrentPlayerHealth = MaxPlayerHealth;
+        }
 
         UIPublicEvents.UpdatePlayerHealthSlider?.Invoke();
     }
@@ -340,6 +344,8 @@ public class MidRunDataManager : BaseManager
                         break;
                 }
             }
+
+            UIPublicEvents.UpdatePlayerHealthSlider?.Invoke();
         }
 
         UIPublicEvents.UpdatePlayerEXPSlider?.Invoke();
