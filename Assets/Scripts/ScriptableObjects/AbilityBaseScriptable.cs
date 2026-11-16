@@ -68,8 +68,6 @@ public class AbilityBaseScriptable : BaseScriptableObject
     [ShowIf(nameof(HasProjectile))]
     public BurstData AbilityProjectile;
 
-    public GameObject AbilityVFX;
-
     public bool HasPreview;
     [ShowIf(nameof(HasPreview))]
     public PreviewShape PreviewData;
