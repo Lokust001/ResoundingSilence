@@ -35,9 +35,8 @@ public class ItemCollectedBannerController : MenuBase
     /// <summary>
     /// sets the right refs
     /// </summary>
-    public override void InitMenu()
+    private void Awake()
     {
-        base.InitMenu();
         anim = GetComponent<Animator>();
         trans = GetComponent<RectTransform>();
     }
