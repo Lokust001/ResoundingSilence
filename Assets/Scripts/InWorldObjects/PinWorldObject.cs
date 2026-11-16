@@ -1,7 +1,7 @@
 /*
 * Author: Brenden
 * Contributors:
-* Last Modified: 10/21/2026
+* Last Modified: 11/13/2026
 * Summary: what the pin has when it spawns in and flys to the player for collection
 * To Do:   N/A
 */
@@ -14,12 +14,16 @@ public class PinWorldObject : MonoBehaviour
     public float Speed;
     public float DelayTime;
 
+    bool inFlight;
+
     /// <summary>
     /// calls flight delay when the object is made
     /// </summary>
     private void Start()
     {
         StartCoroutine(FlightDelay());
+        inFlight = false;
+        pin = MidRunDataManager.Instance.PickDroppedPin();
     }
 
     /// <summary>
@@ -38,6 +42,7 @@ public class PinWorldObject : MonoBehaviour
     /// <returns></returns>
     private IEnumerator FlyToPlayer()
     {
+        inFlight = true;
         while (true)
         {
             transform.position = Vector3.MoveTowards(transform.position, GameObject.FindAnyObjectByType<PlayerController>().gameObject.transform.position, Speed);
@@ -51,7 +56,7 @@ public class PinWorldObject : MonoBehaviour
     /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Player") && other.name != "RangedArea")
+        if (other.gameObject.layer == LayerMask.NameToLayer("Player") && other.name != "RangedArea" && inFlight)
         {
             MidRunDataManager.Instance.AddPinToInventory(pin);
             Destroy(this.gameObject);
