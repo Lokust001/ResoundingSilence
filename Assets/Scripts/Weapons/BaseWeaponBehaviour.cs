@@ -242,12 +242,12 @@ public class BaseWeaponBehaviour : MonoBehaviour
                 ++comboIndex;
             }
 
-            if (attackAnimations[0].AnimatorUsed != null && !weaponAnimator.Equals(attackAnimations[0].AnimatorUsed))
+            if (attackAnimations[comboIndex - 1].AnimatorUsed != null && !weaponAnimator.Equals(attackAnimations[comboIndex - 1].AnimatorUsed))
             {
-                weaponAnimator = attackAnimations[0].AnimatorUsed;
+                weaponAnimator = attackAnimations[comboIndex - 1].AnimatorUsed;
             }
 
-            weaponAnimator.Play(attackAnimations[0].AnimClip.name, attackAnimations[0].LayerIndex);
+            weaponAnimator.Play(attackAnimations[comboIndex - 1].AnimClip.name, attackAnimations[comboIndex - 1].LayerIndex);
         }
     }
 
@@ -259,10 +259,10 @@ public class BaseWeaponBehaviour : MonoBehaviour
     {
         if (activeWeapon)
         {
-            yield return new WaitForSeconds(ThisWeaponData.ComboAttacks[0].BurstAttacks[burstIndex].TimeTillNextBurst);
+            yield return new WaitForSeconds(ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks[burstIndex].TimeTillNextBurst);
             ++burstIndex;
 
-            if (burstIndex < ThisWeaponData.ComboAttacks[0].BurstAttacks.Count)
+            if (burstIndex < ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks.Count)
             {
                 Attack();
             }
@@ -303,7 +303,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// <returns></returns>
     virtual protected IEnumerator AttackDelay()
     {
-        yield return new WaitForSeconds(ThisWeaponData.ComboAttacks[0].AttackCooldown);
+        yield return new WaitForSeconds(ThisWeaponData.ComboAttacks[comboIndex - 1].AttackCooldown);
         if (comboIndex >= attackAnimations.Count)
         {
             comboIndex = 0;

@@ -132,7 +132,7 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
         {
             if (ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAnim.AnimatorUsed != null && !weaponAnimator.Equals(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAnim.AnimatorUsed))
             {
-                weaponAnimator = attackAnimations[0].AnimatorUsed;
+                weaponAnimator = attackAnimations[comboIndex - 1].AnimatorUsed;
             }
 
             if(aimingAbilityOne)
@@ -364,7 +364,7 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
             {
                 if (ThisWeaponData.editableAbilities[abilityOneIndex].AbilityAnim.AnimatorUsed != null && !weaponAnimator.Equals(ThisWeaponData.editableAbilities[abilityOneIndex].AbilityAnim.AnimatorUsed))
                 {
-                    weaponAnimator = attackAnimations[0].AnimatorUsed;
+                    weaponAnimator = attackAnimations[comboIndex - 1].AnimatorUsed;
                 }
 
                 abilityOneActive = true;
@@ -400,7 +400,7 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
             {
                 if (ThisWeaponData.editableAbilities[abilityTwoIndex].AbilityAnim.AnimatorUsed != null && !weaponAnimator.Equals(ThisWeaponData.editableAbilities[abilityTwoIndex].AbilityAnim.AnimatorUsed))
                 {
-                    weaponAnimator = attackAnimations[0].AnimatorUsed;
+                    weaponAnimator = attackAnimations[comboIndex - 1].AnimatorUsed;
                 }
 
                 abilityTwoActive = true;
@@ -431,7 +431,7 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
 
         if (ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.AnimatorUsed != null && !weaponAnimator.Equals(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.AnimatorUsed))
         {
-            weaponAnimator = attackAnimations[0].AnimatorUsed;
+            weaponAnimator = attackAnimations[comboIndex - 1].AnimatorUsed;
         }
 
         weaponAnimator.Play(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.AnimClip.name, ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
