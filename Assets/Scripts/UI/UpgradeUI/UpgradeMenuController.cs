@@ -366,6 +366,12 @@ public class UpgradeMenuController : MenuControllerSupportBase
         }
     }
 
+    public override void PlaceItemInTile(CarriedItemBehavior item, ItemHolderSlot tile = null)
+    {
+        base.PlaceItemInTile(item, tile);
+        ToggleInventoryScrollability(true);
+    }
+
     /// <summary>
     /// enables and disables the inventory scrollability
     /// </summary>
