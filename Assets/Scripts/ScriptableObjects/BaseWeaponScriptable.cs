@@ -454,6 +454,7 @@ public class BaseWeaponScriptable : BaseScriptableObject
         {
             i.BaseWeaponDamage = i.WeaponDamage;
             i.BaseAttackCooldown = i.AttackCooldown;
+            i.BaseBurstAttacks = i.BurstAttacks;
 
             foreach(BurstData j in i.BurstAttacks)
             {
@@ -571,6 +572,7 @@ public class BaseWeaponScriptable : BaseScriptableObject
     {
         foreach(AttackData i in ComboAttacks)
         {
+            i.BurstAttacks = i.BaseBurstAttacks;
             i.BurstAttacks.Add(i.BurstAttacks[burstAttackIndex]);
 
             foreach(BurstData j in i.BurstAttacks)
@@ -642,8 +644,9 @@ public class AttackData
     public float AttackCooldown;
     [HideInInspector] public float BaseAttackCooldown;
     [Tooltip("IMPORTANT!!! Make sure burst attacks has at least one entry!")]
-    [ReorderableList]
-    public List<BurstData> BurstAttacks;
+    [ReorderableList, HideInInspector]
+    public List<BurstData> BaseBurstAttacks;
+    [ReorderableList] public List<BurstData> BurstAttacks;
     [Tooltip("How long you have in seconds to attack again to continue the combo. " +
         "If no combo or end of combo, doesn't do anything.")]
     public float ComboTime;
