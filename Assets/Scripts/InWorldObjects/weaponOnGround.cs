@@ -21,6 +21,7 @@ public class weaponOnGround : MonoBehaviour
     /// </summary>
     private void Start()
     {
+        weapon = StaticDataManager.Instance.GetRandomWeapon();
         Instantiate(weapon.weaponModel, this.transform).transform.localScale = new Vector3(20, 20, 20);
     }
 
