@@ -7,7 +7,6 @@
 */
 
 using NaughtyAttributes;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,7 +46,6 @@ public class PlayerHUDController : MenuBase
     private MiniMapCamera mapCamPrefab;
 
     private MiniMapCamera mapCam;
-    #region TESTING
 
     [SerializeField, ShowIf(nameof(settings), Settings.Cooldown)]
     private float Ability1MaxCooldown;
@@ -68,6 +66,9 @@ public class PlayerHUDController : MenuBase
     [SerializeField, ShowIf(nameof(settings), Settings.HuntBoard)]
     private GameObject huntBoardContainer;
     private List<(SideObjective, TMP_Text)> huntTexts = new();
+
+    [SerializeField]
+    private TMP_Text timerText;
 
     /// <summary>
     /// debug command to force the ui to take one damage
@@ -98,6 +99,7 @@ public class PlayerHUDController : MenuBase
         UIPublicEvents.UpdateHUDHuntObjs += UpdateHuntObjective;
         GenericPublicEvents.SetCurrentWeapon += NewWeaponEnabled;
         UIPublicEvents.RewardsForObjectiveClaimed += RemoveHuntObjective;
+        UIPublicEvents.UpdateGameTimerUI += UpdateGameTimerText;
     }
 
     /// <summary>
@@ -107,10 +109,11 @@ public class PlayerHUDController : MenuBase
     {
         base.TearDownPublicEvents();
         UIPublicEvents.UpdatePlayerHealthSlider -= UpdatePlayerHealthBarValue;
-        UIPublicEvents.UpdatePlayerEXPSlider -= UpdatePlayerEXPBarValue; 
+        UIPublicEvents.UpdatePlayerEXPSlider -= UpdatePlayerEXPBarValue;
         UIPublicEvents.UpdateHUDHuntObjs -= UpdateHuntObjective;
         UIPublicEvents.RewardsForObjectiveClaimed -= RemoveHuntObjective;
         GenericPublicEvents.SetCurrentWeapon -= NewWeaponEnabled;
+        UIPublicEvents.UpdateGameTimerUI -= UpdateGameTimerText;
     }
 
     /// <summary>
@@ -123,7 +126,6 @@ public class PlayerHUDController : MenuBase
         mapCam.InitMinimapCamera();
     }
 
-    #region Testing
 
     /// <summary>
     /// Sets ability images
@@ -158,8 +160,8 @@ public class PlayerHUDController : MenuBase
     /// <param name="currentHealth">the current health value</param>
     /// <param name="MaxHealth">the max health value - only enter it if the player's max health changes</param>
     private void UpdatePlayerHealthBarValue()
-    { 
-        if(healthAnimCoroutine != null)
+    {
+        if (healthAnimCoroutine != null)
         {
             StopCoroutine(healthAnimCoroutine);
             healthAnimCoroutine = null;
@@ -176,28 +178,28 @@ public class PlayerHUDController : MenuBase
         float timer = 0.0f;
         float currentHealthPercentage = healthBarSlider.fillAmount;
         float targetHealthPercentage = MidRunDataManager.Instance.CurrentPlayerHealth / MidRunDataManager.Instance.MaxPlayerHealth;
-        
+
 
         while (timer < AnimationTime)
         {
             yield return null;
-            
+
             healthBarSlider.fillAmount = Mathf.Lerp(
-                MidRunDataManager.Instance.CurrentPlayerHealth / MidRunDataManager.Instance.MaxPlayerHealth, 
-                currentHealthPercentage, 
+                MidRunDataManager.Instance.CurrentPlayerHealth / MidRunDataManager.Instance.MaxPlayerHealth,
+                currentHealthPercentage,
                 healthBarAnimation.Evaluate(timer / AnimationTime));
 
             if (healthBarSlider.fillAmount <= 0)
             {
                 break;
             }
-            
+
             timer += Time.deltaTime;
         }
 
         if (MidRunDataManager.Instance.CurrentPlayerHealth <= 0.0f)
         {
-            
+
             MidRunDataManager.Instance.KillPlayer();
             StopAllCoroutines();
         }
@@ -226,7 +228,7 @@ public class PlayerHUDController : MenuBase
         }
 
         TMP_Text NewHuntText = Instantiate(prefabHuntText, huntBoardContainer.transform);
-        huntTexts.Add(new (obj, NewHuntText));
+        huntTexts.Add(new(obj, NewHuntText));
 
         NewHuntText.text = $"{obj.GetSideObjectiveTooltipText()}: 0/{obj.huntedEnemiesGoal}";
 
@@ -286,6 +288,12 @@ public class PlayerHUDController : MenuBase
         huntTexts.Remove(temp);
         Destroy(temp.Item2);
     }
-    #endregion
-    #endregion
+
+    /// <summary>
+    /// Updates the timer text in the scene with the game time
+    /// </summary>
+    private void UpdateGameTimerText()
+    {
+        timerText.text = $"{GameTimerManager.Instance.GetRoundedGameTime()}";
+    }
 }

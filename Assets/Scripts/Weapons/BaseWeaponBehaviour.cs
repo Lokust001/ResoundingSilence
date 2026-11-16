@@ -48,6 +48,8 @@ public class BaseWeaponBehaviour : MonoBehaviour
     protected bool burstAttacking;
     protected int burstIndex;
 
+    protected bool inEndLag;
+
     /// <summary>
     /// Gets a reference to the copy of the weapon's data
     /// </summary>
@@ -66,6 +68,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
         UpdateAttackSpeed();
 
         GenericPublicEvents.SetCurrentWeapon?.Invoke(this);
+        inEndLag = false;
     }
 
     /// <summary>
@@ -215,7 +218,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
             UpdateAttackSpeed();
         }
 
-        if (isAttacking && attackReady)
+        if (isAttacking && attackReady && !inEndLag)
         {
             Attack();
             attackReady = false;

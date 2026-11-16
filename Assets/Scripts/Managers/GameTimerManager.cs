@@ -89,6 +89,7 @@ public class GameTimerManager : BaseManager
         {
             yield return null;
             currentGameTime += Time.deltaTime;
+            UIPublicEvents.UpdateGameTimerUI?.Invoke();
         }
     }
 
