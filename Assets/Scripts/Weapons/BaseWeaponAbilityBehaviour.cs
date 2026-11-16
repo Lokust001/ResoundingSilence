@@ -351,6 +351,11 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     /// </summary>
     virtual protected void AimingAbilityOne()
     {
+        if(inEndLag)
+        {
+            return;
+        }
+
         if (abilityOneReady)
         {
             aimingAbilityOne = !aimingAbilityOne;
@@ -387,6 +392,11 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     /// </summary>
     virtual protected void AimingAbilityTwo()
     {
+        if (inEndLag)
+        {
+            return;
+        }
+
         if (abilityTwoReady && activeWeapon)
         {
             aimingAbilityTwo = !aimingAbilityTwo;
@@ -497,7 +507,7 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     virtual public void CastingAbility()
     {
         continuouslyUpdatePreview = false;
-        attackReady = false;
+        inEndLag = true;
         aimingAbilityOne = false;
         aimingAbilityTwo = false;
 
@@ -648,7 +658,7 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     virtual protected IEnumerator AbilityEndLag(float time)
     {
         yield return new WaitForSeconds(time);
-        attackReady = true;
+        inEndLag = false;
     }
 
     /// <summary>
