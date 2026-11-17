@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7236322570925161113}
   - component: {fileID: 4470947134498793366}
   - component: {fileID: 3267022538273132329}
+  - component: {fileID: -8341526626343487920}
   m_Layer: 7
   m_Name: Crossbow
   m_TagString: Untagged
@@ -86,6 +87,7 @@ MonoBehaviour:
   meleeHitboxes: []
   weaponModel: {fileID: 0}
   activeWeapon: 0
+  weaponStats: {fileID: -8341526626343487920}
   abilityAOEs:
   - {fileID: 7590928629485323880}
   - {fileID: 7347509225486067769}
@@ -97,6 +99,24 @@ MonoBehaviour:
   abilityTwoIndex: 0
   abilityOneReady: 1
   abilityTwoReady: 1
+--- !u!114 &-8341526626343487920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8556073844088731136}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28b339525cf9b844f8b5c28c343a2974, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponStatBuffs
+  weaponScriptable: {fileID: 0}
+  MagicianDamageBuff: 1
+  DevilDamageBuff: 1
+  TowerDamageBuff: 1
+  TowerDamageResistance: 1
+  HermitDamageBuff: 1
 --- !u!1001 &283149000665934029
 PrefabInstance:
   m_ObjectHideFlags: 0

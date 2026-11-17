@@ -50,12 +50,15 @@ public class BaseWeaponBehaviour : MonoBehaviour
 
     protected bool inEndLag;
 
+    public WeaponStatBuffs weaponStats;
+
     /// <summary>
     /// Gets a reference to the copy of the weapon's data
     /// </summary>
     virtual protected void Start()
     {
         ThisWeaponData = StaticDataManager.Instance.GetWeaponAtID(weaponDataID);
+        weaponStats.weaponScriptable = ThisWeaponData;
         //TESTING ONLY
         MidRunDataManager.Instance.EquipWeaponInSlot(0, ThisWeaponData);
         //tells the abilities to instantiate

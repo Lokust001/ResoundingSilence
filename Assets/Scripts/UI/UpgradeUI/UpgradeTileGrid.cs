@@ -44,14 +44,6 @@ public class UpgradeTileGrid
     public void Awake()
     {
         UIPublicEvents.PinChangedOnWeapon += NewPinSet;
-        foreach (var statbuff in GameObject.FindObjectsByType<WeaponStatBuffs>())
-        {
-            if(attachedWeapon = statbuff.weaponScriptable)
-            {
-                StatBuffs = statbuff;
-                return;
-            }
-        }
     }
 
     /// <summary>
@@ -234,6 +226,14 @@ public class UpgradeTileGrid
     /// </summary>
     public void SendDatatoWeapon(PinScriptable newpin)
     {
+        foreach (var statbuff in GameObject.FindObjectsByType<WeaponStatBuffs>())
+        {
+            if (attachedWeapon = statbuff.weaponScriptable)
+            {
+                StatBuffs = statbuff;
+                break;
+            }
+        }
         float damagebuff = 1.0f;
         float AttackSpeedBuff = 1.0f;
         float lifestealBuff = 1.0f;
@@ -329,7 +329,7 @@ public class UpgradeTileGrid
             }
         }
 
-        StatBuffs.getWeaponMods(damagebuff, AttackSpeedBuff, lifestealBuff, AbilityDamageBuff, AbilityCooldown, BurstBuff,ProjectileSpeed);
+        StatBuffs.getWeaponMods(damagebuff, AttackSpeedBuff, lifestealBuff, AbilityDamageBuff, AbilityCooldown, BurstBuff, ProjectileSpeed);
         StatBuffs.getPlayerModifiers(DashBuff, DamageResistance, MoveSpeedBuff, HealingPotency, knockbackAmount, regenAmount);
     }
 

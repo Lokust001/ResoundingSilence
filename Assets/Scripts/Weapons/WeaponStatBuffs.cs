@@ -14,6 +14,11 @@ public class WeaponStatBuffs : MonoBehaviour
     public BaseWeaponScriptable weaponScriptable;
 
     #region Player Stat Buffs
+    [HideInInspector] public float MagicianDamageBuff = 1;
+    [HideInInspector] public float DevilDamageBuff = 1;
+    [HideInInspector] public float TowerDamageBuff = 1;
+    [HideInInspector] public float TowerDamageResistance = 1;
+    [HideInInspector] public float HermitDamageBuff = 1;
     #endregion
 
     #region Pin Stat buffs
@@ -43,7 +48,7 @@ public class WeaponStatBuffs : MonoBehaviour
     /// </summary>
     private void Awake()
     {
-        playerController = FindAnyObjectByType<PlayerController>();
+        playerController = PlayerManager.Instance.player;
         GenericPublicEvents.SetCurrentWeapon += setStatBuffs;
     }
 
@@ -95,7 +100,7 @@ public class WeaponStatBuffs : MonoBehaviour
     public void sendPlayerModifiers()
     {
         playerController.DashDistance(DashBuff);
-        playerController.DamageResistanceChange(DamageResistance);
+        playerController.DamageResistanceChange(DamageResistance * TowerDamageResistance);
         playerController.MoveSpeedIncrease(MoveSpeedBuff);
         playerController.healingPotencyChange(HealingPotency);
         playerController.KnockbackResistance(knockbackAmount);
@@ -147,7 +152,7 @@ public class WeaponStatBuffs : MonoBehaviour
     {
         foreach (AttackData i in weaponScriptable.ComboAttacks)
         {
-            i.WeaponDamage = Mathf.CeilToInt(i.BaseWeaponDamage * DamageBuff);
+            i.WeaponDamage = Mathf.CeilToInt(i.BaseWeaponDamage * DamageBuff * MagicianDamageBuff * DevilDamageBuff * TowerDamageBuff * HermitDamageBuff);
         }
     }
 
