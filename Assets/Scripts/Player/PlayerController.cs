@@ -449,15 +449,6 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
-    /// Provides information about whether or not the player is invincible
-    /// </summary>
-    /// <returns></returns>
-    public bool PlayerIsInvincible()
-    {
-        return dmgCoroutine != null;
-    }
-
-    /// <summary>
     /// Physics-based Coroutine to find the distance 
     /// </summary>
     /// <param name="knockbackInfo"></param>
