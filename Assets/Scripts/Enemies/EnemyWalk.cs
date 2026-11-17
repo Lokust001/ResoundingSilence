@@ -1,6 +1,6 @@
 /* Author: Dalsten Yan
- * Contributors:
- * Last Modified: 11/13/26
+ * Contributors: Brad Dixon
+ * Last Modified: 11/17/26
  * Summary: Script that simulates enemy movement, seeking, charing down, and retreating
  * TODO: More as needed
  */
@@ -29,6 +29,8 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
     private Vector3 bottomColliderLocalPos;
 
     [SerializeField] LayerMask chargeStopLayers;
+
+    [HideInInspector] public bool LookAtPlayer;
 
 
     /// <summary>
@@ -59,6 +61,10 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
     public void StrafeTowardsPlayer() 
     {
         StopApproachingPlayer();
+        if (LookAtPlayer)
+        {
+            return;
+        }
         walkingCoroutine = StartCoroutine(StrafeWalking());
     }
 
@@ -350,5 +356,16 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
     {
         StopApproachingPlayer();
         StopAllCoroutines();
+    }
+
+    /// <summary>
+    /// Allows the enemy to face the player when this is toggled.
+    /// </summary>
+    private void FixedUpdate()
+    {
+        if(LookAtPlayer)
+        {
+            transform.LookAt(playerReference.transform);
+        }
     }
 }

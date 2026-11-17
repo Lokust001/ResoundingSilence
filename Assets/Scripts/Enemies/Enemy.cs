@@ -1,6 +1,6 @@
 /* Author: Dalsten Yan
- * Contributors: 11/13/2026
- * Last Modified: 11/16/26
+ * Contributors: Brad Dixon
+ * Last Modified: 11/17/26
  * Summary: Supervising enemy script that decides non-physics behaviors & shares enemyData among other scripts
  * TODO: More as needed
  */
@@ -34,10 +34,11 @@ public class Enemy : MonoBehaviour
     public Action aggroEnemyGroup;
 
     private bool isAggro;
-    public bool IsDead;
+    [HideInInspector] public bool IsDead;
 
     private bool inMeleeRange;
     private bool inRangedRange;
+    public bool canAttack;
 
     private bool allowNonImmediateBehavior;
 
@@ -49,6 +50,7 @@ public class Enemy : MonoBehaviour
     /// </summary>
     void Awake()
     {
+        canAttack = true;
         actionInterval = new WaitForSeconds(enemyData.timeBetweenRangeChecks);
         deAggroInterval = new WaitForSeconds(enemyData.reAggroCooldown);
         attackBehavior = GetComponentInChildren<EnemyAttack>();
@@ -219,7 +221,7 @@ public class Enemy : MonoBehaviour
     /// <returns></returns>
     private IEnumerator RepeatedlyCheckShooterRange() 
     {
-        if (!IsDead)
+        if (!IsDead && canAttack)
         {
             int i = 0;
             while (isAggro)
@@ -446,6 +448,27 @@ public class Enemy : MonoBehaviour
         GenericPublicEvents.EnemyDies?.Invoke(enemyData);
         GetComponent<RewardGiver>().StartGivingRewards();
         Destroy(gameObject);
+    }
+
+    /// <summary>
+    /// Public call for the anim event controller to have the enemy have a chance to move when the attack anim is over.
+    /// </summary>
+    public void WaitToAttack()
+    {
+        canAttack = false;
+        NotInPlayerZones();
+        StartCoroutine(SwitchToAttackDelay());
+    }
+
+    /// <summary>
+    /// Calls the attack function after the attack delay is over
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator SwitchToAttackDelay()
+    {
+        yield return new WaitForSeconds(enemyData.timeBetweenAttacks);
+        canAttack = true;
+        attackBehavior.InitiateAttack();
     }
 }
 
