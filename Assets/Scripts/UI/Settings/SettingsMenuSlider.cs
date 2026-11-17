@@ -21,6 +21,18 @@ public class SettingsMenuSlider : MonoBehaviour
 
     private int currentValue = -1;
 
+    [SerializeField]
+    private int defaultValue = -1;
+
+    /// <summary>
+    /// Set to default at start
+    /// </summary>
+    private void Awake()
+    {
+        currentValue = defaultValue;
+        UpdateSliderAndField();
+    }
+
     /// <summary>
     /// Triggers when the slider gets updated
     /// </summary>
@@ -45,9 +57,10 @@ public class SettingsMenuSlider : MonoBehaviour
             if (res >= 0 && res <= 100)
             {
                 currentValue = res;
-                UpdateSliderAndField();
+                
             }
         }
+        UpdateSliderAndField();
     }
 
     /// <summary>
