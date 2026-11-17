@@ -1,6 +1,6 @@
 /* Author: Dalsten Yan
  * Contributors:
- * Last Modified: 9/28/26
+ * Last Modified: 11/13/26
  * Summary: Handles most of the player attacking logic for each type of enemy
  * TODO: More as needed
  */
@@ -70,12 +70,28 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
     }
 
     /// <summary>
+    /// Takes care of the various actions performed when the enemy collides with the player or vice versa
+    /// </summary>
+    /// <param name="collision"></param>
+    public void HandleVariousAttackColliders(Collision collision)
+    {
+        if (collision.gameObject.TryGetComponent<PlayerController>(out var player) && IsEnemyCurrentlyCharging()) 
+        {
+            //SetAttackTriggersEnabled(false);
+            enemyMovement.SetIgnorePlayerCollision(true);
+            player.TakeDamage(enemyData.enemyATKDmg, CalculateKnockbackInfo(player.transform.position));
+        }
+    }
+
+    /// <summary>
     /// Makes the player take damage after running into the triggers
     /// (can be changed in the future)
     /// </summary>
     /// <param name="other"></param>
-    private void HandleVariousAttackTriggers(PlayerController player) 
+    public void HandleVariousAttackTriggers(PlayerController player) 
     {
+        //enemyMovement.SetIgnorePlayerCollision(true);
+        
         player.TakeDamage(enemyData.enemyATKDmg);
     }
 
@@ -91,9 +107,19 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
         {
             case BaseEnemyScriptable.EnemyType.SingleShooter:
                 FireBullet(Quaternion.identity, true);
+                try
+                {
+                    GetComponentInParent<Enemy>().EnemyAnimator.SetTrigger("Attacking");
+                }
+                catch { }
                 break;
             case BaseEnemyScriptable.EnemyType.ConeShooter:
                 FireBulletsCone();
+                try
+                {
+                    GetComponentInParent<Enemy>().EnemyAnimator.SetTrigger("Attacking");
+                }
+                catch { }
                 break;
             case BaseEnemyScriptable.EnemyType.ChargingMelee:
                 float chargingMeleeDistance = attackIndicatorArea.transform.localPosition.z;
@@ -218,6 +244,7 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
     /// <returns></returns>
     private IEnumerator AtkIndicatorWindupAndAction() 
     {
+
         //Retrieve the MeshRenderer from the attack indicator
         MeshRenderer indicatorRenderer = attackIndicatorArea.GetComponent<MeshRenderer>();
 
@@ -234,6 +261,12 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
         //Changed 10/19/2026: Lock onto the player once
         enemyMovement.transform.LookAt(playerTransform);
 
+        try
+        {
+            GetComponentInParent<Enemy>().EnemyAnimator.SetTrigger("Attacking");
+        }
+        catch { }
+
         //Count-up timer to LERP for both the material and parent-scale
         while (countupTimer < goalTime) 
         {
@@ -248,6 +281,7 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
 
             yield return new WaitForFixedUpdate();
         }
+        //enemyMovement.SetIgnorePlayerCollision(false);
         //The parent's scale is mostly irrelevant, it acts as the pivot for the actual indicator.
         //Setting the z scale to 0 makes the indicator invisible, and increasing the z scale
         //over time makes the actual indicator "grow" over time.
@@ -256,10 +290,38 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
         //Pass the Charging behavior towards enemyMovement to handle the sudden burst of movement
         enemyCharging = StartCoroutine(queuedMeleeAttack);
         yield return enemyCharging;
+
         enemyCharging = null;
 
         //Start a Cooldown Coroutine
         activeATKorCooldown = StartCoroutine(AttackCooldownCoroutine());
+    }
+
+    /// <summary>
+    /// Enables or disables all of the TriggerObjects on this Enemy at once
+    /// </summary>
+    /// <param name="state"></param>
+    private void SetAttackTriggersEnabled(bool state)
+    {
+        foreach (var trigger in onTriggerEnterObjects)
+        {
+            trigger.SetColliderComponentEnabled(state);
+            //Debug.Log(trigger.name + ": " + trigger.GetComponent<Collider>().enabled);
+        }
+    }
+
+    /// <summary>
+    /// Calculates the direction to knock back the player in and sends it as a tuple along with duration
+    /// </summary>
+    /// <param name="hitPlayerPosition"></param>
+    /// <returns></returns>
+    private (Vector3 knockbackDirection, float knockbackDuration) CalculateKnockbackInfo(Vector3 hitPlayerPosition)
+    {
+        Vector3 kbDirection = hitPlayerPosition - transform.position;
+        kbDirection.y = 0;
+        kbDirection = kbDirection.normalized * enemyData.playerHitKnockbackDistance;
+
+        return (kbDirection, enemyData.playerHitKnockbackDuration);
     }
 
     /// <summary>

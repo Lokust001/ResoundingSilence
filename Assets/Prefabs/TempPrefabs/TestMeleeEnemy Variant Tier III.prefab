@@ -6152,6 +6152,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2314649253543611431, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2314649253543611431, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 4518fb4a01af4934882f8a7865f1803f, type: 2}
@@ -6235,6 +6239,54 @@ PrefabInstance:
       propertyPath: 'onTriggerEnterObjects.Array.data[0]'
       value: 
       objectReference: {fileID: 3905060193601209312}
+    - target: {fileID: 6097337471712976449, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: possibleRewards.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097337471712976449, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: possibleRewards.Array.data[0].type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097337471712976449, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: possibleRewards.Array.data[1].type
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097337471712976449, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: possibleRewards.Array.data[1].prefab
+      value: 
+      objectReference: {fileID: 8440715527100584874, guid: cf81080ab31936a4eaa28b2fe66fb82c, type: 3}
+    - target: {fileID: 6097337471712976449, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: possibleRewards.Array.data[0].dropChance
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097337471712976449, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: possibleRewards.Array.data[0].maxDropAmt
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097337471712976449, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: possibleRewards.Array.data[0].minDropAmt
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097337471712976449, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: possibleRewards.Array.data[0].rewardName
+      value: Exp
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097337471712976449, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: possibleRewards.Array.data[1].dropChance
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097337471712976449, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: possibleRewards.Array.data[1].maxDropAmt
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097337471712976449, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: possibleRewards.Array.data[1].minDropAmt
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6097337471712976449, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: possibleRewards.Array.data[1].rewardName
+      value: Pin
+      objectReference: {fileID: 0}
     - target: {fileID: 6325128634737111795, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: m_Name
       value: TestMeleeEnemy Variant Tier III
@@ -6248,6 +6300,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: ca785db20f7b8c84190484421c3f5378, type: 2}
     - target: {fileID: 8424250619371523661, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      propertyPath: EnemyModel
+      value: 
+      objectReference: {fileID: 2767685295230552737}
+    - target: {fileID: 8424250619371523661, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       propertyPath: testWithoutSpawner
       value: 1
       objectReference: {fileID: 0}
@@ -6255,6 +6311,9 @@ PrefabInstance:
     m_RemovedGameObjects:
     - {fileID: 5994382746196217271, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
     m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 2892623662654031983, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
+      insertIndex: 0
+      addedObject: {fileID: 7818086996197153446}
     - targetCorrespondingSourceObject: {fileID: 2892623662654031983, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6021224055715363257}
@@ -6267,4 +6326,86 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 2892623662654031983, guid: f22c2892f347d5a4b991bd713bef58a1, type: 3}
   m_PrefabInstance: {fileID: 1622161332052366343}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &6068042941038626485
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 4514782511904660584}
+    m_Modifications:
+    - target: {fileID: 4055887653051178003, guid: aaff319bc66dbad4e91512ed35016e05, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4055887653051178003, guid: aaff319bc66dbad4e91512ed35016e05, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4055887653051178003, guid: aaff319bc66dbad4e91512ed35016e05, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4055887653051178003, guid: aaff319bc66dbad4e91512ed35016e05, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4055887653051178003, guid: aaff319bc66dbad4e91512ed35016e05, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4055887653051178003, guid: aaff319bc66dbad4e91512ed35016e05, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4055887653051178003, guid: aaff319bc66dbad4e91512ed35016e05, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4055887653051178003, guid: aaff319bc66dbad4e91512ed35016e05, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4055887653051178003, guid: aaff319bc66dbad4e91512ed35016e05, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4055887653051178003, guid: aaff319bc66dbad4e91512ed35016e05, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8241253045449952276, guid: aaff319bc66dbad4e91512ed35016e05, type: 3}
+      propertyPath: m_Name
+      value: Melee_WoodenToySoldier
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8241253045449952276, guid: aaff319bc66dbad4e91512ed35016e05, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7445863372659047460}
+  m_SourcePrefab: {fileID: 100100000, guid: aaff319bc66dbad4e91512ed35016e05, type: 3}
+--- !u!1 &2767685295230552737 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8241253045449952276, guid: aaff319bc66dbad4e91512ed35016e05, type: 3}
+  m_PrefabInstance: {fileID: 6068042941038626485}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7445863372659047460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2767685295230552737}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51b8257a0a5c2634b86b4cc364945bf1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAnimationEventController
+--- !u!4 &7818086996197153446 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4055887653051178003, guid: aaff319bc66dbad4e91512ed35016e05, type: 3}
+  m_PrefabInstance: {fileID: 6068042941038626485}
   m_PrefabAsset: {fileID: 0}

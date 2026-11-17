@@ -8,6 +8,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NaughtyAttributes;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [System.Serializable]
@@ -17,6 +18,8 @@ public class UpgradeTileGrid
     public Vector2Int NumberOfGlyphRange;
 
     public BaseWeaponScriptable attachedWeapon;
+
+    WeaponStatBuffs StatBuffs;
 
     [OnValueChanged(nameof(UpdateGridHeightCount)), AllowNesting, Range(0, 10)]
     public int height;
@@ -41,6 +44,14 @@ public class UpgradeTileGrid
     public void Awake()
     {
         UIPublicEvents.PinChangedOnWeapon += NewPinSet;
+        foreach (var statbuff in GameObject.FindObjectsByType<WeaponStatBuffs>())
+        {
+            if(attachedWeapon = statbuff.weaponScriptable)
+            {
+                StatBuffs = statbuff;
+                return;
+            }
+        }
     }
 
     /// <summary>
@@ -318,13 +329,8 @@ public class UpgradeTileGrid
             }
         }
 
-        attachedWeapon.UpdateWeaponSpeed(AttackSpeedBuff);
-        attachedWeapon.UpdateWeaponDamage(damagebuff);
-        attachedWeapon.UpdateLifestealPercent(lifestealBuff);
-        attachedWeapon.AddBurst((int)((BurstBuff * 100) / 100));
-        attachedWeapon.UpdateAbilityDamage(damagebuff);
-        attachedWeapon.ProjectileSpeedBoost(ProjectileSpeed);
-        attachedWeapon.getPlayerModifiers(DashBuff, DamageResistance, MoveSpeedBuff, HealingPotency, knockbackAmount, regenAmount);
+        StatBuffs.getWeaponMods(damagebuff, AttackSpeedBuff, lifestealBuff, AbilityDamageBuff, AbilityCooldown, BurstBuff,ProjectileSpeed);
+        StatBuffs.getPlayerModifiers(DashBuff, DamageResistance, MoveSpeedBuff, HealingPotency, knockbackAmount, regenAmount);
     }
 
     /// <summary>

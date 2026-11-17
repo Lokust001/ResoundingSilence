@@ -219,6 +219,7 @@ public class MidRunDataManager : BaseManager
     {
         pinInventory.Add(pin);
         UIPublicEvents.InventoryUpdated?.Invoke();
+        UIPublicEvents.UpdateCollectionBanner?.Invoke(pin.PinName);
         return pinInventory.Count - 1;
     }
 
@@ -334,6 +335,10 @@ public class MidRunDataManager : BaseManager
             DevilDamageBuff = 100;
         }
 
+        if (CurrentPlayerHealth >= MaxPlayerHealth)
+        {
+            CurrentPlayerHealth = MaxPlayerHealth;
+        }
         UIPublicEvents.UpdatePlayerHealthSlider?.Invoke();
     }
 
@@ -385,6 +390,9 @@ public class MidRunDataManager : BaseManager
                         break;
                 }
             }
+
+            UIPublicEvents.UpdatePlayerHealthSlider?.Invoke();
+            UIPublicEvents.UpdateCollectionBanner?.Invoke("Level Up!");
         }
 
         UIPublicEvents.UpdatePlayerEXPSlider?.Invoke();

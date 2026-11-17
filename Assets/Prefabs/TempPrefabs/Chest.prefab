@@ -28,14 +28,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 905670452155289410}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 850820779493162835}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!33 &4572790488231537291
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -128,11 +128,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Chests
   Goldmax: 100
   Goldmin: 50
-  PinMax: 2
-  PinMin: 1
+  PinMax: 4
+  PinMin: 2
   emptyWeaponGameObject: {fileID: 4058568919098926793, guid: c2e6770781064864a888b6642baeedc9, type: 3}
   emptyPinGameObject: {fileID: 8440715527100584874, guid: cf81080ab31936a4eaa28b2fe66fb82c, type: 3}
-  WeaponDropChance: 50
+  WeaponDropChance: 0
 --- !u!1001 &883833079486519480
 PrefabInstance:
   m_ObjectHideFlags: 0

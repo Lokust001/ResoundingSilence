@@ -35,4 +35,13 @@ public class PinItemBehavior : CarriedItemBehavior
         }
         pinSprite.color = pinData.pinColor;
     }
+
+    /// <summary>
+    /// requests this pins tooltip
+    /// </summary>
+    public override void HoveredOver()
+    {
+        base.HoveredOver();
+        TooltipUIService.Instance.RequestTooltip(pinData);
+    }
 }

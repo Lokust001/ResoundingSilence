@@ -1,6 +1,6 @@
 /* Author: Dalsten Yan
  * Contributors:
- * Last Modified: 9/28/26
+ * Last Modified: 11/13/26
  * Summary: Script that simulates enemy movement, seeking, charing down, and retreating
  * TODO: More as needed
  */
@@ -22,8 +22,14 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
     Transform enemyTransform;
     CapsuleCollider capsuleCollider;
 
-    private MeshRenderer meshRenderer;
+    private GameObject enemyModel;
     private Rigidbody rigidbody;
+
+    private Vector3 topColliderLocalPos;
+    private Vector3 bottomColliderLocalPos;
+
+    [SerializeField] LayerMask chargeStopLayers;
+
 
     /// <summary>
     /// Grabs necessary components and assigns enemyTransform to transform component
@@ -35,9 +41,16 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
         enemyAttack = GetComponentInChildren<EnemyAttack>();
         capsuleCollider = GetComponent<CapsuleCollider>();
 
-        meshRenderer = GetComponent<MeshRenderer>();
+        if (GetComponent<Enemy>().EnemyModel != null)
+        {
+            enemyModel = GetComponent<Enemy>().EnemyModel;
+        }
         rigidbody = GetComponent<Rigidbody>();
         enemyTransform = transform;
+
+        float modelThickness = capsuleCollider.height / 2 - capsuleCollider.radius;
+        topColliderLocalPos = capsuleCollider.center - Vector3.up * modelThickness;
+        bottomColliderLocalPos = capsuleCollider.center + Vector3.up * modelThickness;
     }
 
     /// <summary>
@@ -63,6 +76,8 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
     /// </summary>
     public void StopApproachingPlayer() 
     {
+        if (GetComponent<Enemy>().EnemyModel != null)
+            GetComponent<Enemy>().EnemyAnimator.SetFloat("EnemySpeed", 0);
         navMeshAgent.isStopped = true;
         if (walkingCoroutine != null) 
         {
@@ -87,45 +102,53 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
 
         //Find the distance from the enemy's current position to the destination of the charge
         //using square magnitude for more efficiency
-        float distanceToGoal = (chargeDestination - enemyTransform.position).sqrMagnitude;
+        float destinationDistance = Vector3.Distance(enemyTransform.position, chargeDestination);
 
+        Vector3 point1 = transform.TransformPoint(topColliderLocalPos);
+        Vector3 point2 = transform.TransformPoint(bottomColliderLocalPos);
+
+        //CapsuleCast to see if there is enough space to charge towards destination
+        //(kept in variable instead of if statement for easier debugging in the future)
+        bool insufficientChargingSpace = Physics.CapsuleCast(point1, point2, capsuleCollider.radius, transform.forward, out RaycastHit hit, chargeDistance, chargeStopLayers, QueryTriggerInteraction.Ignore);
         //Make the rigidbody on the enemy temporarily kinematic to avoid letting it be interrupted by the player
-        //rigidbody.isKinematic = true;
+        if (insufficientChargingSpace)
+        {
+            //Debug.Log("No Space Charge");
+            Vector3 chargeDirection = (chargeDestination - transform.position).normalized;
+            Vector3 colliderOffsetDirection = 2 * capsuleCollider.radius * chargeDirection;
+            chargeDestination = hit.point - colliderOffsetDirection;
+            //var debugline = chargeDestination;
+            //debugline.y = 10f;
+            //Debug.DrawLine(chargeDestination, debugline, Color.red, 15);
+            destinationDistance = Vector3.Distance(enemyTransform.position, chargeDestination);
+        }
+        //else { Debug.Log("Normal Charge");  }
+
+        rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
 
         //While there is still a significant gap or distance between the enemy and its charge destination,
         //calculate its current distance from its goal, move the enemy towards the goal by a factor of its chargeSpeedForce,
         //and finally wait a frame then repeat
-        while (distanceToGoal > enemyData.chargeDestinationAccuracy) 
+        while (destinationDistance > enemyData.chargeDestinationAccuracy) 
         {
-            distanceToGoal =  (chargeDestination - enemyTransform.position).sqrMagnitude;
-            Vector3 goalOverTime = Vector3.MoveTowards(enemyTransform.position, chargeDestination, enemyData.chargeSpeedForce * Time.deltaTime);
+            //Debug.Log(destinationDistance + " Distance: ");
+            destinationDistance = Vector3.Distance(enemyTransform.position, chargeDestination);
+            Vector3 goalOverTime = Vector3.MoveTowards(enemyTransform.position, chargeDestination, enemyData.chargeSpeedForce * Time.fixedDeltaTime);
             rigidbody.MovePosition(goalOverTime);
-            yield return null;
+            yield return new WaitForFixedUpdate();
         }
+        rigidbody.interpolation = RigidbodyInterpolation.None;
+
+        SetIgnorePlayerCollision(false);;
 
         //Restore properties and velocity
         //rigidbody.isKinematic = false;
         rigidbody.linearVelocity = rigidbody.angularVelocity = Vector3.zero;
-        
     }
 
-    /// <summary>
-    /// If the enemy runs into the player it is currently running down the charge, make player take damage and knockback
-    /// </summary>
-    /// <param name="collision"></param>
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.TryGetComponent<PlayerController>(out PlayerController player))
-        {
-            if (enemyAttack.IsEnemyCurrentlyCharging())
-            {
-                Vector3 pushDirection = player.transform.position - transform.position;
-                pushDirection.y = 0;
-                pushDirection = pushDirection.normalized * enemyData.playerHitKnockbackDistance;
-
-                player.TakeDamage(enemyData.enemyATKDmg, (pushDirection, enemyData.playerHitKnockbackDuration));
-            }
-        }
+        enemyAttack.HandleVariousAttackColliders(collision);
     }
 
     /// <summary>
@@ -136,6 +159,8 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
     {
         navMeshAgent.isStopped = false;
         navMeshAgent.destination = CalculateMovementVariability();
+        if (GetComponent<Enemy>().EnemyModel != null)
+            GetComponent<Enemy>().EnemyAnimator.SetFloat("EnemySpeed", 0.5f);
 
         while (navMeshAgent.hasPath) 
         {
@@ -151,7 +176,8 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
     {
         navMeshAgent.isStopped = false;
         Transform playerTransform = playerReference.transform;
-
+        if (GetComponent<Enemy>().EnemyModel != null)
+            GetComponent<Enemy>().EnemyAnimator.SetFloat("EnemySpeed", 0.5f);
 
         while (navMeshAgent.isActiveAndEnabled)
         {
@@ -216,6 +242,8 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
     {
         navMeshAgent.isStopped = false;
         navMeshAgent.destination = CalculateMovementVariability(180);
+        if (GetComponent<Enemy>().EnemyModel != null)
+            GetComponent<Enemy>().EnemyAnimator.SetFloat("EnemySpeed", 0.5f);
 
         while (navMeshAgent.hasPath)
         {
@@ -259,6 +287,19 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
         Debug.Log("Finished Retreat");
     }
 
+    public void SetIgnorePlayerCollision(bool value) 
+    {
+        if (value)
+        {
+            rigidbody.excludeLayers |= 1 << LayerMask.NameToLayer("Player");
+        }
+        else 
+        {
+            rigidbody.excludeLayers &= ~(1 << LayerMask.NameToLayer("Player"));
+        }
+        rigidbody.WakeUp();
+    }
+
     /// <summary>
     /// Casts the scriptable object into a BaseEnemyScriptable and assigns the data of the enemy to this script
     /// </summary>
@@ -274,7 +315,14 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
     /// </summary>
     public void EnableEntity()
     {
-        meshRenderer.enabled = true;
+        if (enemyModel != null)
+        {
+            enemyModel.SetActive(true);
+        }
+        else
+        {
+            GetComponent<MeshRenderer>().enabled = true;
+        }
         capsuleCollider.enabled = true;
     }
 
@@ -284,7 +332,14 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
     public void DisableEntity()
     {
         DeAggroEnemy();
-        meshRenderer.enabled = false;
+        if (enemyModel != null)
+        {
+            enemyModel.SetActive(false);
+        }
+        else
+        {
+            GetComponent<MeshRenderer>().enabled = false;
+        }
         capsuleCollider.enabled = false;
     }
 

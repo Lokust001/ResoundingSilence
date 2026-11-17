@@ -31,12 +31,14 @@ public static class UIPublicEvents
 
     public static Action UpdatePlayerEXPSlider;
 
-    public static Action<CooldownUIController.CooldownToUpdate, float> UpdateHUDCooldownUI;
+    public static Action<CooldownUIController.CooldownToUpdate, float, float> UpdateHUDCooldownUI;
     public static Action<CooldownUIController.CooldownToUpdate> ImmediatelyRefreshCooldown;
 
     public static Action<Sprite, Sprite, CooldownUIController.CooldownToUpdate> ChangeCooldownImages;
 
-    
+    public static Action<string> UpdateCollectionBanner;
+
+    public static Action UpdateGameTimerUI;
 
     #endregion
 
@@ -79,6 +81,14 @@ public static class UIPublicEvents
     public static Action TarotMenuOpened;
 
     public static Action TarotMenuClosed;
+
+    #endregion
+
+    #region HuntBoard
+
+    public static Action<SideObjective, RewardGiver> UpdateHuntBoardData;
+
+    public static Action<SideObjective> RewardsForObjectiveClaimed;
 
     #endregion
 }

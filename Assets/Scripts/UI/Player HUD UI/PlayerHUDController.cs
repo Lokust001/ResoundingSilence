@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
-* Contributors:
-* Last Modified: 11/5/2026
+* Contributors: Brad Dixon
+* Last Modified: 11/12/2026
 * Summary: Controls the player's hud
 * To Do:   N/A
 */
@@ -46,7 +46,6 @@ public class PlayerHUDController : MenuBase
     private MiniMapCamera mapCamPrefab;
 
     private MiniMapCamera mapCam;
-    #region TESTING
 
     [SerializeField, ShowIf(nameof(settings), Settings.Cooldown)]
     private float Ability1MaxCooldown;
@@ -66,7 +65,10 @@ public class PlayerHUDController : MenuBase
 
     [SerializeField, ShowIf(nameof(settings), Settings.HuntBoard)]
     private GameObject huntBoardContainer;
-    private List<(SideObjective, TMP_Text)> huntTexts;
+    private List<(SideObjective, TMP_Text)> huntTexts = new();
+
+    [SerializeField]
+    private TMP_Text timerText;
 
     /// <summary>
     /// debug command to force the ui to take one damage
@@ -96,6 +98,8 @@ public class PlayerHUDController : MenuBase
         UIPublicEvents.UpdatePlayerEXPSlider += UpdatePlayerEXPBarValue;
         UIPublicEvents.UpdateHUDHuntObjs += UpdateHuntObjective;
         GenericPublicEvents.SetCurrentWeapon += NewWeaponEnabled;
+        UIPublicEvents.RewardsForObjectiveClaimed += RemoveHuntObjective;
+        UIPublicEvents.UpdateGameTimerUI += UpdateGameTimerText;
     }
 
     /// <summary>
@@ -105,9 +109,11 @@ public class PlayerHUDController : MenuBase
     {
         base.TearDownPublicEvents();
         UIPublicEvents.UpdatePlayerHealthSlider -= UpdatePlayerHealthBarValue;
-        UIPublicEvents.UpdatePlayerEXPSlider -= UpdatePlayerEXPBarValue; 
+        UIPublicEvents.UpdatePlayerEXPSlider -= UpdatePlayerEXPBarValue;
         UIPublicEvents.UpdateHUDHuntObjs -= UpdateHuntObjective;
+        UIPublicEvents.RewardsForObjectiveClaimed -= RemoveHuntObjective;
         GenericPublicEvents.SetCurrentWeapon -= NewWeaponEnabled;
+        UIPublicEvents.UpdateGameTimerUI -= UpdateGameTimerText;
     }
 
     /// <summary>
@@ -120,36 +126,23 @@ public class PlayerHUDController : MenuBase
         mapCam.InitMinimapCamera();
     }
 
-    #region Testing
 
+    /// <summary>
+    /// Sets ability images
+    /// </summary>
+    /// <param name="weapon"></param>
     private void NewWeaponEnabled(BaseWeaponBehaviour weapon)
     {
         UIPublicEvents.ChangeCooldownImages?.Invoke(
-            weapon.ThisWeaponData.editableAbilities[weapon.abilityOneIndex].AbilityImage,
-            weapon.ThisWeaponData.editableAbilities[weapon.abilityOneIndex].BackgroundImage,
+            weapon.ThisWeaponData.editableAbilities[weapon.GetComponent<BaseWeaponAbilityBehaviour>().abilityOneIndex].AbilityImage,
+            weapon.ThisWeaponData.editableAbilities[weapon.GetComponent<BaseWeaponAbilityBehaviour>().abilityOneIndex].BackgroundImage,
             CooldownUIController.CooldownToUpdate.Ability1);
         UIPublicEvents.ChangeCooldownImages?.Invoke(
-            weapon.ThisWeaponData.editableAbilities[weapon.abilityTwoIndex].AbilityImage,
-            weapon.ThisWeaponData.editableAbilities[weapon.abilityTwoIndex].BackgroundImage,
+            weapon.ThisWeaponData.editableAbilities[weapon.GetComponent<BaseWeaponAbilityBehaviour>().abilityTwoIndex].AbilityImage,
+            weapon.ThisWeaponData.editableAbilities[weapon.GetComponent<BaseWeaponAbilityBehaviour>().abilityTwoIndex].BackgroundImage,
             CooldownUIController.CooldownToUpdate.Ability2);
 
-        ImmediatelyRefreshAllCooldowns();
-    }
-
-    /// <summary>
-    /// testing - turns on the ability 1 cooldown
-    /// </summary>
-    private void Ability1Wrapper()
-    {
-        UIPublicEvents.UpdateHUDCooldownUI?.Invoke(CooldownUIController.CooldownToUpdate.Ability1, Ability1MaxCooldown);
-    }
-
-    /// <summary>
-    /// testing - turns on the ability 2 cooldown
-    /// </summary>
-    private void Ability2Wrapper()
-    {
-        UIPublicEvents.UpdateHUDCooldownUI?.Invoke(CooldownUIController.CooldownToUpdate.Ability2, Ability2MaxCooldown);
+        //ImmediatelyRefreshAllCooldowns();
     }
 
     /// <summary>
@@ -167,8 +160,8 @@ public class PlayerHUDController : MenuBase
     /// <param name="currentHealth">the current health value</param>
     /// <param name="MaxHealth">the max health value - only enter it if the player's max health changes</param>
     private void UpdatePlayerHealthBarValue()
-    { 
-        if(healthAnimCoroutine != null)
+    {
+        if (healthAnimCoroutine != null)
         {
             StopCoroutine(healthAnimCoroutine);
             healthAnimCoroutine = null;
@@ -185,28 +178,28 @@ public class PlayerHUDController : MenuBase
         float timer = 0.0f;
         float currentHealthPercentage = healthBarSlider.fillAmount;
         float targetHealthPercentage = MidRunDataManager.Instance.CurrentPlayerHealth / MidRunDataManager.Instance.MaxPlayerHealth;
-        
+
 
         while (timer < AnimationTime)
         {
             yield return null;
-            
+
             healthBarSlider.fillAmount = Mathf.Lerp(
-                MidRunDataManager.Instance.CurrentPlayerHealth / MidRunDataManager.Instance.MaxPlayerHealth, 
-                currentHealthPercentage, 
+                MidRunDataManager.Instance.CurrentPlayerHealth / MidRunDataManager.Instance.MaxPlayerHealth,
+                currentHealthPercentage,
                 healthBarAnimation.Evaluate(timer / AnimationTime));
 
             if (healthBarSlider.fillAmount <= 0)
             {
                 break;
             }
-            
+
             timer += Time.deltaTime;
         }
 
         if (MidRunDataManager.Instance.CurrentPlayerHealth <= 0.0f)
         {
-            
+
             MidRunDataManager.Instance.KillPlayer();
             StopAllCoroutines();
         }
@@ -235,9 +228,11 @@ public class PlayerHUDController : MenuBase
         }
 
         TMP_Text NewHuntText = Instantiate(prefabHuntText, huntBoardContainer.transform);
-        huntTexts.Add(new (obj, NewHuntText));
+        huntTexts.Add(new(obj, NewHuntText));
 
-        NewHuntText.text = $"Defeat {obj.huntedEnemiesGoal} {obj.enemyType} enemies: 0/{obj.huntedEnemiesGoal}";
+        NewHuntText.text = $"{obj.GetSideObjectiveTooltipText()}: 0/{obj.huntedEnemiesGoal}";
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(huntBoardContainer.transform as RectTransform);
     }
 
     /// <summary>
@@ -252,7 +247,7 @@ public class PlayerHUDController : MenuBase
             return;
         }
 
-        TMP_Text textToUpdate = huntTexts.FirstOrDefault(x => x.Item1 == obj).Item2;
+        TMP_Text textToUpdate = huntTexts.Count > 0 ? huntTexts.FirstOrDefault(x => x.Item1 == obj).Item2 : null;
 
         if (textToUpdate == null)
         {
@@ -269,13 +264,36 @@ public class PlayerHUDController : MenuBase
 
         try
         {
-            textToUpdate.text = $"Defeat {obj.huntedEnemiesGoal} {obj.enemyType} enemies:\n{huntProgress}";
+            textToUpdate.text = $"{obj.GetSideObjectiveTooltipText()}:\n{huntProgress}";
         }
         catch
         {
             throw new System.Exception($"Could not find a text for hunt objective {obj.name}, and couldnt make a new one");
         }
     }
-    #endregion
-    #endregion
+
+    /// <summary>
+    /// removes the hunt text associated with the given objective
+    /// </summary>
+    /// <param name="obj"></param>
+    private void RemoveHuntObjective(SideObjective obj)
+    {
+        (SideObjective, TMP_Text) temp = huntTexts.FirstOrDefault(x => x.Item1 == obj);
+
+        if (temp.Item1 == null)
+        {
+            return;
+        }
+
+        huntTexts.Remove(temp);
+        Destroy(temp.Item2);
+    }
+
+    /// <summary>
+    /// Updates the timer text in the scene with the game time
+    /// </summary>
+    private void UpdateGameTimerText()
+    {
+        timerText.text = $"{GameTimerManager.Instance.GetRoundedGameTime()}";
+    }
 }
