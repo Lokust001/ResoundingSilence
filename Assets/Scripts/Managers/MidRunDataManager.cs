@@ -131,8 +131,8 @@ public class MidRunDataManager : BaseManager
     [HideInInspector] public float DevilDamageBuff = 1.0f;
 
     [SerializeField] bool TowerBool;
-    [SerializeField, Tooltip("How much extra damage the player does in %, 0 would be no extra damage")] int TowerDamageOutBuff;
-    [SerializeField, Tooltip("How much extra damage the player take in %, 0 would be no extra damage")] int TowerDamageInBuff;
+    [SerializeField, Tooltip("How much extra damage the player does in %, 100 would be no extra damage")] int TowerDamageOutBuff;
+    [SerializeField, Tooltip("How much extra damage the player take in %, 100 would be no extra damage")] int TowerDamageInBuff;
 
     bool HermitBool;
     [SerializeField, Tooltip("How much extra damage will the player do Fully Isolated in %, 100 is base damage")] int HermitMaxDamageBuff;
