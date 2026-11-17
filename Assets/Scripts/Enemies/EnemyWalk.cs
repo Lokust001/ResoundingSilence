@@ -10,8 +10,10 @@ using UnityEngine.AI;
 
 public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, ICustomDisabler
 {
+    private readonly WaitForFixedUpdate cachedPhysicsStepTime = new();
+
     private NavMeshAgent navMeshAgent;
-    private GameObject playerReference;
+    private PlayerController playerReference;
 
     private Coroutine walkingCoroutine;
     
@@ -30,6 +32,9 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
 
     [SerializeField] LayerMask chargeStopLayers;
 
+    private LayerMask playerLayer;
+
+
 
     /// <summary>
     /// Grabs necessary components and assigns enemyTransform to transform component
@@ -37,7 +42,7 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
     private void InitializeVariables() 
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
-        playerReference = FindAnyObjectByType<PlayerController>().gameObject;
+        playerReference = FindAnyObjectByType<PlayerController>();
         enemyAttack = GetComponentInChildren<EnemyAttack>();
         capsuleCollider = GetComponent<CapsuleCollider>();
 
@@ -51,6 +56,8 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
         float modelThickness = capsuleCollider.height / 2 - capsuleCollider.radius;
         topColliderLocalPos = capsuleCollider.center - Vector3.up * modelThickness;
         bottomColliderLocalPos = capsuleCollider.center + Vector3.up * modelThickness;
+
+        playerLayer = LayerMask.GetMask("Player");
     }
 
     /// <summary>
@@ -86,6 +93,34 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
         }
     }
 
+    public IEnumerator ForceChargeLocation(float chargeDistance) 
+    {
+        //Double the charge distance to account for the offset of the dash indicator
+        Vector3 enemyForwardChargeDistance = 2 * chargeDistance * transform.forward;
+
+        //Move the enemy towards the destination, then wait until they get there
+        Vector3 chargeDestination = transform.position + enemyForwardChargeDistance;
+
+        Vector3 displacement = chargeDestination - transform.position;
+
+        rigidbody.isKinematic = false;
+        rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+
+        Vector3 velocity = displacement.normalized * enemyData.chargeSpeedForce;
+        velocity.y = 0;
+
+        Debug.Log(velocity);
+
+
+        rigidbody.linearVelocity = velocity;
+
+        yield return new WaitForFixedUpdate();
+        
+        SetIgnorePlayerCollision(false);
+        rigidbody.interpolation = RigidbodyInterpolation.None;
+        rigidbody.isKinematic = true;
+    }
+
     /// <summary>
     /// Given a distance, make the enemy charge towards the direction they were facing
     /// </summary>
@@ -93,7 +128,6 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
     /// <returns></returns>
     public IEnumerator ChargeTowardsLocation(float chargeDistance) 
     {
-
         //Double the charge distance to account for the offset of the dash indicator
         Vector3 enemyForwardChargeDistance = 2 * chargeDistance * transform.forward;
         
@@ -109,14 +143,14 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
 
         //CapsuleCast to see if there is enough space to charge towards destination
         //(kept in variable instead of if statement for easier debugging in the future)
-        bool insufficientChargingSpace = Physics.CapsuleCast(point1, point2, capsuleCollider.radius, transform.forward, out RaycastHit hit, chargeDistance, chargeStopLayers, QueryTriggerInteraction.Ignore);
+        bool insufficientChargingSpace = Physics.CapsuleCast(point1, point2, capsuleCollider.radius, transform.forward, out RaycastHit terrainHit, chargeDistance, chargeStopLayers, QueryTriggerInteraction.Ignore);
         //Make the rigidbody on the enemy temporarily kinematic to avoid letting it be interrupted by the player
         if (insufficientChargingSpace)
         {
             //Debug.Log("No Space Charge");
             Vector3 chargeDirection = (chargeDestination - transform.position).normalized;
             Vector3 colliderOffsetDirection = 2 * capsuleCollider.radius * chargeDirection;
-            chargeDestination = hit.point - colliderOffsetDirection;
+            chargeDestination = terrainHit.point - colliderOffsetDirection;
             //var debugline = chargeDestination;
             //debugline.y = 10f;
             //Debug.DrawLine(chargeDestination, debugline, Color.red, 15);
@@ -125,6 +159,7 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
         //else { Debug.Log("Normal Charge");  }
 
         rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+        rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
         //While there is still a significant gap or distance between the enemy and its charge destination,
         //calculate its current distance from its goal, move the enemy towards the goal by a factor of its chargeSpeedForce,
@@ -133,22 +168,43 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
         {
             //Debug.Log(destinationDistance + " Distance: ");
             destinationDistance = Vector3.Distance(enemyTransform.position, chargeDestination);
-            Vector3 goalOverTime = Vector3.MoveTowards(enemyTransform.position, chargeDestination, enemyData.chargeSpeedForce * Time.fixedDeltaTime);
-            rigidbody.MovePosition(goalOverTime);
-            yield return new WaitForFixedUpdate();
+            Vector3 nextPhysicsMovePosition = Vector3.MoveTowards(enemyTransform.position, chargeDestination, enemyData.chargeSpeedForce * Time.fixedDeltaTime);
+
+            float nextPhysicsMoveDistance = Vector3.Distance(transform.position, nextPhysicsMovePosition);
+
+            point1 = transform.TransformPoint(topColliderLocalPos);
+            point2 = transform.TransformPoint(bottomColliderLocalPos);
+
+
+            //IF we find a player while charging mid-step, and they don't take damage, then handle that
+            //For the future, we can also change behavior to move right beside player and automatically
+            //trigger their collision code instead of manually triggering it
+            if (Physics.CapsuleCast( point1, point2, capsuleCollider.radius, transform.forward,
+                out RaycastHit playerHit, nextPhysicsMoveDistance, playerLayer, QueryTriggerInteraction.Ignore) && !playerReference.PlayerIsInvincible() )
+            {
+
+                //First and foremost so that the player doesn't take any extra collisions
+                enemyAttack.DamagePlayer(playerReference);
+
+                rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+                rigidbody.MovePosition(playerHit.collider.ClosestPoint(transform.position));
+                Debug.Break();
+                yield return cachedPhysicsStepTime;
+                continue;
+            }
+            rigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+
+
+            rigidbody.MovePosition(nextPhysicsMovePosition);
+            yield return cachedPhysicsStepTime;
         }
         rigidbody.interpolation = RigidbodyInterpolation.None;
 
-        SetIgnorePlayerCollision(false);;
+        SetIgnorePlayerCollision(false);
 
         //Restore properties and velocity
         //rigidbody.isKinematic = false;
         rigidbody.linearVelocity = rigidbody.angularVelocity = Vector3.zero;
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        enemyAttack.HandleVariousAttackColliders(collision);
     }
 
     /// <summary>

@@ -381,6 +381,15 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
+    /// Provides information about whether or not the player is invincible
+    /// </summary>
+    /// <returns></returns>
+    public bool PlayerIsInvincible() 
+    {
+        return dmgCoroutine != null;
+    }
+
+    /// <summary>
     /// Simulate the player not being able to take any damage visually
     /// or collide with any enemies for a short time
     /// </summary>
@@ -388,7 +397,7 @@ public class PlayerController : MonoBehaviour
     private IEnumerator PlayerInvincibilityFrames() 
     {
         //Make the player intangible to collisions from specified layers
-        SetPlayerInvincibility(true);
+        SetPlayerIntangibility(true);
 
         Renderer playerRenderer = GetComponent<Renderer>();
         Color original = playerRenderer.material.color;
@@ -401,7 +410,7 @@ public class PlayerController : MonoBehaviour
             
             yield return null;
         }
-        SetPlayerInvincibility(false);
+        SetPlayerIntangibility(false);
         ResetRangeTriggers();
 
         playerRenderer.material.color = original;
@@ -424,7 +433,7 @@ public class PlayerController : MonoBehaviour
     /// and either toggles the collision on or off for those layers all at once
     /// </summary>
     /// <param name="value"></param>
-    private void SetPlayerInvincibility(bool value) 
+    private void SetPlayerIntangibility(bool value) 
     {
         if (value)
             rigidbody.excludeLayers += ignoreWhileInvincible;

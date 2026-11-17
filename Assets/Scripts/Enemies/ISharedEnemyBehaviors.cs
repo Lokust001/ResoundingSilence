@@ -7,6 +7,7 @@
 */
 public interface ISharedEnemyBehaviors
 {
+
     /// <summary>
     /// Method that helps propagate ScriptableObjects into other Scripts that may need them
     /// </summary>
