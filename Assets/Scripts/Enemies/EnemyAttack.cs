@@ -54,7 +54,7 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
     {
         foreach (var trigger in onTriggerEnterObjects) 
         {
-            trigger.EnemyTriggerActivated += HandleVariousAttackTriggers;
+            trigger.EnemyTriggerActivated += DamagePlayer;
         }
     }
 
@@ -65,21 +65,7 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
     {
         foreach (var trigger in onTriggerEnterObjects)
         {
-            trigger.EnemyTriggerActivated -= HandleVariousAttackTriggers;
-        }
-    }
-
-    /// <summary>
-    /// Takes care of the various actions performed when the enemy collides with the player or vice versa
-    /// </summary>
-    /// <param name="collision"></param>
-    public void HandleVariousAttackColliders(Collision collision)
-    {
-        if (collision.gameObject.TryGetComponent<PlayerController>(out var player) && IsEnemyCurrentlyCharging()) 
-        {
-            //SetAttackTriggersEnabled(false);
-            enemyMovement.SetIgnorePlayerCollision(true);
-            player.TakeDamage(enemyData.enemyATKDmg, CalculateKnockbackInfo(player.transform.position));
+            trigger.EnemyTriggerActivated -= DamagePlayer;
         }
     }
 
@@ -88,11 +74,22 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
     /// (can be changed in the future)
     /// </summary>
     /// <param name="other"></param>
-    public void HandleVariousAttackTriggers(PlayerController player) 
+    public void DamagePlayer(PlayerController player) 
     {
-        //enemyMovement.SetIgnorePlayerCollision(true);
+
+        switch (enemyData.enemyType)
+        {
+            case EnemyType.Melee:
+                player.TakeDamage(enemyData.enemyATKDmg);
+                break;
+            case EnemyType.ChargingMelee:
+                enemyMovement.SetIgnorePlayerCollision(true);
+                player.TakeDamage(enemyData.enemyATKDmg, CalculateKnockbackInfo(playerTransform.position));
+                break;
+            case EnemyType.BuffEnemy:
+                break;
+        }
         
-        player.TakeDamage(enemyData.enemyATKDmg);
     }
 
     /// <summary>
