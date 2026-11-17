@@ -8,10 +8,8 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using NaughtyAttributes;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -213,10 +211,10 @@ public class MidRunDataManager : BaseManager
         {
             foreach (var stats in WeaponStats)
             {
-                if(stats != null)
+                if (stats != null)
                 {
                     stats.TowerDamageBuff = (float)TowerDamageOutBuff / 100;
-                    stats.TowerDamageResistance = (float)TowerDamageOutBuff/ 100;
+                    stats.TowerDamageResistance = (float)TowerDamageOutBuff / 100;
                 }
             }
         }
@@ -495,6 +493,10 @@ public class MidRunDataManager : BaseManager
         return value >= 1 ? value / 100 : value;
     }
 
+    /// <summary>
+    /// runs as often as set and adds damage to the player
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator Magician()
     {
         while (MagicianBool)
@@ -504,9 +506,9 @@ public class MidRunDataManager : BaseManager
             {
                 MagicianDamageBuff = (float)MagicianMaxDamageBuff / 100;
             }
-            foreach(var i in WeaponStats)
+            foreach (var i in WeaponStats)
             {
-                if(i != null)
+                if (i != null)
                 {
                     i.MagicianDamageBuff = MagicianDamageBuff;
                 }
@@ -516,6 +518,10 @@ public class MidRunDataManager : BaseManager
         yield return null;
     }
 
+    /// <summary>
+    /// takes in how many enemies are near by and calculates damage buffs accordingly
+    /// </summary>
+    /// <param name="AmountOfEnemies"></param>
     public void CalculateHermit(int AmountOfEnemies)
     {
         HermitDamageBuff = (HermitMaxDamageBuff - (AmountOfEnemies * HermitBuffRemovedPerEnemy)) / 100;
@@ -523,7 +529,7 @@ public class MidRunDataManager : BaseManager
         {
             HermitDamageBuff = HermitMinDamageBuff / 100;
         }
-        foreach(var i in WeaponStats)
+        foreach (var i in WeaponStats)
         {
             i.HermitDamageBuff = HermitDamageBuff;
         }
