@@ -373,58 +373,58 @@ public class MidRunDataManager : BaseManager
                 if (i != null)
                     i.MagicianDamageBuff = MagicianDamageBuff;
             }
+        }
 
-            if (amountToChange > 0)
+        if (amountToChange > 0)
+        {
+            //ceil cus we are healing the player
+            amountToChange = Mathf.CeilToInt(HealingPotency * amountToChange);
+        }
+
+        CurrentPlayerHealth += amountToChange;
+
+        if (CurrentPlayerHealth <= 0)
+        {
+            InputManager.Instance.DisablePlayerInputs();
+        }
+
+        if (CurrentPlayerHealth / MaxPlayerHealth < DevilMinBuffHealthPercent / 100 && DevilBool)
+        {
+            if (CurrentPlayerHealth / MaxPlayerHealth < DevilMaxBuffHealthPercent / 100)
             {
-                //ceil cus we are healing the player
-                amountToChange = Mathf.CeilToInt(HealingPotency * amountToChange);
-            }
-
-            CurrentPlayerHealth += amountToChange;
-
-            if (CurrentPlayerHealth <= 0)
-            {
-                InputManager.Instance.DisablePlayerInputs();
-            }
-
-            if (CurrentPlayerHealth / MaxPlayerHealth < DevilMinBuffHealthPercent / 100 && DevilBool)
-            {
-                if (CurrentPlayerHealth / MaxPlayerHealth < DevilMaxBuffHealthPercent / 100)
-                {
-                    DevilDamageBuff = (float)(DevilMaxDamageBuff / 100);
-                }
-                else
-                {
-                    float differanceBetweenminandmaxbuff = DevilMaxDamageBuff - DevilMinDamageBuff;
-                    float differanceBetweenminandmaxhealth = DevilMaxBuffHealthPercent - DevilMinBuffHealthPercent;
-                    float CurrentPlayerHealthpercent = CurrentPlayerHealth / MaxPlayerHealth;
-
-                    float percentHealth = CurrentPlayerHealthpercent - DevilMinBuffHealthPercent;
-                    float percentBuff = percentHealth / differanceBetweenminandmaxhealth;
-                    float buffamount = percentBuff * differanceBetweenminandmaxbuff;
-                    DevilDamageBuff = (float)(Mathf.CeilToInt(DevilMinDamageBuff + buffamount) / 100);
-                    foreach (var i in WeaponStats)
-                    {
-                        if (i != null)
-                            i.DevilDamageBuff = DevilDamageBuff;
-                    }
-                }
+                DevilDamageBuff = (float)(DevilMaxDamageBuff / 100);
             }
             else
             {
-                DevilDamageBuff = 1;
+                float differanceBetweenminandmaxbuff = DevilMaxDamageBuff - DevilMinDamageBuff;
+                float differanceBetweenminandmaxhealth = DevilMaxBuffHealthPercent - DevilMinBuffHealthPercent;
+                float CurrentPlayerHealthpercent = CurrentPlayerHealth / MaxPlayerHealth;
+
+                float percentHealth = CurrentPlayerHealthpercent - DevilMinBuffHealthPercent;
+                float percentBuff = percentHealth / differanceBetweenminandmaxhealth;
+                float buffamount = percentBuff * differanceBetweenminandmaxbuff;
+                DevilDamageBuff = (float)(Mathf.CeilToInt(DevilMinDamageBuff + buffamount) / 100);
                 foreach (var i in WeaponStats)
                 {
                     if (i != null)
                         i.DevilDamageBuff = DevilDamageBuff;
                 }
             }
-            if (CurrentPlayerHealth >= MaxPlayerHealth)
-            {
-                CurrentPlayerHealth = MaxPlayerHealth;
-            }
-            UIPublicEvents.UpdatePlayerHealthSlider?.Invoke();
         }
+        else
+        {
+            DevilDamageBuff = 1;
+            foreach (var i in WeaponStats)
+            {
+                if (i != null)
+                    i.DevilDamageBuff = DevilDamageBuff;
+            }
+        }
+        if (CurrentPlayerHealth >= MaxPlayerHealth)
+        {
+            CurrentPlayerHealth = MaxPlayerHealth;
+        }
+        UIPublicEvents.UpdatePlayerHealthSlider?.Invoke();
     }
 
     /// <summary>
