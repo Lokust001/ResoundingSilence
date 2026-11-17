@@ -371,7 +371,11 @@ public class MidRunDataManager : BaseManager
             foreach (var i in WeaponStats)
             {
                 if (i != null)
+                {
                     i.MagicianDamageBuff = MagicianDamageBuff;
+                    i.sendWeaponMods();
+                }
+
             }
         }
 
@@ -407,7 +411,10 @@ public class MidRunDataManager : BaseManager
                 foreach (var i in WeaponStats)
                 {
                     if (i != null)
+                    {
                         i.DevilDamageBuff = DevilDamageBuff;
+                        i.sendWeaponMods();
+                    }
                 }
             }
         }
@@ -417,7 +424,10 @@ public class MidRunDataManager : BaseManager
             foreach (var i in WeaponStats)
             {
                 if (i != null)
+                {
                     i.DevilDamageBuff = DevilDamageBuff;
+                    i.sendWeaponMods();
+                }
             }
         }
         if (CurrentPlayerHealth >= MaxPlayerHealth)
@@ -511,6 +521,7 @@ public class MidRunDataManager : BaseManager
                 if (i != null)
                 {
                     i.MagicianDamageBuff = MagicianDamageBuff;
+                    i.sendWeaponMods();
                 }
             }
             yield return new WaitForSecondsRealtime(MagicianTimeBetween);
@@ -531,7 +542,11 @@ public class MidRunDataManager : BaseManager
         }
         foreach (var i in WeaponStats)
         {
-            i.HermitDamageBuff = HermitDamageBuff;
+            if(i != null)
+            {
+                i.HermitDamageBuff = HermitDamageBuff;
+                i.sendWeaponMods();
+            }
         }
     }
 }
