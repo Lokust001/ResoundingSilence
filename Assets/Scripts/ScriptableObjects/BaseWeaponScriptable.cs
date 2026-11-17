@@ -433,30 +433,19 @@ public class BaseWeaponScriptable : BaseScriptableObject
     }
     #endregion
 
-    #region Player Modifiers
-    PlayerController playerController = null;
-    float DashBuff;
-    float DamageResistance;
-    float MoveSpeedBuff;
-    float HealingPotency;
-    float knockbackAmount;
-    float regenAmount;
-    #endregion
-
     /// <summary>
     /// Sets weapon variables to its base values
     /// </summary>
     public void Awake()
     {
-        playerController = FindAnyObjectByType<PlayerController>();
 
-        foreach(AttackData i in ComboAttacks)
+        foreach (AttackData i in ComboAttacks)
         {
             i.BaseWeaponDamage = i.WeaponDamage;
             i.BaseAttackCooldown = i.AttackCooldown;
             i.BaseBurstAttacks = i.BurstAttacks;
 
-            foreach(BurstData j in i.BurstAttacks)
+            foreach (BurstData j in i.BurstAttacks)
             {
                 j.BaseTimeTillNextBurst = j.TimeTillNextBurst;
                 j.WeaponLifeSteal.BaseLifestealPercent = j.WeaponLifeSteal.LifestealPercent;
@@ -474,7 +463,7 @@ public class BaseWeaponScriptable : BaseScriptableObject
                 j.BurstRangedAttack.BurstRicochet.BaseRicochetRange = j.BurstRangedAttack.BurstRicochet.RicochetRange;
                 j.BurstRangedAttack.ProjectileIndex = 0;
 
-                foreach(ProjectileData k in j.BurstRangedAttack.AttackProjectiles)
+                foreach (ProjectileData k in j.BurstRangedAttack.AttackProjectiles)
                 {
                     k.BaseProjectileDeviation = k.ProjectileDeviation;
                     k.BaseProjectileLifetime = k.ProjectileLifetime;
@@ -491,147 +480,6 @@ public class BaseWeaponScriptable : BaseScriptableObject
         }
         upgradeGrid.attachedWeapon = this;
     }
-
-    #region Pin Functions
-    /// <summary>
-    /// changes weapon damage based on the amount of damage buffs given to the weapon on the grid
-    /// </summary>
-    /// <param name="DamageBuff">Greater than one multiplies the base damage numbers</param>
-    public void UpdateWeaponDamage(float DamageBuff)
-    {
-        foreach(AttackData i in ComboAttacks)
-        {
-            i.WeaponDamage = Mathf.CeilToInt(i.BaseWeaponDamage * DamageBuff);
-        }
-    }
-
-    /// <summary>
-    /// changes weapon attack speed based on the amount of dpeed buffs given to the weapon on the grid
-    /// </summary>
-    /// <param name="SpeedBoost">Less than one, multiplies the base attack cooldown</param>
-    public void UpdateWeaponSpeed(float SpeedBoost)
-    {
-        AttackSpeed = AttackSpeed / SpeedBoost;
-
-        foreach(AttackData i in ComboAttacks)
-        {
-            i.AttackCooldown = i.BaseAttackCooldown * SpeedBoost;
-        }
-    }
-
-    /// <summary>
-    /// changes how much lifesteal the weapon has based on the parameter. Parameter should be a percentage
-    /// </summary>
-    /// <param name="lifestealPercent"></param>
-    public void UpdateLifestealPercent(float lifestealPercent)
-    {
-        foreach(AttackData i in ComboAttacks)
-        {
-            foreach(BurstData j in i.BurstAttacks)
-            {
-                //If adding lifesteal, let the attack know if has lifesteal now
-                if(!j.HasLifesteal)
-                {
-                    j.HasLifesteal = true;
-                    j.WeaponLifeSteal.LifestealPercent = lifestealPercent;
-                    continue;
-                }
-
-                j.WeaponLifeSteal.LifestealPercent = j.WeaponLifeSteal.BaseLifestealPercent * lifestealPercent;
-            }
-        }
-    }
-
-    /// <summary>
-    /// changes the amount of damage the abilities 
-    /// </summary>
-    /// <param name="DamageBuff1"></param>
-    /// <param name="DamageBuff2"></param>
-    public void UpdateAbilityDamage(float DamageBuff)
-    {
-        //editableAbilities[0].damage = editableAbilities[0].baseDamage * DamageBuff;
-        //editableAbilities[1].damage = editableAbilities[1].baseDamage * DamageBuff;
-    }
-
-    /// <summary>
-    /// Changes the cooldown of the abilities
-    /// </summary>
-    /// <param name="DamageBuff1"></param>
-    /// <param name="DamageBuff2"></param>
-    public void UpdateAbilityCooldown(float CooldownReduction)
-    {
-        //editableAbilities[0].Cooldown = editableAbilities[0].baseCooldown * CooldownReduction;
-        //editableAbilities[1].Cooldown = editableAbilities[1].baseCooldown * CooldownReduction;
-    }
-
-    /// <summary>
-    /// adds a burst to the attack and adjusts burst damage
-    /// </summary>
-    /// <param name="percentDamage"></param>
-    public void AddBurst(int percentDamage, int burstAttackIndex = 0)
-    {
-        foreach(AttackData i in ComboAttacks)
-        {
-            i.BurstAttacks = i.BaseBurstAttacks;
-            i.BurstAttacks.Add(i.BurstAttacks[burstAttackIndex]);
-
-            foreach(BurstData j in i.BurstAttacks)
-            {
-                j.BurstDamagePercent += percentDamage;
-            }
-        }
-    }
-
-    /// <summary>
-    /// adds speed to the projectiles
-    /// </summary>
-    /// <param name="speedBoost"></param>
-    public void ProjectileSpeedBoost(float speedBoost)
-    {
-        foreach(AttackData i in ComboAttacks)
-        {
-            foreach(BurstData j in i.BurstAttacks)
-            {
-                foreach(ProjectileData k in j.BurstRangedAttack.AttackProjectiles)
-                {
-                    k.ProjectileSpeed = k.BaseProjectileSpeed * speedBoost;
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// takes and stores the player modifiers
-    /// </summary>
-    /// <param name="dash"></param>
-    /// <param name="DR"></param>
-    /// <param name="moveSpeed"></param>
-    /// <param name="healing"></param>
-    /// <param name="kb"></param>
-    /// <param name="regen"></param>
-    public void getPlayerModifiers(float dash, float DR, float moveSpeed, float healing, float kb, float regen)
-    {
-        DashBuff = dash;
-        DamageResistance = DR;
-        MoveSpeedBuff = moveSpeed;
-        HealingPotency = healing;
-        knockbackAmount = kb;
-        regenAmount = regen;
-    }
-
-    /// <summary>
-    /// sends the player modifiers to the player
-    /// </summary>
-    public void sendPlayerModifiers()
-    {
-        playerController.DashDistance(DashBuff);
-        playerController.DamageResistanceChange(DamageResistance);
-        playerController.MoveSpeedIncrease(MoveSpeedBuff);
-        playerController.healingPotencyChange(HealingPotency);
-        playerController.KnockbackResistance(knockbackAmount);
-        playerController.RegenBoost(regenAmount);
-    }
-    #endregion
 }
 
 #region Structs
