@@ -34,6 +34,8 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
 
     private LayerMask playerLayer;
 
+    private readonly Vector3 DEBUG_CAST_OFFSET = new(0, 0, 0.25f);
+
 
 
     /// <summary>
@@ -93,34 +95,6 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
         }
     }
 
-    public IEnumerator ForceChargeLocation(float chargeDistance) 
-    {
-        //Double the charge distance to account for the offset of the dash indicator
-        Vector3 enemyForwardChargeDistance = 2 * chargeDistance * transform.forward;
-
-        //Move the enemy towards the destination, then wait until they get there
-        Vector3 chargeDestination = transform.position + enemyForwardChargeDistance;
-
-        Vector3 displacement = chargeDestination - transform.position;
-
-        rigidbody.isKinematic = false;
-        rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
-
-        Vector3 velocity = displacement.normalized * enemyData.chargeSpeedForce;
-        velocity.y = 0;
-
-        Debug.Log(velocity);
-
-
-        rigidbody.linearVelocity = velocity;
-
-        yield return new WaitForFixedUpdate();
-        
-        SetIgnorePlayerCollision(false);
-        rigidbody.interpolation = RigidbodyInterpolation.None;
-        rigidbody.isKinematic = true;
-    }
-
     /// <summary>
     /// Given a distance, make the enemy charge towards the direction they were facing
     /// </summary>
@@ -143,7 +117,7 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
 
         //CapsuleCast to see if there is enough space to charge towards destination
         //(kept in variable instead of if statement for easier debugging in the future)
-        bool insufficientChargingSpace = Physics.CapsuleCast(point1, point2, capsuleCollider.radius, transform.forward, out RaycastHit terrainHit, chargeDistance, chargeStopLayers, QueryTriggerInteraction.Ignore);
+        bool insufficientChargingSpace = Physics.CapsuleCast(point1, point2, capsuleCollider.radius, transform.forward, out RaycastHit terrainHit, 2 * chargeDistance, chargeStopLayers, QueryTriggerInteraction.Ignore);
         //Make the rigidbody on the enemy temporarily kinematic to avoid letting it be interrupted by the player
         if (insufficientChargingSpace)
         {
@@ -170,10 +144,10 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
             destinationDistance = Vector3.Distance(enemyTransform.position, chargeDestination);
             Vector3 nextPhysicsMovePosition = Vector3.MoveTowards(enemyTransform.position, chargeDestination, enemyData.chargeSpeedForce * Time.fixedDeltaTime);
 
-            float nextPhysicsMoveDistance = Vector3.Distance(transform.position, nextPhysicsMovePosition);
+            float nextPhysicsMoveDistance = Vector3.Distance(transform.position, nextPhysicsMovePosition - DEBUG_CAST_OFFSET);
 
-            point1 = transform.TransformPoint(topColliderLocalPos);
-            point2 = transform.TransformPoint(bottomColliderLocalPos);
+            point1 = transform.TransformPoint(topColliderLocalPos) + DEBUG_CAST_OFFSET;
+            point2 = transform.TransformPoint(bottomColliderLocalPos) + DEBUG_CAST_OFFSET;
 
 
             //IF we find a player while charging mid-step, and they don't take damage, then handle that
@@ -187,8 +161,9 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
                 enemyAttack.DamagePlayer(playerReference);
 
                 rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-                rigidbody.MovePosition(playerHit.collider.ClosestPoint(transform.position));
-                Debug.Break();
+
+                Vector3 impactPosition = playerHit.collider.transform.position - (2 * capsuleCollider.radius * transform.forward);
+                rigidbody.MovePosition(impactPosition);
                 yield return cachedPhysicsStepTime;
                 continue;
             }
@@ -343,6 +318,10 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
         Debug.Log("Finished Retreat");
     }
 
+    /// <summary>
+    /// Adds or removes the player layer from the enemy's exclusion layers
+    /// </summary>
+    /// <param name="value"></param>
     public void SetIgnorePlayerCollision(bool value) 
     {
         if (value)
