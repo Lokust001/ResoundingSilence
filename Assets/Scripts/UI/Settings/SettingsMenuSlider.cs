@@ -24,6 +24,8 @@ public class SettingsMenuSlider : MonoBehaviour
     [SerializeField]
     private int defaultValue = -1;
 
+    [SerializeField]
+    private Vector2Int bounds;
     /// <summary>
     /// Set to default at start
     /// </summary>
@@ -52,12 +54,23 @@ public class SettingsMenuSlider : MonoBehaviour
     /// <param name="newText"></param>
     public void FieldUpdated(string newText = "")
     {
+        if (newText == "")
+        {
+            newText = "0";
+        }
+        else
+        {
+            if (currentValue == bounds.x)
+            {
+                newText = newText.Replace("0", "");
+            }
+            
+        }
         if (int.TryParse(newText, out int res))
         {
-            if (res >= 0 && res <= 100)
+            if (res >= bounds.x && res <= bounds.y)
             {
-                currentValue = res;
-                
+                currentValue = res;   
             }
         }
         UpdateSliderAndField();
