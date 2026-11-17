@@ -1,6 +1,6 @@
 /* Author: Dalsten Yan
- * Contributors: Brad Dixon
- * Last Modified: 11/17/26
+ * Contributors:
+ * Last Modified: 11/13/26
  * Summary: Script that simulates enemy movement, seeking, charing down, and retreating
  * TODO: More as needed
  */
@@ -10,8 +10,10 @@ using UnityEngine.AI;
 
 public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, ICustomDisabler
 {
+    private readonly WaitForFixedUpdate cachedPhysicsStepTime = new();
+
     private NavMeshAgent navMeshAgent;
-    private GameObject playerReference;
+    private PlayerController playerReference;
 
     private Coroutine walkingCoroutine;
     
@@ -30,7 +32,10 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
 
     [SerializeField] LayerMask chargeStopLayers;
 
-    [HideInInspector] public bool LookAtPlayer;
+    private LayerMask playerLayer;
+
+    private readonly Vector3 DEBUG_CAST_OFFSET = new(0, 0, 0.25f);
+
 
 
     /// <summary>
@@ -39,7 +44,7 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
     private void InitializeVariables() 
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
-        playerReference = FindAnyObjectByType<PlayerController>().gameObject;
+        playerReference = FindAnyObjectByType<PlayerController>();
         enemyAttack = GetComponentInChildren<EnemyAttack>();
         capsuleCollider = GetComponent<CapsuleCollider>();
 
@@ -53,6 +58,8 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
         float modelThickness = capsuleCollider.height / 2 - capsuleCollider.radius;
         topColliderLocalPos = capsuleCollider.center - Vector3.up * modelThickness;
         bottomColliderLocalPos = capsuleCollider.center + Vector3.up * modelThickness;
+
+        playerLayer = LayerMask.GetMask("Player");
     }
 
     /// <summary>
@@ -61,10 +68,6 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
     public void StrafeTowardsPlayer() 
     {
         StopApproachingPlayer();
-        if (LookAtPlayer)
-        {
-            return;
-        }
         walkingCoroutine = StartCoroutine(StrafeWalking());
     }
 
@@ -99,7 +102,6 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
     /// <returns></returns>
     public IEnumerator ChargeTowardsLocation(float chargeDistance) 
     {
-
         //Double the charge distance to account for the offset of the dash indicator
         Vector3 enemyForwardChargeDistance = 2 * chargeDistance * transform.forward;
         
@@ -115,22 +117,20 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
 
         //CapsuleCast to see if there is enough space to charge towards destination
         //(kept in variable instead of if statement for easier debugging in the future)
-        bool insufficientChargingSpace = Physics.CapsuleCast(point1, point2, capsuleCollider.radius, transform.forward, out RaycastHit hit, chargeDistance, chargeStopLayers, QueryTriggerInteraction.Ignore);
+        bool insufficientChargingSpace = Physics.CapsuleCast(point1, point2, capsuleCollider.radius, transform.forward, out RaycastHit terrainHit, 2 * chargeDistance, chargeStopLayers, QueryTriggerInteraction.Ignore);
         //Make the rigidbody on the enemy temporarily kinematic to avoid letting it be interrupted by the player
         if (insufficientChargingSpace)
         {
-            //Debug.Log("No Space Charge");
             Vector3 chargeDirection = (chargeDestination - transform.position).normalized;
             Vector3 colliderOffsetDirection = 2 * capsuleCollider.radius * chargeDirection;
-            chargeDestination = hit.point - colliderOffsetDirection;
-            //var debugline = chargeDestination;
-            //debugline.y = 10f;
-            //Debug.DrawLine(chargeDestination, debugline, Color.red, 15);
+            chargeDestination = terrainHit.point - colliderOffsetDirection;
             destinationDistance = Vector3.Distance(enemyTransform.position, chargeDestination);
         }
         //else { Debug.Log("Normal Charge");  }
+        
 
-        rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+        //[Charging Start]
+        rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
         //While there is still a significant gap or distance between the enemy and its charge destination,
         //calculate its current distance from its goal, move the enemy towards the goal by a factor of its chargeSpeedForce,
@@ -139,22 +139,43 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
         {
             //Debug.Log(destinationDistance + " Distance: ");
             destinationDistance = Vector3.Distance(enemyTransform.position, chargeDestination);
-            Vector3 goalOverTime = Vector3.MoveTowards(enemyTransform.position, chargeDestination, enemyData.chargeSpeedForce * Time.fixedDeltaTime);
-            rigidbody.MovePosition(goalOverTime);
-            yield return new WaitForFixedUpdate();
+            Vector3 nextPhysicsMovePosition = Vector3.MoveTowards(enemyTransform.position, chargeDestination, enemyData.chargeSpeedForce * Time.fixedDeltaTime);
+
+            float nextPhysicsMoveDistance = Vector3.Distance(transform.position, nextPhysicsMovePosition - DEBUG_CAST_OFFSET);
+
+            point1 = transform.TransformPoint(topColliderLocalPos) + DEBUG_CAST_OFFSET;
+            point2 = transform.TransformPoint(bottomColliderLocalPos) + DEBUG_CAST_OFFSET;
+
+
+            //IF we find a player while charging mid-step, and they don't take damage, then handle that
+            //For the future, we can also change behavior to move right beside player and automatically
+            //trigger their collision code instead of manually triggering it
+            if (Physics.CapsuleCast( point1, point2, capsuleCollider.radius, transform.forward,
+                out RaycastHit playerHit, nextPhysicsMoveDistance, playerLayer, QueryTriggerInteraction.Ignore) && !playerReference.PlayerIsInvincible() )
+            {
+
+                //First and foremost so that the player doesn't take any extra collisions
+                enemyAttack.DamagePlayer(playerReference);
+
+                rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+
+                Vector3 impactPosition = playerHit.collider.transform.position - (2 * capsuleCollider.radius * transform.forward);
+                rigidbody.MovePosition(impactPosition);
+                yield return cachedPhysicsStepTime;
+                continue;
+            }
+            rigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+
+
+            rigidbody.MovePosition(nextPhysicsMovePosition);
+            yield return cachedPhysicsStepTime;
         }
-        rigidbody.interpolation = RigidbodyInterpolation.None;
+        //[Charging End]
 
-        SetIgnorePlayerCollision(false);;
+        //Stop ignoring player/phasing through at the end of the charge
+        SetIgnorePlayerCollision(false);
 
-        //Restore properties and velocity
-        //rigidbody.isKinematic = false;
         rigidbody.linearVelocity = rigidbody.angularVelocity = Vector3.zero;
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        enemyAttack.HandleVariousAttackColliders(collision);
     }
 
     /// <summary>
@@ -293,6 +314,10 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
         Debug.Log("Finished Retreat");
     }
 
+    /// <summary>
+    /// Adds or removes the player layer from the enemy's exclusion layers
+    /// </summary>
+    /// <param name="value"></param>
     public void SetIgnorePlayerCollision(bool value) 
     {
         if (value)
@@ -356,16 +381,5 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
     {
         StopApproachingPlayer();
         StopAllCoroutines();
-    }
-
-    /// <summary>
-    /// Allows the enemy to face the player when this is toggled.
-    /// </summary>
-    private void FixedUpdate()
-    {
-        if(LookAtPlayer)
-        {
-            transform.LookAt(playerReference.transform);
-        }
     }
 }
