@@ -121,18 +121,15 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
         //Make the rigidbody on the enemy temporarily kinematic to avoid letting it be interrupted by the player
         if (insufficientChargingSpace)
         {
-            //Debug.Log("No Space Charge");
             Vector3 chargeDirection = (chargeDestination - transform.position).normalized;
             Vector3 colliderOffsetDirection = 2 * capsuleCollider.radius * chargeDirection;
             chargeDestination = terrainHit.point - colliderOffsetDirection;
-            //var debugline = chargeDestination;
-            //debugline.y = 10f;
-            //Debug.DrawLine(chargeDestination, debugline, Color.red, 15);
             destinationDistance = Vector3.Distance(enemyTransform.position, chargeDestination);
         }
         //else { Debug.Log("Normal Charge");  }
+        
 
-        rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+        //[Charging Start]
         rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
         //While there is still a significant gap or distance between the enemy and its charge destination,
@@ -173,12 +170,11 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
             rigidbody.MovePosition(nextPhysicsMovePosition);
             yield return cachedPhysicsStepTime;
         }
-        rigidbody.interpolation = RigidbodyInterpolation.None;
+        //[Charging End]
 
+        //Stop ignoring player/phasing through at the end of the charge
         SetIgnorePlayerCollision(false);
 
-        //Restore properties and velocity
-        //rigidbody.isKinematic = false;
         rigidbody.linearVelocity = rigidbody.angularVelocity = Vector3.zero;
     }
 
