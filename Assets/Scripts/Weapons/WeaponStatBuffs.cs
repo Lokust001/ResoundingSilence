@@ -1,3 +1,10 @@
+/*
+* Author: Brenden
+* Contributors: 
+* Last Modified: 11/17/2026
+* Summary: holds the stat buffs per weapon, and sends them out as needed
+* To Do: make it work with terot cards and buff objects
+*/
 using System;
 using UnityEditor.MPE;
 using UnityEngine;
@@ -31,18 +38,28 @@ public class WeaponStatBuffs : MonoBehaviour
     #endregion
     #endregion
 
+    /// <summary>
+    /// subscribes to events and gets the player
+    /// </summary>
     private void Awake()
     {
         playerController = FindAnyObjectByType<PlayerController>();
         GenericPublicEvents.SetCurrentWeapon += setStatBuffs;
     }
 
+    /// <summary>
+    /// unsubscribes from the events
+    /// </summary>
     private void OnDestroy()
     {
         GenericPublicEvents.SetCurrentWeapon -= setStatBuffs;
     }
 
 
+    /// <summary>
+    /// set stat buffs when the player switches weapons
+    /// </summary>
+    /// <param name="behaviour"></param>
     private void setStatBuffs(BaseWeaponBehaviour behaviour)
     {
         if (behaviour.ThisWeaponData == weaponScriptable)
@@ -88,6 +105,16 @@ public class WeaponStatBuffs : MonoBehaviour
 
     #region Weapon Functions
 
+    /// <summary>
+    /// Takes in the weapon changes from the pins
+    /// </summary>
+    /// <param name="damageBuff"></param>
+    /// <param name="attackSpeedBoost"></param>
+    /// <param name="lifestealAmount"></param>
+    /// <param name="abilityDamage"></param>
+    /// <param name="abilityCooldown"></param>
+    /// <param name="burst"></param>
+    /// <param name="projectileSpeedBuff"></param>
     public void getWeaponMods(float damageBuff, float attackSpeedBoost,float lifestealAmount, float abilityDamage, float abilityCooldown, float burst ,float projectileSpeedBuff)
     {
         DamageBuff = damageBuff;
@@ -99,6 +126,9 @@ public class WeaponStatBuffs : MonoBehaviour
         ProjectileSpeedBuff = projectileSpeedBuff;
     }
     
+    /// <summary>
+    /// activates the modifiers of the weapon
+    /// </summary>
     public void sendWeaponMods()
     {
         UpdateWeaponDamage();
