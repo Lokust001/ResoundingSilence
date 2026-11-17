@@ -7,7 +7,6 @@
 */
 
 using TMPro;
-using TMPro.EditorUtilities;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -36,7 +35,7 @@ public class TempDeathScreen : MonoBehaviour
 
         if (InputManager.Instance.ControllerIsEnabled)
         {
-            SelectRestartBtn();   
+            SelectRestartBtn();
         }
         InputPublicEvents.ControllerEnabled += SelectRestartBtn;
     }
@@ -68,6 +67,6 @@ public class TempDeathScreen : MonoBehaviour
         TooltipUIService.Instance = null;
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        
+
     }
 }
