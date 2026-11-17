@@ -388,11 +388,11 @@ public class MidRunDataManager : BaseManager
             InputManager.Instance.DisablePlayerInputs();
         }
 
-        if (CurrentPlayerHealth / MaxPlayerHealth < DevilMinBuffHealthPercent / 100 && DevilBool)
+        if (CurrentPlayerHealth / MaxPlayerHealth < DevilMinBuffHealthPercent / 100f && DevilBool)
         {
-            if (CurrentPlayerHealth / MaxPlayerHealth < DevilMaxBuffHealthPercent / 100)
+            if (CurrentPlayerHealth / MaxPlayerHealth < DevilMaxBuffHealthPercent / 100f)
             {
-                DevilDamageBuff = (float)(DevilMaxDamageBuff / 100);
+                DevilDamageBuff = (float)DevilMaxDamageBuff / 100f;
             }
             else
             {
@@ -403,7 +403,7 @@ public class MidRunDataManager : BaseManager
                 float percentHealth = CurrentPlayerHealthpercent - DevilMinBuffHealthPercent;
                 float percentBuff = percentHealth / differanceBetweenminandmaxhealth;
                 float buffamount = percentBuff * differanceBetweenminandmaxbuff;
-                DevilDamageBuff = (float)(Mathf.CeilToInt(DevilMinDamageBuff + buffamount) / 100);
+                DevilDamageBuff = (float)(Mathf.CeilToInt(DevilMinDamageBuff + buffamount) / 100f);
                 foreach (var i in WeaponStats)
                 {
                     if (i != null)

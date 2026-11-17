@@ -14,7 +14,7 @@ public class WeaponStatBuffs : MonoBehaviour
     public BaseWeaponScriptable weaponScriptable;
 
     #region Player Stat Buffs
-     public float MagicianDamageBuff = 1;
+    [HideInInspector] public float MagicianDamageBuff = 1;
     [HideInInspector] public float DevilDamageBuff = 1;
     [HideInInspector] public float TowerDamageBuff = 1;
     [HideInInspector] public float TowerDamageResistance = 1;
