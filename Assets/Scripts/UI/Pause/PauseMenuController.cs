@@ -8,6 +8,7 @@
 
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class PauseMenuController : MenuBase
@@ -77,6 +78,19 @@ public class PauseMenuController : MenuBase
     /// </summary>
     public void ConfirmQuit()
     {
-        GenericPublicEvents.ReturnToMainMenu?.Invoke();
+        AppManager.Instance = null;
+        InputManager.Instance = null;
+        UIManager.Instance = null;
+        StaticDataManager.Instance = null;
+        MidRunDataManager.Instance = null;
+        GameTimerManager.Instance = null;
+        MainCameraManager.Instance = null;
+        MapManager.Instance = null;
+        PlayerManager.Instance = null;
+        ControllerUIService.Instance = null;
+        MouseUIService.Instance = null;
+        TooltipUIService.Instance = null;
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
