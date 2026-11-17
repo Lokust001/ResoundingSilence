@@ -397,7 +397,7 @@ public class PlayerController : MonoBehaviour
     private IEnumerator PlayerInvincibilityFrames() 
     {
         //Make the player intangible to collisions from specified layers
-        SetPlayerIntangibility(true);
+        SetPlayerInvincibility(true);
 
         Renderer playerRenderer = GetComponent<Renderer>();
         Color original = playerRenderer.material.color;
@@ -410,7 +410,7 @@ public class PlayerController : MonoBehaviour
             
             yield return null;
         }
-        SetPlayerIntangibility(false);
+        SetPlayerInvincibility(false);
         ResetRangeTriggers();
 
         playerRenderer.material.color = original;
@@ -433,7 +433,7 @@ public class PlayerController : MonoBehaviour
     /// and either toggles the collision on or off for those layers all at once
     /// </summary>
     /// <param name="value"></param>
-    private void SetPlayerIntangibility(bool value) 
+    private void SetPlayerInvincibility(bool value) 
     {
         if (value)
             rigidbody.excludeLayers += ignoreWhileInvincible;
