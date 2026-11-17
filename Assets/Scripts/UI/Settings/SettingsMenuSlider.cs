@@ -1,3 +1,11 @@
+/*
+* Author: Tyler
+* Contributors:
+* Last Modified:11/17/2026
+* Summary: The sliders for the settings menu
+* To Do:   N/A
+*/
+
 using System;
 using TMPro;
 using UnityEngine;
@@ -13,6 +21,10 @@ public class SettingsMenuSlider : MonoBehaviour
 
     private int currentValue = -1;
 
+    /// <summary>
+    /// Triggers when the slider gets updated
+    /// </summary>
+    /// <param name="value"></param>
     public void SliderUpdated(Single value = -1)
     {
         if (Mathf.RoundToInt(value) != currentValue)
@@ -22,6 +34,10 @@ public class SettingsMenuSlider : MonoBehaviour
         UpdateSliderAndField();
     }
 
+    /// <summary>
+    /// Triggers when the text field gets updated
+    /// </summary>
+    /// <param name="newText"></param>
     public void FieldUpdated(string newText = "")
     {
         if (int.TryParse(newText, out int res))
@@ -34,6 +50,9 @@ public class SettingsMenuSlider : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Force updates the slider and text field
+    /// </summary>
     private void UpdateSliderAndField()
     {
         slide.value = currentValue;
