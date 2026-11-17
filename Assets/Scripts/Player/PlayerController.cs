@@ -386,6 +386,15 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
+    /// Provides information about whether or not the player is invincible
+    /// </summary>
+    /// <returns></returns>
+    public bool PlayerIsInvincible() 
+    {
+        return dmgCoroutine != null;
+    }
+
+    /// <summary>
     /// Simulate the player not being able to take any damage visually
     /// or collide with any enemies for a short time
     /// </summary>
