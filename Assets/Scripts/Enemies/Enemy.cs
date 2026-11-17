@@ -34,6 +34,7 @@ public class Enemy : MonoBehaviour
     public Action aggroEnemyGroup;
 
     private bool isAggro;
+    public bool IsDead;
 
     private bool inMeleeRange;
     private bool inRangedRange;
@@ -191,6 +192,10 @@ public class Enemy : MonoBehaviour
     /// </summary>
     public void NextEnemyAction() 
     {
+        if(IsDead)
+        {
+            return;
+        }
         allowNonImmediateBehavior = true;
         //Debug.Log("Melee: " + inMeleeRange + " Ranged: " + inRangedRange);
         if (!inRangedRange && !inMeleeRange)
@@ -214,16 +219,18 @@ public class Enemy : MonoBehaviour
     /// <returns></returns>
     private IEnumerator RepeatedlyCheckShooterRange() 
     {
-        int i = 0;
-        while (isAggro) 
+        if (!IsDead)
         {
-            //[Uncomment for debug]
-            //Debug.Log("Behavior Loop # [" + i +"]\t inRanged : " + inRangedRange + " Melee area: " + inMeleeRange);
-            NextEnemyAction();
-            yield return actionInterval;
-            i++;
+            int i = 0;
+            while (isAggro)
+            {
+                //[Uncomment for debug]
+                //Debug.Log("Behavior Loop # [" + i +"]\t inRanged : " + inRangedRange + " Melee area: " + inMeleeRange);
+                NextEnemyAction();
+                yield return actionInterval;
+                i++;
+            }
         }
-        
     }
 
     /// <summary>
@@ -231,6 +238,10 @@ public class Enemy : MonoBehaviour
     /// </summary>
     private void NotInPlayerZones() 
     {
+        if (IsDead)
+        {
+            return;
+        }
         switch (enemyData.enemyType)
         {
             case BaseEnemyScriptable.EnemyType.None:
@@ -262,6 +273,10 @@ public class Enemy : MonoBehaviour
     /// </summary>
     private void RangedZoneEntryBehaviors() 
     {
+        if (IsDead)
+        {
+            return;
+        }
         switch (enemyData.enemyType)
         {
             case BaseEnemyScriptable.EnemyType.None:
@@ -302,6 +317,10 @@ public class Enemy : MonoBehaviour
     /// <param name="activateNotImmediateActions"></param>
     private void MeleeZoneEntryBehaviors() 
     {
+        if (IsDead)
+        {
+            return;
+        }
         switch (enemyData.enemyType)
         {
             case BaseEnemyScriptable.EnemyType.None:
@@ -371,6 +390,7 @@ public class Enemy : MonoBehaviour
         enemyData.enemyHealth -= finalDmgTaken;
         if (enemyData.enemyHealth <= 0)
         {
+            IsDead = true;
             GetComponent<CapsuleCollider>().enabled = false;
             if (EnemyAnimator != null)
             {

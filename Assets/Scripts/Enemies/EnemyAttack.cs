@@ -103,6 +103,11 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
         //If there is already a cooldown or ability active, don't start another one
         if (activeATKorCooldown != null) return;
 
+        if(GetComponentInParent<Enemy>().IsDead)
+        {
+            return;
+        }
+
         switch (enemyData.enemyType)
         {
             case BaseEnemyScriptable.EnemyType.SingleShooter:
