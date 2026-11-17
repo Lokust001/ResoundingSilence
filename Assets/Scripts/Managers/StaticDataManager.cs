@@ -63,7 +63,22 @@ public class StaticDataManager : BaseManager
         }
         await Task.CompletedTask;
     }
- 
+
+    /// <summary>
+    /// Returns a copy of a random glyph.
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="System.Exception"></exception>
+    public PinScriptable GetRandomPin()
+    {
+        if (Pins.Count <= 0)
+        {
+            throw new System.Exception("Tried to get a random pin when none exist.");
+        }
+
+        return Pins[Random.Range(0, Pins.Count)].CreateNonRefCopy<PinScriptable>();
+    }
+
     #region Weapon Getters
 
     /// <summary>

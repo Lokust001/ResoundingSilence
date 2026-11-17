@@ -142,7 +142,7 @@ public class PlayerManager : BaseManager
     {
         if (player != null)
         {
-            Destroy(player);
+            Destroy(player.gameObject);
         }
         player = Instantiate(playerPrefab,
                              MapManager.Instance.spawnedMap.PlayerSpawnpoint.position,

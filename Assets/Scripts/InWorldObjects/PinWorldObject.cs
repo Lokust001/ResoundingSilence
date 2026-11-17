@@ -23,7 +23,7 @@ public class PinWorldObject : MonoBehaviour
     {
         StartCoroutine(FlightDelay());
         inFlight = false;
-        pin = MidRunDataManager.Instance.PickDroppedPin();
+        pin = StaticDataManager.Instance.GetRandomPin();
     }
 
     /// <summary>
