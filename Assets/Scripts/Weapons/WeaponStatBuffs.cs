@@ -48,7 +48,7 @@ public class WeaponStatBuffs : MonoBehaviour
         if (behaviour.ThisWeaponData == weaponScriptable)
         {
             sendPlayerModifiers();
-            
+            sendWeaponMods();
         }
     }
 
@@ -97,6 +97,17 @@ public class WeaponStatBuffs : MonoBehaviour
         AbilityCooldownReduction = abilityCooldown;
         BurstDamage = burst;
         ProjectileSpeedBuff = projectileSpeedBuff;
+    }
+    
+    public void sendWeaponMods()
+    {
+        UpdateWeaponDamage();
+        UpdateWeaponSpeed();
+        UpdateLifestealPercent();
+        UpdateAbilityDamage();
+        UpdateAbilityCooldown();
+        AddBurst();
+        ProjectileSpeedBoost();
     }
 
     /// <summary>
