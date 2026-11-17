@@ -14,7 +14,7 @@ public class WeaponStatBuffs : MonoBehaviour
     public BaseWeaponScriptable weaponScriptable;
 
     #region Player Stat Buffs
-    [HideInInspector] public float MagicianDamageBuff = 1;
+     public float MagicianDamageBuff = 1;
     [HideInInspector] public float DevilDamageBuff = 1;
     [HideInInspector] public float TowerDamageBuff = 1;
     [HideInInspector] public float TowerDamageResistance = 1;
@@ -44,12 +44,31 @@ public class WeaponStatBuffs : MonoBehaviour
     #endregion
 
     /// <summary>
-    /// subscribes to events and gets the player
+    /// subscribes to events and gets the player and sets all vairables to 1
     /// </summary>
     private void Awake()
     {
         playerController = PlayerManager.Instance.player;
         GenericPublicEvents.SetCurrentWeapon += setStatBuffs;
+        MagicianDamageBuff = 1;
+        DevilDamageBuff = 1;
+        TowerDamageBuff = 1;
+        TowerDamageResistance = 1;
+        HermitDamageBuff = 1;
+        DashBuff = 1;
+        DamageResistance = 1;
+        MoveSpeedBuff = 1;
+        HealingPotency = 1;
+        knockbackAmount = 1;
+        regenAmount = 1;
+        DamageBuff = 1;
+        AttackSpeedBoost = 1;
+        lifestealPercent = 1;
+        AbilityDamage = 1;
+        AbilityCooldownReduction = 1;
+        BurstDamage = 1;
+        ProjectileSpeedBuff = 1;
+
     }
 
     /// <summary>
@@ -99,6 +118,7 @@ public class WeaponStatBuffs : MonoBehaviour
     /// </summary>
     public void sendPlayerModifiers()
     {
+        playerController = PlayerManager.Instance.player;
         playerController.DashDistance(DashBuff);
         playerController.DamageResistanceChange(DamageResistance * TowerDamageResistance);
         playerController.MoveSpeedIncrease(MoveSpeedBuff);
@@ -216,14 +236,17 @@ public class WeaponStatBuffs : MonoBehaviour
     /// </summary>
     public void AddBurst(int burstAttackIndex = 0)
     {
-        foreach (AttackData i in weaponScriptable.ComboAttacks)
+        if(BurstDamage > 1.1)
         {
-            i.BurstAttacks = i.BaseBurstAttacks;
-            i.BurstAttacks.Add(i.BurstAttacks[burstAttackIndex]);
-
-            foreach (BurstData j in i.BurstAttacks)
+            foreach (AttackData i in weaponScriptable.ComboAttacks)
             {
-                j.BurstDamagePercent += (int)((BurstDamage * 100) - 100);
+                i.BurstAttacks = i.BaseBurstAttacks;
+                i.BurstAttacks.Add(i.BurstAttacks[burstAttackIndex]);
+
+                foreach (BurstData j in i.BurstAttacks)
+                {
+                    j.BurstDamagePercent += (int)((BurstDamage * 100) - 100);
+                }
             }
         }
     }

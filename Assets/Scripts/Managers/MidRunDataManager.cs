@@ -166,6 +166,9 @@ public class MidRunDataManager : BaseManager
             Destroy(this);
         }
 
+        WeaponStats.Add(null);
+        WeaponStats.Add(null);
+
         pinInventory.Clear();
         if (EnableTestingMode && testingPinInventory.Count > 0)
         {
@@ -180,13 +183,13 @@ public class MidRunDataManager : BaseManager
         ExpNeededToLevelUp = playerLvls[playerLvl - 1].ExpToLevelUp;
 
         UnequipAllWeapons();
+
+
+        GenericPublicEvents.EquipWeaponInSlot += EquipWeaponInSlot;
         if (MagicianBool)
         {
             StartCoroutine(Magician());
         }
-
-        GenericPublicEvents.EquipWeaponInSlot += EquipWeaponInSlot;
-
         await Task.CompletedTask;
     }
 
@@ -210,29 +213,35 @@ public class MidRunDataManager : BaseManager
         {
             foreach (var stats in WeaponStats)
             {
-                stats.TowerDamageBuff = TowerDamageOutBuff;
-                stats.TowerDamageResistance = TowerDamageOutBuff;
+                if(stats != null)
+                {
+                    stats.TowerDamageBuff = (float)TowerDamageOutBuff / 100;
+                    stats.TowerDamageResistance = (float)TowerDamageOutBuff/ 100;
+                }
             }
         }
         if (HermitBool)
         {
             foreach (var stats in WeaponStats)
             {
-                stats.HermitDamageBuff = HermitDamageBuff;
+                if (stats != null)
+                    stats.HermitDamageBuff = HermitDamageBuff;
             }
         }
         if (DevilBool)
         {
             foreach (var stats in WeaponStats)
             {
-                stats.DevilDamageBuff = DevilDamageBuff;
+                if (stats != null)
+                    stats.DevilDamageBuff = DevilDamageBuff;
             }
         }
         if (MagicianBool)
         {
             foreach (var stats in WeaponStats)
             {
-                stats.MagicianDamageBuff = MagicianDamageBuff;
+                if (stats != null)
+                    stats.MagicianDamageBuff = MagicianDamageBuff;
             }
         }
     }
@@ -360,10 +369,11 @@ public class MidRunDataManager : BaseManager
 
         if (amountToChange < 0 && MagicianBool)
         {
-            MagicianDamageBuff = MagicianMinDamageBuff;
+            MagicianDamageBuff = (float)MagicianMinDamageBuff / 100;
             foreach (var i in WeaponStats)
             {
-                i.MagicianDamageBuff = MagicianDamageBuff;
+                if (i != null)
+                    i.MagicianDamageBuff = MagicianDamageBuff;
             }
 
             if (amountToChange > 0)
@@ -383,7 +393,7 @@ public class MidRunDataManager : BaseManager
             {
                 if (CurrentPlayerHealth / MaxPlayerHealth < DevilMaxBuffHealthPercent / 100)
                 {
-                    DevilDamageBuff = DevilMaxDamageBuff / 100;
+                    DevilDamageBuff = (float)(DevilMaxDamageBuff / 100);
                 }
                 else
                 {
@@ -394,10 +404,11 @@ public class MidRunDataManager : BaseManager
                     float percentHealth = CurrentPlayerHealthpercent - DevilMinBuffHealthPercent;
                     float percentBuff = percentHealth / differanceBetweenminandmaxhealth;
                     float buffamount = percentBuff * differanceBetweenminandmaxbuff;
-                    DevilDamageBuff = Mathf.CeilToInt(DevilMinDamageBuff + buffamount) / 100;
+                    DevilDamageBuff = (float)(Mathf.CeilToInt(DevilMinDamageBuff + buffamount) / 100);
                     foreach (var i in WeaponStats)
                     {
-                        i.DevilDamageBuff = DevilDamageBuff;
+                        if (i != null)
+                            i.DevilDamageBuff = DevilDamageBuff;
                     }
                 }
             }
@@ -406,7 +417,8 @@ public class MidRunDataManager : BaseManager
                 DevilDamageBuff = 1;
                 foreach (var i in WeaponStats)
                 {
-                    i.DevilDamageBuff = DevilDamageBuff;
+                    if (i != null)
+                        i.DevilDamageBuff = DevilDamageBuff;
                 }
             }
             if (CurrentPlayerHealth >= MaxPlayerHealth)
@@ -487,14 +499,17 @@ public class MidRunDataManager : BaseManager
     {
         while (MagicianBool)
         {
-            MagicianDamageBuff += MagicianAmountAdded / 100;
-            if (MagicianDamageBuff > MagicianMaxDamageBuff)
+            MagicianDamageBuff += (float)MagicianAmountAdded / 100;
+            if (MagicianDamageBuff > (float)MagicianMaxDamageBuff / 100)
             {
-                MagicianDamageBuff = MagicianMaxDamageBuff / 100;
+                MagicianDamageBuff = (float)MagicianMaxDamageBuff / 100;
             }
             foreach(var i in WeaponStats)
             {
-                i.MagicianDamageBuff = MagicianDamageBuff;
+                if(i != null)
+                {
+                    i.MagicianDamageBuff = MagicianDamageBuff;
+                }
             }
             yield return new WaitForSecondsRealtime(MagicianTimeBetween);
         }
