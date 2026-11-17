@@ -146,6 +146,6 @@ public class EnemyWaveSpawner : MonoBehaviour
     /// </summary>
     public void EndGame() 
     {
-        Debug.Log("YOU WON!");
+        MidRunDataManager.Instance.KillPlayer();
     }
 }

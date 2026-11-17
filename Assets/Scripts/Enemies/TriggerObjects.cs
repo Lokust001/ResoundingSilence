@@ -5,8 +5,6 @@
  * TODO: More as needed
  */
 using System;
-using Unity.Cinemachine;
-using UnityEditor.Build;
 using UnityEngine;
 
 public class TriggerObjects : MonoBehaviour
@@ -34,12 +32,12 @@ public class TriggerObjects : MonoBehaviour
         if (!enabled)
             return;
 
-        if (other.TryGetComponent<PlayerController>(out var player)) 
+        if (other.TryGetComponent<PlayerController>(out var player))
         {
             EnemyTriggerActivated?.Invoke(player);
             PlayerEnterOrExit?.Invoke(true);
         }
-        else if (other.TryGetComponent<Enemy>(out var enemy)) 
+        else if (other.TryGetComponent<Enemy>(out var enemy))
         {
             PlayerTriggerActivated?.Invoke(enemy, true);
         }
@@ -54,7 +52,7 @@ public class TriggerObjects : MonoBehaviour
         if (!enabled)
             return;
 
-        if (other.TryGetComponent<PlayerController>(out var player)) 
+        if (other.TryGetComponent<PlayerController>(out var player))
         {
             EnemyTriggerActivated?.Invoke(player);
             PlayerEnterOrExit?.Invoke(false);
@@ -69,7 +67,7 @@ public class TriggerObjects : MonoBehaviour
     /// Enables or disables the Collider component
     /// </summary>
     /// <param name="state"></param>
-    public void SetColliderComponentEnabled(bool state) 
+    public void SetColliderComponentEnabled(bool state)
     {
         triggerCollider.enabled = state;
     }
@@ -80,9 +78,9 @@ public class TriggerObjects : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = triggerShapeColor;
-        if(triggerCollider is SphereCollider)
+        if (triggerCollider is SphereCollider)
             Gizmos.DrawWireSphere(transform.position, GetComponent<SphereCollider>().radius * transform.root.localScale.y);
-        if(triggerCollider is MeshCollider)
+        if (triggerCollider is MeshCollider)
             Gizmos.DrawWireMesh(GetComponent<MeshCollider>().sharedMesh, transform.position, transform.rotation, transform.localScale);
     }
 }
