@@ -1,6 +1,6 @@
 /* Author: Dalsten Yan
- * Contributors:
- * Last Modified: 11/13/26
+ * Contributors: Brad Dixon
+ * Last Modified: 11/17/26
  * Summary: Handles most of the player attacking logic for each type of enemy
  * TODO: More as needed
  */
@@ -54,7 +54,7 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
     {
         foreach (var trigger in onTriggerEnterObjects) 
         {
-            trigger.EnemyTriggerActivated += HandleVariousAttackTriggers;
+            trigger.EnemyTriggerActivated += DamagePlayer;
         }
     }
 
@@ -65,21 +65,7 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
     {
         foreach (var trigger in onTriggerEnterObjects)
         {
-            trigger.EnemyTriggerActivated -= HandleVariousAttackTriggers;
-        }
-    }
-
-    /// <summary>
-    /// Takes care of the various actions performed when the enemy collides with the player or vice versa
-    /// </summary>
-    /// <param name="collision"></param>
-    public void HandleVariousAttackColliders(Collision collision)
-    {
-        if (collision.gameObject.TryGetComponent<PlayerController>(out var player) && IsEnemyCurrentlyCharging()) 
-        {
-            //SetAttackTriggersEnabled(false);
-            enemyMovement.SetIgnorePlayerCollision(true);
-            player.TakeDamage(enemyData.enemyATKDmg, CalculateKnockbackInfo(player.transform.position));
+            trigger.EnemyTriggerActivated -= DamagePlayer;
         }
     }
 
@@ -88,11 +74,22 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
     /// (can be changed in the future)
     /// </summary>
     /// <param name="other"></param>
-    public void HandleVariousAttackTriggers(PlayerController player) 
+    public void DamagePlayer(PlayerController player) 
     {
-        //enemyMovement.SetIgnorePlayerCollision(true);
+
+        switch (enemyData.enemyType)
+        {
+            case EnemyType.Melee:
+                player.TakeDamage(enemyData.enemyATKDmg);
+                break;
+            case EnemyType.ChargingMelee:
+                enemyMovement.SetIgnorePlayerCollision(true);
+                player.TakeDamage(enemyData.enemyATKDmg, CalculateKnockbackInfo(playerTransform.position));
+                break;
+            case EnemyType.BuffEnemy:
+                break;
+        }
         
-        player.TakeDamage(enemyData.enemyATKDmg);
     }
 
     /// <summary>
@@ -103,13 +100,21 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
         //If there is already a cooldown or ability active, don't start another one
         if (activeATKorCooldown != null) return;
 
+        if(GetComponentInParent<Enemy>().IsDead)
+        {
+            return;
+        }
+
         switch (enemyData.enemyType)
         {
             case BaseEnemyScriptable.EnemyType.SingleShooter:
-                FireBullet(Quaternion.identity, true);
+                //FireBullet(Quaternion.identity, true);
                 try
                 {
-                    GetComponentInParent<Enemy>().EnemyAnimator.SetTrigger("Attacking");
+                    if (baseEnemyBehavior.canAttack)
+                    {
+                        GetComponentInParent<Enemy>().EnemyAnimator.SetBool("Attacking", true);
+                    }
                 }
                 catch { }
                 break;
@@ -117,7 +122,7 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
                 FireBulletsCone();
                 try
                 {
-                    GetComponentInParent<Enemy>().EnemyAnimator.SetTrigger("Attacking");
+                    GetComponentInParent<Enemy>().EnemyAnimator.SetBool("Attacking", true);
                 }
                 catch { }
                 break;
@@ -162,6 +167,10 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
                 break;
             case EnemyType.SingleShooter:
             case EnemyType.ConeShooter:
+                if(!baseEnemyBehavior.canAttack)
+                {
+                    return;
+                }
                 InitiateAttack();
                 break;
             case EnemyType.Melee:
@@ -181,7 +190,7 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
     /// </summary>
     /// <param name="bulletRotation"></param>
     /// <param name="isSingleShot"></param>
-    private void FireBullet(Quaternion bulletRotation, bool isSingleShot = false) 
+    public void FireBullet(Quaternion bulletRotation, bool isSingleShot = false) 
     {
         
         //Calculate direction of movement and normalize it
