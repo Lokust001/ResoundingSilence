@@ -60,7 +60,9 @@ public class PlayerController : MonoBehaviour
 
     Coroutine dmgCoroutine;
     Coroutine knockbackCoroutine;
+    Coroutine dashingCoroutine;
     Coroutine dashWindowCoroutine;
+    Coroutine dashingCooldownCoroutine;
     Coroutine regenCoroutine;
 
     Coroutine playerMovementCoroutine;
@@ -84,6 +86,8 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 topColliderLocalPos;
     private Vector3 bottomColliderLocalPos;
+
+    ForceMode dashForceMode;
     #endregion
 
     #region Unity Methods
@@ -119,6 +123,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     void Start()
     {
+        dashForceMode = ForceMode.VelocityChange;
         rigidbody = GetComponent<Rigidbody>();
         playerModelCollider = GetComponent<CapsuleCollider>();
 
@@ -131,8 +136,8 @@ public class PlayerController : MonoBehaviour
         regenAmount = BaseRegenAmount;
 
         //Defaults to right in case player dashes before ever moving
-        dashDir = Vector3.right;
-        currentDash = 0;
+        dashDir = Vector3.forward;
+        currentDash = totalDashes;
         canDash = true;
 
         wallOffset = new(0, 0, WALL_COLLISION_CAST_OFFSET);
@@ -235,11 +240,70 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void PlayerDashPressed()
     {
-        //Makes sure you can't dash while in the air
-        if (Mathf.Abs(rigidbody.linearVelocity.y) <= 0.01 && (canDash || chainDashing))
+        if (currentDash > 0 || dashWindowCoroutine != null) 
         {
-             StartCoroutine(PlayerDash());
+            dashingCoroutine ??= StartCoroutine(RigidBodyPlayerDash());
         }
+    }
+
+    private IEnumerator ChainDashWindow() 
+    {
+
+        //Kept as countdown timer for future UI-related tasks
+        float currentDashWindowTime = chainDashWindow;
+
+        while (currentDashWindowTime > 0)
+        {
+            yield return new WaitForFixedUpdate();
+            currentDashWindowTime -= Time.fixedDeltaTime;
+        }
+    }
+
+    private IEnumerator RigidBodyPlayerDash() 
+    {
+        //Decrement the number of dashes before anything else
+        currentDash--;
+        
+        //Calculate and cache local variables
+        Vector3 maximumDashForce = dashDir * dashRange;
+        Vector3 currentDashVelocity = maximumDashForce;
+
+        //Setup a timer
+        float currentDashTime = 0;
+        
+        while (currentDashTime < dashDuration) 
+        {
+            //Lerp the velocity of the player so that it starts out very high and then goes completely to zero
+            currentDashVelocity = Vector3.Lerp(maximumDashForce, Vector3.zero, currentDashTime / dashDuration);
+
+            //Add the lerped velocity to the player so that they receive those forces
+            rigidbody.AddForce(currentDashVelocity, dashForceMode);
+
+            //Debug.Log("DashForce: " + currentDashVelocity + " Actual Force: " + velocityDifference + " Current Velocity: " + rigidbody.linearVelocity);
+
+            yield return new WaitForFixedUpdate();
+
+            currentDashTime += Time.fixedDeltaTime;
+        }
+
+        //Start a Chain Dash window if there are still dashes left
+        dashWindowCoroutine = currentDash > 0 ? StartCoroutine(ChainDashWindow()) : null;
+
+        Debug.Log("Dash Finished, Remaining Charges: " + currentDash);
+
+        //If there was already a cooldown active, cancel that and start counting
+        //from the most recent dash
+        if(dashingCooldownCoroutine != null)
+            StopCoroutine(dashingCooldownCoroutine);
+        dashingCooldownCoroutine = StartCoroutine(DashingRecharge(dashCooldown));
+        dashingCoroutine = null;
+    }
+
+    private IEnumerator DashingRecharge(float rechargeTime) 
+    {
+        yield return new WaitForSeconds(rechargeTime);
+        currentDash = totalDashes;
+        dashingCooldownCoroutine = null;
     }
 
     /// <summary>
@@ -255,7 +319,7 @@ public class PlayerController : MonoBehaviour
 
         ++currentDash;
 
-        if(currentDash > 1)
+        if (currentDash > 1)
         {
             StopCoroutine(dashWindowCoroutine);
         }
@@ -265,14 +329,24 @@ public class PlayerController : MonoBehaviour
         Debug.Log(hit.collider.name);
         StopCoroutine(playerMovementCoroutine);
 
-        for (float t = 0; t < dashDuration; t += Time.deltaTime)
+        Vector3 maximumDashForce = dashDir * dashRange;
+        Vector3 currentDashVelocity = maximumDashForce;
+
+        float currentDashTime = 0;
+
+        
+        while (currentDashTime < dashDuration) 
         {
-            if (transform.position == dashPoint)
-            {
-                break;
-            }
-            transform.position = (Vector3.MoveTowards(transform.position, dashPoint, (t / dashDuration)));
-            yield return null;
+
+            currentDashVelocity = Vector3.Lerp(maximumDashForce, Vector3.zero, currentDashTime / dashDuration);
+
+            rigidbody.AddForce(currentDashVelocity, dashForceMode);
+
+            //Debug.Log("DashForce: " + currentDashVelocity + " Actual Force: " + velocityDifference + " Current Velocity: " + rigidbody.linearVelocity);
+
+            yield return new WaitForFixedUpdate();
+
+            currentDashTime += Time.fixedDeltaTime;
         }
 
         rigidbody.excludeLayers -= ignoreWhileInvincible;
