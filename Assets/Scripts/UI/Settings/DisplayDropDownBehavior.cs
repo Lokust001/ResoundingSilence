@@ -1,6 +1,9 @@
-using TMPro;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class DisplayDropDownBehavior : MonoBehaviour
 {
@@ -24,6 +27,11 @@ public class DisplayDropDownBehavior : MonoBehaviour
     RefreshRate currentRefreshRate = new();
     int currentResIndex = 0;
 
+    private List<DisplayInfo> displays = new();
+    private int currentDisplayIndex;
+
+    public TMP_Text fullscreenText;
+
     private void Awake()
     {
         switch (thisDropdownType)
@@ -36,6 +44,7 @@ public class DisplayDropDownBehavior : MonoBehaviour
                 UIPublicEvents.TargetDisplayChanged += UpdateResolutionList;
                 break;
             case DropdownType.TargetDisplay:
+                UpdateTargetDisplayOptions();
                 break;
             default:
                 break;
@@ -56,6 +65,7 @@ public class DisplayDropDownBehavior : MonoBehaviour
                 ChangeResolution(index);
                 break;
             case DropdownType.TargetDisplay:
+                _ = DisplayOptionChosen(index);
                 break;
             default:
                 break;
@@ -136,6 +146,69 @@ public class DisplayDropDownBehavior : MonoBehaviour
     {
         Screen.fullScreenMode = fullscreenOptions[index];
         UIPublicEvents.FullscreenChanged?.Invoke();
+    }
+
+    #endregion
+
+    #region TargetDisplay
+
+    private void UpdateTargetDisplayOptions()
+    {
+        Screen.GetDisplayLayout(displays);
+        dropdown.ClearOptions();
+        List<string> dropOptions = new();
+        for (int i = 0; i < displays.Count; i++)
+        {
+            dropOptions.Add(displays[i].name);
+            if (displays[i].Equals(Screen.mainWindowDisplayInfo))
+            {
+                currentDisplayIndex = i;   
+            }
+        }
+
+        dropdown.AddOptions(dropOptions);
+        dropdown.value = currentDisplayIndex;
+    }
+
+    private async Awaitable DisplayOptionChosen(int index)
+    {
+        fullscreenText.text = "";
+        DisplayInfo chosenDisp = displays[index];
+
+        List<DisplayInfo> currentDisplays = new();
+        Screen.GetDisplayLayout(currentDisplays);
+
+        if (!currentDisplays.Contains(chosenDisp))
+        {
+            return;
+        }
+
+        int currentMode = ((int)Screen.fullScreenMode);
+
+        //ANGERR
+        Screen.fullScreenMode = FullScreenMode.Windowed;
+        while (Screen.fullScreenMode != FullScreenMode.Windowed)
+        {
+            await Task.Yield();
+        }
+
+        //ANGER
+        AsyncOperation operation = Screen.MoveMainWindowTo(currentDisplays[index], Vector2Int.zero);
+        while (!operation.isDone)
+        {
+            await Task.Yield();
+        }
+
+        //FUCK UNITY
+        Screen.fullScreenMode = (FullScreenMode)currentMode;
+        while (Screen.fullScreenMode != (FullScreenMode)currentMode)
+        {
+            await Task.Yield();
+        }
+
+        UIPublicEvents.TargetDisplayChanged?.Invoke();
+
+        await Task.CompletedTask;
     }
 
     #endregion
