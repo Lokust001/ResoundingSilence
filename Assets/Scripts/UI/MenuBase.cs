@@ -75,8 +75,9 @@ public class MenuBase : MonoBehaviour
 
         if (gameObject.activeInHierarchy)
         {
-            gameObject.SetActive(false);
             MenuClosedSucessfully();
+            gameObject.SetActive(false);
+            
         }
         
     }
