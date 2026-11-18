@@ -45,6 +45,7 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 wallOffset;
 
+    [SerializeField] bool chariotBool;
 
     #region Debug Console Variables
 
@@ -114,6 +115,7 @@ public class PlayerController : MonoBehaviour
         rangedRangeTrigger.PlayerTriggerActivated -= RangedZoneHandler;
 
     }
+
     /// <summary>
     /// Sets components
     /// </summary>
@@ -125,6 +127,9 @@ public class PlayerController : MonoBehaviour
         float modelThickness = playerModelCollider.height / 2 - playerModelCollider.radius;
         topColliderLocalPos = playerModelCollider.center - Vector3.up * modelThickness;
         bottomColliderLocalPos = playerModelCollider.center + Vector3.up * modelThickness;
+
+        if (chariotBool)
+            totalDashes = 2;
 
         moveSpeed = defaultSpeed;
         dashRange = BasedashRange;
@@ -381,6 +386,15 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
+    /// Provides information about whether or not the player is invincible
+    /// </summary>
+    /// <returns></returns>
+    public bool PlayerIsInvincible() 
+    {
+        return dmgCoroutine != null;
+    }
+
+    /// <summary>
     /// Simulate the player not being able to take any damage visually
     /// or collide with any enemies for a short time
     /// </summary>
@@ -432,15 +446,6 @@ public class PlayerController : MonoBehaviour
             rigidbody.excludeLayers -= ignoreWhileInvincible;
 
         rigidbody.WakeUp();
-    }
-
-    /// <summary>
-    /// Provides information about whether or not the player is invincible
-    /// </summary>
-    /// <returns></returns>
-    public bool PlayerIsInvincible()
-    {
-        return dmgCoroutine != null;
     }
 
     /// <summary>
