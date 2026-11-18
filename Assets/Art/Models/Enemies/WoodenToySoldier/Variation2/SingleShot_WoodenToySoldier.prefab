@@ -183,6 +183,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7927122368594225271}
   - component: {fileID: 1825182688966922471}
+  - component: {fileID: 7274287929602198273}
   m_Layer: 0
   m_Name: SingleShot_WoodenToySoldier
   m_TagString: Untagged
@@ -240,7 +241,7 @@ Animator:
   m_GameObject: {fileID: 301551111703536948}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 809fb27337691f54697b63a8f786218d, type: 2}
+  m_Controller: {fileID: 9100000, guid: dba98e9a3fab51648bed11feab7177f7, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -252,6 +253,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &7274287929602198273
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 301551111703536948}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51b8257a0a5c2634b86b4cc364945bf1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAnimationEventController
 --- !u!1 &346325550639774959
 GameObject:
   m_ObjectHideFlags: 0
