@@ -116,35 +116,55 @@ public class MidRunDataManager : BaseManager
     private List<PinScriptable> testingPinInventory = new();
 
     #region TerotVariables
-    [SerializeField] bool MagicianBool;
-    [SerializeField, Tooltip("Where the player will stop scaling, in %, base damage is 100")] int MagicianMaxDamageBuff;
-    [SerializeField, Tooltip("Where the damage buff will be at after the player takes damage, in %, base damage is 100")] int MagicianMinDamageBuff;
-    [SerializeField, Tooltip("How long between the ticks of buffs, in seconds")] float MagicianTimeBetween;
-    [SerializeField, Tooltip("How much gets added each tick off time undamaged, in %, no scaling would be 0")] int MagicianAmountAdded;
+    [SerializeField, Foldout("Tarot Variables")] bool MagicianBool;
+    [SerializeField, Tooltip("Where the player will stop scaling, in %, base damage is 100"), Foldout("Tarot Variables")] int MagicianMaxDamageBuff;
+    [SerializeField, Tooltip("Where the damage buff will be at after the player takes damage, in %, base damage is 100"), Foldout("Tarot Variables")] int MagicianMinDamageBuff;
+    [SerializeField, Tooltip("How long between the ticks of buffs, in seconds"), Foldout("Tarot Variables")] float MagicianTimeBetween;
+    [SerializeField, Tooltip("How much gets added each tick off time undamaged, in %, no scaling would be 0"), Foldout("Tarot Variables")] int MagicianAmountAdded;
     [HideInInspector] public float MagicianDamageBuff = 1.0f;
 
-    [SerializeField] bool DevilBool;
-    [SerializeField, Tooltip("Where the player will stop scaling, in %, base is 100 damage")] int DevilMaxDamageBuff;
-    [SerializeField, Tooltip("Where the damage buff will be at when hitting the min health missing threshold, in %, base is 100 damage")] int DevilMinDamageBuff;
-    [SerializeField, Tooltip("what percent health does the player have the max damage boost")] int DevilMaxBuffHealthPercent;
-    [SerializeField, Tooltip("What percent health does the player have to start giving damage buff")] int DevilMinBuffHealthPercent;
+    [SerializeField, Foldout("Tarot Variables")] bool DevilBool;
+    [SerializeField, Tooltip("Where the player will stop scaling, in %, base is 100 damage"), Foldout("Tarot Variables")] int DevilMaxDamageBuff;
+    [SerializeField, Tooltip("Where the damage buff will be at when hitting the min health missing threshold, in %, base is 100 damage"), Foldout("Tarot Variables")] int DevilMinDamageBuff;
+    [SerializeField, Tooltip("what percent health does the player have the max damage boost"), Foldout("Tarot Variables")] int DevilMaxBuffHealthPercent;
+    [SerializeField, Tooltip("What percent health does the player have to start giving damage buff"), Foldout("Tarot Variables")] int DevilMinBuffHealthPercent;
     [HideInInspector] public float DevilDamageBuff = 1.0f;
 
-    [SerializeField] bool TowerBool;
-    [SerializeField, Tooltip("How much extra damage the player does in %, 100 would be no extra damage")] int TowerDamageOutBuff;
-    [SerializeField, Tooltip("How much extra damage the player take in %, 100 would be no extra damage")] int TowerDamageInBuff;
+    [SerializeField, Foldout("Tarot Variables")] bool TowerBool;
+    [SerializeField, Tooltip("How much extra damage the player does in %, 100 would be no extra damage"), Foldout("Tarot Variables")] int TowerDamageOutBuff;
+    [SerializeField, Tooltip("How much extra damage the player take in %, 100 would be no extra damage"), Foldout("Tarot Variables")] int TowerDamageInBuff;
 
-    bool HermitBool;
-    [SerializeField, Tooltip("How much extra damage will the player do Fully Isolated in %, 100 is base damage")] int HermitMaxDamageBuff;
-    [SerializeField, Tooltip("How much % damage gets removed by every close enemy")] int HermitBuffRemovedPerEnemy;
-    [SerializeField, Tooltip("How low the damage buff can get in %, 100 is base damage")] int HermitMinDamageBuff;
+    [SerializeField, Foldout("Tarot Variables")] bool HermitBool;
+    [SerializeField, Tooltip("How much extra damage will the player do Fully Isolated in %, 100 is base damage"), Foldout("Tarot Variables")] int HermitMaxDamageBuff;
+    [SerializeField, Tooltip("How much % damage gets removed by every close enemy"), Foldout("Tarot Variables")] int HermitBuffRemovedPerEnemy;
+    [SerializeField, Tooltip("How low the damage buff can get in %, 100 is base damage"), Foldout("Tarot Variables")] int HermitMinDamageBuff;
     [HideInInspector] public float HermitDamageBuff = 1.0f;
+    List<Enemy> HermitEnemyList = new List<Enemy>();
     #endregion
 
     [Button]
     void GiveXP()
     {
         GainXP(GiveXpAmount);
+    }
+
+    /// <summary>
+    /// unsubscribes to the hermit event
+    /// </summary>
+    private void OnDestroy()
+    {
+        PlayerManager.Instance.player.HermitTrigger.PlayerTriggerActivated -= CalculateHermit;
+    }
+    /// <summary>
+    /// gets called when player manager is set up so connect the hermit event up
+    /// </summary>
+    public void connectHermit()
+    {
+        PlayerManager.Instance.player.HermitTrigger.PlayerTriggerActivated += CalculateHermit;
+        if (HermitBool)
+        {
+            CalculateHermit(null, false);
+        }
     }
 
     /// <summary>
@@ -182,7 +202,6 @@ public class MidRunDataManager : BaseManager
 
         UnequipAllWeapons();
 
-
         GenericPublicEvents.EquipWeaponInSlot += EquipWeaponInSlot;
         if (MagicianBool)
         {
@@ -190,6 +209,7 @@ public class MidRunDataManager : BaseManager
         }
         await Task.CompletedTask;
     }
+
 
     /// <summary>
     /// gets all the weaponStatBuffs that are on the weapons
@@ -533,19 +553,49 @@ public class MidRunDataManager : BaseManager
     /// takes in how many enemies are near by and calculates damage buffs accordingly
     /// </summary>
     /// <param name="AmountOfEnemies"></param>
-    public void CalculateHermit(int AmountOfEnemies)
+    public void CalculateHermit(Enemy enemy, bool enter)
     {
-        HermitDamageBuff = (HermitMaxDamageBuff - (AmountOfEnemies * HermitBuffRemovedPerEnemy)) / 100;
-        if (HermitDamageBuff < HermitMinDamageBuff / 100)
+        if (HermitBool)
         {
-            HermitDamageBuff = HermitMinDamageBuff / 100;
-        }
-        foreach (var i in WeaponStats)
-        {
-            if(i != null)
+            if (enter)
             {
-                i.HermitDamageBuff = HermitDamageBuff;
-                i.sendWeaponMods();
+                if (enemy != null && !HermitEnemyList.Contains(enemy))
+                {
+                    HermitEnemyList.Add(enemy);
+                }
+            }
+            else
+            {
+                if (enemy != null && HermitEnemyList.Contains(enemy))
+                {
+                    HermitEnemyList.Remove(enemy);
+                }
+            }
+
+            HermitDamageBuff = (HermitMaxDamageBuff - (HermitEnemyList.Count * HermitBuffRemovedPerEnemy)) / 100f;
+            if (HermitDamageBuff < HermitMinDamageBuff / 100f)
+            {
+                HermitDamageBuff = HermitMinDamageBuff / 100f;
+            }
+            foreach (var i in WeaponStats)
+            {
+                if (i != null)
+                {
+                    i.HermitDamageBuff = HermitDamageBuff;
+                    i.sendWeaponMods();
+                }
+            }
+        }
+        else
+        {
+            HermitDamageBuff = 1.0f;
+            foreach (var i in WeaponStats)
+            {
+                if (i != null)
+                {
+                    i.HermitDamageBuff = HermitDamageBuff;
+                    i.sendWeaponMods();
+                }
             }
         }
     }

@@ -34,7 +34,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.3, y: 1.3, z: 1.3}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4662121894226173022}
@@ -112,6 +112,8 @@ MonoBehaviour:
   aggroTrigger: {fileID: 948327582028595367}
   testWithoutSpawner: 0
   enemyData: {fileID: 0}
+  EnemyModel: {fileID: 0}
+  EnemyAnimator: {fileID: 0}
   dmgToTake: 10
 --- !u!114 &6097337471712976449
 MonoBehaviour:
@@ -125,9 +127,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d64ddf4282f7884c83f3d814902098e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  rollingMethod: 0
-  noDropsGivenWeight: 10
-  possibleDrops: []
+  possibleRewards: []
+  dropItemsTransforms: []
+  logRNGNumber: 0
+  logRewardedQty: 0
+  RewardsHaveBeenDispensed: 0
 --- !u!114 &2326147083794828989
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -140,6 +144,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a562987bc386c9341bc5f92d61951fd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyWalk
+  chargeStopLayers:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!136 &1939381331358990405
 CapsuleCollider:
   m_ObjectHideFlags: 0
