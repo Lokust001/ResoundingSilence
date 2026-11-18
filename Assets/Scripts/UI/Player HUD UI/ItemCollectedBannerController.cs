@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors:
-* Last Modified: 11/13/2026
+* Last Modified: 11/18/2026
 * Summary: Controls the banner that pops up when the player collects an item 
 * To Do:   N/A
 */
