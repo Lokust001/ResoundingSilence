@@ -26,7 +26,7 @@ public class PlayerManager : BaseManager
 
     [SerializeField] private float weaponSwapCooldown;
 
-    private bool weaponOnePulledOut;
+    [HideInInspector] public bool weaponOnePulledOut;
     private bool canSwap;
 
     /// <summary>
@@ -60,6 +60,7 @@ public class PlayerManager : BaseManager
         InputPublicEvents.SwapWeaponPressed += swapWeapon;
         GenericPublicEvents.StartGamePressed += SpawnPlayer;
         GenericPublicEvents.EquipWeaponInSlot += spawnNewWeapon;
+
         weaponOnePulledOut = true;
         canSwap = true;
         await Task.CompletedTask;
@@ -108,12 +109,12 @@ public class PlayerManager : BaseManager
         GameObject weapon = Instantiate(scriptable.weaponBehavPrefab, new Vector3(player.transform.position.x, player.transform.position.y + 0.5f, player.transform.position.z)/*<-temp*/, player.transform.rotation, player.transform);
         weapon.GetComponent<BaseWeaponBehaviour>().ThisWeaponData = scriptable;
         WeaponsGameObjects[index] = weapon.GetComponent<BaseWeaponAbilityBehaviour>();
-        if(index == 0 && !weaponOnePulledOut)
+        if (index == 0 && !weaponOnePulledOut)
         {
             WeaponsGameObjects[0].DisableWeapon();
             WeaponsGameObjects[0].weaponModel.SetActive(false);
         }
-        else if(index == 1 && weaponOnePulledOut)
+        else if (index == 1 && weaponOnePulledOut)
         {
             WeaponsGameObjects[1].weaponModel.SetActive(false);
             WeaponsGameObjects[1].DisableWeapon();
@@ -151,5 +152,7 @@ public class PlayerManager : BaseManager
         WeaponsGameObjects[0] = player.GetComponentInChildren<BaseWeaponAbilityBehaviour>();
         WeaponsGameObjects[0].activeWeapon = true;
         GenericPublicEvents.PlayerSpawnedIn?.Invoke(player);
+
+        MidRunDataManager.Instance.connectHermit();
     }
 }
