@@ -74,6 +74,10 @@ public static class UIPublicEvents
 
     public static Action SettingsMenuClosed;
 
+    public static Action FullscreenChanged;
+
+    public static Action TargetDisplayChanged;
+
     #endregion
 
     #region TarotMenu
