@@ -47,6 +47,8 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] bool chariotBool;
 
+    public TriggerObjects HermitTrigger;
+
     #region Debug Console Variables
 
     public bool InGodMode;
