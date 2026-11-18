@@ -30,7 +30,6 @@ public class DisplayDropDownBehavior : MonoBehaviour
     private List<DisplayInfo> displays = new();
     private int currentDisplayIndex;
 
-    public TMP_Text fullscreenText;
 
     private void Awake()
     {
@@ -172,7 +171,6 @@ public class DisplayDropDownBehavior : MonoBehaviour
 
     private async Awaitable DisplayOptionChosen(int index)
     {
-        fullscreenText.text = "";
         DisplayInfo chosenDisp = displays[index];
 
         List<DisplayInfo> currentDisplays = new();
