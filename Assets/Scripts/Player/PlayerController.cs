@@ -1,7 +1,7 @@
 /*
 * Author: Dalsten Yan
 * Contributors: Brad Dixon, Brenden Burtz
-* Last Modified: 11/13/2026
+* Last Modified: 11/18/2026
 * Summary: Player input, stats, and damage are handled here
 * To Do:   Add more variables as needed.
 */
@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float dashDuration;
     [SerializeField] float dashCooldown;
     [SerializeField] int totalDashes;
-    [SerializeField] float chainDashInterval;
+    [SerializeField] float chainDashWindow;
 
     [Header("Regen")]
     [SerializeField] float TimeToStartRegen;
@@ -252,20 +252,30 @@ public class PlayerController : MonoBehaviour
             dashingCoroutine ??= StartCoroutine(RigidBodyPlayerDash());
         }
     }
-
+    /// <summary>
+    /// Opens up a window to chaindash, otherwise it takes away your extra dashes and forces you to go on cooldown
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator ChainDashWindow()
     {
 
         //Kept as countdown timer for future UI-related tasks
-        float currentDashWindowTime = chainDashInterval;
+        float currentDashWindowTime = chainDashWindow;
 
         while (currentDashWindowTime > 0)
         {
             yield return new WaitForFixedUpdate();
             currentDashWindowTime -= Time.fixedDeltaTime;
         }
+
+        currentDash = 0;
+        dashingCooldownCoroutine = StartCoroutine(DashingRecharge(dashCooldown));
     }
 
+    /// <summary>
+    /// Adds a dash to the player by adding a force to the rigidbody
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator RigidBodyPlayerDash()
     {
         //Decrement the number of dashes before anything else
@@ -273,40 +283,49 @@ public class PlayerController : MonoBehaviour
 
         //Calculate and cache local variables
         Vector3 maximumDashForce = dashDir * dashRange;
-        Vector3 currentDashVelocity = maximumDashForce;
 
         //Setup a timer
         float currentDashTime = 0;
 
-
+        //Become intangible to dash-avoidant layers
         rigidbody.excludeLayers += ignoreWhileInvincible;
 
         while (currentDashTime < dashDuration)
         {
             //Lerp the velocity of the player so that it starts out very high and then goes completely to zero
-            currentDashVelocity = Vector3.Lerp(maximumDashForce, Vector3.zero, currentDashTime / dashDuration);
+            Vector3 currentDashVelocity = Vector3.Lerp(maximumDashForce, Vector3.zero, currentDashTime / dashDuration);
 
             //Add the lerped velocity to the player so that they receive those forces
             rigidbody.AddForce(currentDashVelocity, dashForceMode);
 
-            //Debug.Log("DashForce: " + currentDashVelocity + " Actual Force: " + velocityDifference + " Current Velocity: " + rigidbody.linearVelocity);
 
             yield return new WaitForFixedUpdate();
 
             currentDashTime += Time.fixedDeltaTime;
         }
 
+        //Stop being intangible to dash-avoidant layers
         rigidbody.excludeLayers -= ignoreWhileInvincible;
 
-        dashingCooldownCoroutine = StartCoroutine(currentDash > 0 ? ChainDashWindow() : DashingRecharge(dashCooldown));
-        yield return dashingCooldownCoroutine;
+        //This coroutine will be active if a window for chaindash is active
+        if (dashingCooldownCoroutine != null) 
+        {
+            //Cancel the window since player dashed
+            StopCoroutine(dashingCooldownCoroutine);
+        }
 
-        //If there was already a cooldown active, cancel that and start counting
-        //from the most recent dash
+        //Coroutine will be chaindash if player still has dashes available,
+        //otherwise, call recharge coroutine
+        dashingCooldownCoroutine = StartCoroutine(currentDash > 0 ? ChainDashWindow() : DashingRecharge(dashCooldown));
 
         dashingCoroutine = null;
     }
 
+    /// <summary>
+    /// Recharges the dash after a set amount of time
+    /// </summary>
+    /// <param name="rechargeTime"></param>
+    /// <returns></returns>
     private IEnumerator DashingRecharge(float rechargeTime)
     {
         //Coundown timer instead of WaitForSeconds for future UI work
@@ -400,11 +419,11 @@ public class PlayerController : MonoBehaviour
     IEnumerator TimeToChainDash()
     {
         chainDashing = true;
-        yield return new WaitForSeconds(chainDashInterval);
+        yield return new WaitForSeconds(chainDashWindow);
         currentDash = 0;
         chainDashing = false;
 
-        StartCoroutine(ResetDash(dashCooldown - chainDashInterval));
+        StartCoroutine(ResetDash(dashCooldown - chainDashWindow));
     }
 
     /// <summary>
