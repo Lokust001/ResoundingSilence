@@ -1,9 +1,15 @@
+/*
+* Author: Tyler
+* Contributors:
+* Last Modified:11/18/2026
+* Summary: controls all the dropdowns for the display settings
+* To Do:   N/A
+*/
+
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class DisplayDropDownBehavior : MonoBehaviour
 {
@@ -30,8 +36,10 @@ public class DisplayDropDownBehavior : MonoBehaviour
     private List<DisplayInfo> displays = new();
     private int currentDisplayIndex;
 
-
-    private void Awake()
+    /// <summary>
+    /// sets options when it opens
+    /// </summary>
+    private void OnEnable()
     {
         switch (thisDropdownType)
         {
@@ -52,7 +60,10 @@ public class DisplayDropDownBehavior : MonoBehaviour
     }
 
 
-
+    /// <summary>
+    /// Called when the player selects a new dropdown option
+    /// </summary>
+    /// <param name="index"></param>
     public void DropdownOptionSelected(int index)
     {
         switch (thisDropdownType)
@@ -73,6 +84,9 @@ public class DisplayDropDownBehavior : MonoBehaviour
 
     #region Resolution
 
+    /// <summary>
+    /// updates the dropdown list with resolutions
+    /// </summary>
     private void UpdateResolutionList()
     {
         if (thisDropdownType != DropdownType.Resolution)
@@ -114,6 +128,10 @@ public class DisplayDropDownBehavior : MonoBehaviour
         dropdown.RefreshShownValue();
     }
 
+    /// <summary>
+    /// changes the current resolution
+    /// </summary>
+    /// <param name="indexOfResolution"></param>
     private void ChangeResolution(int indexOfResolution)
     {
         Resolution target = filteredResolutions[indexOfResolution];
@@ -124,6 +142,9 @@ public class DisplayDropDownBehavior : MonoBehaviour
 
     #region Fullscreen
 
+    /// <summary>
+    /// updates the dropdown list with fullscreen options
+    /// </summary>
     private void PopulateFullscreenDropdown()
     {
         List<string> dropdownOptions = new();
@@ -141,6 +162,10 @@ public class DisplayDropDownBehavior : MonoBehaviour
         dropdown.value = (int)Screen.fullScreenMode;
     }
 
+    /// <summary>
+    /// changes the fullscreen mode
+    /// </summary>
+    /// <param name="index"></param>
     private void ChangeFullscreenMode(int index)
     {
         Screen.fullScreenMode = fullscreenOptions[index];
@@ -151,6 +176,9 @@ public class DisplayDropDownBehavior : MonoBehaviour
 
     #region TargetDisplay
 
+    /// <summary>
+    /// updates the dropdown options with the displays
+    /// </summary>
     private void UpdateTargetDisplayOptions()
     {
         Screen.GetDisplayLayout(displays);
@@ -161,7 +189,7 @@ public class DisplayDropDownBehavior : MonoBehaviour
             dropOptions.Add(displays[i].name);
             if (displays[i].Equals(Screen.mainWindowDisplayInfo))
             {
-                currentDisplayIndex = i;   
+                currentDisplayIndex = i;
             }
         }
 
@@ -169,6 +197,11 @@ public class DisplayDropDownBehavior : MonoBehaviour
         dropdown.value = currentDisplayIndex;
     }
 
+    /// <summary>
+    /// sets the current display
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
     private async Awaitable DisplayOptionChosen(int index)
     {
         DisplayInfo chosenDisp = displays[index];
