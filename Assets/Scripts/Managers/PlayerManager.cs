@@ -26,7 +26,7 @@ public class PlayerManager : BaseManager
 
     [SerializeField] private float weaponSwapCooldown;
 
-    private bool weaponOnePulledOut;
+    [HideInInspector] public bool weaponOnePulledOut;
     private bool canSwap;
 
     /// <summary>
