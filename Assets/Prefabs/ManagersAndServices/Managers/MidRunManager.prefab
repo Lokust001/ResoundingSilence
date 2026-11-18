@@ -92,13 +92,13 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 954f31645422f7449b795fcb81e4c93e, type: 2}
   - {fileID: 11400000, guid: 9ff95ecd0ce3f404a87b9371f6f00b3c, type: 2}
   - {fileID: 11400000, guid: 9ff95ecd0ce3f404a87b9371f6f00b3c, type: 2}
-  MagicianBool: 1
+  MagicianBool: 0
   MagicianMaxDamageBuff: 200
   MagicianMinDamageBuff: 20
   MagicianTimeBetween: 1
   MagicianAmountAdded: 25
   MagicianDamageBuff: 1
-  DevilBool: 1
+  DevilBool: 0
   DevilMaxDamageBuff: 200
   DevilMinDamageBuff: 120
   DevilMaxBuffHealthPercent: 50
@@ -107,7 +107,8 @@ MonoBehaviour:
   TowerBool: 0
   TowerDamageOutBuff: 0
   TowerDamageInBuff: 0
-  HermitMaxDamageBuff: 0
-  HermitBuffRemovedPerEnemy: 0
-  HermitMinDamageBuff: 0
+  HermitBool: 1
+  HermitMaxDamageBuff: 200
+  HermitBuffRemovedPerEnemy: 25
+  HermitMinDamageBuff: 100
   HermitDamageBuff: 1

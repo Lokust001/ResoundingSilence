@@ -60,6 +60,7 @@ public class PlayerManager : BaseManager
         InputPublicEvents.SwapWeaponPressed += swapWeapon;
         GenericPublicEvents.StartGamePressed += SpawnPlayer;
         GenericPublicEvents.EquipWeaponInSlot += spawnNewWeapon;
+
         weaponOnePulledOut = true;
         canSwap = true;
         await Task.CompletedTask;
@@ -151,5 +152,7 @@ public class PlayerManager : BaseManager
         WeaponsGameObjects[0] = player.GetComponentInChildren<BaseWeaponAbilityBehaviour>();
         WeaponsGameObjects[0].activeWeapon = true;
         GenericPublicEvents.PlayerSpawnedIn?.Invoke(player);
+
+        MidRunDataManager.Instance.connectHermit();
     }
 }

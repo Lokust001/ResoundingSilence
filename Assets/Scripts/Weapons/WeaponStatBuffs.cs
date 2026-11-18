@@ -5,8 +5,6 @@
 * Summary: holds the stat buffs per weapon, and sends them out as needed
 * To Do: make it work with terot cards and buff objects
 */
-using System;
-using UnityEditor.MPE;
 using UnityEngine;
 
 public class WeaponStatBuffs : MonoBehaviour
@@ -154,7 +152,7 @@ public class WeaponStatBuffs : MonoBehaviour
     /// <param name="abilityCooldown"></param>
     /// <param name="burst"></param>
     /// <param name="projectileSpeedBuff"></param>
-    public void getWeaponMods(float damageBuff, float attackSpeedBoost,float lifestealAmount, float abilityDamage, float abilityCooldown, float burst ,float projectileSpeedBuff)
+    public void getWeaponMods(float damageBuff, float attackSpeedBoost, float lifestealAmount, float abilityDamage, float abilityCooldown, float burst, float projectileSpeedBuff)
     {
         DamageBuff = damageBuff;
         AttackSpeedBoost = attackSpeedBoost;
@@ -164,7 +162,7 @@ public class WeaponStatBuffs : MonoBehaviour
         BurstDamage = burst;
         ProjectileSpeedBuff = projectileSpeedBuff;
     }
-    
+
     /// <summary>
     /// activates the modifiers of the weapon
     /// </summary>
@@ -250,7 +248,7 @@ public class WeaponStatBuffs : MonoBehaviour
     /// </summary>
     public void AddBurst(int burstAttackIndex = 0)
     {
-        if(BurstDamage > 1.1)
+        if (BurstDamage > 1.1)
         {
             foreach (AttackData i in weaponScriptable.ComboAttacks)
             {
