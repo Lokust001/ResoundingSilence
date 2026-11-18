@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors:
-* Last Modified: 11/13/2026
+* Last Modified: 11/18/2026
 * Summary: Controls the banner that pops up when the player collects an item 
 * To Do:   N/A
 */
@@ -31,6 +31,11 @@ public class ItemCollectedBannerController : MenuBase
     private AnimationClip animClip;
 
     private Animator anim;
+
+    private float timeInAnimationSave;
+    private int animHash;
+
+    private float animSpeed;
 
     /// <summary>
     /// sets the right refs
@@ -69,6 +74,7 @@ public class ItemCollectedBannerController : MenuBase
         bannerIsMoving = true;
         UpdateBannerText(BannerQueue.Peek());
         anim.Play(animClip.name, 0, 0.0f);
+        animSpeed = anim.speed;
     }
 
     /// <summary>
@@ -91,6 +97,19 @@ public class ItemCollectedBannerController : MenuBase
     }
 
     /// <summary>
+    /// plays the anim clip if it was in the middle of one
+    /// </summary>
+    protected override void MenuOpenedSucessfully()
+    {
+        base.MenuOpenedSucessfully();
+        if (bannerIsMoving)
+        {
+            anim.Play(animHash, 0, timeInAnimationSave);
+            anim.Update(0);
+        }
+    }
+
+    /// <summary>
     /// public event subscription
     /// </summary>
     protected override void SetUpPublicEvents()
@@ -106,6 +125,13 @@ public class ItemCollectedBannerController : MenuBase
     {
         base.MenuClosedSucessfully();
         UIPublicEvents.UpdateCollectionBanner -= UpdateBannerQueue;
+        if (bannerIsMoving)
+        {
+            AnimatorStateInfo currentAnim = anim.GetCurrentAnimatorStateInfo(0);
+            timeInAnimationSave = currentAnim.normalizedTime % 1f;
+            animHash = currentAnim.fullPathHash;
+
+        }
     }
 
     /// <summary>
