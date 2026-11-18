@@ -572,7 +572,7 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSecondsRealtime(TimeToStartRegen);
         while (true)
         {
-            MidRunDataManager.Instance.ChangePlayerHealth((int)(MidRunDataManager.Instance.MaxPlayerHealth * regenAmount));
+            MidRunDataManager.Instance.ChangePlayerHealth((int)(MidRunDataManager.Instance.MaxPlayerHealth * (regenAmount / 100f)));
             yield return new WaitForSecondsRealtime(RegenTickRate);
         }
     }
