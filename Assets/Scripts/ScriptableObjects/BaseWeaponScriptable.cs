@@ -443,7 +443,7 @@ public class BaseWeaponScriptable : BaseScriptableObject
         {
             i.BaseWeaponDamage = i.WeaponDamage;
             i.BaseAttackCooldown = i.AttackCooldown;
-            i.BaseBurstAttacks = i.BurstAttacks;
+            i.BaseBurstAttacks = i.BurstAttacks.ToList();
 
             foreach (BurstData j in i.BurstAttacks)
             {

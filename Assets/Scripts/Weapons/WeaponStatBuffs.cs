@@ -5,6 +5,7 @@
 * Summary: holds the stat buffs per weapon, and sends them out as needed
 * To Do: make it work with terot cards and buff objects
 */
+using System.Linq;
 using UnityEngine;
 
 public class WeaponStatBuffs : MonoBehaviour
@@ -252,7 +253,7 @@ public class WeaponStatBuffs : MonoBehaviour
         {
             foreach (AttackData i in weaponScriptable.ComboAttacks)
             {
-                i.BurstAttacks = i.BaseBurstAttacks;
+                i.BurstAttacks = i.BaseBurstAttacks.ToList();
                 i.BurstAttacks.Add(i.BurstAttacks[burstAttackIndex]);
 
                 foreach (BurstData j in i.BurstAttacks)
