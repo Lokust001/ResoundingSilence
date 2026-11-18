@@ -5,15 +5,13 @@
 * Summary: Player input, stats, and damage are handled here
 * To Do:   Add more variables as needed.
 */
-using NaughtyAttributes;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Animations.Rigging;
 public class PlayerController : MonoBehaviour
 {
     public float defaultSpeed;
 
-    [HideInInspector]public float moveSpeed;
+    [HideInInspector] public float moveSpeed;
 
     [SerializeField]
     float playerHealth;
@@ -75,7 +73,7 @@ public class PlayerController : MonoBehaviour
     //Serialized so you can test more easily right now. Once the game has feedback for when a dash is ready, these shouldn't be serialized
     [SerializeField] bool canDash;
     [SerializeField] bool chainDashing;
-    
+
     int currentDash;
 
     [SerializeField]
@@ -216,7 +214,7 @@ public class PlayerController : MonoBehaviour
     /// Helper method to update PlayerVelocity based on user input
     /// </summary>
     /// <param name="moveDirection"></param>
-    void PlayerInputStarted(Vector2 moveDirection) 
+    void PlayerInputStarted(Vector2 moveDirection)
     {
         playerVelocity.x = moveDirection.x;
         playerVelocity.z = moveDirection.y;
@@ -228,7 +226,7 @@ public class PlayerController : MonoBehaviour
     /// Helper method to completely stop velocity when no more input is captured.
     /// First it stops the player's active velocity, then recorded velocity PlayerVelocity
     /// </summary>
-    void PlayerInputEnded() 
+    void PlayerInputEnded()
     {
         playerVelocity.x = 0;
         playerVelocity.z = 0;
@@ -237,7 +235,7 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// Sets the linearVelocity to 0 to stop physics from affecting the player without setting isKinematic to true
     /// </summary>
-    private void NegateAllForces() 
+    private void NegateAllForces()
     {
         rigidbody.linearVelocity = Vector3.zero;
     }
@@ -247,13 +245,13 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void PlayerDashPressed()
     {
-        if (currentDash > 0) 
+        if (currentDash > 0)
         {
             dashingCoroutine ??= StartCoroutine(RigidBodyPlayerDash());
         }
     }
 
-    private IEnumerator ChainDashWindow() 
+    private IEnumerator ChainDashWindow()
     {
 
         //Kept as countdown timer for future UI-related tasks
@@ -266,19 +264,22 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private IEnumerator RigidBodyPlayerDash() 
+    private IEnumerator RigidBodyPlayerDash()
     {
         //Decrement the number of dashes before anything else
         currentDash--;
-        
+
         //Calculate and cache local variables
         Vector3 maximumDashForce = dashDir * dashRange;
         Vector3 currentDashVelocity = maximumDashForce;
 
         //Setup a timer
         float currentDashTime = 0;
-        
-        while (currentDashTime < dashDuration) 
+
+
+        rigidbody.excludeLayers += ignoreWhileInvincible;
+
+        while (currentDashTime < dashDuration)
         {
             //Lerp the velocity of the player so that it starts out very high and then goes completely to zero
             currentDashVelocity = Vector3.Lerp(maximumDashForce, Vector3.zero, currentDashTime / dashDuration);
@@ -293,10 +294,7 @@ public class PlayerController : MonoBehaviour
             currentDashTime += Time.fixedDeltaTime;
         }
 
-        //Start a Chain Dash window if there are still dashes left
-
-
-        Debug.Log("Dash Finished, Remaining Charges: " + currentDash);
+        rigidbody.excludeLayers -= ignoreWhileInvincible;
 
         dashingCooldownCoroutine = StartCoroutine(currentDash > 0 ? ChainDashWindow() : DashingRecharge(dashCooldown));
         yield return dashingCooldownCoroutine;
@@ -307,7 +305,7 @@ public class PlayerController : MonoBehaviour
         dashingCoroutine = null;
     }
 
-    private IEnumerator DashingRecharge(float rechargeTime) 
+    private IEnumerator DashingRecharge(float rechargeTime)
     {
         //Coundown timer instead of WaitForSeconds for future UI work
         float dashRechargeCountdown = dashCooldown;
@@ -340,8 +338,8 @@ public class PlayerController : MonoBehaviour
         }
 
         Vector3 dashPoint = Physics.Raycast(transform.position, dashDir.normalized, out RaycastHit hit, dashRange, ~DashLayersIgnore) ? hit.point : transform.position + (dashDir.normalized * dashRange);
-        if(hit.collider != null)
-        Debug.Log(hit.collider.name);
+        if (hit.collider != null)
+            Debug.Log(hit.collider.name);
         StopCoroutine(playerMovementCoroutine);
 
         Vector3 maximumDashForce = dashDir * dashRange;
@@ -349,8 +347,8 @@ public class PlayerController : MonoBehaviour
 
         float currentDashTime = 0;
 
-        
-        while (currentDashTime < dashDuration) 
+
+        while (currentDashTime < dashDuration)
         {
 
             currentDashVelocity = Vector3.Lerp(maximumDashForce, Vector3.zero, currentDashTime / dashDuration);
@@ -366,7 +364,7 @@ public class PlayerController : MonoBehaviour
 
         rigidbody.excludeLayers -= ignoreWhileInvincible;
 
-        if(currentDash < totalDashes)
+        if (currentDash < totalDashes)
         {
             dashWindowCoroutine = StartCoroutine(TimeToChainDash());
         }
@@ -411,9 +409,9 @@ public class PlayerController : MonoBehaviour
     /// Coroutine that continuously runs and moves the player unless disabled by external factors.
     /// </summary>
     /// <returns></returns>
-    private IEnumerator MovePlayerCoroutine() 
+    private IEnumerator MovePlayerCoroutine()
     {
-        while (MoveActive) 
+        while (MoveActive)
         {
             //Propagate calculated velocity to rigidbody & make player move
             rigidbody.linearVelocity = new Vector3(playerVelocity.x * moveSpeed, rigidbody.linearVelocity.y, playerVelocity.z * moveSpeed);
@@ -426,7 +424,7 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// Public method to halt all player movement
     /// </summary>
-    public void StopPlayerMovementAndInput() 
+    public void StopPlayerMovementAndInput()
     {
         StopCoroutine(playerMovementCoroutine);
         PlayerInputEnded();
@@ -435,7 +433,7 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// Public method to start moving the player once again
     /// </summary>
-    public void RestartPlayerMovementAndInput() 
+    public void RestartPlayerMovementAndInput()
     {
         playerMovementCoroutine = StartCoroutine(MovePlayerCoroutine());
     }
@@ -452,7 +450,7 @@ public class PlayerController : MonoBehaviour
         }
         if (InGodMode)
             return;
-        
+
         //If the player is already damaged/invicible at the moment
         if (dmgCoroutine != null)
             return;
@@ -473,7 +471,7 @@ public class PlayerController : MonoBehaviour
     /// Provides information about whether or not the player is invincible
     /// </summary>
     /// <returns></returns>
-    public bool PlayerIsInvincible() 
+    public bool PlayerIsInvincible()
     {
         return dmgCoroutine != null;
     }
@@ -483,7 +481,7 @@ public class PlayerController : MonoBehaviour
     /// or collide with any enemies for a short time
     /// </summary>
     /// <returns></returns>
-    private IEnumerator PlayerInvincibilityFrames() 
+    private IEnumerator PlayerInvincibilityFrames()
     {
         //Make the player intangible to collisions from specified layers
         SetPlayerInvincibility(true);
@@ -493,10 +491,10 @@ public class PlayerController : MonoBehaviour
         playerRenderer.material.color = Color.red;
         float timer = 0;
 
-        while (timer < invincibilityDuration) 
+        while (timer < invincibilityDuration)
         {
             timer += Time.deltaTime;
-            
+
             yield return null;
         }
         SetPlayerInvincibility(false);
@@ -509,7 +507,7 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// Resets the Trigger when enemies become too close
     /// </summary>
-    private void ResetRangeTriggers() 
+    private void ResetRangeTriggers()
     {
         meleeRangeTrigger.SetColliderComponentEnabled(false);
         meleeRangeTrigger.SetColliderComponentEnabled(true);
@@ -522,7 +520,7 @@ public class PlayerController : MonoBehaviour
     /// and either toggles the collision on or off for those layers all at once
     /// </summary>
     /// <param name="value"></param>
-    private void SetPlayerInvincibility(bool value) 
+    private void SetPlayerInvincibility(bool value)
     {
         if (value)
             rigidbody.excludeLayers += ignoreWhileInvincible;
@@ -565,9 +563,9 @@ public class PlayerController : MonoBehaviour
 
         //CapsuleCast to see if there is enough space to be knocked back towards the destination
         //(Kept in a variable instead of if statement to ease future debugging)
-        bool insufficientKnockbackSpace = Physics.CapsuleCast(point1, point2, playerModelCollider.radius, knockbackDirection, 
+        bool insufficientKnockbackSpace = Physics.CapsuleCast(point1, point2, playerModelCollider.radius, knockbackDirection,
             out RaycastHit hit, maxDistance + WALL_COLLISION_CAST_OFFSET, stopKnockbackLayers, QueryTriggerInteraction.Ignore);
-        
+
         //If there is not enough space for the player knockback to travel all the way to the destination,
         //Use the farthest point instead
         if (insufficientKnockbackSpace)
@@ -593,7 +591,7 @@ public class PlayerController : MonoBehaviour
          *  & also the dynamicKnockbackSpeed
          */
 
-        
+
         //The constant speed that would allow the player to move to knockbackDestination linearly
         float linearUniformKnockbackSpeed = maxDistance / timeLimit;
 
@@ -610,7 +608,7 @@ public class PlayerController : MonoBehaviour
         //For the duration of knockback,
         //Incrementally move the player towards the destination distance while dynamically calculating its speed on every FixedUpdate tick
         //The dynamic speed allows for the player to be initially fast, then slow down
-        while (timer < timeLimit) 
+        while (timer < timeLimit)
         {
             //Tick FixedUpdate while we haven't reached duration yet
             //On the initial start of this loop, the time would be 0, so the player wouldn't move anywhere
@@ -620,7 +618,7 @@ public class PlayerController : MonoBehaviour
             timer += fixedUpdateTick;
             //0 to 1
             float timerT = timer / timeLimit;
-            
+
             //Calculate new distance and time-dependent knockback force
             distance = Vector3.Distance(playerTransform.position, knockbackDestination);
 
@@ -666,7 +664,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     /// <param name="enemy"></param>
     /// <param name="enteredTrigger"></param>
-    private void MeleeZoneHandler(Enemy enemy, bool enteredTrigger) 
+    private void MeleeZoneHandler(Enemy enemy, bool enteredTrigger)
     {
         _ = enemy;
         enemy.SetInMeleeArea(enteredTrigger);
@@ -676,7 +674,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     /// <param name="enemy"></param>
     /// <param name="enteredTrigger"></param>
-    private void RangedZoneHandler(Enemy enemy, bool enteredTrigger) 
+    private void RangedZoneHandler(Enemy enemy, bool enteredTrigger)
     {
         _ = enemy;
         enemy.SetInRangedArea(enteredTrigger);
