@@ -1139,8 +1139,36 @@ PrefabInstance:
       value: PlayerCharacter
       objectReference: {fileID: 0}
     - target: {fileID: 5064756254410111760, guid: b57876c786fb44e4e87718b98dcf4f9b, type: 3}
+      propertyPath: forceMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5064756254410111760, guid: b57876c786fb44e4e87718b98dcf4f9b, type: 3}
+      propertyPath: totalDashes
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5064756254410111760, guid: b57876c786fb44e4e87718b98dcf4f9b, type: 3}
+      propertyPath: dashCooldown
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5064756254410111760, guid: b57876c786fb44e4e87718b98dcf4f9b, type: 3}
+      propertyPath: dashDuration
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 5064756254410111760, guid: b57876c786fb44e4e87718b98dcf4f9b, type: 3}
+      propertyPath: BasedashRange
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 5064756254410111760, guid: b57876c786fb44e4e87718b98dcf4f9b, type: 3}
+      propertyPath: chainDashWindow
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5064756254410111760, guid: b57876c786fb44e4e87718b98dcf4f9b, type: 3}
       propertyPath: hurtZoneTrigger
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5064756254410111760, guid: b57876c786fb44e4e87718b98dcf4f9b, type: 3}
+      propertyPath: chainDashInterval
+      value: 0.05
       objectReference: {fileID: 0}
     - target: {fileID: 5064756254410111760, guid: b57876c786fb44e4e87718b98dcf4f9b, type: 3}
       propertyPath: invincibilityLayerNamesToIgnore.Array.size
@@ -1175,6 +1203,18 @@ PrefabInstance:
     - target: {fileID: 1212499085423356014, guid: c997b49616c1d7143ab65d2e1030d2d5, type: 3}
       propertyPath: m_Radius
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1559063943498428022, guid: c997b49616c1d7143ab65d2e1030d2d5, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1559063943498428022, guid: c997b49616c1d7143ab65d2e1030d2d5, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1559063943498428022, guid: c997b49616c1d7143ab65d2e1030d2d5, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1559063943498428022, guid: c997b49616c1d7143ab65d2e1030d2d5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1216,6 +1256,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1559063943498428022, guid: c997b49616c1d7143ab65d2e1030d2d5, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3508131937882531518, guid: c997b49616c1d7143ab65d2e1030d2d5, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -1239,6 +1283,10 @@ PrefabInstance:
     - target: {fileID: 7656435456646436074, guid: c997b49616c1d7143ab65d2e1030d2d5, type: 3}
       propertyPath: m_Name
       value: TestChargingEnemy Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 7656435456646436074, guid: c997b49616c1d7143ab65d2e1030d2d5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8309292543132794877, guid: c997b49616c1d7143ab65d2e1030d2d5, type: 3}
       propertyPath: m_Size.x
