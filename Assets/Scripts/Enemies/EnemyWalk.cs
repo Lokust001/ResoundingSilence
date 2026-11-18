@@ -36,7 +36,7 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
 
     private readonly Vector3 DEBUG_CAST_OFFSET = new(0, 0, 0.25f);
 
-
+    [HideInInspector] public bool LookAtPlayer;
 
     /// <summary>
     /// Grabs necessary components and assigns enemyTransform to transform component
@@ -68,6 +68,10 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
     public void StrafeTowardsPlayer() 
     {
         StopApproachingPlayer();
+        if(LookAtPlayer)
+        {
+            return;
+        }
         walkingCoroutine = StartCoroutine(StrafeWalking());
     }
 
@@ -381,5 +385,16 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
     {
         StopApproachingPlayer();
         StopAllCoroutines();
+    }
+
+    /// <summary>
+    /// Lets the enemy know if they should look at the player.
+    /// </summary>
+    private void FixedUpdate()
+    {
+        if(LookAtPlayer)
+        {
+            transform.LookAt(playerReference.transform);
+        }
     }
 }
