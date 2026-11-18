@@ -21,19 +21,21 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     float invincibilityDuration;
 
+    [Header("Dash")]
     [SerializeField] float BasedashRange;
     float dashRange;
     [SerializeField] float dashDuration;
     [SerializeField] float dashCooldown;
     [SerializeField] int totalDashes;
-    [SerializeField] float chainDashWindow;
+    [SerializeField] float chainDashInterval;
 
-
+    [Header("Regen")]
     [SerializeField] float TimeToStartRegen;
     [SerializeField] float RegenTickRate;
     [SerializeField, Tooltip("this is in % of max health")] float BaseRegenAmount;
     float regenAmount;
 
+    [Header("LayerMasks")]
     [Tooltip("What layers the player shouldn't collide with while they are invinvible.")]
     [SerializeField] LayerMask ignoreWhileInvincible;
     [Tooltip("What layers the player shouldn't collide with while they are invinvible.")]
@@ -245,7 +247,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void PlayerDashPressed()
     {
-        if (currentDash > 0 || dashWindowCoroutine != null) 
+        if (currentDash > 0) 
         {
             dashingCoroutine ??= StartCoroutine(RigidBodyPlayerDash());
         }
@@ -255,7 +257,7 @@ public class PlayerController : MonoBehaviour
     {
 
         //Kept as countdown timer for future UI-related tasks
-        float currentDashWindowTime = chainDashWindow;
+        float currentDashWindowTime = chainDashInterval;
 
         while (currentDashWindowTime > 0)
         {
@@ -292,21 +294,29 @@ public class PlayerController : MonoBehaviour
         }
 
         //Start a Chain Dash window if there are still dashes left
-        dashWindowCoroutine = currentDash > 0 ? StartCoroutine(ChainDashWindow()) : null;
+
 
         Debug.Log("Dash Finished, Remaining Charges: " + currentDash);
 
+        dashingCooldownCoroutine = StartCoroutine(currentDash > 0 ? ChainDashWindow() : DashingRecharge(dashCooldown));
+        yield return dashingCooldownCoroutine;
+
         //If there was already a cooldown active, cancel that and start counting
         //from the most recent dash
-        if(dashingCooldownCoroutine != null)
-            StopCoroutine(dashingCooldownCoroutine);
-        dashingCooldownCoroutine = StartCoroutine(DashingRecharge(dashCooldown));
+
         dashingCoroutine = null;
     }
 
     private IEnumerator DashingRecharge(float rechargeTime) 
     {
-        yield return new WaitForSeconds(rechargeTime);
+        //Coundown timer instead of WaitForSeconds for future UI work
+        float dashRechargeCountdown = dashCooldown;
+
+        while (dashRechargeCountdown > 0)
+        {
+            yield return null;
+            dashRechargeCountdown -= Time.deltaTime;
+        }
         currentDash = totalDashes;
         dashingCooldownCoroutine = null;
     }
@@ -390,11 +400,11 @@ public class PlayerController : MonoBehaviour
     IEnumerator TimeToChainDash()
     {
         chainDashing = true;
-        yield return new WaitForSeconds(chainDashWindow);
+        yield return new WaitForSeconds(chainDashInterval);
         currentDash = 0;
         chainDashing = false;
 
-        StartCoroutine(ResetDash(dashCooldown - chainDashWindow));
+        StartCoroutine(ResetDash(dashCooldown - chainDashInterval));
     }
 
     /// <summary>
