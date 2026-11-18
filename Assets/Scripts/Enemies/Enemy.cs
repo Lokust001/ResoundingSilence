@@ -394,6 +394,7 @@ public class Enemy : MonoBehaviour
         {
             IsDead = true;
             GetComponent<CapsuleCollider>().enabled = false;
+            movementBeahvior.LookAtPlayer = false;
             if (EnemyAnimator != null)
             {
                 EnemyAnimator.SetTrigger("Dead");
