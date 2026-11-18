@@ -50,6 +50,7 @@ public class WeaponStatBuffs : MonoBehaviour
     {
         playerController = PlayerManager.Instance.player;
         GenericPublicEvents.SetCurrentWeapon += setStatBuffs;
+        UIPublicEvents.UpgradeMenuClosed += closeMenu;
         MagicianDamageBuff = 1;
         DevilDamageBuff = 1;
         TowerDamageBuff = 1;
@@ -77,8 +78,21 @@ public class WeaponStatBuffs : MonoBehaviour
     private void OnDestroy()
     {
         GenericPublicEvents.SetCurrentWeapon -= setStatBuffs;
+        UIPublicEvents.UpgradeMenuClosed -= closeMenu;
     }
 
+    private void closeMenu()
+    {
+        if (PlayerManager.Instance.weaponOnePulledOut)
+        {
+            setStatBuffs(PlayerManager.Instance.WeaponsGameObjects[0]);
+        }
+        else
+        {
+            setStatBuffs(PlayerManager.Instance.WeaponsGameObjects[1]);
+        }
+
+    }
 
     /// <summary>
     /// set stat buffs when the player switches weapons
