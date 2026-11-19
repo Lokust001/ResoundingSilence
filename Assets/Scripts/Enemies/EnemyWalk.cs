@@ -1,6 +1,6 @@
 /* Author: Dalsten Yan
  * Contributors:
- * Last Modified: 11/13/26
+ * Last Modified: 11/18/26
  * Summary: Script that simulates enemy movement, seeking, charing down, and retreating
  * TODO: More as needed
  */
@@ -26,6 +26,8 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
 
     private GameObject enemyModel;
     private Rigidbody rigidbody;
+
+    private float enemyScale;
 
     private Vector3 topColliderLocalPos;
     private Vector3 bottomColliderLocalPos;
@@ -58,6 +60,10 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
         float modelThickness = capsuleCollider.height / 2 - capsuleCollider.radius;
         topColliderLocalPos = capsuleCollider.center - Vector3.up * modelThickness;
         bottomColliderLocalPos = capsuleCollider.center + Vector3.up * modelThickness;
+
+
+        Vector3 lossyScale = transform.lossyScale;
+        enemyScale = Mathf.Max(lossyScale.x, lossyScale.y, lossyScale.z);
 
         playerLayer = LayerMask.GetMask("Player");
     }
@@ -107,7 +113,7 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
     public IEnumerator ChargeTowardsLocation(float chargeDistance) 
     {
         //Double the charge distance to account for the offset of the dash indicator
-        Vector3 enemyForwardChargeDistance = 2 * chargeDistance * transform.forward;
+        Vector3 enemyForwardChargeDistance = 2 * chargeDistance * transform.forward * enemyScale;
         
         //Move the enemy towards the destination, then wait until they get there
         Vector3 chargeDestination = transform.position + enemyForwardChargeDistance;
