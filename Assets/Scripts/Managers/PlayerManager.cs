@@ -29,6 +29,17 @@ public class PlayerManager : BaseManager
     [HideInInspector] public bool weaponOnePulledOut;
     private bool canSwap;
 
+    #region Stat Buff Interactable Numbers
+    private int DamageBuff;
+    private int Firerate;
+    private int ProjectileSpeed;
+    private int MaxHealth;
+    private int MoveSpeed;
+    private int DashDistance;
+    private int AttackSize;
+    private int AbilityCooldown;
+    #endregion
+
     /// <summary>
     /// inits the manager and sets up public events
     /// </summary>

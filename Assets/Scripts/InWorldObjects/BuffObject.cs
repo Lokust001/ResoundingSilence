@@ -26,6 +26,7 @@ public class BuffObject : MonoBehaviour
     private bool inRange;
     private PlayerController Player;
     public PermStatBuff Stat;
+    public int AmountBuffPercent;
 
     /// <summary>
     /// makes the chest listen to the public events for interaction
