@@ -1,7 +1,7 @@
 /*
 * Author: Dalsten Yan
 * Contributors: Brad Dixon, Brenden Burtz
-* Last Modified: 11/18/2026
+* Last Modified: 11/19/2026
 * Summary: Player input, stats, and damage are handled here
 * To Do:   Add more variables as needed.
 */
