@@ -39,6 +39,81 @@ MonoBehaviour:
     BaseWeaponDamage: 40
     AttackCooldown: 0.4
     BaseAttackCooldown: 0.4
+    BaseBurstAttacks:
+    - BurstDamagePercent: 0
+      TimeTillNextBurst: 0
+      BaseTimeTillNextBurst: 0
+      HasLifesteal: 0
+      WeaponLifeSteal:
+        LifestealPercent: 0
+        BaseLifestealPercent: 0
+      HasAoe: 0
+      WeaponAoe:
+        AoePrefab: {fileID: 0}
+        AoeDamagePercent: 0
+        BaseAoeDamagePercent: 0
+        HasDamageFalloff: 0
+        MinAoeDamagePercent: 0
+        BaseMinAoeDamagePercent: 0
+        AoeSize: 0
+        BaseAoeSize: 0
+        AoeDelay: 0
+        BaseAoeDelay: 0
+        AoeDuration: 0
+        BaseAoeDuration: 0
+        AoeDamageTicks: 0
+        BaseAoeDamageTicks: 0
+      HasRangeAttack: 1
+      BurstRangedAttack:
+        AttackProjectiles:
+        - ProjectilePrefab: {fileID: 8805286060830696359, guid: f4083c9721c5aa04280c3f4b179ddf88, type: 3}
+          ProjectileSpeed: 75
+          BaseProjectileSpeed: 75
+          LifetimeIsRange: 0
+          ProjectileRange: 10
+          BaseProjectileRange: 10
+          ProjectileLifetime: 3
+          BaseProjectileLifetime: 3
+          ProjectileDeviation: 0
+          BaseProjectileDeviation: 0
+          TotalProjectiles: 1
+          BaseTotalProjectiles: 1
+          SpreadDegree: 0
+          BaseSpreadDegree: 0
+          HasSizeChange: 0
+          ProjectileSizeChange:
+            InfinitelyChangeSize: 0
+            NewSize: 10
+            BaseNewSize: 10
+            TimeTillNewSize: 0.5
+            BaseTimeTillNewSize: 0.5
+            SizeChangePercentage: 0
+            BaseSizeChangePercentage: 0
+            TimeTillSizeChange: 0
+            BaseTimeTillSizeChange: 0
+            ConstXSize: 0
+            ConstYSize: 1
+            ConstZSize: 0
+            MinSize: 0
+            MaxSize: 0
+        ProjectileIndex: 0
+        RandomizeProjectile: 0
+        HasPierce: 0
+        BurstPierce:
+          PierceAmount: 0
+          BasePierceAmount: 0
+          PierceDamageFalloffPercent: 
+          BasePierceDamageFalloffPercent: 
+          MinPierceDamagePercent: 0
+          BaseMinPierceDamagePercent: 0
+          PierceLifetimeFalloffPercent: 
+          BasePierceLifetimeFalloffPercent: 
+        HasRicochet: 0
+        BurstRicochet:
+          RicochetCount: 0
+          BaseRicochetCount: 0
+          RicochetRange: 0
+          BaseRicochetRange: 0
     BurstAttacks:
     - BurstDamagePercent: 0
       TimeTillNextBurst: 0
