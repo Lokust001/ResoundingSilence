@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
-* Contributors:
-* Last Modified: 09/21/2026
+* Contributors: Brenden
+* Last Modified: 11/19/2026
 * Summary: stores the data for the tile grid
 * To Do:   N/A
 */

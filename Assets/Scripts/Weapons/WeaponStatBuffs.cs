@@ -1,7 +1,7 @@
 /*
 * Author: Brenden
 * Contributors: 
-* Last Modified: 11/17/2026
+* Last Modified: 11/19/2026
 * Summary: holds the stat buffs per weapon, and sends them out as needed
 * To Do: make it work with terot cards and buff objects
 */
