@@ -1,7 +1,7 @@
 /*
 * Author: Brenden
 * Contributors: 
-* Last Modified: 11/17/2026
+* Last Modified: 11/19/2026
 * Summary: holds the stat buffs per weapon, and sends them out as needed
 * To Do: make it work with terot cards and buff objects
 */
@@ -12,11 +12,23 @@ public class WeaponStatBuffs : MonoBehaviour
     public BaseWeaponScriptable weaponScriptable;
 
     #region Player Stat Buffs
+    #region Tarot Buffs
     [HideInInspector] public float MagicianDamageBuff = 1;
     [HideInInspector] public float DevilDamageBuff = 1;
     [HideInInspector] public float TowerDamageBuff = 1;
     [HideInInspector] public float TowerDamageResistance = 1;
     [HideInInspector] public float HermitDamageBuff = 1;
+    #endregion
+
+    #region Buff Object Buffs
+    [HideInInspector] public float BIDamage;
+    [HideInInspector] public float BIFirerate;
+    [HideInInspector] public float BIProjectileSpeed;
+    [HideInInspector] public float BIMovementSpeed;
+    [HideInInspector] public float BIDashDistance;
+    [HideInInspector] public float BIAttacksize;
+    [HideInInspector] public float BIAbilityCooldown;
+    #endregion
     #endregion
 
     #region Pin Stat buffs
@@ -67,6 +79,13 @@ public class WeaponStatBuffs : MonoBehaviour
         AbilityCooldownReduction = 1;
         BurstDamage = 1;
         ProjectileSpeedBuff = 1;
+        BIAbilityCooldown = 1;
+        BIFirerate = 1;
+        BIDamage = 1;
+        BIAttacksize = 1;
+        BIMovementSpeed = 1;
+        BIDashDistance = 1;
+        BIProjectileSpeed = 1;
 
     }
 
@@ -131,9 +150,9 @@ public class WeaponStatBuffs : MonoBehaviour
     public void sendPlayerModifiers()
     {
         playerController = PlayerManager.Instance.player;
-        playerController.DashDistance(DashBuff);
+        playerController.DashDistance(DashBuff * BIDashDistance);
         playerController.DamageResistanceChange(DamageResistance * TowerDamageResistance);
-        playerController.MoveSpeedIncrease(MoveSpeedBuff);
+        playerController.MoveSpeedIncrease(MoveSpeedBuff * BIMovementSpeed);
         playerController.healingPotencyChange(HealingPotency);
         playerController.KnockbackResistance(knockbackAmount);
         playerController.RegenBoost(regenAmount);
@@ -184,7 +203,7 @@ public class WeaponStatBuffs : MonoBehaviour
     {
         foreach (AttackData i in weaponScriptable.ComboAttacks)
         {
-            i.WeaponDamage = Mathf.CeilToInt(i.BaseWeaponDamage * DamageBuff * MagicianDamageBuff * DevilDamageBuff * TowerDamageBuff * HermitDamageBuff);
+            i.WeaponDamage = Mathf.CeilToInt(i.BaseWeaponDamage * DamageBuff * MagicianDamageBuff * DevilDamageBuff * TowerDamageBuff * HermitDamageBuff * BIDamage);
         }
     }
 
@@ -274,7 +293,7 @@ public class WeaponStatBuffs : MonoBehaviour
             {
                 foreach (ProjectileData k in j.BurstRangedAttack.AttackProjectiles)
                 {
-                    k.ProjectileSpeed = k.BaseProjectileSpeed * ProjectileSpeedBuff;
+                    k.ProjectileSpeed = k.BaseProjectileSpeed * ProjectileSpeedBuff * BIProjectileSpeed;
                 }
             }
         }

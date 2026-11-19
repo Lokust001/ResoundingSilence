@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors: Brenden
-* Last Modified: 11/11/2026
+* Last Modified: 11/19/2026
 * Summary: This service stores all the player's data. May be merged with the midrundatamanager if we feel its redundant
 * To Do:   N/A
 */
@@ -40,6 +40,41 @@ public class PlayerManager : BaseManager
     private int AbilityCooldown;
     #endregion
 
+    public void GetBuffObject(int value, BuffObject.PermStatBuff StatChange)
+    {
+        switch (StatChange)
+        {
+            case BuffObject.PermStatBuff.none:
+                break;
+            case BuffObject.PermStatBuff.Damage:
+                DamageBuff += value;
+                break;
+            case BuffObject.PermStatBuff.FireRate:
+                Firerate += value;
+                break;
+            case BuffObject.PermStatBuff.ProjectileSpeed:
+                ProjectileSpeed += value;
+                break;
+            case BuffObject.PermStatBuff.MaxHealth:
+                MaxHealth += value;
+                break;
+            case BuffObject.PermStatBuff.MovementSpeed:
+                MoveSpeed += value;
+                break;
+            case BuffObject.PermStatBuff.DashDistance:
+                DashDistance += value;
+                break;
+            case BuffObject.PermStatBuff.AttackSize:
+                AttackSize += value;
+                break;
+            case BuffObject.PermStatBuff.AbilityCooldown:
+                AbilityCooldown = Mathf.FloorToInt(AbilityCooldown * value);
+                break;
+            default:
+                break;
+        }
+    }
+
     /// <summary>
     /// inits the manager and sets up public events
     /// </summary>
@@ -74,6 +109,15 @@ public class PlayerManager : BaseManager
 
         weaponOnePulledOut = true;
         canSwap = true;
+        DamageBuff = 0;
+        Firerate = 0;
+        ProjectileSpeed = 0;
+        MaxHealth = 0;
+        MoveSpeed = 0;
+        DashDistance = 0;
+        AttackSize = 0;
+        AbilityCooldown = 100;
+        
         await Task.CompletedTask;
     }
 

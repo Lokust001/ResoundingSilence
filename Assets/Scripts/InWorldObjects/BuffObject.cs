@@ -1,7 +1,7 @@
 /*
 * Author: Brenden
 * Contributors:
-* Last Modified: 10/21/2026
+* Last Modified: 11/19/2026
 * Summary: Chest Objects around the world that the player can interact with
 * To Do:   N/A
 */
@@ -77,29 +77,8 @@ public class BuffObject : MonoBehaviour
     {
         if (inRange)
         {
-            switch (Stat)
-            {
-                case PermStatBuff.none:
-                    break;
-                case PermStatBuff.Damage:
-                    break;
-                case PermStatBuff.FireRate:
-                    break;
-                case PermStatBuff.ProjectileSpeed:
-                    break;
-                case PermStatBuff.MaxHealth:
-                    break;
-                case PermStatBuff.MovementSpeed:
-                    break;
-                case PermStatBuff.DashDistance:
-                    break;
-                case PermStatBuff.AttackSize:
-                    break;
-                case PermStatBuff.AbilityCooldown:
-                    break;
-                default:
-                    break;
-            }
+            PlayerManager.Instance.GetBuffObject(AmountBuffPercent, Stat);
+            Destroy(this.gameObject);
         }
     }
 }
