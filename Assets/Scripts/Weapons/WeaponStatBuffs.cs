@@ -268,6 +268,7 @@ public class WeaponStatBuffs : MonoBehaviour
             {
                 i.BurstAttacks = i.BaseBurstAttacks.ToList();
             }
+        }
     }
 
     /// <summary>
