@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class EnemyWaveSpawner : MonoBehaviour
+public class EnemyWaveSpawner : BaseSpawner
 {
     [SerializeField]
     private float timeBetweenWaves = 0.5f;
@@ -23,9 +23,6 @@ public class EnemyWaveSpawner : MonoBehaviour
 
     private Stack<EnemyGroup> enemyWavesStack;
 
-    [SerializeField, Header("[Debug] Detected Transforms")]
-    private List<Transform> spawnTransforms;
-
     private bool playerInInteractRange;
 
     private Coroutine endEncounterRef;
@@ -38,9 +35,6 @@ public class EnemyWaveSpawner : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        //Get all child transforms and remove the one on this parent object
-        spawnTransforms = GetComponentsInChildren<Transform>().ToList<Transform>();
-        spawnTransforms.Remove(transform);
 
         //For stack functionality
         enemyWaves.Reverse();
@@ -108,13 +102,15 @@ public class EnemyWaveSpawner : MonoBehaviour
 
         for (int i = 0; i < currentWaveList.Count; i++)
         {
-            Enemy currentEnemy = Instantiate(currentWaveList[i], spawnTransforms[i].position, Quaternion.identity).GetComponent<Enemy>();
-            currentWaveList[i] = currentEnemy.gameObject;
+            Enemy currentEnemy = Instantiate(currentWaveList[i], spawnLocations[i].position, Quaternion.identity).GetComponent<Enemy>();
+            activeEnemies.Add(currentEnemy);
+            if (debugEnemyHealth)
+                currentEnemy.debuggingBehavior.enabled = true;
             currentEnemy.ScaleEnemy(enemyScaleValue);
             currentEnemy.destroyCancellationToken.Register(() =>
             {
-                currentWaveList.Remove(currentEnemy.gameObject);
-                if (currentWaveList.Count <= 0 && this != null) 
+                activeEnemies.Remove(currentEnemy);
+                if (activeEnemies.Count <= 0 && this != null) 
                 {
                     StartCoroutine(CurrentWaveFinished());
                 }

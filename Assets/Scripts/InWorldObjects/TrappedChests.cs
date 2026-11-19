@@ -65,7 +65,7 @@ public class TrappedChests : MonoBehaviour
 
     private void CheckQuest(BaseEnemyScriptable enemy)
     {
-        if(EnemySpawner.generatedEnemies.Count == 0)
+        if(EnemySpawner.activeEnemies.Count == 0)
         {
             //probably a ui popup will go here
             encounterFinished=true;

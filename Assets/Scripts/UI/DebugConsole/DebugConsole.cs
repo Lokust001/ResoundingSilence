@@ -463,6 +463,19 @@ public class DebugConsole : MonoBehaviour
             return;
         }
 
+        if (Command.StartsWith("enemyhealthbars") || Command.StartsWith("ehp"))
+        {
+            var spawners = FindObjectsByType<BaseSpawner>(FindObjectsInactive.Include);
+            foreach (var spawner in spawners) 
+            {
+                spawner.EnableEnemyHealthDebugging();
+            }
+            AppendConsoleLine(Command, inputColor);
+            AppendConsoleLine($"Enemy health bars are now enabled", commandCompletedColor);
+            FinishCommand();
+            return;
+        }
+
 
         AppendConsoleLine(Command, incorrectInputColor);
         AppendConsoleLine($"No command found, use Help for a list of all commands.", Color.orange);
