@@ -90,6 +90,7 @@ public class PauseMenuController : MenuBase
         ControllerUIService.Instance = null;
         MouseUIService.Instance = null;
         TooltipUIService.Instance = null;
+        SideObjectiveManager.Instance = null;
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }

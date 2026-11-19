@@ -126,6 +126,15 @@ public class PlayerHUDController : MenuBase
         mapCam.InitMinimapCamera();
     }
 
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+        if (healthAnimCoroutine != null)
+        {
+            StopCoroutine(healthAnimCoroutine);
+            healthAnimCoroutine = null;
+        }
+    }
 
     /// <summary>
     /// Sets ability images
@@ -294,6 +303,9 @@ public class PlayerHUDController : MenuBase
     /// </summary>
     private void UpdateGameTimerText()
     {
-        timerText.text = $"{GameTimerManager.Instance.GetRoundedGameTime()}";
+        if (GameTimerManager.Instance != null && timerText != null)
+        {
+            timerText.text = $"{GameTimerManager.Instance.GetRoundedGameTime()}";
+        }
     }
 }

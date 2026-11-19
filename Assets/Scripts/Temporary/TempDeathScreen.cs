@@ -61,10 +61,12 @@ public class TempDeathScreen : MonoBehaviour
         GameTimerManager.Instance = null;
         MainCameraManager.Instance = null;
         MapManager.Instance = null;
-        PlayerManager.Instance = null;
         ControllerUIService.Instance = null;
         MouseUIService.Instance = null;
         TooltipUIService.Instance = null;
+        SideObjectiveManager.Instance = null;
+        PlayerManager.Instance = null;
+
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 
