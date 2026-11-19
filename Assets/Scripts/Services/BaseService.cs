@@ -31,6 +31,10 @@ public class BaseService : MonoBehaviour
         await Task.CompletedTask;
     }
 
+    /// <summary>
+    /// deconstructs this service
+    /// </summary>
+    /// <returns></returns>
     public async virtual Awaitable DeconstructService()
     {
         //if cancelled, stop here

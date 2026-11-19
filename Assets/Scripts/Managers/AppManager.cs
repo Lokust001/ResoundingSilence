@@ -59,6 +59,9 @@ public class AppManager : MonoBehaviour
         GenericPublicEvents.RestartGame += DeconstructManagers;
     }
 
+    /// <summary>
+    /// unsubscribes from public events
+    /// </summary>
     private void OnDestroy()
     {
         GenericPublicEvents.RestartGame -= DeconstructManagers;
@@ -96,7 +99,9 @@ public class AppManager : MonoBehaviour
         }
     }
 
-
+    /// <summary>
+    /// Deconstructs every manager
+    /// </summary>
     private async void DeconstructManagers()
     {
         foreach (BaseManager man in initializedManagers)

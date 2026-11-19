@@ -58,6 +58,10 @@ public class BaseManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// deconstructs every service, then deconstructs itself
+    /// </summary>
+    /// <returns></returns>
     public async Awaitable DeconstructManager()
     {
         foreach (BaseService service in initializedServices)
