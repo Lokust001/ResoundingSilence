@@ -290,7 +290,7 @@ public class UpgradeTileGrid
                     break;
                 case PinScriptable.WeaponStatToChange.GlassCannon:
                     damagebuff += (GetBuffAmount(pin, thisTile) / 100);
-                    DamageResistance *= pin.SecondModifier / 100;
+                    DamageResistance *= 1 + (pin.SecondModifier / 100);
                     break;
                 case PinScriptable.WeaponStatToChange.knockbackResistance:
                     knockbackAmount *= (100 - GetBuffAmount(pin, thisTile)) / 100;
