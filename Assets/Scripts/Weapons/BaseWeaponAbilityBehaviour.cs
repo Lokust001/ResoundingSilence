@@ -1,7 +1,7 @@
 /******************************************************************************
  * Author: Brad Dixon
  * Contributors:
- * Last Modified: 11/10/2026
+ * Last Modified: 11/18/2026
  * Brief: This script now controlls the ability functionality for weapons.
  * This way, abilities can have changes made to them while someone else changes weapon attacks.
  * TODO: Add ability functionality as needed.
@@ -257,12 +257,12 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
             {
                 StartCoroutine(AttackDelay());
             }
-            if (spawnAbilityOneProjectile)
+            else if (spawnAbilityOneProjectile)
             {
                 spawnAbilityOneProjectile = false;
                 CastingAbility();
             }
-            if (spawnAbilityTwoProjectile)
+            else
             {
                 spawnAbilityTwoProjectile = false;
                 CastingAbility();
@@ -333,12 +333,12 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
             {
                 StartCoroutine(AttackDelay());
             }
-            if (abilityOneActive)
+            else if (abilityOneActive)
             {
                 abilityOneActive = false;
                 CastingAbility();
             }
-            if (abilityTwoActive)
+            else
             {
                 abilityTwoActive = false;
                 CastingAbility();
@@ -363,7 +363,14 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
             currentAbilityIndex = abilityOneIndex;
             if (ThisWeaponData.editableAbilities[abilityOneIndex].HasPreview)
             {
-                AimingAbility();
+                if (aimingAbilityOne)
+                {
+                    AimingAbility();
+                }
+                else
+                {
+                    activePreview.SetActive(false);
+                }
             }
             else
             {
@@ -404,7 +411,14 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
             currentAbilityIndex = abilityTwoIndex;
             if (ThisWeaponData.editableAbilities[currentAbilityIndex].HasPreview)
             {
-                AimingAbility();
+                if (aimingAbilityTwo)
+                {
+                    AimingAbility();
+                }
+                else
+                {
+                    activePreview.SetActive(false);
+                }
             }
             else
             {
@@ -520,6 +534,14 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
         if (ThisWeaponData.editableAbilities[currentAbilityIndex].HasProjectile)
         {
             activePreview.SetActive(false);
+            if(currentAbilityIndex == abilityOneIndex)
+            {
+                abilityOneActive = false;
+            }
+            else
+            {
+                abilityTwoActive = false;
+            }
         }
         else
         {
@@ -536,6 +558,17 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     /// <returns></returns>
     protected IEnumerator AbilityDamage(int abilityIndex)
     {
+        if(!ThisWeaponData.editableAbilities[abilityIndex].CancelOnRecast)
+        {
+            if (currentAbilityIndex == abilityOneIndex)
+            {
+                abilityOneActive = false;
+            }
+            else
+            {
+                abilityTwoActive = false;
+            }
+        }
         GameObject tempAbility = Instantiate(abilityAOEs[currentAbilityIndex], activePreview.transform.position, activePreview.transform.rotation);
 
         GameObject tempAbilityVfx = new GameObject();
@@ -683,6 +716,18 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
             }
 
         } while (elapsed < ThisWeaponData.editableAbilities[abilityIndex].AbilityDuration);
+
+        if (ThisWeaponData.editableAbilities[abilityIndex].CancelOnRecast)
+        {
+            if (currentAbilityIndex == abilityOneIndex)
+            {
+                abilityOneActive = false;
+            }
+            else
+            {
+                abilityTwoActive = false;
+            }
+        }
 
         Destroy(tempAbility);
     }
