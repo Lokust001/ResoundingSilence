@@ -259,7 +259,7 @@ public class UpgradeTileGrid
                     damagebuff += (GetBuffAmount(pin, thisTile) / 100);
                     break;
                 case PinScriptable.WeaponStatToChange.AttackSpeed:
-                    AttackSpeedBuff *= (100 - GetBuffAmount(pin, thisTile)) / 100;
+                    AttackSpeedBuff += (GetBuffAmount(pin, thisTile)) / 100;
                     break;
                 case PinScriptable.WeaponStatToChange.Lifesteal:
                     lifestealBuff += (GetBuffAmount(pin, thisTile) / 100);
@@ -271,7 +271,7 @@ public class UpgradeTileGrid
                     AbilityDamageBuff += (GetBuffAmount(pin, thisTile) / 100);
                     break;
                 case PinScriptable.WeaponStatToChange.AbilityCooldown:
-                    AbilityCooldown += (GetBuffAmount(pin, thisTile)) / 100;
+                    AbilityCooldown *= (100 - GetBuffAmount(pin, thisTile)) / 100;
                     break;
                 case PinScriptable.WeaponStatToChange.projectileSpeed:
                     ProjectileSpeed += (GetBuffAmount(pin, thisTile) / 100);
