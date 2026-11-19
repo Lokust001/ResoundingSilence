@@ -1,15 +1,17 @@
 /*
 * Author: Tyler
 * Contributors: Brenden, Brad Dixon
-* Last Modified: 11/6/2026
+* Last Modified: 11/17/2026
 * Summary: This is a database that will hold all of the data needed mid run.
 * To Do:   N/A
 */
 
-using NaughtyAttributes;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NaughtyAttributes;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 [System.Serializable]
 public struct LevelUpData
@@ -102,6 +104,8 @@ public class MidRunDataManager : BaseManager
 
     public List<BaseWeaponScriptable> equippedWeapons { get; private set; } = new(2);
 
+    public List<WeaponStatBuffs> WeaponStats { get; private set; } = new(2);
+
     [HideInInspector]
     public weaponOnGround weaponSwappingContainer;
 
@@ -111,10 +115,56 @@ public class MidRunDataManager : BaseManager
     [SerializeField, ShowIf(nameof(EnableTestingMode))]
     private List<PinScriptable> testingPinInventory = new();
 
+    #region TerotVariables
+    [SerializeField, Foldout("Tarot Variables")] bool MagicianBool;
+    [SerializeField, Tooltip("Where the player will stop scaling, in %, base damage is 100"), Foldout("Tarot Variables")] int MagicianMaxDamageBuff;
+    [SerializeField, Tooltip("Where the damage buff will be at after the player takes damage, in %, base damage is 100"), Foldout("Tarot Variables")] int MagicianMinDamageBuff;
+    [SerializeField, Tooltip("How long between the ticks of buffs, in seconds"), Foldout("Tarot Variables")] float MagicianTimeBetween;
+    [SerializeField, Tooltip("How much gets added each tick off time undamaged, in %, no scaling would be 0"), Foldout("Tarot Variables")] int MagicianAmountAdded;
+    [HideInInspector] public float MagicianDamageBuff = 1.0f;
+
+    [SerializeField, Foldout("Tarot Variables")] bool DevilBool;
+    [SerializeField, Tooltip("Where the player will stop scaling, in %, base is 100 damage"), Foldout("Tarot Variables")] int DevilMaxDamageBuff;
+    [SerializeField, Tooltip("Where the damage buff will be at when hitting the min health missing threshold, in %, base is 100 damage"), Foldout("Tarot Variables")] int DevilMinDamageBuff;
+    [SerializeField, Tooltip("what percent health does the player have the max damage boost"), Foldout("Tarot Variables")] int DevilMaxBuffHealthPercent;
+    [SerializeField, Tooltip("What percent health does the player have to start giving damage buff"), Foldout("Tarot Variables")] int DevilMinBuffHealthPercent;
+    [HideInInspector] public float DevilDamageBuff = 1.0f;
+
+    [SerializeField, Foldout("Tarot Variables")] bool TowerBool;
+    [SerializeField, Tooltip("How much extra damage the player does in %, 100 would be no extra damage"), Foldout("Tarot Variables")] int TowerDamageOutBuff;
+    [SerializeField, Tooltip("How much extra damage the player take in %, 100 would be no extra damage"), Foldout("Tarot Variables")] int TowerDamageInBuff;
+
+    [SerializeField, Foldout("Tarot Variables")] bool HermitBool;
+    [SerializeField, Tooltip("How much extra damage will the player do Fully Isolated in %, 100 is base damage"), Foldout("Tarot Variables")] int HermitMaxDamageBuff;
+    [SerializeField, Tooltip("How much % damage gets removed by every close enemy"), Foldout("Tarot Variables")] int HermitBuffRemovedPerEnemy;
+    [SerializeField, Tooltip("How low the damage buff can get in %, 100 is base damage"), Foldout("Tarot Variables")] int HermitMinDamageBuff;
+    [HideInInspector] public float HermitDamageBuff = 1.0f;
+    List<Enemy> HermitEnemyList = new List<Enemy>();
+    #endregion
+
     [Button]
     void GiveXP()
     {
         GainXP(GiveXpAmount);
+    }
+
+    /// <summary>
+    /// unsubscribes to the hermit event
+    /// </summary>
+    private void OnDestroy()
+    {
+        PlayerManager.Instance.player.HermitTrigger.PlayerTriggerActivated -= CalculateHermit;
+    }
+    /// <summary>
+    /// gets called when player manager is set up so connect the hermit event up
+    /// </summary>
+    public void connectHermit()
+    {
+        PlayerManager.Instance.player.HermitTrigger.PlayerTriggerActivated += CalculateHermit;
+        if (HermitBool)
+        {
+            CalculateHermit(null, false);
+        }
     }
 
     /// <summary>
@@ -134,6 +184,9 @@ public class MidRunDataManager : BaseManager
             Destroy(this);
         }
 
+        WeaponStats.Add(null);
+        WeaponStats.Add(null);
+
         pinInventory.Clear();
         if (EnableTestingMode && testingPinInventory.Count > 0)
         {
@@ -150,8 +203,65 @@ public class MidRunDataManager : BaseManager
         UnequipAllWeapons();
 
         GenericPublicEvents.EquipWeaponInSlot += EquipWeaponInSlot;
-
+        if (MagicianBool)
+        {
+            StartCoroutine(Magician());
+        }
         await Task.CompletedTask;
+    }
+
+
+    /// <summary>
+    /// gets all the weaponStatBuffs that are on the weapons
+    /// </summary>
+    public void getWeaponStats()
+    {
+        foreach (var statbuff in GameObject.FindObjectsByType<WeaponStatBuffs>())
+        {
+            if (equippedWeapons[0] = statbuff.weaponScriptable)
+            {
+                WeaponStats[0] = statbuff;
+            }
+            if (equippedWeapons[1] = statbuff.weaponScriptable)
+            {
+                WeaponStats[1] = statbuff;
+            }
+        }
+        if (TowerBool)
+        {
+            foreach (var stats in WeaponStats)
+            {
+                if (stats != null)
+                {
+                    stats.TowerDamageBuff = (float)TowerDamageOutBuff / 100;
+                    stats.TowerDamageResistance = (float)TowerDamageOutBuff / 100;
+                }
+            }
+        }
+        if (HermitBool)
+        {
+            foreach (var stats in WeaponStats)
+            {
+                if (stats != null)
+                    stats.HermitDamageBuff = HermitDamageBuff;
+            }
+        }
+        if (DevilBool)
+        {
+            foreach (var stats in WeaponStats)
+            {
+                if (stats != null)
+                    stats.DevilDamageBuff = DevilDamageBuff;
+            }
+        }
+        if (MagicianBool)
+        {
+            foreach (var stats in WeaponStats)
+            {
+                if (stats != null)
+                    stats.MagicianDamageBuff = MagicianDamageBuff;
+            }
+        }
     }
 
     /// <summary>
@@ -199,6 +309,7 @@ public class MidRunDataManager : BaseManager
     {
         pinInventory.Add(pin);
         UIPublicEvents.InventoryUpdated?.Invoke();
+        UIPublicEvents.UpdateCollectionBanner?.Invoke(pin.PinName);
         return pinInventory.Count - 1;
     }
 
@@ -213,10 +324,10 @@ public class MidRunDataManager : BaseManager
         {
             return;
         }
-
         if (equippedWeapons[slot] == null)
         {
             equippedWeapons[slot] = weapon;
+            getWeaponStats();
         }
         else
         {
@@ -274,6 +385,20 @@ public class MidRunDataManager : BaseManager
             return;
         }
 
+        if (amountToChange < 0 && MagicianBool)
+        {
+            MagicianDamageBuff = (float)MagicianMinDamageBuff / 100;
+            foreach (var i in WeaponStats)
+            {
+                if (i != null)
+                {
+                    i.MagicianDamageBuff = MagicianDamageBuff;
+                    i.sendWeaponMods();
+                }
+
+            }
+        }
+
         if (amountToChange > 0)
         {
             //ceil cus we are healing the player
@@ -287,7 +412,48 @@ public class MidRunDataManager : BaseManager
             InputManager.Instance.DisablePlayerInputs();
         }
 
+        if (CurrentPlayerHealth / MaxPlayerHealth < DevilMinBuffHealthPercent / 100f && DevilBool)
+        {
+            if (CurrentPlayerHealth / MaxPlayerHealth < DevilMaxBuffHealthPercent / 100f)
+            {
+                DevilDamageBuff = (float)DevilMaxDamageBuff / 100f;
+            }
+            else
+            {
+                float differanceBetweenminandmaxbuff = DevilMaxDamageBuff - DevilMinDamageBuff;
+                float differanceBetweenminandmaxhealth = DevilMaxBuffHealthPercent - DevilMinBuffHealthPercent;
+                float CurrentPlayerHealthpercent = CurrentPlayerHealth / MaxPlayerHealth;
 
+                float percentHealth = CurrentPlayerHealthpercent - DevilMinBuffHealthPercent;
+                float percentBuff = percentHealth / differanceBetweenminandmaxhealth;
+                float buffamount = percentBuff * differanceBetweenminandmaxbuff;
+                DevilDamageBuff = (float)(Mathf.CeilToInt(DevilMinDamageBuff + buffamount) / 100f);
+                foreach (var i in WeaponStats)
+                {
+                    if (i != null)
+                    {
+                        i.DevilDamageBuff = DevilDamageBuff;
+                        i.sendWeaponMods();
+                    }
+                }
+            }
+        }
+        else
+        {
+            DevilDamageBuff = 1;
+            foreach (var i in WeaponStats)
+            {
+                if (i != null)
+                {
+                    i.DevilDamageBuff = DevilDamageBuff;
+                    i.sendWeaponMods();
+                }
+            }
+        }
+        if (CurrentPlayerHealth >= MaxPlayerHealth)
+        {
+            CurrentPlayerHealth = MaxPlayerHealth;
+        }
         UIPublicEvents.UpdatePlayerHealthSlider?.Invoke();
     }
 
@@ -339,6 +505,9 @@ public class MidRunDataManager : BaseManager
                         break;
                 }
             }
+
+            UIPublicEvents.UpdatePlayerHealthSlider?.Invoke();
+            UIPublicEvents.UpdateCollectionBanner?.Invoke("Level Up!");
         }
 
         UIPublicEvents.UpdatePlayerEXPSlider?.Invoke();
@@ -352,5 +521,82 @@ public class MidRunDataManager : BaseManager
     protected float ConvertToPercentage(float value)
     {
         return value >= 1 ? value / 100 : value;
+    }
+
+    /// <summary>
+    /// runs as often as set and adds damage to the player
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator Magician()
+    {
+        while (MagicianBool)
+        {
+            MagicianDamageBuff += (float)MagicianAmountAdded / 100;
+            if (MagicianDamageBuff > (float)MagicianMaxDamageBuff / 100)
+            {
+                MagicianDamageBuff = (float)MagicianMaxDamageBuff / 100;
+            }
+            foreach (var i in WeaponStats)
+            {
+                if (i != null)
+                {
+                    i.MagicianDamageBuff = MagicianDamageBuff;
+                    i.sendWeaponMods();
+                }
+            }
+            yield return new WaitForSecondsRealtime(MagicianTimeBetween);
+        }
+        yield return null;
+    }
+
+    /// <summary>
+    /// takes in how many enemies are near by and calculates damage buffs accordingly
+    /// </summary>
+    /// <param name="AmountOfEnemies"></param>
+    public void CalculateHermit(Enemy enemy, bool enter)
+    {
+        if (HermitBool)
+        {
+            if (enter)
+            {
+                if (enemy != null && !HermitEnemyList.Contains(enemy))
+                {
+                    HermitEnemyList.Add(enemy);
+                }
+            }
+            else
+            {
+                if (enemy != null && HermitEnemyList.Contains(enemy))
+                {
+                    HermitEnemyList.Remove(enemy);
+                }
+            }
+
+            HermitDamageBuff = (HermitMaxDamageBuff - (HermitEnemyList.Count * HermitBuffRemovedPerEnemy)) / 100f;
+            if (HermitDamageBuff < HermitMinDamageBuff / 100f)
+            {
+                HermitDamageBuff = HermitMinDamageBuff / 100f;
+            }
+            foreach (var i in WeaponStats)
+            {
+                if (i != null)
+                {
+                    i.HermitDamageBuff = HermitDamageBuff;
+                    i.sendWeaponMods();
+                }
+            }
+        }
+        else
+        {
+            HermitDamageBuff = 1.0f;
+            foreach (var i in WeaponStats)
+            {
+                if (i != null)
+                {
+                    i.HermitDamageBuff = HermitDamageBuff;
+                    i.sendWeaponMods();
+                }
+            }
+        }
     }
 }

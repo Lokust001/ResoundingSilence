@@ -39,6 +39,7 @@ public class SettingsMenuController : MenuBase
     private int currentlySelectedTab;
     #endregion
 
+
     #region MenuSettings
 
     /// <summary>
@@ -47,6 +48,10 @@ public class SettingsMenuController : MenuBase
     protected override void MenuOpenedSucessfully()
     {
         UIPublicEvents.SettingsMenuOpened?.Invoke();
+        foreach (GameObject page in settingsPages)
+        {
+            page.SetActive(false);
+        }
         SwitchTab(0);
     }
 
@@ -102,7 +107,7 @@ public class SettingsMenuController : MenuBase
         }
 
         settingsPages[i].SetActive(true);
-        EventSystem.current.SetSelectedGameObject(topOfSettingsPages[i].gameObject);
+        //EventSystem.current.SetSelectedGameObject(topOfSettingsPages[i].gameObject);
 
         if (previousSettingsPage != null && previousSettingsPage != settingsPages[i])
         {

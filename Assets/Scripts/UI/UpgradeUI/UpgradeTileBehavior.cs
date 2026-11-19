@@ -29,6 +29,19 @@ public class UpgradeTileBehavior : ItemHolderSlot
     {
         controller = GetComponentInParent<UpgradeMenuController>();
     }
+    
+    /// <summary>
+    /// requests this glyphs tooltip
+    /// </summary>
+    public override void HoveredOver()
+    {
+        base.HoveredOver();
+
+        if (heldItem == null && tileData.glyph != null)
+        {
+            TooltipUIService.Instance.RequestTooltip(tileData.glyph);
+        }
+    }
 
     #region Tile Generation
 

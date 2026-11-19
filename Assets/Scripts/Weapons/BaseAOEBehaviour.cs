@@ -10,18 +10,22 @@ using System.Collections;
 
 public class BaseAOEBehaviour : MonoBehaviour
 {
-    protected BaseWeaponScriptable weaponRef;
+    protected AoeData weaponRef;
     protected int comboIndex;
+    protected int aoeDamage;
+    protected LayerMask enemyLayer;
 
     /// <summary>
     /// Gets a reference to the copy of the scriptable object the weapon is using
     /// </summary>
     /// <param name="dataRef"></param>
-    public void SetReference(BaseWeaponScriptable dataRef, int cIndex = 0)
+    public void SetReference(AoeData dataRef, int damage, LayerMask lm, int cIndex = 0)
     {
         weaponRef = dataRef;
         comboIndex = cIndex;
-        transform.localScale = new Vector3(weaponRef.AOESize[comboIndex], transform.localScale.y, weaponRef.AOESize[comboIndex]);
+        transform.localScale = new Vector3(weaponRef.AoeSize, transform.localScale.y, weaponRef.AoeSize);
+        aoeDamage = damage;
+        enemyLayer = lm;
 
         StartCoroutine(ActivateAOE());
     }
@@ -32,15 +36,15 @@ public class BaseAOEBehaviour : MonoBehaviour
     /// <returns></returns>
     protected IEnumerator ActivateAOE()
     {
-        yield return new WaitForSeconds(weaponRef.AOEDelay[comboIndex]);
+        yield return new WaitForSeconds(weaponRef.AoeDelay);
 
-        int damage = weaponRef.AOEDuration[comboIndex] > 0 ? Mathf.CeilToInt(weaponRef.AOEDamage[comboIndex] / weaponRef.AOEDamageTicks[comboIndex]) : weaponRef.AOEDamage[comboIndex];
-        float delay = weaponRef.AOEDamageTicks[comboIndex] > 0 ? weaponRef.AOEDuration[comboIndex] / weaponRef.AOEDamageTicks[comboIndex] : 0;
+        int damage = weaponRef.AoeDuration > 0 ? Mathf.CeilToInt(aoeDamage / weaponRef.AoeDamageTicks) : aoeDamage;
+        float delay = weaponRef.AoeDamageTicks > 0 ? weaponRef.AoeDuration / weaponRef.AoeDamageTicks : 0;
         float elapsed = 0;
 
         do
         {
-            Collider[] targets = Physics.OverlapSphere(transform.position, GetComponent<SphereCollider>().radius * weaponRef.AOESize[comboIndex], weaponRef.EnemyLayer);
+            Collider[] targets = Physics.OverlapSphere(transform.position, GetComponent<SphereCollider>().radius * weaponRef.AoeSize, enemyLayer);
 
             foreach(Collider t in targets)
             {
@@ -50,7 +54,7 @@ public class BaseAOEBehaviour : MonoBehaviour
 
             yield return new WaitForSeconds(delay);
             elapsed += delay;
-        } while (elapsed < weaponRef.AOEDuration[comboIndex]);
+        } while (elapsed < weaponRef.AoeDuration);
 
         Destroy(this.gameObject);
     }

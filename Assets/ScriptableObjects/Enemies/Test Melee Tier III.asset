@@ -20,6 +20,7 @@ MonoBehaviour:
   enemyHealth: 3
   enemyATKDmg: 0
   timeBetweenAttacks: 0.8
+  reAggroCooldown: 3
   maxVariabilityDestinationAttempts: 50
   approachDestinationVariabilityDegrees: 1
   retreatDestinationVariabilityDegrees: 0
@@ -33,7 +34,7 @@ MonoBehaviour:
   timeBetweenRangeChecks: 0
   bulletsToFire: 0
   bulletSpreadRadiusDegrees: 0
-  attackChargeDuration: 0.6
+  attackChargeDuration: 0.5
   earlyChargeMaterial: {fileID: 2100000, guid: c160c7aea25a6e043b4eb127b5bec42c, type: 2}
   endChargeMaterial: {fileID: 2100000, guid: f6d5b7e222f01374bb41a79eea5671b5, type: 2}
   attackUptimeDuration: 0.7
@@ -45,3 +46,51 @@ MonoBehaviour:
   retreatHealthPercent: 0
   allyATKIncreasePercent: 0
   allyReducedDmgPercent: 0
+  healthScaling:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 80
+      inSlope: 4
+      outSlope: 4
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 10
+      value: 120
+      inSlope: 4
+      outSlope: 4
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  damageScaling:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 45
+      inSlope: 2.25
+      outSlope: 2.25
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 20
+      value: 90
+      inSlope: 2.25
+      outSlope: 2.25
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4

@@ -34,7 +34,7 @@ MonoBehaviour:
   timeBetweenRangeChecks: 0
   bulletsToFire: 0
   bulletSpreadRadiusDegrees: 0
-  attackChargeDuration: 1.2
+  attackChargeDuration: 0.9
   earlyChargeMaterial: {fileID: 2100000, guid: c160c7aea25a6e043b4eb127b5bec42c, type: 2}
   endChargeMaterial: {fileID: 2100000, guid: f6d5b7e222f01374bb41a79eea5671b5, type: 2}
   attackUptimeDuration: 0.7
@@ -52,17 +52,17 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 80
-      inSlope: 17.5
-      outSlope: 17.5
+      inSlope: 4
+      outSlope: 4
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 4
-      value: 150
-      inSlope: 17.5
-      outSlope: 17.5
+      time: 10
+      value: 120
+      inSlope: 4
+      outSlope: 4
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
@@ -76,17 +76,17 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 25
-      inSlope: 3.75
-      outSlope: 3.75
+      inSlope: 1.25
+      outSlope: 1.25
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 4
-      value: 40
-      inSlope: 3.75
-      outSlope: 3.75
+      time: 20
+      value: 50
+      inSlope: 1.25
+      outSlope: 1.25
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334

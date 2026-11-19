@@ -28,7 +28,7 @@ MonoBehaviour:
   retreatAccuracyThreshold: 0.05
   atkBoostFactor: 0
   dmgReductionFactor: 0
-  bulletTravelSpeed: 12
+  bulletTravelSpeed: 18
   bulletLife: 5
   bulletPrefab: {fileID: 4365726781555918685, guid: 3e66196bf5b5c1840850f414ea65867e, type: 3}
   timeBetweenRangeChecks: 4
@@ -52,17 +52,17 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 100
-      inSlope: 25
-      outSlope: 25
+      inSlope: 5
+      outSlope: 5
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 4
-      value: 200
-      inSlope: 25
-      outSlope: 25
+      time: 10
+      value: 150
+      inSlope: 5
+      outSlope: 5
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
@@ -76,17 +76,17 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 30
-      inSlope: 7.5
-      outSlope: 7.5
+      inSlope: 1.5
+      outSlope: 1.5
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 4
-      value: 60
-      inSlope: 7.5
-      outSlope: 7.5
+      time: 10
+      value: 45
+      inSlope: 1.5
+      outSlope: 1.5
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334

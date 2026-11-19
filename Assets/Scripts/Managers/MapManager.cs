@@ -70,6 +70,6 @@ public class MapManager : BaseManager
     private void SpawnMapLayout()
     {
         int rand = Random.Range(0, maps.Count);
-        spawnedMap = Instantiate(maps[rand], transform);
+        spawnedMap = Instantiate(maps[rand],Vector3.zero, Quaternion.identity, transform);
     }
 }

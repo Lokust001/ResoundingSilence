@@ -1,5 +1,6 @@
 /* Author: Dalsten Yan
- * Last Modified: 9/28/26
+ * Contributors: Brad Dixon
+ * Last Modified: 11/17/26
  * Summary: Supervising enemy script that decides non-physics behaviors & shares enemyData among other scripts
  * TODO: More as needed
  */
@@ -24,15 +25,20 @@ public class Enemy : MonoBehaviour
     private EnemyWalk movementBeahvior;
     private EnemyBuff buffBehavior;
 
+    public GameObject EnemyModel;
+    public Animator EnemyAnimator;
+
     [SerializeField, Header("Debug Variables")]
     private int dmgToTake;
 
     public Action aggroEnemyGroup;
 
     private bool isAggro;
+    [HideInInspector] public bool IsDead;
 
     private bool inMeleeRange;
     private bool inRangedRange;
+    public bool canAttack;
 
     private bool allowNonImmediateBehavior;
 
@@ -44,6 +50,7 @@ public class Enemy : MonoBehaviour
     /// </summary>
     void Awake()
     {
+        canAttack = true;
         actionInterval = new WaitForSeconds(enemyData.timeBetweenRangeChecks);
         deAggroInterval = new WaitForSeconds(enemyData.reAggroCooldown);
         attackBehavior = GetComponentInChildren<EnemyAttack>();
@@ -55,6 +62,11 @@ public class Enemy : MonoBehaviour
         {
             EnableEnemy();
             attackBehavior.EnableAggroChecking();
+        }
+
+        if (EnemyModel != null)
+        {
+            EnemyAnimator = EnemyModel.GetComponent<Animator>();
         }
     }
 
@@ -182,6 +194,10 @@ public class Enemy : MonoBehaviour
     /// </summary>
     public void NextEnemyAction() 
     {
+        if(IsDead)
+        {
+            return;
+        }
         allowNonImmediateBehavior = true;
         //Debug.Log("Melee: " + inMeleeRange + " Ranged: " + inRangedRange);
         if (!inRangedRange && !inMeleeRange)
@@ -205,16 +221,18 @@ public class Enemy : MonoBehaviour
     /// <returns></returns>
     private IEnumerator RepeatedlyCheckShooterRange() 
     {
-        int i = 0;
-        while (isAggro) 
+        if (!IsDead && canAttack)
         {
-            //[Uncomment for debug]
-            //Debug.Log("Behavior Loop # [" + i +"]\t inRanged : " + inRangedRange + " Melee area: " + inMeleeRange);
-            NextEnemyAction();
-            yield return actionInterval;
-            i++;
+            int i = 0;
+            while (isAggro)
+            {
+                //[Uncomment for debug]
+                //Debug.Log("Behavior Loop # [" + i +"]\t inRanged : " + inRangedRange + " Melee area: " + inMeleeRange);
+                NextEnemyAction();
+                yield return actionInterval;
+                i++;
+            }
         }
-        
     }
 
     /// <summary>
@@ -222,6 +240,10 @@ public class Enemy : MonoBehaviour
     /// </summary>
     private void NotInPlayerZones() 
     {
+        if (IsDead)
+        {
+            return;
+        }
         switch (enemyData.enemyType)
         {
             case BaseEnemyScriptable.EnemyType.None:
@@ -253,6 +275,10 @@ public class Enemy : MonoBehaviour
     /// </summary>
     private void RangedZoneEntryBehaviors() 
     {
+        if (IsDead)
+        {
+            return;
+        }
         switch (enemyData.enemyType)
         {
             case BaseEnemyScriptable.EnemyType.None:
@@ -293,6 +319,10 @@ public class Enemy : MonoBehaviour
     /// <param name="activateNotImmediateActions"></param>
     private void MeleeZoneEntryBehaviors() 
     {
+        if (IsDead)
+        {
+            return;
+        }
         switch (enemyData.enemyType)
         {
             case BaseEnemyScriptable.EnemyType.None:
@@ -361,7 +391,28 @@ public class Enemy : MonoBehaviour
         int finalDmgTaken = Mathf.RoundToInt(damageToTake - (damageToTake * enemyData.dmgReductionFactor));
         enemyData.enemyHealth -= finalDmgTaken;
         if (enemyData.enemyHealth <= 0)
-            EnemyDeath();
+        {
+            IsDead = true;
+            GetComponent<CapsuleCollider>().enabled = false;
+            movementBeahvior.LookAtPlayer = false;
+            if (EnemyAnimator != null)
+            {
+                EnemyAnimator.SetTrigger("Dead");
+                if (GetComponent<EnemyWalk>())
+                {
+                    GetComponent<EnemyWalk>().StopApproachingPlayer();
+                }
+            }
+            else
+            {
+                EnemyDeath();
+            }
+        }
+        else
+        {
+            if (EnemyAnimator != null)
+                EnemyAnimator.SetTrigger("Hit");
+        }
 
         if (!isAggro)
             AggroEnemy();
@@ -396,9 +447,29 @@ public class Enemy : MonoBehaviour
     public void EnemyDeath() 
     {
         GenericPublicEvents.EnemyDies?.Invoke(enemyData);
-        //SideObjectiveManager.Instance.AttemptHuntObjectivesProgression(enemyData);
+        GetComponent<RewardGiver>().StartGivingRewards();
         Destroy(gameObject);
     }
 
+    /// <summary>
+    /// Public call for the anim event controller to have the enemy have a chance to move when the attack anim is over.
+    /// </summary>
+    public void WaitToAttack()
+    {
+        canAttack = false;
+        NotInPlayerZones();
+        StartCoroutine(SwitchToAttackDelay());
+    }
+
+    /// <summary>
+    /// Calls the attack function after the attack delay is over
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator SwitchToAttackDelay()
+    {
+        yield return new WaitForSeconds(enemyData.timeBetweenAttacks);
+        canAttack = true;
+        attackBehavior.InitiateAttack();
+    }
 }
 

@@ -1,7 +1,7 @@
 /*
 * Author: Dalsten Yan
 * Contributors: Brad Dixon, Brenden Burtz
-* Last Modified: 10/06/2026
+* Last Modified: 11/18/2026
 * Summary: Player input, stats, and damage are handled here
 * To Do:   Add more variables as needed.
 */
@@ -11,20 +11,15 @@ public class PlayerController : MonoBehaviour
 {
     public float defaultSpeed;
 
-    [HideInInspector]public float moveSpeed;
+    [HideInInspector] public float moveSpeed;
 
     [SerializeField]
     float playerHealth;
 
     [SerializeField]
-    int currentXP;
-
-    [SerializeField]
-    string[] invincibilityLayerNamesToIgnore;
-
-    [SerializeField]
     float invincibilityDuration;
 
+    [Header("Dash")]
     [SerializeField] float BasedashRange;
     float dashRange;
     [SerializeField] float dashDuration;
@@ -32,16 +27,27 @@ public class PlayerController : MonoBehaviour
     [SerializeField] int totalDashes;
     [SerializeField] float chainDashWindow;
 
-
+    [Header("Regen")]
     [SerializeField] float TimeToStartRegen;
     [SerializeField] float RegenTickRate;
     [SerializeField, Tooltip("this is in % of max health")] float BaseRegenAmount;
     float regenAmount;
 
+    [Header("LayerMasks")]
     [Tooltip("What layers the player shouldn't collide with while they are invinvible.")]
     [SerializeField] LayerMask ignoreWhileInvincible;
     [Tooltip("What layers the player shouldn't collide with while they are invinvible.")]
     [SerializeField] LayerMask DashLayersIgnore;
+
+    [SerializeField] LayerMask stopKnockbackLayers;
+
+    private const float WALL_COLLISION_CAST_OFFSET = 0.25f;
+
+    private Vector3 wallOffset;
+
+    [SerializeField] bool chariotBool;
+
+    public TriggerObjects HermitTrigger;
 
     #region Debug Console Variables
 
@@ -57,7 +63,9 @@ public class PlayerController : MonoBehaviour
 
     Coroutine dmgCoroutine;
     Coroutine knockbackCoroutine;
+    Coroutine dashingCoroutine;
     Coroutine dashWindowCoroutine;
+    Coroutine dashingCooldownCoroutine;
     Coroutine regenCoroutine;
 
     Coroutine playerMovementCoroutine;
@@ -67,7 +75,7 @@ public class PlayerController : MonoBehaviour
     //Serialized so you can test more easily right now. Once the game has feedback for when a dash is ready, these shouldn't be serialized
     [SerializeField] bool canDash;
     [SerializeField] bool chainDashing;
-    
+
     int currentDash;
 
     [SerializeField]
@@ -78,6 +86,11 @@ public class PlayerController : MonoBehaviour
     float healingPotency = 1.0f;
     float damageResistance = 1.0f;
     float KnockbackAmount = 1.0f;
+
+    private Vector3 topColliderLocalPos;
+    private Vector3 bottomColliderLocalPos;
+
+    ForceMode dashForceMode;
     #endregion
 
     #region Unity Methods
@@ -106,6 +119,7 @@ public class PlayerController : MonoBehaviour
 
         meleeRangeTrigger.PlayerTriggerActivated -= MeleeZoneHandler;
         rangedRangeTrigger.PlayerTriggerActivated -= RangedZoneHandler;
+
     }
 
     /// <summary>
@@ -113,17 +127,27 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     void Start()
     {
+        dashForceMode = ForceMode.VelocityChange;
         rigidbody = GetComponent<Rigidbody>();
         playerModelCollider = GetComponent<CapsuleCollider>();
+
+        float modelThickness = playerModelCollider.height / 2 - playerModelCollider.radius;
+        topColliderLocalPos = playerModelCollider.center - Vector3.up * modelThickness;
+        bottomColliderLocalPos = playerModelCollider.center + Vector3.up * modelThickness;
+
+        if (chariotBool)
+            totalDashes = 2;
 
         moveSpeed = defaultSpeed;
         dashRange = BasedashRange;
         regenAmount = BaseRegenAmount;
 
         //Defaults to right in case player dashes before ever moving
-        dashDir = Vector3.right;
-        currentDash = 0;
+        dashDir = Vector3.forward;
+        currentDash = totalDashes;
         canDash = true;
+
+        wallOffset = new(0, 0, WALL_COLLISION_CAST_OFFSET);
 
         //Original movement speed is zero + start move coroutine
         PlayerInputEnded();
@@ -192,7 +216,7 @@ public class PlayerController : MonoBehaviour
     /// Helper method to update PlayerVelocity based on user input
     /// </summary>
     /// <param name="moveDirection"></param>
-    void PlayerInputStarted(Vector2 moveDirection) 
+    void PlayerInputStarted(Vector2 moveDirection)
     {
         playerVelocity.x = moveDirection.x;
         playerVelocity.z = moveDirection.y;
@@ -204,7 +228,7 @@ public class PlayerController : MonoBehaviour
     /// Helper method to completely stop velocity when no more input is captured.
     /// First it stops the player's active velocity, then recorded velocity PlayerVelocity
     /// </summary>
-    void PlayerInputEnded() 
+    void PlayerInputEnded()
     {
         playerVelocity.x = 0;
         playerVelocity.z = 0;
@@ -213,7 +237,7 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// Sets the linearVelocity to 0 to stop physics from affecting the player without setting isKinematic to true
     /// </summary>
-    private void NegateAllForces() 
+    private void NegateAllForces()
     {
         rigidbody.linearVelocity = Vector3.zero;
     }
@@ -223,11 +247,97 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void PlayerDashPressed()
     {
-        //Makes sure you can't dash while in the air
-        if (Mathf.Abs(rigidbody.linearVelocity.y) <= 0.01 && (canDash || chainDashing))
+        if (currentDash > 0)
         {
-             StartCoroutine(PlayerDash());
+            dashingCoroutine ??= StartCoroutine(RigidBodyPlayerDash());
         }
+    }
+    /// <summary>
+    /// Opens up a window to chaindash, otherwise it takes away your extra dashes and forces you to go on cooldown
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator ChainDashWindow()
+    {
+
+        //Kept as countdown timer for future UI-related tasks
+        float currentDashWindowTime = chainDashWindow;
+
+        while (currentDashWindowTime > 0)
+        {
+            yield return new WaitForFixedUpdate();
+            currentDashWindowTime -= Time.fixedDeltaTime;
+        }
+
+        currentDash = 0;
+        dashingCooldownCoroutine = StartCoroutine(DashingRecharge(dashCooldown));
+    }
+
+    /// <summary>
+    /// Adds a dash to the player by adding a force to the rigidbody
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator RigidBodyPlayerDash()
+    {
+        //Decrement the number of dashes before anything else
+        currentDash--;
+
+        //Calculate and cache local variables
+        Vector3 maximumDashForce = dashDir * dashRange;
+
+        //Setup a timer
+        float currentDashTime = 0;
+
+        //Become intangible to dash-avoidant layers
+        rigidbody.excludeLayers += ignoreWhileInvincible;
+
+        while (currentDashTime < dashDuration)
+        {
+            //Lerp the velocity of the player so that it starts out very high and then goes completely to zero
+            Vector3 currentDashVelocity = Vector3.Lerp(maximumDashForce, Vector3.zero, currentDashTime / dashDuration);
+
+            //Add the lerped velocity to the player so that they receive those forces
+            rigidbody.AddForce(currentDashVelocity, dashForceMode);
+
+
+            yield return new WaitForFixedUpdate();
+
+            currentDashTime += Time.fixedDeltaTime;
+        }
+
+        //Stop being intangible to dash-avoidant layers
+        rigidbody.excludeLayers -= ignoreWhileInvincible;
+
+        //This coroutine will be active if a window for chaindash is active
+        if (dashingCooldownCoroutine != null) 
+        {
+            //Cancel the window since player dashed
+            StopCoroutine(dashingCooldownCoroutine);
+        }
+
+        //Coroutine will be chaindash if player still has dashes available,
+        //otherwise, call recharge coroutine
+        dashingCooldownCoroutine = StartCoroutine(currentDash > 0 ? ChainDashWindow() : DashingRecharge(dashCooldown));
+
+        dashingCoroutine = null;
+    }
+
+    /// <summary>
+    /// Recharges the dash after a set amount of time
+    /// </summary>
+    /// <param name="rechargeTime"></param>
+    /// <returns></returns>
+    private IEnumerator DashingRecharge(float rechargeTime)
+    {
+        //Coundown timer instead of WaitForSeconds for future UI work
+        float dashRechargeCountdown = dashCooldown;
+
+        while (dashRechargeCountdown > 0)
+        {
+            yield return null;
+            dashRechargeCountdown -= Time.deltaTime;
+        }
+        currentDash = totalDashes;
+        dashingCooldownCoroutine = null;
     }
 
     /// <summary>
@@ -243,29 +353,39 @@ public class PlayerController : MonoBehaviour
 
         ++currentDash;
 
-        if(currentDash > 1)
+        if (currentDash > 1)
         {
             StopCoroutine(dashWindowCoroutine);
         }
 
         Vector3 dashPoint = Physics.Raycast(transform.position, dashDir.normalized, out RaycastHit hit, dashRange, ~DashLayersIgnore) ? hit.point : transform.position + (dashDir.normalized * dashRange);
-        if(hit.collider != null)
-        Debug.Log(hit.collider.name);
+        if (hit.collider != null)
+            Debug.Log(hit.collider.name);
         StopCoroutine(playerMovementCoroutine);
 
-        for (float t = 0; t < dashDuration; t += Time.deltaTime)
+        Vector3 maximumDashForce = dashDir * dashRange;
+        Vector3 currentDashVelocity = maximumDashForce;
+
+        float currentDashTime = 0;
+
+
+        while (currentDashTime < dashDuration)
         {
-            if (transform.position == dashPoint)
-            {
-                break;
-            }
-            transform.position = (Vector3.MoveTowards(transform.position, dashPoint, (t / dashDuration)));
-            yield return null;
+
+            currentDashVelocity = Vector3.Lerp(maximumDashForce, Vector3.zero, currentDashTime / dashDuration);
+
+            rigidbody.AddForce(currentDashVelocity, dashForceMode);
+
+            //Debug.Log("DashForce: " + currentDashVelocity + " Actual Force: " + velocityDifference + " Current Velocity: " + rigidbody.linearVelocity);
+
+            yield return new WaitForFixedUpdate();
+
+            currentDashTime += Time.fixedDeltaTime;
         }
 
         rigidbody.excludeLayers -= ignoreWhileInvincible;
 
-        if(currentDash < totalDashes)
+        if (currentDash < totalDashes)
         {
             dashWindowCoroutine = StartCoroutine(TimeToChainDash());
         }
@@ -310,9 +430,9 @@ public class PlayerController : MonoBehaviour
     /// Coroutine that continuously runs and moves the player unless disabled by external factors.
     /// </summary>
     /// <returns></returns>
-    private IEnumerator MovePlayerCoroutine() 
+    private IEnumerator MovePlayerCoroutine()
     {
-        while (MoveActive) 
+        while (MoveActive)
         {
             //Propagate calculated velocity to rigidbody & make player move
             rigidbody.linearVelocity = new Vector3(playerVelocity.x * moveSpeed, rigidbody.linearVelocity.y, playerVelocity.z * moveSpeed);
@@ -325,7 +445,7 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// Public method to halt all player movement
     /// </summary>
-    public void StopPlayerMovementAndInput() 
+    public void StopPlayerMovementAndInput()
     {
         StopCoroutine(playerMovementCoroutine);
         PlayerInputEnded();
@@ -334,7 +454,7 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// Public method to start moving the player once again
     /// </summary>
-    public void RestartPlayerMovementAndInput() 
+    public void RestartPlayerMovementAndInput()
     {
         playerMovementCoroutine = StartCoroutine(MovePlayerCoroutine());
     }
@@ -351,7 +471,7 @@ public class PlayerController : MonoBehaviour
         }
         if (InGodMode)
             return;
-        
+
         //If the player is already damaged/invicible at the moment
         if (dmgCoroutine != null)
             return;
@@ -369,30 +489,51 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
+    /// Provides information about whether or not the player is invincible
+    /// </summary>
+    /// <returns></returns>
+    public bool PlayerIsInvincible()
+    {
+        return dmgCoroutine != null;
+    }
+
+    /// <summary>
     /// Simulate the player not being able to take any damage visually
     /// or collide with any enemies for a short time
     /// </summary>
     /// <returns></returns>
-    private IEnumerator PlayerInvincibilityFrames() 
+    private IEnumerator PlayerInvincibilityFrames()
     {
         //Make the player intangible to collisions from specified layers
-        SetInvincibilityIntangible(true);
+        SetPlayerInvincibility(true);
 
         Renderer playerRenderer = GetComponent<Renderer>();
         Color original = playerRenderer.material.color;
         playerRenderer.material.color = Color.red;
         float timer = 0;
 
-        while (timer < invincibilityDuration) 
+        while (timer < invincibilityDuration)
         {
             timer += Time.deltaTime;
-            
+
             yield return null;
         }
-        SetInvincibilityIntangible(false);
+        SetPlayerInvincibility(false);
+        ResetRangeTriggers();
 
         playerRenderer.material.color = original;
         dmgCoroutine = null;
+    }
+
+    /// <summary>
+    /// Resets the Trigger when enemies become too close
+    /// </summary>
+    private void ResetRangeTriggers()
+    {
+        meleeRangeTrigger.SetColliderComponentEnabled(false);
+        meleeRangeTrigger.SetColliderComponentEnabled(true);
+        rangedRangeTrigger.SetColliderComponentEnabled(false);
+        rangedRangeTrigger.SetColliderComponentEnabled(true);
     }
 
     /// <summary>
@@ -400,12 +541,14 @@ public class PlayerController : MonoBehaviour
     /// and either toggles the collision on or off for those layers all at once
     /// </summary>
     /// <param name="value"></param>
-    private void SetInvincibilityIntangible(bool value) 
+    private void SetPlayerInvincibility(bool value)
     {
-        foreach (string layerName in invincibilityLayerNamesToIgnore) 
-        {
-            Physics.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer(layerName), value);
-        }
+        if (value)
+            rigidbody.excludeLayers += ignoreWhileInvincible;
+        else
+            rigidbody.excludeLayers -= ignoreWhileInvincible;
+
+        rigidbody.WakeUp();
     }
 
     /// <summary>
@@ -415,17 +558,42 @@ public class PlayerController : MonoBehaviour
     /// <returns></returns>
     public IEnumerator TakePlayerKnockback((Vector3 knockbackDistance, float knockbackDuration) knockbackInfo)
     {
+        //Nullify the insane force that would've otherwise been applied by the enemy
+        NegateAllForces();
+
         //Stop player input
         StopPlayerMovementAndInput();
 
         //Retrieve a local copy of the player's transform
         Transform playerTransform = transform;
 
+
         //Calculate the knockback destination, which is the player's current position plus its calculated offset after knockback
         Vector3 knockbackDestination = playerTransform.position + (knockbackInfo.knockbackDistance * KnockbackAmount);
 
+        Vector3 knockbackDirection = (knockbackDestination - playerTransform.position).normalized;
+
         //Total distance between the player and the destination of the knockback
         float maxDistance = Vector3.Distance(playerTransform.position, knockbackDestination);
+
+        Vector3 physicsCastWallOffset = WALL_COLLISION_CAST_OFFSET * knockbackDirection;
+
+        //Calculate new world transforms for the top and bottom half of the player collider during this moment in time
+        Vector3 point1 = transform.TransformPoint(topColliderLocalPos) - physicsCastWallOffset;
+        Vector3 point2 = transform.TransformPoint(bottomColliderLocalPos) - physicsCastWallOffset;
+
+        //CapsuleCast to see if there is enough space to be knocked back towards the destination
+        //(Kept in a variable instead of if statement to ease future debugging)
+        bool insufficientKnockbackSpace = Physics.CapsuleCast(point1, point2, playerModelCollider.radius, knockbackDirection,
+            out RaycastHit hit, maxDistance + WALL_COLLISION_CAST_OFFSET, stopKnockbackLayers, QueryTriggerInteraction.Ignore);
+
+        //If there is not enough space for the player knockback to travel all the way to the destination,
+        //Use the farthest point instead
+        if (insufficientKnockbackSpace)
+        {
+            knockbackDestination = hit.point;
+            maxDistance = Vector3.Distance(playerTransform.position, knockbackDestination);
+        }
 
         //Tracker for remaining distance between player and knockback position
         float distance = maxDistance;
@@ -444,7 +612,7 @@ public class PlayerController : MonoBehaviour
          *  & also the dynamicKnockbackSpeed
          */
 
-        
+
         //The constant speed that would allow the player to move to knockbackDestination linearly
         float linearUniformKnockbackSpeed = maxDistance / timeLimit;
 
@@ -457,15 +625,12 @@ public class PlayerController : MonoBehaviour
         //The maximum speed the will initially be applied to the player
         float maximumKnockbackSpeed = 2 * linearUniformKnockbackSpeed;
 
-        //Nullify the insane force that would've otherwise been applied by the enemy
-        NegateAllForces();
 
         //For the duration of knockback,
         //Incrementally move the player towards the destination distance while dynamically calculating its speed on every FixedUpdate tick
         //The dynamic speed allows for the player to be initially fast, then slow down
-        while (timer < timeLimit) 
+        while (timer < timeLimit)
         {
-
             //Tick FixedUpdate while we haven't reached duration yet
             //On the initial start of this loop, the time would be 0, so the player wouldn't move anywhere
             //To maintain as much precision as possible, wait first, and then move the player
@@ -474,7 +639,7 @@ public class PlayerController : MonoBehaviour
             timer += fixedUpdateTick;
             //0 to 1
             float timerT = timer / timeLimit;
-            
+
             //Calculate new distance and time-dependent knockback force
             distance = Vector3.Distance(playerTransform.position, knockbackDestination);
 
@@ -491,8 +656,10 @@ public class PlayerController : MonoBehaviour
         //Nullify once more the insane force that would've otherwise been applied by the enemy
         NegateAllForces();
 
-        //The final move for 100% accuracy
-        rigidbody.MovePosition(knockbackDestination);
+        //The final move for 100% accuracy, only move if there's enough space,
+        //otherwise don't clip into the wall
+        if (!insufficientKnockbackSpace)
+            rigidbody.MovePosition(knockbackDestination);
 
         //Let player move again
         RestartPlayerMovementAndInput();
@@ -518,7 +685,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     /// <param name="enemy"></param>
     /// <param name="enteredTrigger"></param>
-    private void MeleeZoneHandler(Enemy enemy, bool enteredTrigger) 
+    private void MeleeZoneHandler(Enemy enemy, bool enteredTrigger)
     {
         _ = enemy;
         enemy.SetInMeleeArea(enteredTrigger);
@@ -528,18 +695,9 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     /// <param name="enemy"></param>
     /// <param name="enteredTrigger"></param>
-    private void RangedZoneHandler(Enemy enemy, bool enteredTrigger) 
+    private void RangedZoneHandler(Enemy enemy, bool enteredTrigger)
     {
         _ = enemy;
         enemy.SetInRangedArea(enteredTrigger);
-    }
-
-    /// <summary>
-    /// Used to gain XP after defeating an enemy
-    /// </summary>
-    /// <param name="xpAmount"></param>
-    public void GainXP(int xpAmount) 
-    {
-        currentXP += xpAmount;
     }
 }
