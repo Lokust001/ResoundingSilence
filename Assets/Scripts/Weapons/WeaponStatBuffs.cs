@@ -215,7 +215,7 @@ public class WeaponStatBuffs : MonoBehaviour
                 if (!j.HasLifesteal)
                 {
                     j.HasLifesteal = true;
-                    j.WeaponLifeSteal.LifestealPercent = lifestealPercent;
+                    j.WeaponLifeSteal.LifestealPercent = (lifestealPercent- 1) * 100;
                     continue;
                 }
 
