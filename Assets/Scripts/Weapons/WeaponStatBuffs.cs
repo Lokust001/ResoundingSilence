@@ -207,19 +207,40 @@ public class WeaponStatBuffs : MonoBehaviour
     /// </summary>
     public void UpdateLifestealPercent()
     {
-        foreach (AttackData i in weaponScriptable.ComboAttacks)
+        if(lifestealPercent > 1.01)
         {
-            foreach (BurstData j in i.BurstAttacks)
+            foreach (AttackData i in weaponScriptable.ComboAttacks)
             {
-                //If adding lifesteal, let the attack know if has lifesteal now
-                if (!j.HasLifesteal)
+                foreach (BurstData j in i.BurstAttacks)
                 {
-                    j.HasLifesteal = true;
-                    j.WeaponLifeSteal.LifestealPercent = (lifestealPercent- 1) * 100;
-                    continue;
-                }
+                    //If adding lifesteal, let the attack know if has lifesteal now
+                    if (!j.BaseHasLifesteal)
+                    {
+                        j.HasLifesteal = true;
+                        j.WeaponLifeSteal.LifestealPercent = (lifestealPercent - 1) * 100;
+                        continue;
+                    }
 
-                j.WeaponLifeSteal.LifestealPercent = j.WeaponLifeSteal.BaseLifestealPercent * lifestealPercent;
+                    j.WeaponLifeSteal.LifestealPercent = j.WeaponLifeSteal.BaseLifestealPercent * lifestealPercent;
+                }
+            }
+        }
+        else
+        {
+            foreach (AttackData i in weaponScriptable.ComboAttacks)
+            {
+                foreach (BurstData j in i.BurstAttacks)
+                {
+                    //If adding lifesteal, let the attack know if has lifesteal now
+                    if (!j.BaseHasLifesteal)
+                    {
+                        j.HasLifesteal = false;
+                        j.WeaponLifeSteal.LifestealPercent = 0;
+                        continue;
+                    }
+
+                    j.WeaponLifeSteal.LifestealPercent = j.WeaponLifeSteal.BaseLifestealPercent;
+                }
             }
         }
     }

@@ -454,6 +454,7 @@ public class BaseWeaponScriptable : BaseScriptableObject
                 j.WeaponAoe.BaseAoeDelay = j.WeaponAoe.AoeDelay;
                 j.WeaponAoe.BaseAoeDuration = j.WeaponAoe.AoeDuration;
                 j.WeaponAoe.BaseAoeSize = j.WeaponAoe.AoeSize;
+                j.BaseHasLifesteal = j.HasLifesteal;
                 j.WeaponAoe.BaseMinAoeDamagePercent = j.WeaponAoe.MinAoeDamagePercent;
                 j.BurstRangedAttack.BurstPierce.BaseMinPierceDamagePercent = j.BurstRangedAttack.BurstPierce.MinPierceDamagePercent;
                 j.BurstRangedAttack.BurstPierce.BasePierceAmount = j.BurstRangedAttack.BurstPierce.PierceAmount;
@@ -511,6 +512,7 @@ public class BurstData
     [HideInInspector] public float BaseTimeTillNextBurst;
 
     public bool HasLifesteal;
+    [HideInInspector]public bool BaseHasLifesteal;
     [ShowIf(nameof(HasLifesteal)), AllowNesting]
     public LifestealData WeaponLifeSteal;
 

@@ -479,7 +479,7 @@ public class PlayerController : MonoBehaviour
         //Start a damage/invincibility couroutine
         dmgCoroutine ??= StartCoroutine(PlayerInvincibilityFrames());
 
-        MidRunDataManager.Instance.ChangePlayerHealth((int)(-damage * damageResistance));
+            MidRunDataManager.Instance.ChangePlayerHealth((int)(-damage * damageResistance));
 
         //If there is knockback data and there is no knockback coroutine active 
         if (knockbackInfo.HasValue)
