@@ -126,6 +126,9 @@ public class PlayerHUDController : MenuBase
         mapCam.InitMinimapCamera();
     }
 
+    /// <summary>
+    /// gets rid of the coroutine when it gets destroyed
+    /// </summary>
     protected override void OnDestroy()
     {
         base.OnDestroy();
