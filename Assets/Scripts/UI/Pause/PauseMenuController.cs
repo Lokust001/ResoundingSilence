@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors:
-* Last Modified:10/7/2026
+* Last Modified:11/19/2026
 * Summary: This service controls the pause menu
 * To Do:   N/A
 */
@@ -90,6 +90,7 @@ public class PauseMenuController : MenuBase
         ControllerUIService.Instance = null;
         MouseUIService.Instance = null;
         TooltipUIService.Instance = null;
+        SideObjectiveManager.Instance = null;
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }

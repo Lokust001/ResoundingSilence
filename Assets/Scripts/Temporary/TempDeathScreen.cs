@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors:
-* Last Modified: 11/10/2026
+* Last Modified: 11/19/2026
 * Summary: temp death screen manager
 * To Do:   N/A
 */
@@ -61,10 +61,12 @@ public class TempDeathScreen : MonoBehaviour
         GameTimerManager.Instance = null;
         MainCameraManager.Instance = null;
         MapManager.Instance = null;
-        PlayerManager.Instance = null;
         ControllerUIService.Instance = null;
         MouseUIService.Instance = null;
         TooltipUIService.Instance = null;
+        SideObjectiveManager.Instance = null;
+        PlayerManager.Instance = null;
+
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 
