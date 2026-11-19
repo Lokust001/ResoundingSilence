@@ -1,7 +1,7 @@
 /*
 * Author: Dalsten Yan
 * Contributors: Brad Dixon, Brenden Burtz
-* Last Modified: 11/13/2026
+* Last Modified: 11/18/2026
 * Summary: Player input, stats, and damage are handled here
 * To Do:   Add more variables as needed.
 */
@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     float invincibilityDuration;
 
+    [Header("Dash")]
     [SerializeField] float BasedashRange;
     float dashRange;
     [SerializeField] float dashDuration;
@@ -26,12 +27,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] int totalDashes;
     [SerializeField] float chainDashWindow;
 
-
+    [Header("Regen")]
     [SerializeField] float TimeToStartRegen;
     [SerializeField] float RegenTickRate;
     [SerializeField, Tooltip("this is in % of max health")] float BaseRegenAmount;
     float regenAmount;
 
+    [Header("LayerMasks")]
     [Tooltip("What layers the player shouldn't collide with while they are invinvible.")]
     [SerializeField] LayerMask ignoreWhileInvincible;
     [Tooltip("What layers the player shouldn't collide with while they are invinvible.")]
@@ -61,7 +63,9 @@ public class PlayerController : MonoBehaviour
 
     Coroutine dmgCoroutine;
     Coroutine knockbackCoroutine;
+    Coroutine dashingCoroutine;
     Coroutine dashWindowCoroutine;
+    Coroutine dashingCooldownCoroutine;
     Coroutine regenCoroutine;
 
     Coroutine playerMovementCoroutine;
@@ -85,6 +89,8 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 topColliderLocalPos;
     private Vector3 bottomColliderLocalPos;
+
+    ForceMode dashForceMode;
     #endregion
 
     #region Unity Methods
@@ -121,6 +127,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     void Start()
     {
+        dashForceMode = ForceMode.VelocityChange;
         rigidbody = GetComponent<Rigidbody>();
         playerModelCollider = GetComponent<CapsuleCollider>();
 
@@ -136,8 +143,8 @@ public class PlayerController : MonoBehaviour
         regenAmount = BaseRegenAmount;
 
         //Defaults to right in case player dashes before ever moving
-        dashDir = Vector3.right;
-        currentDash = 0;
+        dashDir = Vector3.forward;
+        currentDash = totalDashes;
         canDash = true;
 
         wallOffset = new(0, 0, WALL_COLLISION_CAST_OFFSET);
@@ -240,11 +247,97 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void PlayerDashPressed()
     {
-        //Makes sure you can't dash while in the air
-        if (Mathf.Abs(rigidbody.linearVelocity.y) <= 0.01 && (canDash || chainDashing))
+        if (currentDash > 0)
         {
-            StartCoroutine(PlayerDash());
+            dashingCoroutine ??= StartCoroutine(RigidBodyPlayerDash());
         }
+    }
+    /// <summary>
+    /// Opens up a window to chaindash, otherwise it takes away your extra dashes and forces you to go on cooldown
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator ChainDashWindow()
+    {
+
+        //Kept as countdown timer for future UI-related tasks
+        float currentDashWindowTime = chainDashWindow;
+
+        while (currentDashWindowTime > 0)
+        {
+            yield return new WaitForFixedUpdate();
+            currentDashWindowTime -= Time.fixedDeltaTime;
+        }
+
+        currentDash = 0;
+        dashingCooldownCoroutine = StartCoroutine(DashingRecharge(dashCooldown));
+    }
+
+    /// <summary>
+    /// Adds a dash to the player by adding a force to the rigidbody
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator RigidBodyPlayerDash()
+    {
+        //Decrement the number of dashes before anything else
+        currentDash--;
+
+        //Calculate and cache local variables
+        Vector3 maximumDashForce = dashDir * dashRange;
+
+        //Setup a timer
+        float currentDashTime = 0;
+
+        //Become intangible to dash-avoidant layers
+        rigidbody.excludeLayers += ignoreWhileInvincible;
+
+        while (currentDashTime < dashDuration)
+        {
+            //Lerp the velocity of the player so that it starts out very high and then goes completely to zero
+            Vector3 currentDashVelocity = Vector3.Lerp(maximumDashForce, Vector3.zero, currentDashTime / dashDuration);
+
+            //Add the lerped velocity to the player so that they receive those forces
+            rigidbody.AddForce(currentDashVelocity, dashForceMode);
+
+
+            yield return new WaitForFixedUpdate();
+
+            currentDashTime += Time.fixedDeltaTime;
+        }
+
+        //Stop being intangible to dash-avoidant layers
+        rigidbody.excludeLayers -= ignoreWhileInvincible;
+
+        //This coroutine will be active if a window for chaindash is active
+        if (dashingCooldownCoroutine != null) 
+        {
+            //Cancel the window since player dashed
+            StopCoroutine(dashingCooldownCoroutine);
+        }
+
+        //Coroutine will be chaindash if player still has dashes available,
+        //otherwise, call recharge coroutine
+        dashingCooldownCoroutine = StartCoroutine(currentDash > 0 ? ChainDashWindow() : DashingRecharge(dashCooldown));
+
+        dashingCoroutine = null;
+    }
+
+    /// <summary>
+    /// Recharges the dash after a set amount of time
+    /// </summary>
+    /// <param name="rechargeTime"></param>
+    /// <returns></returns>
+    private IEnumerator DashingRecharge(float rechargeTime)
+    {
+        //Coundown timer instead of WaitForSeconds for future UI work
+        float dashRechargeCountdown = dashCooldown;
+
+        while (dashRechargeCountdown > 0)
+        {
+            yield return null;
+            dashRechargeCountdown -= Time.deltaTime;
+        }
+        currentDash = totalDashes;
+        dashingCooldownCoroutine = null;
     }
 
     /// <summary>
@@ -270,14 +363,24 @@ public class PlayerController : MonoBehaviour
             Debug.Log(hit.collider.name);
         StopCoroutine(playerMovementCoroutine);
 
-        for (float t = 0; t < dashDuration; t += Time.deltaTime)
+        Vector3 maximumDashForce = dashDir * dashRange;
+        Vector3 currentDashVelocity = maximumDashForce;
+
+        float currentDashTime = 0;
+
+
+        while (currentDashTime < dashDuration)
         {
-            if (transform.position == dashPoint)
-            {
-                break;
-            }
-            transform.position = (Vector3.MoveTowards(transform.position, dashPoint, (t / dashDuration)));
-            yield return null;
+
+            currentDashVelocity = Vector3.Lerp(maximumDashForce, Vector3.zero, currentDashTime / dashDuration);
+
+            rigidbody.AddForce(currentDashVelocity, dashForceMode);
+
+            //Debug.Log("DashForce: " + currentDashVelocity + " Actual Force: " + velocityDifference + " Current Velocity: " + rigidbody.linearVelocity);
+
+            yield return new WaitForFixedUpdate();
+
+            currentDashTime += Time.fixedDeltaTime;
         }
 
         rigidbody.excludeLayers -= ignoreWhileInvincible;
