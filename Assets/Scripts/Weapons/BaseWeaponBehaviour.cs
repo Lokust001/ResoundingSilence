@@ -1,7 +1,7 @@
 /******************************************************************************
  * Author: Brad Dixon
  * Contributors: Tyler Hayes
- * Last Modified: 11/10/2026
+ * Last Modified: 11/19/2026
  * Brief: Calls the specific weapon attack
  * TODO:
  * ***************************************************************************/
@@ -52,6 +52,8 @@ public class BaseWeaponBehaviour : MonoBehaviour
 
     public WeaponStatBuffs weaponStats;
 
+    protected bool okToAnimationCancel;
+
     /// <summary>
     /// Gets a reference to the copy of the weapon's data
     /// </summary>
@@ -72,6 +74,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
 
         GenericPublicEvents.SetCurrentWeapon?.Invoke(this);
         inEndLag = false;
+        okToAnimationCancel = true;
     }
 
     /// <summary>
@@ -221,7 +224,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
             UpdateAttackSpeed();
         }
 
-        if (isAttacking && attackReady && !inEndLag)
+        if (isAttacking && attackReady && okToAnimationCancel)
         {
             Attack();
             attackReady = false;
@@ -248,12 +251,21 @@ public class BaseWeaponBehaviour : MonoBehaviour
                 ++comboIndex;
             }
 
-            if (attackAnimations[comboIndex - 1].AnimatorUsed != null && !weaponAnimator.Equals(attackAnimations[comboIndex - 1].AnimatorUsed))
-            {
-                weaponAnimator = attackAnimations[comboIndex - 1].AnimatorUsed;
-            }
+            SetAnimator();
 
+            okToAnimationCancel = false;
             weaponAnimator.Play(attackAnimations[comboIndex - 1].AnimClip.name, attackAnimations[comboIndex - 1].LayerIndex);
+        }
+    }
+
+    /// <summary>
+    /// If the animation uses a different animator than the current one, use that animator instead
+    /// </summary>
+    protected void SetAnimator()
+    {
+        if (attackAnimations[comboIndex - 1].AnimatorUsed != null && !weaponAnimator.Equals(attackAnimations[comboIndex - 1].AnimatorUsed))
+        {
+            weaponAnimator = attackAnimations[comboIndex - 1].AnimatorUsed;
         }
     }
 
