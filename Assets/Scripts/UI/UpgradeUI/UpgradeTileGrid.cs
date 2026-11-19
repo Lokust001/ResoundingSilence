@@ -365,11 +365,11 @@ public class UpgradeTileGrid
     public void CheckGlyphs(PinScriptable newpin)
     {
         UpgradeTileData tile = grid.FirstOrDefault(x => x.pin == newpin);
-        if (tile.glyph != null && newpin.Types[0] == tile.glyph.PinTypeToModify)
+        if (tile != null && tile.glyph != null && newpin.Types[0] == tile.glyph.PinTypeToModify)
         {
             tile.GlyphActive = true;
         }
-        else
+        else if (tile != null)
         {
             tile.GlyphActive = false;
         }
