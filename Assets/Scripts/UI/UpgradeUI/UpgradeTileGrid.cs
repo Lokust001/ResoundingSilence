@@ -271,7 +271,7 @@ public class UpgradeTileGrid
                     AbilityDamageBuff += (GetBuffAmount(pin, thisTile) / 100);
                     break;
                 case PinScriptable.WeaponStatToChange.AbilityCooldown:
-                    AbilityCooldown *= (100 - GetBuffAmount(pin, thisTile)) / 100;
+                    AbilityCooldown += (GetBuffAmount(pin, thisTile)) / 100;
                     break;
                 case PinScriptable.WeaponStatToChange.projectileSpeed:
                     ProjectileSpeed += (GetBuffAmount(pin, thisTile) / 100);

@@ -194,11 +194,11 @@ public class WeaponStatBuffs : MonoBehaviour
     /// </summary>
     public void UpdateWeaponSpeed()
     {
-        weaponScriptable.AttackSpeed = 1 / AttackSpeedBoost;
+        weaponScriptable.AttackSpeed = 1 / (1/AttackSpeedBoost);
 
         foreach (AttackData i in weaponScriptable.ComboAttacks)
         {
-            i.AttackCooldown = i.BaseAttackCooldown * AttackSpeedBoost;
+            i.AttackCooldown = i.BaseAttackCooldown * (1/AttackSpeedBoost);
         }
     }
 
