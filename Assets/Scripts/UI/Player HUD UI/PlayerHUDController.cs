@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors: Brad Dixon
-* Last Modified: 11/12/2026
+* Last Modified: 11/19/2026
 * Summary: Controls the player's hud
 * To Do:   N/A
 */

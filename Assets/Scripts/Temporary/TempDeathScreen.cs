@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors:
-* Last Modified: 11/10/2026
+* Last Modified: 11/19/2026
 * Summary: temp death screen manager
 * To Do:   N/A
 */
