@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors:
-* Last Modified: 09/15/2026
+* Last Modified: 11/19/2026
 * Summary: Base class for all the managers to inherit from
 * To Do:   N/A
 */
@@ -56,5 +56,19 @@ public class BaseManager : MonoBehaviour
             //init service
             await servScript.InitService();
         }
+    }
+
+    /// <summary>
+    /// deconstructs every service, then deconstructs itself
+    /// </summary>
+    /// <returns></returns>
+    public async Awaitable DeconstructManager()
+    {
+        foreach (BaseService service in initializedServices)
+        {
+            await service.DeconstructService();
+        }
+
+        await Task.CompletedTask;
     }
 }

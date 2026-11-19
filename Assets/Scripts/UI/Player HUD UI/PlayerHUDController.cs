@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors: Brad Dixon
-* Last Modified: 11/12/2026
+* Last Modified: 11/19/2026
 * Summary: Controls the player's hud
 * To Do:   N/A
 */
@@ -126,6 +126,18 @@ public class PlayerHUDController : MenuBase
         mapCam.InitMinimapCamera();
     }
 
+    /// <summary>
+    /// gets rid of the coroutine when it gets destroyed
+    /// </summary>
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+        if (healthAnimCoroutine != null)
+        {
+            StopCoroutine(healthAnimCoroutine);
+            healthAnimCoroutine = null;
+        }
+    }
 
     /// <summary>
     /// Sets ability images
@@ -294,6 +306,9 @@ public class PlayerHUDController : MenuBase
     /// </summary>
     private void UpdateGameTimerText()
     {
-        timerText.text = $"{GameTimerManager.Instance.GetRoundedGameTime()}";
+        if (GameTimerManager.Instance != null && timerText != null)
+        {
+            timerText.text = $"{GameTimerManager.Instance.GetRoundedGameTime()}";
+        }
     }
 }

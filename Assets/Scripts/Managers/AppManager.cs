@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors:
-* Last Modified: 09/17/2026
+* Last Modified: 11/19/2026
 * Summary: Starts the app and ensures all managers are initialized properly.
 * To Do:   N/A
 */
@@ -9,7 +9,6 @@
 
 using NaughtyAttributes;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 
 public class AppManager : MonoBehaviour
@@ -55,6 +54,16 @@ public class AppManager : MonoBehaviour
         }
 
         Time.timeScale = 1.0f;
+
+        GenericPublicEvents.RestartGame += DeconstructManagers;
+    }
+
+    /// <summary>
+    /// unsubscribes from public events
+    /// </summary>
+    private void OnDestroy()
+    {
+        GenericPublicEvents.RestartGame -= DeconstructManagers;
     }
 
     /// <summary>
@@ -89,6 +98,21 @@ public class AppManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Deconstructs every manager
+    /// </summary>
+    private async void DeconstructManagers()
+    {
+        foreach (BaseManager man in initializedManagers)
+        {
+            if (destroyCancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
+
+            await man.DeconstructManager();
+        }
+    }
 }
 
 [System.Serializable]
