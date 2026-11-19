@@ -262,6 +262,12 @@ public class WeaponStatBuffs : MonoBehaviour
                 }
             }
         }
+        else
+        {
+            foreach (AttackData i in weaponScriptable.ComboAttacks)
+            {
+                i.BurstAttacks = i.BaseBurstAttacks.ToList();
+            }
     }
 
     /// <summary>
