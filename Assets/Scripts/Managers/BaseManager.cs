@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors:
-* Last Modified: 09/15/2026
+* Last Modified: 11/19/2026
 * Summary: Base class for all the managers to inherit from
 * To Do:   N/A
 */

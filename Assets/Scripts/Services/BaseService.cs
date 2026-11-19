@@ -1,15 +1,14 @@
-using System.Threading.Tasks;
-using Unity.IO.LowLevel.Unsafe;
+
 
 /*
 * Author: Tyler
 * Contributors:
-* Last Modified: 09/15/2026
+* Last Modified: 11/19/2026
 * Summary: Base class for all services to inherit from
 * To Do:   N/A
 */
 
-
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class BaseService : MonoBehaviour

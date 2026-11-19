@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors:
-* Last Modified: 09/17/2026
+* Last Modified: 11/19/2026
 * Summary: Starts the app and ensures all managers are initialized properly.
 * To Do:   N/A
 */
@@ -9,7 +9,6 @@
 
 using NaughtyAttributes;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 
 public class AppManager : MonoBehaviour
