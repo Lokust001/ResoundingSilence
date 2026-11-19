@@ -1,4 +1,6 @@
 using System.Threading.Tasks;
+using Unity.IO.LowLevel.Unsafe;
+
 /*
 * Author: Tyler
 * Contributors:
@@ -28,4 +30,16 @@ public class BaseService : MonoBehaviour
         //done with func
         await Task.CompletedTask;
     }
+
+    public async virtual Awaitable DeconstructService()
+    {
+        //if cancelled, stop here
+        if (destroyCancellationToken.IsCancellationRequested)
+        {
+            return;
+        }
+        await Task.CompletedTask;
+    }
 }
+
+

@@ -57,4 +57,14 @@ public class BaseManager : MonoBehaviour
             await servScript.InitService();
         }
     }
+
+    public async Awaitable DeconstructManager()
+    {
+        foreach (BaseService service in initializedServices)
+        {
+            await service.DeconstructService();
+        }
+
+        await Task.CompletedTask;
+    }
 }

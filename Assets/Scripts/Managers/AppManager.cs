@@ -55,6 +55,13 @@ public class AppManager : MonoBehaviour
         }
 
         Time.timeScale = 1.0f;
+
+        GenericPublicEvents.RestartGame += DeconstructManagers;
+    }
+
+    private void OnDestroy()
+    {
+        GenericPublicEvents.RestartGame -= DeconstructManagers;
     }
 
     /// <summary>
@@ -89,6 +96,19 @@ public class AppManager : MonoBehaviour
         }
     }
 
+
+    private async void DeconstructManagers()
+    {
+        foreach (BaseManager man in initializedManagers)
+        {
+            if (destroyCancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
+
+            await man.DeconstructManager();
+        }
+    }
 }
 
 [System.Serializable]

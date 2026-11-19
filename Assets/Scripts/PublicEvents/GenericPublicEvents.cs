@@ -25,5 +25,5 @@ public static class GenericPublicEvents
 
     public static Action<BaseEnemyScriptable> EnemyDies;
 
-    
+    public static Action RestartGame;
 }
