@@ -261,7 +261,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// <summary>
     /// If the animation uses a different animator than the current one, use that animator instead
     /// </summary>
-    protected void SetAnimator()
+    virtual protected void SetAnimator(bool isAbility = false)
     {
         if (attackAnimations[comboIndex - 1].AnimatorUsed != null && !weaponAnimator.Equals(attackAnimations[comboIndex - 1].AnimatorUsed))
         {
@@ -321,6 +321,8 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// <returns></returns>
     virtual protected IEnumerator AttackDelay()
     {
+        okToAnimationCancel = true;
+
         yield return new WaitForSeconds(ThisWeaponData.ComboAttacks[comboIndex - 1].AttackCooldown);
         if (comboIndex >= attackAnimations.Count)
         {

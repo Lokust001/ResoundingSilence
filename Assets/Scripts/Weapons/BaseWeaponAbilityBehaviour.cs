@@ -136,13 +136,31 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
                 return;
             }
 
-            SetAnimator();
+            SetAnimator(true);
 
             PlayAbilityCastAnimation();
         }
         else
         {
             isAttacking = true;
+        }
+    }
+
+    /// <summary>
+    /// If the animation uses a different animator than the current one, use that animator instead
+    /// </summary>
+    override protected void SetAnimator(bool isAbility = false)
+    {
+        if(isAbility)
+        {
+            if (ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAnim.AnimatorUsed != null && !weaponAnimator.Equals(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAnim.AnimatorUsed))
+            {
+                weaponAnimator = ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAnim.AnimatorUsed;
+            }
+        }
+        else
+        {
+            base.SetAnimator();
         }
     }
 
@@ -281,8 +299,6 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
                 spawnAbilityTwoProjectile = false;
                 CastingAbility();
             }
-
-            okToAnimationCancel = true;
         }
     }
 
@@ -359,8 +375,6 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
                 abilityTwoActive = false;
                 CastingAbility();
             }
-
-            okToAnimationCancel = true;
         }
     }
 
@@ -538,6 +552,7 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     /// </summary>
     virtual public void CastingAbility()
     {
+        okToAnimationCancel = true;
         continuouslyUpdatePreview = false;
         inEndLag = true;
         aimingAbilityOne = false;
