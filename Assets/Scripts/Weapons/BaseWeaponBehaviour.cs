@@ -1,7 +1,7 @@
 /******************************************************************************
  * Author: Brad Dixon
  * Contributors: Tyler Hayes
- * Last Modified: 11/19/2026
+ * Last Modified: 11/20/2026
  * Brief: Calls the specific weapon attack
  * TODO:
  * ***************************************************************************/
@@ -301,7 +301,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// <summary>
     /// Called by animation event to spawn projectile during attack animation
     /// </summary>
-    virtual public void SpawnProjectile(int cIndex)
+    virtual public void SpawnProjectile()
     {
 
     }
@@ -309,7 +309,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// <summary>
     /// Called by an animation event to see if a melee swing hit anything
     /// </summary>
-    virtual public void MeleeSwing(int cIndex)
+    virtual public void MeleeSwing()
     {
 
     }

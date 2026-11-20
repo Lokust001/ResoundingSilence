@@ -1,7 +1,7 @@
 /******************************************************************************
  * Author: Brad Dixon
  * Contributors:
- * Last Modified: 11/19/2026
+ * Last Modified: 11/20/2026
  * Brief: This script now controlls the ability functionality for weapons.
  * This way, abilities can have changes made to them while someone else changes weapon attacks.
  * TODO: Add ability functionality as needed.
@@ -233,9 +233,9 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     /// <summary>
     /// Anim event that will spawn the projectile of an ability or weapon
     /// </summary>
-    public override void SpawnProjectile(int cIndex)
+    public override void SpawnProjectile()
     {
-        bool hasBurst = ThisWeaponData.ComboAttacks[cIndex].BurstAttacks.Count > 1 ? true : false;
+        bool hasBurst = ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks.Count > 1 ? true : false;
         BurstData rData;
         int damage;
 
@@ -252,8 +252,8 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
         }
         else
         {
-            rData = ThisWeaponData.ComboAttacks[cIndex].BurstAttacks[burstIndex];
-            damage = ThisWeaponData.ComboAttacks[cIndex].WeaponDamage;
+            rData = ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks[burstIndex];
+            damage = ThisWeaponData.ComboAttacks[comboIndex - 1].WeaponDamage;
         }
 
         Vector3 bulletDir = aimDir;
@@ -305,9 +305,9 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     /// <summary>
     /// Anim event that will call a melee attack of an ability or weapon
     /// </summary>
-    public override void MeleeSwing(int cIndex)
+    public override void MeleeSwing()
     {
-        bool hasBurst = ThisWeaponData.ComboAttacks[cIndex].BurstAttacks.Count > 1 ? true : false;
+        bool hasBurst = ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks.Count > 1 ? true : false;
         BurstData rData;
         int damage;
 
@@ -324,8 +324,8 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
         }
         else
         {
-            rData = ThisWeaponData.ComboAttacks[cIndex].BurstAttacks[burstIndex];
-            damage = ThisWeaponData.ComboAttacks[cIndex].WeaponDamage;
+            rData = ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks[burstIndex];
+            damage = ThisWeaponData.ComboAttacks[comboIndex - 1].WeaponDamage;
         }
 
         foreach (Collider c in meleeHitboxes)
