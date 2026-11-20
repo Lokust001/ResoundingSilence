@@ -253,11 +253,11 @@ public class WeaponStatBuffs : MonoBehaviour
     /// </summary>
     public void UpdateWeaponSpeed()
     {
-        weaponScriptable.AttackSpeed = 1 / (1/AttackSpeedBoost);
+        weaponScriptable.AttackSpeed = 1 / (1 / (AttackSpeedBoost * BIFirerate));
 
         foreach (AttackData i in weaponScriptable.ComboAttacks)
         {
-            i.AttackCooldown = i.BaseAttackCooldown * (1/AttackSpeedBoost);
+            i.AttackCooldown = i.BaseAttackCooldown * (1 / (AttackSpeedBoost * BIFirerate));
         }
     }
 
@@ -266,7 +266,7 @@ public class WeaponStatBuffs : MonoBehaviour
     /// </summary>
     public void UpdateLifestealPercent()
     {
-        if(lifestealPercent > 1.01)
+        if (lifestealPercent > 1.01)
         {
             foreach (AttackData i in weaponScriptable.ComboAttacks)
             {
@@ -320,8 +320,10 @@ public class WeaponStatBuffs : MonoBehaviour
     /// <param name="DamageBuff2"></param>
     public void UpdateAbilityCooldown()
     {
-        //editableAbilities[0].Cooldown = editableAbilities[0].baseCooldown * AbilityCooldownReduction;
-        //editableAbilities[1].Cooldown = editableAbilities[1].baseCooldown * AbilityCooldownReduction;
+        foreach(AbilityBaseScriptable i in weaponScriptable.editableAbilities)
+        {
+            i.AbilityCooldown = i.BaseAbilityCooldown * AbilityCooldownReduction * BIAbilityCooldown;
+        }
     }
 
     /// <summary>

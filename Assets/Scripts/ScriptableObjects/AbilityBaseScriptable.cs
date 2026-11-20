@@ -61,6 +61,7 @@ public class AbilityBaseScriptable : BaseScriptableObject
     [HideInInspector] public float BaseAbilityPlayerKnockback = 0;
 
     public float AbilityCooldown;
+    [HideInInspector] public float BaseAbilityCooldown;
     public float AbilityEndLag;
     public float AbilityRange;
 
@@ -92,6 +93,7 @@ public class AbilityBaseScriptable : BaseScriptableObject
     {
         SetAbilityStats(PrimaryStats);
         SetAbilityStats(SecondaryStats);
+        BaseAbilityCooldown = AbilityCooldown;
 
         if (AbilityProjectile.BurstRangedAttack.AttackProjectiles != null)
         {
