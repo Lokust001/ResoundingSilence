@@ -49,6 +49,12 @@ public class PlayerController : MonoBehaviour
 
     public TriggerObjects HermitTrigger;
 
+    [SerializeField]
+    private Renderer playerRenderer;
+
+    private MaterialPropertyBlock propertyBlock;
+    private readonly int pbColorNameID = Shader.PropertyToID("_BaseColor");
+
     #region Debug Console Variables
 
     public bool InGodMode;
@@ -95,6 +101,13 @@ public class PlayerController : MonoBehaviour
 
     #region Unity Methods
 
+    private void Awake()
+    {
+        propertyBlock = new MaterialPropertyBlock();
+
+    }
+
+
     /// <summary>
     /// Allows the script to listen for player input
     /// </summary>
@@ -127,6 +140,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     void Start()
     {
+
         dashForceMode = ForceMode.VelocityChange;
         rigidbody = GetComponent<Rigidbody>();
         playerModelCollider = GetComponent<CapsuleCollider>();
@@ -506,22 +520,23 @@ public class PlayerController : MonoBehaviour
     {
         //Make the player intangible to collisions from specified layers
         SetPlayerInvincibility(true);
-
-        Renderer playerRenderer = GetComponent<Renderer>();
-        Color original = playerRenderer.material.color;
-        playerRenderer.material.color = Color.red;
         float timer = 0;
 
         while (timer < invincibilityDuration)
         {
+            float timerT = 1f - Mathf.Clamp01(timer / invincibilityDuration);
+            Debug.Log(timerT);
+            SetPlayerOverlayColor(Color.red, timerT);
+
             timer += Time.deltaTime;
 
             yield return null;
         }
+        ClearPlayerOverlay();
         SetPlayerInvincibility(false);
         ResetRangeTriggers();
 
-        playerRenderer.material.color = original;
+
         dmgCoroutine = null;
     }
 
@@ -699,5 +714,22 @@ public class PlayerController : MonoBehaviour
     {
         _ = enemy;
         enemy.SetInRangedArea(enteredTrigger);
+    }
+
+    private void SetPlayerOverlayColor(Color colorToSet, float colorOpacity = 1.0f) 
+    {
+        playerRenderer.GetPropertyBlock(propertyBlock);
+        colorToSet.a = colorOpacity;
+        Debug.Log(colorToSet);
+        propertyBlock.SetColor(pbColorNameID, colorToSet);
+        playerRenderer.SetPropertyBlock(propertyBlock);
+    }
+
+    private void ClearPlayerOverlay() 
+    {
+        playerRenderer.SetPropertyBlock(null);
+        //playerRenderer.GetPropertyBlock(propertyBlock);
+        //propertyBlock.Clear();
+        //playerRenderer.SetPropertyBlock(propertyBlock);
     }
 }

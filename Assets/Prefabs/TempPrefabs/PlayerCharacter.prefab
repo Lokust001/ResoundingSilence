@@ -70,7 +70,7 @@ Transform:
   - {fileID: 6840699441752713292}
   - {fileID: 4536795594365591932}
   - {fileID: 6477140550018961112}
-  - {fileID: 2948226860709975085}
+  - {fileID: 300272283828838546}
   - {fileID: 8014143671039578180}
   - {fileID: 6048607674479532933}
   - {fileID: 9188195530493983770}
@@ -168,6 +168,7 @@ MonoBehaviour:
     m_Bits: 1
   chariotBool: 0
   HermitTrigger: {fileID: 5346376867608484854}
+  playerRenderer: {fileID: 0}
   InGodMode: 0
   MoveActive: 1
   canDash: 0
@@ -582,7 +583,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TriggerObjects
   triggerShapeColor: {r: 0.8805031, g: 0.87273806, b: 0.37933618, a: 1}
---- !u!1001 &3413884411494495174
+--- !u!1001 &261333505902774137
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -630,14 +631,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: -7511558181221131132, guid: 71322c42bd3f938458bf25a3523fd8e1, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 761d8e1f988ed2345a28312145c79c6e, type: 2}
-    - target: {fileID: -7511558181221131132, guid: 71322c42bd3f938458bf25a3523fd8e1, type: 3}
-      propertyPath: 'm_Materials.Array.data[1]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 761d8e1f988ed2345a28312145c79c6e, type: 2}
     - target: {fileID: 919132149155446097, guid: 71322c42bd3f938458bf25a3523fd8e1, type: 3}
       propertyPath: m_Name
       value: updatedinkmodel
@@ -647,10 +640,10 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 71322c42bd3f938458bf25a3523fd8e1, type: 3}
---- !u!4 &2948226860709975085 stripped
+--- !u!4 &300272283828838546 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 71322c42bd3f938458bf25a3523fd8e1, type: 3}
-  m_PrefabInstance: {fileID: 3413884411494495174}
+  m_PrefabInstance: {fileID: 261333505902774137}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4436036882702939201
 PrefabInstance:
