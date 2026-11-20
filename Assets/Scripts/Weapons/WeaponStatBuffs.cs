@@ -159,6 +159,11 @@ public class WeaponStatBuffs : MonoBehaviour
         playerController.RegenBoost(regenAmount);
     }
 
+    /// <summary>
+    /// updates values that the player has from buff objects
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="stat"></param>
     public void GetBIchange(int value, BuffObject.PermStatBuff stat)
     {
         switch (stat)
@@ -166,22 +171,22 @@ public class WeaponStatBuffs : MonoBehaviour
             case BuffObject.PermStatBuff.none:
                 break;
             case BuffObject.PermStatBuff.Damage:
-                DamageBuff += value / 100f;
+                DamageBuff = value / 100f;
                 break;
             case BuffObject.PermStatBuff.FireRate:
-                BIFirerate += value / 100f;
+                BIFirerate = value / 100f;
                 break;
             case BuffObject.PermStatBuff.ProjectileSpeed:
-                BIProjectileSpeed += value / 100f;
+                BIProjectileSpeed = value / 100f;
                 break;
             case BuffObject.PermStatBuff.MovementSpeed:
-                BIMovementSpeed += value / 100f;
+                BIMovementSpeed = value / 100f;
                 break;
             case BuffObject.PermStatBuff.DashDistance:
-                BIDashDistance += value / 100f;
+                BIDashDistance = value / 100f;
                 break;
             case BuffObject.PermStatBuff.AttackSize:
-                BIAttacksize += value / 100f;
+                BIAttacksize =  value / 100f;
                 break;
             case BuffObject.PermStatBuff.AbilityCooldown:
                 BIAbilityCooldown = value / 100f;

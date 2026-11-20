@@ -41,6 +41,11 @@ public class PlayerManager : BaseManager
     private int AbilityCooldown;
     #endregion
 
+    /// <summary>
+    /// Stores the data that the player gets from the buff object and then sends it to the weapons
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="StatChange"></param>
     public void GetBuffObject(int value, BuffObject.PermStatBuff StatChange)
     {
         switch (StatChange)
