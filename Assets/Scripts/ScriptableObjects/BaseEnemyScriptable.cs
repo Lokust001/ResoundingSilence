@@ -148,6 +148,9 @@ public class BaseEnemyScriptable : BaseScriptableObject
     [ShowIf(nameof(enemyType), EnemyType.Melee)]
     public float attackUptimeDuration;
 
+    [ShowIf(nameof(enemyType), EnemyType.Melee)]
+    public float meleeRangeSpeed;
+
     #endregion
 
     #region ChargingMelee Variables

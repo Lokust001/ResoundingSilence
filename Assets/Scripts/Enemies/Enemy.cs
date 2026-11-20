@@ -250,6 +250,7 @@ public class Enemy : MonoBehaviour
                 Debug.LogError("Invalid EnemyType entered Zone!");
                 break;
             case BaseEnemyScriptable.EnemyType.Melee: case BaseEnemyScriptable.EnemyType.ChargingMelee:
+                movementBeahvior.SetNormalSpeed();
                 movementBeahvior.FollowPlayer();
                 break;
             case BaseEnemyScriptable.EnemyType.SingleShooter: case BaseEnemyScriptable.EnemyType.ConeShooter:
@@ -337,7 +338,11 @@ public class Enemy : MonoBehaviour
                     StartCoroutine(movementBeahvior.RetreatWalking());
                 }
                 break;
-            case BaseEnemyScriptable.EnemyType.Melee: case BaseEnemyScriptable.EnemyType.ChargingMelee:
+            case BaseEnemyScriptable.EnemyType.Melee:
+                movementBeahvior.SetEngagingMeleeSpeed();
+                attackBehavior.InitiateAttack();
+                break;
+            case BaseEnemyScriptable.EnemyType.ChargingMelee:
                 movementBeahvior.StopApproachingPlayer();
                 attackBehavior.InitiateAttack();
                 break;
