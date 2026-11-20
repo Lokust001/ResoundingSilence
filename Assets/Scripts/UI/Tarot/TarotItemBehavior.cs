@@ -20,7 +20,7 @@ public class TarotItemBehavior : CarriedItemBehavior
     public void SetTarotData(TarotScriptable scriptable)
     {
         data = scriptable;
-        GetComponent<Image>().color = data.tempColor;
+        GetComponent<Image>().sprite = data.sprite;
     }
 
     /// <summary>

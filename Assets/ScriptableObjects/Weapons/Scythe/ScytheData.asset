@@ -32,15 +32,16 @@ MonoBehaviour:
   WeaponName: Lunar Harvest
   AttackSpeed: 1
   ComboAttacks:
-  - WeaponDamage: 25
-    BaseWeaponDamage: 20
-    AttackCooldown: 0.15
-    BaseAttackCooldown: 0.3
-    BurstAttacks:
+  - WeaponDamage: 15
+    BaseWeaponDamage: 25
+    AttackCooldown: 0.05
+    BaseAttackCooldown: 0.15
+    BaseBurstAttacks:
     - BurstDamagePercent: 0
       TimeTillNextBurst: 0
       BaseTimeTillNextBurst: 0
       HasLifesteal: 0
+      BaseHasLifesteal: 0
       WeaponLifeSteal:
         LifestealPercent: 0
         BaseLifestealPercent: 0
@@ -81,7 +82,247 @@ MonoBehaviour:
           BaseRicochetCount: 0
           RicochetRange: 0
           BaseRicochetRange: 0
-    ComboTime: 0
+    BurstAttacks:
+    - BurstDamagePercent: 0
+      TimeTillNextBurst: 0
+      BaseTimeTillNextBurst: 0
+      HasLifesteal: 0
+      BaseHasLifesteal: 0
+      WeaponLifeSteal:
+        LifestealPercent: 0
+        BaseLifestealPercent: 0
+      HasAoe: 0
+      WeaponAoe:
+        AoePrefab: {fileID: 0}
+        AoeDamagePercent: 0
+        BaseAoeDamagePercent: 0
+        HasDamageFalloff: 0
+        MinAoeDamagePercent: 0
+        BaseMinAoeDamagePercent: 0
+        AoeSize: 0
+        BaseAoeSize: 0
+        AoeDelay: 0
+        BaseAoeDelay: 0
+        AoeDuration: 0
+        BaseAoeDuration: 0
+        AoeDamageTicks: 0
+        BaseAoeDamageTicks: 0
+      HasRangeAttack: 0
+      BurstRangedAttack:
+        AttackProjectiles: []
+        ProjectileIndex: 0
+        RandomizeProjectile: 0
+        HasPierce: 0
+        BurstPierce:
+          PierceAmount: 0
+          BasePierceAmount: 0
+          PierceDamageFalloffPercent: 
+          BasePierceDamageFalloffPercent: 
+          MinPierceDamagePercent: 0
+          BaseMinPierceDamagePercent: 0
+          PierceLifetimeFalloffPercent: 
+          BasePierceLifetimeFalloffPercent: 
+        HasRicochet: 0
+        BurstRicochet:
+          RicochetCount: 0
+          BaseRicochetCount: 0
+          RicochetRange: 0
+          BaseRicochetRange: 0
+    ComboTime: 1
+  - WeaponDamage: 20
+    BaseWeaponDamage: 25
+    AttackCooldown: 0.05
+    BaseAttackCooldown: 0.15
+    BaseBurstAttacks:
+    - BurstDamagePercent: 0
+      TimeTillNextBurst: 0
+      BaseTimeTillNextBurst: 0
+      HasLifesteal: 0
+      BaseHasLifesteal: 0
+      WeaponLifeSteal:
+        LifestealPercent: 0
+        BaseLifestealPercent: 0
+      HasAoe: 0
+      WeaponAoe:
+        AoePrefab: {fileID: 0}
+        AoeDamagePercent: 0
+        BaseAoeDamagePercent: 0
+        HasDamageFalloff: 0
+        MinAoeDamagePercent: 0
+        BaseMinAoeDamagePercent: 0
+        AoeSize: 0
+        BaseAoeSize: 0
+        AoeDelay: 0
+        BaseAoeDelay: 0
+        AoeDuration: 0
+        BaseAoeDuration: 0
+        AoeDamageTicks: 0
+        BaseAoeDamageTicks: 0
+      HasRangeAttack: 0
+      BurstRangedAttack:
+        AttackProjectiles: []
+        ProjectileIndex: 0
+        RandomizeProjectile: 0
+        HasPierce: 0
+        BurstPierce:
+          PierceAmount: 0
+          BasePierceAmount: 0
+          PierceDamageFalloffPercent: 
+          BasePierceDamageFalloffPercent: 
+          MinPierceDamagePercent: 0
+          BaseMinPierceDamagePercent: 0
+          PierceLifetimeFalloffPercent: 
+          BasePierceLifetimeFalloffPercent: 
+        HasRicochet: 0
+        BurstRicochet:
+          RicochetCount: 0
+          BaseRicochetCount: 0
+          RicochetRange: 0
+          BaseRicochetRange: 0
+    BurstAttacks:
+    - BurstDamagePercent: 0
+      TimeTillNextBurst: 0
+      BaseTimeTillNextBurst: 0
+      HasLifesteal: 0
+      BaseHasLifesteal: 0
+      WeaponLifeSteal:
+        LifestealPercent: 0
+        BaseLifestealPercent: 0
+      HasAoe: 0
+      WeaponAoe:
+        AoePrefab: {fileID: 0}
+        AoeDamagePercent: 0
+        BaseAoeDamagePercent: 0
+        HasDamageFalloff: 0
+        MinAoeDamagePercent: 0
+        BaseMinAoeDamagePercent: 0
+        AoeSize: 0
+        BaseAoeSize: 0
+        AoeDelay: 0
+        BaseAoeDelay: 0
+        AoeDuration: 0
+        BaseAoeDuration: 0
+        AoeDamageTicks: 0
+        BaseAoeDamageTicks: 0
+      HasRangeAttack: 0
+      BurstRangedAttack:
+        AttackProjectiles: []
+        ProjectileIndex: 0
+        RandomizeProjectile: 0
+        HasPierce: 0
+        BurstPierce:
+          PierceAmount: 0
+          BasePierceAmount: 0
+          PierceDamageFalloffPercent: 
+          BasePierceDamageFalloffPercent: 
+          MinPierceDamagePercent: 0
+          BaseMinPierceDamagePercent: 0
+          PierceLifetimeFalloffPercent: 
+          BasePierceLifetimeFalloffPercent: 
+        HasRicochet: 0
+        BurstRicochet:
+          RicochetCount: 0
+          BaseRicochetCount: 0
+          RicochetRange: 0
+          BaseRicochetRange: 0
+    ComboTime: 1
+  - WeaponDamage: 25
+    BaseWeaponDamage: 25
+    AttackCooldown: 0.05
+    BaseAttackCooldown: 0.15
+    BaseBurstAttacks:
+    - BurstDamagePercent: 0
+      TimeTillNextBurst: 0
+      BaseTimeTillNextBurst: 0
+      HasLifesteal: 0
+      BaseHasLifesteal: 0
+      WeaponLifeSteal:
+        LifestealPercent: 0
+        BaseLifestealPercent: 0
+      HasAoe: 0
+      WeaponAoe:
+        AoePrefab: {fileID: 0}
+        AoeDamagePercent: 0
+        BaseAoeDamagePercent: 0
+        HasDamageFalloff: 0
+        MinAoeDamagePercent: 0
+        BaseMinAoeDamagePercent: 0
+        AoeSize: 0
+        BaseAoeSize: 0
+        AoeDelay: 0
+        BaseAoeDelay: 0
+        AoeDuration: 0
+        BaseAoeDuration: 0
+        AoeDamageTicks: 0
+        BaseAoeDamageTicks: 0
+      HasRangeAttack: 0
+      BurstRangedAttack:
+        AttackProjectiles: []
+        ProjectileIndex: 0
+        RandomizeProjectile: 0
+        HasPierce: 0
+        BurstPierce:
+          PierceAmount: 0
+          BasePierceAmount: 0
+          PierceDamageFalloffPercent: 
+          BasePierceDamageFalloffPercent: 
+          MinPierceDamagePercent: 0
+          BaseMinPierceDamagePercent: 0
+          PierceLifetimeFalloffPercent: 
+          BasePierceLifetimeFalloffPercent: 
+        HasRicochet: 0
+        BurstRicochet:
+          RicochetCount: 0
+          BaseRicochetCount: 0
+          RicochetRange: 0
+          BaseRicochetRange: 0
+    BurstAttacks:
+    - BurstDamagePercent: 0
+      TimeTillNextBurst: 0
+      BaseTimeTillNextBurst: 0
+      HasLifesteal: 0
+      BaseHasLifesteal: 0
+      WeaponLifeSteal:
+        LifestealPercent: 0
+        BaseLifestealPercent: 0
+      HasAoe: 0
+      WeaponAoe:
+        AoePrefab: {fileID: 0}
+        AoeDamagePercent: 0
+        BaseAoeDamagePercent: 0
+        HasDamageFalloff: 0
+        MinAoeDamagePercent: 0
+        BaseMinAoeDamagePercent: 0
+        AoeSize: 0
+        BaseAoeSize: 0
+        AoeDelay: 0
+        BaseAoeDelay: 0
+        AoeDuration: 0
+        BaseAoeDuration: 0
+        AoeDamageTicks: 0
+        BaseAoeDamageTicks: 0
+      HasRangeAttack: 0
+      BurstRangedAttack:
+        AttackProjectiles: []
+        ProjectileIndex: 0
+        RandomizeProjectile: 0
+        HasPierce: 0
+        BurstPierce:
+          PierceAmount: 0
+          BasePierceAmount: 0
+          PierceDamageFalloffPercent: 
+          BasePierceDamageFalloffPercent: 
+          MinPierceDamagePercent: 0
+          BaseMinPierceDamagePercent: 0
+          PierceLifetimeFalloffPercent: 
+          BasePierceLifetimeFalloffPercent: 
+        HasRicochet: 0
+        BurstRicochet:
+          RicochetCount: 0
+          BaseRicochetCount: 0
+          RicochetRange: 0
+          BaseRicochetRange: 0
+    ComboTime: 1
   DecayDamage: 0
   MaxDecayStacks: 0
   DecayDelay: 0
