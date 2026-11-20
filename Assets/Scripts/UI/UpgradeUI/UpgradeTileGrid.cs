@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
-* Contributors:
-* Last Modified: 09/21/2026
+* Contributors: Brenden
+* Last Modified: 11/19/2026
 * Summary: stores the data for the tile grid
 * To Do:   N/A
 */
@@ -259,7 +259,7 @@ public class UpgradeTileGrid
                     damagebuff += (GetBuffAmount(pin, thisTile) / 100);
                     break;
                 case PinScriptable.WeaponStatToChange.AttackSpeed:
-                    AttackSpeedBuff *= (100 - GetBuffAmount(pin, thisTile)) / 100;
+                    AttackSpeedBuff += (GetBuffAmount(pin, thisTile)) / 100;
                     break;
                 case PinScriptable.WeaponStatToChange.Lifesteal:
                     lifestealBuff += (GetBuffAmount(pin, thisTile) / 100);
@@ -290,7 +290,7 @@ public class UpgradeTileGrid
                     break;
                 case PinScriptable.WeaponStatToChange.GlassCannon:
                     damagebuff += (GetBuffAmount(pin, thisTile) / 100);
-                    DamageResistance *= pin.SecondModifier / 100;
+                    DamageResistance *= 1 + (pin.SecondModifier / 100);
                     break;
                 case PinScriptable.WeaponStatToChange.knockbackResistance:
                     knockbackAmount *= (100 - GetBuffAmount(pin, thisTile)) / 100;
@@ -365,11 +365,11 @@ public class UpgradeTileGrid
     public void CheckGlyphs(PinScriptable newpin)
     {
         UpgradeTileData tile = grid.FirstOrDefault(x => x.pin == newpin);
-        if (tile.glyph != null && newpin.Types[0] == tile.glyph.PinTypeToModify)
+        if (tile != null && tile.glyph != null && newpin.Types[0] == tile.glyph.PinTypeToModify)
         {
             tile.GlyphActive = true;
         }
-        else
+        else if (tile != null)
         {
             tile.GlyphActive = false;
         }

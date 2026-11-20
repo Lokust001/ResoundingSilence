@@ -5,6 +5,7 @@
 * Summary: holds the stat buffs per weapon, and sends them out as needed
 * To Do: make it work with terot cards and buff objects
 */
+using System.Linq;
 using UnityEngine;
 
 public class WeaponStatBuffs : MonoBehaviour
@@ -252,11 +253,11 @@ public class WeaponStatBuffs : MonoBehaviour
     /// </summary>
     public void UpdateWeaponSpeed()
     {
-        weaponScriptable.AttackSpeed = weaponScriptable.AttackSpeed / AttackSpeedBoost * BIFirerate;
+        weaponScriptable.AttackSpeed = 1 / (1/AttackSpeedBoost);
 
         foreach (AttackData i in weaponScriptable.ComboAttacks)
         {
-            i.AttackCooldown = i.BaseAttackCooldown * AttackSpeedBoost * BIFirerate;
+            i.AttackCooldown = i.BaseAttackCooldown * (1/AttackSpeedBoost);
         }
     }
 
@@ -265,19 +266,40 @@ public class WeaponStatBuffs : MonoBehaviour
     /// </summary>
     public void UpdateLifestealPercent()
     {
-        foreach (AttackData i in weaponScriptable.ComboAttacks)
+        if(lifestealPercent > 1.01)
         {
-            foreach (BurstData j in i.BurstAttacks)
+            foreach (AttackData i in weaponScriptable.ComboAttacks)
             {
-                //If adding lifesteal, let the attack know if has lifesteal now
-                if (!j.HasLifesteal)
+                foreach (BurstData j in i.BurstAttacks)
                 {
-                    j.HasLifesteal = true;
-                    j.WeaponLifeSteal.LifestealPercent = lifestealPercent;
-                    continue;
-                }
+                    //If adding lifesteal, let the attack know if has lifesteal now
+                    if (!j.BaseHasLifesteal)
+                    {
+                        j.HasLifesteal = true;
+                        j.WeaponLifeSteal.LifestealPercent = (lifestealPercent - 1) * 100;
+                        continue;
+                    }
 
-                j.WeaponLifeSteal.LifestealPercent = j.WeaponLifeSteal.BaseLifestealPercent * lifestealPercent;
+                    j.WeaponLifeSteal.LifestealPercent = j.WeaponLifeSteal.BaseLifestealPercent * lifestealPercent;
+                }
+            }
+        }
+        else
+        {
+            foreach (AttackData i in weaponScriptable.ComboAttacks)
+            {
+                foreach (BurstData j in i.BurstAttacks)
+                {
+                    //If adding lifesteal, let the attack know if has lifesteal now
+                    if (!j.BaseHasLifesteal)
+                    {
+                        j.HasLifesteal = false;
+                        j.WeaponLifeSteal.LifestealPercent = 0;
+                        continue;
+                    }
+
+                    j.WeaponLifeSteal.LifestealPercent = j.WeaponLifeSteal.BaseLifestealPercent;
+                }
             }
         }
     }
@@ -311,13 +333,20 @@ public class WeaponStatBuffs : MonoBehaviour
         {
             foreach (AttackData i in weaponScriptable.ComboAttacks)
             {
-                i.BurstAttacks = i.BaseBurstAttacks;
+                i.BurstAttacks = i.BaseBurstAttacks.ToList();
                 i.BurstAttacks.Add(i.BurstAttacks[burstAttackIndex]);
 
                 foreach (BurstData j in i.BurstAttacks)
                 {
                     j.BurstDamagePercent += (int)((BurstDamage * 100) - 100);
                 }
+            }
+        }
+        else
+        {
+            foreach (AttackData i in weaponScriptable.ComboAttacks)
+            {
+                i.BurstAttacks = i.BaseBurstAttacks.ToList();
             }
         }
     }

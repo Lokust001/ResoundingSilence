@@ -129,7 +129,6 @@ public class CooldownUIController : MonoBehaviour
 
             //updates the slider - has to be between 0 and 1 so we divide to get the percentage
             cooldownImage.fillAmount = timer / maxCooldownValue;
-            Debug.Log(timer/maxCooldownValue);
             yield return null;
         }
 
