@@ -1,7 +1,7 @@
 /*
 * Author: Dalsten Yan
 * Contributors: Brad Dixon, Brenden Burtz
-* Last Modified: 11/18/2026
+* Last Modified: 11/19/2026
 * Summary: Player input, stats, and damage are handled here
 * To Do:   Add more variables as needed.
 */
@@ -479,7 +479,7 @@ public class PlayerController : MonoBehaviour
         //Start a damage/invincibility couroutine
         dmgCoroutine ??= StartCoroutine(PlayerInvincibilityFrames());
 
-        MidRunDataManager.Instance.ChangePlayerHealth((int)(-damage * damageResistance));
+            MidRunDataManager.Instance.ChangePlayerHealth((int)(-damage * damageResistance));
 
         //If there is knockback data and there is no knockback coroutine active 
         if (knockbackInfo.HasValue)
@@ -675,7 +675,7 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSecondsRealtime(TimeToStartRegen);
         while (true)
         {
-            MidRunDataManager.Instance.ChangePlayerHealth((int)(MidRunDataManager.Instance.MaxPlayerHealth * regenAmount));
+            MidRunDataManager.Instance.ChangePlayerHealth((Mathf.CeilToInt(MidRunDataManager.Instance.MaxPlayerHealth * (regenAmount / 100f))));
             yield return new WaitForSecondsRealtime(RegenTickRate);
         }
     }

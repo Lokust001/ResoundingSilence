@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors: Brad Dixon, Brenden
-* Last Modified: 11/9/2026
+* Last Modified: 11/19/2026
 * Summary: This is the base scriptable object for all weapon scriptable objects.
 *          Handles the data for the weapons. Acts as a tool to make any kind of weapon.
 * To Do:   Add more variables as needed. Change status effects as needed. 
@@ -443,7 +443,7 @@ public class BaseWeaponScriptable : BaseScriptableObject
         {
             i.BaseWeaponDamage = i.WeaponDamage;
             i.BaseAttackCooldown = i.AttackCooldown;
-            i.BaseBurstAttacks = i.BurstAttacks;
+            i.BaseBurstAttacks = i.BurstAttacks.ToList();
 
             foreach (BurstData j in i.BurstAttacks)
             {
@@ -454,6 +454,7 @@ public class BaseWeaponScriptable : BaseScriptableObject
                 j.WeaponAoe.BaseAoeDelay = j.WeaponAoe.AoeDelay;
                 j.WeaponAoe.BaseAoeDuration = j.WeaponAoe.AoeDuration;
                 j.WeaponAoe.BaseAoeSize = j.WeaponAoe.AoeSize;
+                j.BaseHasLifesteal = j.HasLifesteal;
                 j.WeaponAoe.BaseMinAoeDamagePercent = j.WeaponAoe.MinAoeDamagePercent;
                 j.BurstRangedAttack.BurstPierce.BaseMinPierceDamagePercent = j.BurstRangedAttack.BurstPierce.MinPierceDamagePercent;
                 j.BurstRangedAttack.BurstPierce.BasePierceAmount = j.BurstRangedAttack.BurstPierce.PierceAmount;
@@ -511,6 +512,7 @@ public class BurstData
     [HideInInspector] public float BaseTimeTillNextBurst;
 
     public bool HasLifesteal;
+    [HideInInspector]public bool BaseHasLifesteal;
     [ShowIf(nameof(HasLifesteal)), AllowNesting]
     public LifestealData WeaponLifeSteal;
 
