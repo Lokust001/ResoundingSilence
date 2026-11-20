@@ -43,14 +43,15 @@ MonoBehaviour:
   AbilityPlayerKnockback: 0
   BaseAbilityPlayerKnockback: 0
   AbilityCooldown: 2
-  AbilityEndLag: 0.5
-  AbilityRange: 5
+  AbilityEndLag: 1
+  AbilityRange: 6
   HasProjectile: 1
   AbilityProjectile:
     BurstDamagePercent: 0
     TimeTillNextBurst: 0
     BaseTimeTillNextBurst: 0
     HasLifesteal: 0
+    BaseHasLifesteal: 0
     WeaponLifeSteal:
       LifestealPercent: 0
       BaseLifestealPercent: 0
@@ -121,6 +122,7 @@ MonoBehaviour:
         BaseRicochetCount: 0
         RicochetRange: 0
         BaseRicochetRange: 0
+  AbilityVFX: {fileID: 0}
   HasPreview: 1
   PreviewData:
     ShapeType: 2
