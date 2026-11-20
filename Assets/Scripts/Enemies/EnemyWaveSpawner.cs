@@ -1,7 +1,12 @@
+/*
+* Author: Dalsten Yan
+* Contributors: 
+* Last Modified: 11/20/2026
+* Summary: Spawner for spawning enemies in waves
+*/
 using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class EnemyWaveSpawner : BaseSpawner
@@ -43,14 +48,14 @@ public class EnemyWaveSpawner : BaseSpawner
         InputPublicEvents.InteractPressed += AttemptEndEncounterInteraction;
 
     }
-    
+
     /// <summary>
     /// Set range flag to true when player is nearby
     /// </summary>
     /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
-        if (other.GetComponent<PlayerController>()) 
+        if (other.GetComponent<PlayerController>())
         {
             playerInInteractRange = true;
         }
@@ -71,9 +76,9 @@ public class EnemyWaveSpawner : BaseSpawner
     /// <summary>
     /// Called when the player presses the interact key, only calls end encounter under specific circumstances
     /// </summary>
-    public void AttemptEndEncounterInteraction() 
+    public void AttemptEndEncounterInteraction()
     {
-        if (playerInInteractRange && endEncounterRef == null) 
+        if (playerInInteractRange && endEncounterRef == null)
         {
             playerInInteractRange = false;
             StartFinalEncounter();
@@ -85,7 +90,7 @@ public class EnemyWaveSpawner : BaseSpawner
     /// <summary>
     /// Method to start the final encounter
     /// </summary>
-    public void StartFinalEncounter() 
+    public void StartFinalEncounter()
     {
         if (finalEncounterWalls)
             finalEncounterWalls.SetActive(true);
@@ -96,7 +101,7 @@ public class EnemyWaveSpawner : BaseSpawner
     /// Coroutine that repeatedly spawns enemies, ensuring to stagger them
     /// </summary>
     /// <returns></returns>
-    private IEnumerator SpawnNextWave() 
+    private IEnumerator SpawnNextWave()
     {
         var currentWaveList = enemyWavesStack.Pop().enemies;
 
@@ -110,7 +115,7 @@ public class EnemyWaveSpawner : BaseSpawner
             currentEnemy.destroyCancellationToken.Register(() =>
             {
                 activeEnemies.Remove(currentEnemy);
-                if (activeEnemies.Count <= 0 && this != null) 
+                if (activeEnemies.Count <= 0 && this != null)
                 {
                     StartCoroutine(CurrentWaveFinished());
                 }
@@ -125,9 +130,9 @@ public class EnemyWaveSpawner : BaseSpawner
     /// Handles loop logic for the enemy waves
     /// </summary>
     /// <returns></returns>
-    private IEnumerator CurrentWaveFinished() 
+    private IEnumerator CurrentWaveFinished()
     {
-        if (enemyWavesStack.Count <= 0) 
+        if (enemyWavesStack.Count <= 0)
         {
             EndGame();
             yield break;
@@ -140,7 +145,7 @@ public class EnemyWaveSpawner : BaseSpawner
     /// <summary>
     /// End game method
     /// </summary>
-    public void EndGame() 
+    public void EndGame()
     {
         MidRunDataManager.Instance.KillPlayer();
     }

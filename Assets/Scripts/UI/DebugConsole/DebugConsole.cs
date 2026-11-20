@@ -1,7 +1,7 @@
 /*
 * Author: Brenden
-* Contributors:
-* Last Modified: 10/26/2026
+* Contributors: Dalsten Yan
+* Last Modified: 11/20/2026
 * Summary: The debug console and all the code that comes with it
 * To Do:   The Debug console SpreadSheet
 */

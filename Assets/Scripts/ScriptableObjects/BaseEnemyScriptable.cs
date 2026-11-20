@@ -1,7 +1,7 @@
 /*
 * Author: Dalsten Yan
 * Contributors:
-* Last Modified: 09/18/2026
+* Last Modified: 11/20/2026
 * Summary: This is the base scriptable object for all eneny scriptable objects.
 * To Do:   Add more variables as needed.
 */
