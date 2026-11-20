@@ -135,7 +135,7 @@ public class PlayerController : MonoBehaviour
         topColliderLocalPos = playerModelCollider.center - Vector3.up * modelThickness;
         bottomColliderLocalPos = playerModelCollider.center + Vector3.up * modelThickness;
 
-        if (chariotBool)
+        if (MidRunDataManager.Instance.IsTarotEnabled(TarotCardType.Chariot))
             totalDashes = 2;
 
         moveSpeed = defaultSpeed;
