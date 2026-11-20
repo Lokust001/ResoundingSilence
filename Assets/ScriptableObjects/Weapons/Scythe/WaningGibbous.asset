@@ -18,7 +18,9 @@ MonoBehaviour:
   AbilityName: Waning Gibbous
   AbilityImage: {fileID: 0}
   BackgroundImage: {fileID: 0}
-  PrimaryStats: []
+  PrimaryStats:
+  - StatType: 0
+    StatValue: 35
   SecondaryStats: []
   AbilityDamage: 0
   BaseAbilityDamage: 0
@@ -78,8 +80,8 @@ MonoBehaviour:
         ProjectileSpeed: 5
         BaseProjectileSpeed: 0
         LifetimeIsRange: 1
-        ProjectileRange: 5
-        BaseProjectileRange: 5
+        ProjectileRange: 6
+        BaseProjectileRange: 6
         ProjectileLifetime: 0
         BaseProjectileLifetime: 0
         ProjectileDeviation: 0

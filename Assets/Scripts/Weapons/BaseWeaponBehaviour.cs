@@ -21,17 +21,18 @@ public class BaseWeaponBehaviour : MonoBehaviour
     //Public so the upgrade manager can find the reference
     //[HideInInspector]
     [Expandable]
+    [HideInInspector]
     public BaseWeaponScriptable ThisWeaponData;
     [SerializeField] protected int weaponDataID;
-    [SerializeField] protected LayerMask groundLayerMask;
 
     [SerializeField] protected Animator weaponAnimator;
     [SerializeField] protected List<AnimationPath> attackAnimations = new List<AnimationPath>();
-    [SerializeField] protected int comboIndex;
+    protected int comboIndex;
 
     [SerializeField] protected List<Collider> meleeHitboxes = new List<Collider>();
 
     public GameObject weaponModel;
+    [HideInInspector]
     public bool activeWeapon;
 
     protected Vector3 mousePos = Vector3.forward;
@@ -52,7 +53,6 @@ public class BaseWeaponBehaviour : MonoBehaviour
 
     public WeaponStatBuffs weaponStats;
 
-    [SerializeField]
     protected bool okToAnimationCancel;
 
     /// <summary>

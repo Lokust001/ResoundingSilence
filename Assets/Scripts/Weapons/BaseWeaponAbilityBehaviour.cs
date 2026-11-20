@@ -16,8 +16,8 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     [Header("Base Ability Variables"), HorizontalLine(height: 4, EColor.Red)]
     [SerializeField] protected List<GameObject> abilityAOEs = new List<GameObject>();
 
-    [SerializeField] protected GameObject activePreview;
-    [SerializeField] protected int currentAbilityIndex;
+    protected GameObject activePreview;
+    protected int currentAbilityIndex;
 
     protected bool continuouslyUpdatePreview;
 
@@ -243,7 +243,15 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     /// </summary>
     public override void SpawnProjectile()
     {
-        bool hasBurst = ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks.Count > 1 ? true : false;
+        bool hasBurst;
+        if(spawnAbilityOneProjectile || spawnAbilityTwoProjectile)
+        {
+            hasBurst = ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityProjectile.BurstRangedAttack.AttackProjectiles.Count > 1 ? true : false;
+        }
+        else
+        {
+            hasBurst = ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks.Count > 1 ? true : false;
+        }
         BurstData rData = SetBurstData(spawnAbilityOneProjectile, spawnAbilityTwoProjectile);
         int damage = SetAttackDamage(spawnAbilityOneProjectile, spawnAbilityTwoProjectile);
 
