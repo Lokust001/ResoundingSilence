@@ -21,6 +21,8 @@ public class TarotCardHolder : ItemHolderSlot
 
     private TarotCardController controller;
 
+    
+
     /// <summary>
     /// sets up the right public events
     /// </summary>
