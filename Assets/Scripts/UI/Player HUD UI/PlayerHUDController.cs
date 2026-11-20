@@ -58,17 +58,26 @@ public class PlayerHUDController : MenuBase
     private bool mapIsCurrentlyMini;
 
     [SerializeField, ShowIf(nameof(settings), Settings.HuntBoard)]
-    private TMP_Text prefabHuntText;
+    private GameObject prefabHuntText;
 
     [SerializeField, ShowIf(nameof(settings), Settings.HuntBoard)]
     private Color huntCompleteColor;
 
     [SerializeField, ShowIf(nameof(settings), Settings.HuntBoard)]
     private GameObject huntBoardContainer;
-    private List<(SideObjective, TMP_Text)> huntTexts = new();
+    private List<(SideObjective, GameObject)> huntTexts = new();
 
     [SerializeField]
     private TMP_Text timerText;
+
+
+    [SerializeField]
+    private GameObject tarotContainer;
+
+    [SerializeField]
+    private Image tarotPrefab;
+
+    private List<Image> tarots;
 
     /// <summary>
     /// debug command to force the ui to take one damage
@@ -124,6 +133,7 @@ public class PlayerHUDController : MenuBase
         base.InitMenu();
         mapCam = Instantiate(mapCamPrefab, MainCameraManager.Instance.transform);
         mapCam.InitMinimapCamera();
+        SetUpTarots();
     }
 
     /// <summary>
@@ -239,10 +249,10 @@ public class PlayerHUDController : MenuBase
             return;
         }
 
-        TMP_Text NewHuntText = Instantiate(prefabHuntText, huntBoardContainer.transform);
+        GameObject NewHuntText = Instantiate(prefabHuntText, huntBoardContainer.transform);
         huntTexts.Add(new(obj, NewHuntText));
 
-        NewHuntText.text = $"{obj.GetSideObjectiveTooltipText()}: 0/{obj.huntedEnemiesGoal}";
+        NewHuntText.GetComponentInChildren<TMP_Text>().text = $"{obj.GetSideObjectiveTooltipText()}: 0/{obj.huntedEnemiesGoal}";
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(huntBoardContainer.transform as RectTransform);
     }
@@ -259,7 +269,8 @@ public class PlayerHUDController : MenuBase
             return;
         }
 
-        TMP_Text textToUpdate = huntTexts.Count > 0 ? huntTexts.FirstOrDefault(x => x.Item1 == obj).Item2 : null;
+        GameObject textToUpdate = huntTexts.Count > 0 ? huntTexts.FirstOrDefault(x => x.Item1 == obj).Item2 : null;
+        TMP_Text tempHuntText = textToUpdate.GetComponentInChildren<TMP_Text>();    
 
         if (textToUpdate == null)
         {
@@ -276,7 +287,7 @@ public class PlayerHUDController : MenuBase
 
         try
         {
-            textToUpdate.text = $"{obj.GetSideObjectiveTooltipText()}:\n{huntProgress}";
+            tempHuntText.text = $"{obj.GetSideObjectiveTooltipText()}:\n{huntProgress}";
         }
         catch
         {
@@ -290,7 +301,7 @@ public class PlayerHUDController : MenuBase
     /// <param name="obj"></param>
     private void RemoveHuntObjective(SideObjective obj)
     {
-        (SideObjective, TMP_Text) temp = huntTexts.FirstOrDefault(x => x.Item1 == obj);
+        (SideObjective, GameObject) temp = huntTexts.FirstOrDefault(x => x.Item1 == obj);
 
         if (temp.Item1 == null)
         {
@@ -311,4 +322,34 @@ public class PlayerHUDController : MenuBase
             timerText.text = $"{GameTimerManager.Instance.GetRoundedGameTime()}";
         }
     }
+
+    #region Tarot
+
+    /// <summary>
+    /// creates the tarot cards in the player hud
+    /// </summary>
+    private void SetUpTarots()
+    {
+        List<TarotCardType> enabledCards = MidRunDataManager.Instance.GetEnabledTarotCards();
+        List<TarotScriptable> scriptables = StaticDataManager.Instance.tarotCards.Where(x => enabledCards.Contains(x.heldTarot)).ToList();
+        
+        if (tarots != null && tarots.Count > 0)
+        {
+            foreach (Image i in tarots)
+            {
+                Destroy(i.gameObject);
+            }
+        }
+
+        tarots = new();
+
+        foreach (TarotScriptable t in scriptables)
+        {
+            Image temp = Instantiate(tarotPrefab, tarotContainer.transform);
+            temp.sprite = t.sprite;
+            tarots.Add(temp);
+        }
+    }
+
+    #endregion
 }

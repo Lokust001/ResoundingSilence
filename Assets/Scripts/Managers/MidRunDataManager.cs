@@ -1,13 +1,14 @@
 /*
 * Author: Tyler
 * Contributors: Brenden, Brad Dixon
-* Last Modified: 11/17/2026
+* Last Modified: 11/19/2026
 * Summary: This is a database that will hold all of the data needed mid run.
 * To Do:   N/A
 */
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using NaughtyAttributes;
 using UnityEngine;
@@ -116,21 +117,25 @@ public class MidRunDataManager : BaseManager
     private List<PinScriptable> testingPinInventory = new();
 
     #region TerotVariables
-    [SerializeField, Foldout("Tarot Variables")] bool MagicianBool;
+
+
+    private Dictionary<TarotCardType, bool> EnabledTarotCards;
+
+    //[SerializeField, Foldout("Tarot Variables")] bool MagicianBool;
     [SerializeField, Tooltip("Where the player will stop scaling, in %, base damage is 100"), Foldout("Tarot Variables")] int MagicianMaxDamageBuff;
     [SerializeField, Tooltip("Where the damage buff will be at after the player takes damage, in %, base damage is 100"), Foldout("Tarot Variables")] int MagicianMinDamageBuff;
     [SerializeField, Tooltip("How long between the ticks of buffs, in seconds"), Foldout("Tarot Variables")] float MagicianTimeBetween;
     [SerializeField, Tooltip("How much gets added each tick off time undamaged, in %, no scaling would be 0"), Foldout("Tarot Variables")] int MagicianAmountAdded;
     [HideInInspector] public float MagicianDamageBuff = 1.0f;
 
-    [SerializeField, Foldout("Tarot Variables")] bool DevilBool;
+    //[SerializeField, Foldout("Tarot Variables")] bool DevilBool;
     [SerializeField, Tooltip("Where the player will stop scaling, in %, base is 100 damage"), Foldout("Tarot Variables")] int DevilMaxDamageBuff;
     [SerializeField, Tooltip("Where the damage buff will be at when hitting the min health missing threshold, in %, base is 100 damage"), Foldout("Tarot Variables")] int DevilMinDamageBuff;
     [SerializeField, Tooltip("what percent health does the player have the max damage boost"), Foldout("Tarot Variables")] int DevilMaxBuffHealthPercent;
     [SerializeField, Tooltip("What percent health does the player have to start giving damage buff"), Foldout("Tarot Variables")] int DevilMinBuffHealthPercent;
     [HideInInspector] public float DevilDamageBuff = 1.0f;
 
-    [SerializeField, Foldout("Tarot Variables")] bool TowerBool;
+    //[SerializeField, Foldout("Tarot Variables")] bool TowerBool;
     [SerializeField, Tooltip("How much extra damage the player does in %, 100 would be no extra damage"), Foldout("Tarot Variables")] int TowerDamageOutBuff;
     [SerializeField, Tooltip("How much extra damage the player take in %, 100 would be no extra damage"), Foldout("Tarot Variables")] int TowerDamageInBuff;
 
@@ -149,6 +154,20 @@ public class MidRunDataManager : BaseManager
     }
 
     /// <summary>
+    /// Debug statement so i can see the contents of the enabledtarotcards dictionary
+    /// </summary>
+    [Button]
+    void LogDict()
+    {
+        string retStr = "";
+        foreach (TarotCardType type in EnabledTarotCards.Keys)
+        {
+            retStr += $"Element {type}: {EnabledTarotCards[type]}\n";
+        }
+        Debug.Log(retStr);
+    }
+
+    /// <summary>
     /// unsubscribes to the hermit event
     /// </summary>
     private void OnDestroy()
@@ -161,7 +180,7 @@ public class MidRunDataManager : BaseManager
     public void connectHermit()
     {
         PlayerManager.Instance.player.HermitTrigger.PlayerTriggerActivated += CalculateHermit;
-        if (HermitBool)
+        if (IsTarotEnabled(TarotCardType.Hermit))
         {
             CalculateHermit(null, false);
         }
@@ -200,16 +219,29 @@ public class MidRunDataManager : BaseManager
         playerLvl = 1;
         ExpNeededToLevelUp = playerLvls[playerLvl - 1].ExpToLevelUp;
 
+        SetUpTarotDict();
         UnequipAllWeapons();
 
         GenericPublicEvents.EquipWeaponInSlot += EquipWeaponInSlot;
-        if (MagicianBool)
+        if (IsTarotEnabled(TarotCardType.Magician))
         {
             StartCoroutine(Magician());
         }
         await Task.CompletedTask;
     }
 
+    /// <summary>
+    /// sets up all the values in the tarot dictionary
+    /// </summary>
+    public void SetUpTarotDict()
+    {
+        EnabledTarotCards = new();
+
+        for (int i = 0; i < System.Enum.GetValues(typeof(TarotCardType)).Length; i++)
+        {
+            EnabledTarotCards.Add((TarotCardType)i, false);
+        }
+    }
 
     /// <summary>
     /// gets all the weaponStatBuffs that are on the weapons
@@ -227,7 +259,7 @@ public class MidRunDataManager : BaseManager
                 WeaponStats[1] = statbuff;
             }
         }
-        if (TowerBool)
+        if (IsTarotEnabled(TarotCardType.Tower))
         {
             foreach (var stats in WeaponStats)
             {
@@ -238,7 +270,7 @@ public class MidRunDataManager : BaseManager
                 }
             }
         }
-        if (HermitBool)
+        if (IsTarotEnabled(TarotCardType.Hermit))
         {
             foreach (var stats in WeaponStats)
             {
@@ -246,7 +278,7 @@ public class MidRunDataManager : BaseManager
                     stats.HermitDamageBuff = HermitDamageBuff;
             }
         }
-        if (DevilBool)
+        if (IsTarotEnabled(TarotCardType.Devil))
         {
             foreach (var stats in WeaponStats)
             {
@@ -254,7 +286,7 @@ public class MidRunDataManager : BaseManager
                     stats.DevilDamageBuff = DevilDamageBuff;
             }
         }
-        if (MagicianBool)
+        if (IsTarotEnabled(TarotCardType.Magician))
         {
             foreach (var stats in WeaponStats)
             {
@@ -385,7 +417,7 @@ public class MidRunDataManager : BaseManager
             return;
         }
 
-        if (amountToChange < 0 && MagicianBool)
+        if (amountToChange < 0 && IsTarotEnabled(TarotCardType.Magician))
         {
             MagicianDamageBuff = (float)MagicianMinDamageBuff / 100;
             foreach (var i in WeaponStats)
@@ -412,7 +444,7 @@ public class MidRunDataManager : BaseManager
             InputManager.Instance.DisablePlayerInputs();
         }
 
-        if (CurrentPlayerHealth / MaxPlayerHealth < DevilMinBuffHealthPercent / 100f && DevilBool)
+        if (CurrentPlayerHealth / MaxPlayerHealth < DevilMinBuffHealthPercent / 100f && IsTarotEnabled(TarotCardType.Devil))
         {
             if (CurrentPlayerHealth / MaxPlayerHealth < DevilMaxBuffHealthPercent / 100f)
             {
@@ -529,7 +561,7 @@ public class MidRunDataManager : BaseManager
     /// <returns></returns>
     private IEnumerator Magician()
     {
-        while (MagicianBool)
+        while (IsTarotEnabled(TarotCardType.Magician))
         {
             MagicianDamageBuff += (float)MagicianAmountAdded / 100;
             if (MagicianDamageBuff > (float)MagicianMaxDamageBuff / 100)
@@ -555,7 +587,7 @@ public class MidRunDataManager : BaseManager
     /// <param name="AmountOfEnemies"></param>
     public void CalculateHermit(Enemy enemy, bool enter)
     {
-        if (HermitBool)
+        if (IsTarotEnabled(TarotCardType.Hermit))
         {
             if (enter)
             {
@@ -599,4 +631,71 @@ public class MidRunDataManager : BaseManager
             }
         }
     }
+
+    /// <summary>
+    /// returns if the player has the tarot card enabled or not
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public bool IsTarotEnabled(TarotCardType type)
+    {
+        if (EnabledTarotCards == null || EnabledTarotCards.Count <= 0)
+        {
+            EnabledTarotCards = new();
+        }
+        
+
+        if (!EnabledTarotCards.ContainsKey(type))
+        {
+            EnabledTarotCards.Add(type, false);
+        }
+
+        return EnabledTarotCards[type];
+    }
+
+    /// <summary>
+    /// enables a tarot card
+    /// </summary>
+    /// <param name="type"></param>
+    public void EnableTarotCard(TarotCardType type = TarotCardType.None)
+    {
+        if (type == TarotCardType.None)
+        {
+            return;
+        }
+
+        if (EnabledTarotCards == null || EnabledTarotCards.Count <= 0)
+        {
+            EnabledTarotCards = new();
+        }
+
+
+        if (!EnabledTarotCards.ContainsKey(type))
+        {
+            EnabledTarotCards.Add(type, true);
+        }
+        else
+        {
+            EnabledTarotCards[type] = true;
+        }
+    }
+
+    /// <summary>
+    /// returns the list of enabled tarot cards
+    /// </summary>
+    /// <returns></returns>
+    public List<TarotCardType> GetEnabledTarotCards()
+    {
+        return EnabledTarotCards.Where(x => x.Value == true).Select(x => x.Key).ToList();
+    }
+}
+
+public enum TarotCardType
+{
+    None,
+    Magician,
+    Chariot,
+    Hermit,
+    Devil,
+    Tower
 }

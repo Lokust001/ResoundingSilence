@@ -23,6 +23,7 @@ public class BaseScriptableObject : ScriptableObject
     public bool UsePresetTooltip = false;
 
     [ShowIf(nameof(UsePresetTooltip))]
+    [TextArea, AllowNesting]
     [Tooltip("The text of the tooltip you want it to have. " +
         "Uses rich text so you can do stuff like <color=red></color>. " +
         "Google unity rich text if you want to see your options.")]
