@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2549387773738404018
 RectTransform:
   m_ObjectHideFlags: 0
@@ -36,9 +36,9 @@ RectTransform:
   - {fileID: 7587868850462931784}
   m_Father: {fileID: 77111494925164754}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 450, y: -540}
   m_SizeDelta: {x: 700, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4393949358480792227
@@ -126,13 +126,13 @@ MonoBehaviour:
     m_Top: 100
     m_Bottom: 100
   m_ChildAlignment: 3
-  m_Spacing: 50
-  m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
+  m_Spacing: 350
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
   m_ChildControlHeight: 0
-  m_ChildScaleWidth: 0
-  m_ChildScaleHeight: 0
+  m_ChildScaleWidth: 1
+  m_ChildScaleHeight: 1
   m_ReverseArrangement: 0
 --- !u!1 &472024165225828159
 GameObject:
@@ -187,7 +187,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5747377098548266894
 RectTransform:
   m_ObjectHideFlags: 0
@@ -204,9 +204,9 @@ RectTransform:
   - {fileID: 6626695523662760405}
   m_Father: {fileID: 77111494925164754}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 450, y: -840}
   m_SizeDelta: {x: 700, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4602716689596337904
@@ -294,13 +294,13 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 4
-  m_Spacing: 50
-  m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
+  m_Spacing: 100
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
   m_ChildControlHeight: 0
-  m_ChildScaleWidth: 0
-  m_ChildScaleHeight: 0
+  m_ChildScaleWidth: 1
+  m_ChildScaleHeight: 1
   m_ReverseArrangement: 0
 --- !u!1 &1429345107427316488
 GameObject:
@@ -779,7 +779,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4469763357686680583
 RectTransform:
   m_ObjectHideFlags: 0
@@ -799,9 +799,9 @@ RectTransform:
   - {fileID: 8156128587382301241}
   m_Father: {fileID: 77111494925164754}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 450, y: -690}
   m_SizeDelta: {x: 700, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1113654127620548577
@@ -865,6 +865,7 @@ RectTransform:
   - {fileID: 2352854856342805838}
   - {fileID: 2571829422387797058}
   - {fileID: 5893579955149581284}
+  - {fileID: 1863473585804418899}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -896,25 +897,8 @@ MonoBehaviour:
   - {fileID: 5041872854710445380}
   - {fileID: 8323559808553066738}
   - {fileID: 350361785804688754}
-  - {fileID: 201694244721281278}
-  - {fileID: 4696547086497756870}
   - {fileID: 969416732987734216}
   - {fileID: 3968899938394336080}
-  - {fileID: 440323963159124642}
-  - {fileID: 1178178672204886024}
-  - {fileID: 5386170739506370970}
-  - {fileID: 2628030069972905846}
-  - {fileID: 5911796614927852710}
-  - {fileID: 7855289572532644912}
-  - {fileID: 2805803101949883478}
-  - {fileID: 88147458734154083}
-  - {fileID: 8776103272153055835}
-  - {fileID: 138448629014180682}
-  - {fileID: 8706895042487029094}
-  - {fileID: 2788737019952013466}
-  - {fileID: 1820805125640255506}
-  - {fileID: 6108493612758047981}
-  - {fileID: 3711651475063886846}
   equippedSlots:
   - {fileID: 4202748100649507321}
   - {fileID: 3468873616979880610}
@@ -982,13 +966,13 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 4
-  m_Spacing: 50
-  m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
+  m_Spacing: 100
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
   m_ChildControlHeight: 0
-  m_ChildScaleWidth: 0
-  m_ChildScaleHeight: 0
+  m_ChildScaleWidth: 1
+  m_ChildScaleHeight: 1
   m_ReverseArrangement: 0
 --- !u!1 &8619437192219289879
 GameObject:
@@ -1287,6 +1271,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5345444798724077140}
     m_Modifications:
+    - target: {fileID: 849506088816275196, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.000061035156
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420822910142276191, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.000061035156
+      objectReference: {fileID: 0}
     - target: {fileID: 5625709339993999743, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_Name
       value: TarotCardHolder
@@ -1317,11 +1309,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 100
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 100
+      value: 256
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1400,6 +1392,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2738774631563058763}
     m_Modifications:
+    - target: {fileID: 849506088816275196, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.000030517578
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420822910142276191, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.000030517578
+      objectReference: {fileID: 0}
     - target: {fileID: 5625709339993999743, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_Name
       value: TarotCardHolder (2)
@@ -1430,11 +1430,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 100
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 100
+      value: 256
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1517,6 +1517,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TarotCardHolder (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 5625709339993999743, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1531,7 +1535,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.x
@@ -1539,7 +1543,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_SizeDelta.x
@@ -1579,11 +1583,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 350
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -50
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1602,17 +1606,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
---- !u!114 &440323963159124642 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 897995182167506858, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
-  m_PrefabInstance: {fileID: 750422817042474248}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f1eea09b8a03f549b0713ca553cb47c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TarotCardHolder
 --- !u!224 &7955880794199343241 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
@@ -1644,7 +1637,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.x
@@ -1652,7 +1645,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_SizeDelta.x
@@ -1692,11 +1685,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 650
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -50
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1715,17 +1708,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
---- !u!114 &88147458734154083 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 897995182167506858, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
-  m_PrefabInstance: {fileID: 959117710206754505}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f1eea09b8a03f549b0713ca553cb47c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TarotCardHolder
 --- !u!224 &7587868850462931784 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
@@ -1757,7 +1739,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.x
@@ -1765,7 +1747,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_SizeDelta.x
@@ -1805,11 +1787,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -50
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1828,17 +1810,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
---- !u!114 &138448629014180682 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 897995182167506858, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
-  m_PrefabInstance: {fileID: 981098173262761184}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f1eea09b8a03f549b0713ca553cb47c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TarotCardHolder
 --- !u!224 &7610926597770340705 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
@@ -1856,6 +1827,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TarotCardHolder (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 5625709339993999743, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1870,7 +1845,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.x
@@ -1878,7 +1853,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_SizeDelta.x
@@ -1918,11 +1893,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 600
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -50
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1941,17 +1916,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
---- !u!114 &201694244721281278 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 897995182167506858, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
-  m_PrefabInstance: {fileID: 1061404773422561108}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f1eea09b8a03f549b0713ca553cb47c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TarotCardHolder
 --- !u!224 &7689932618467480277 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
@@ -2100,7 +2064,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.x
@@ -2108,7 +2072,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_SizeDelta.x
@@ -2148,11 +2112,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 650
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -50
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -2171,17 +2135,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
---- !u!114 &1820805125640255506 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 897995182167506858, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
-  m_PrefabInstance: {fileID: 1527456126631954360}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f1eea09b8a03f549b0713ca553cb47c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TarotCardHolder
 --- !u!224 &8156128587382301241 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
@@ -2320,6 +2273,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TarotCardHolder (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 5625709339993999743, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2334,7 +2291,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.x
@@ -2342,7 +2299,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_SizeDelta.x
@@ -2382,11 +2339,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -50
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -2405,17 +2362,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
---- !u!114 &1178178672204886024 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 897995182167506858, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
-  m_PrefabInstance: {fileID: 2031099924878036898}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f1eea09b8a03f549b0713ca553cb47c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TarotCardHolder
 --- !u!224 &8659600075835402787 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
@@ -2447,7 +2393,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.x
@@ -2455,7 +2401,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_SizeDelta.x
@@ -2495,11 +2441,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -50
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -2518,17 +2464,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
---- !u!114 &2628030069972905846 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 897995182167506858, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
-  m_PrefabInstance: {fileID: 2886511253094437084}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f1eea09b8a03f549b0713ca553cb47c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TarotCardHolder
 --- !u!224 &5479768373005677917 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
@@ -2560,7 +2495,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.x
@@ -2568,7 +2503,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_SizeDelta.x
@@ -2608,11 +2543,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -50
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -2631,17 +2566,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
---- !u!114 &2805803101949883478 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 897995182167506858, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
-  m_PrefabInstance: {fileID: 3064249650521459708}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f1eea09b8a03f549b0713ca553cb47c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TarotCardHolder
 --- !u!224 &5657814363118153341 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
@@ -2673,7 +2597,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.x
@@ -2681,7 +2605,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_SizeDelta.x
@@ -2721,11 +2645,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -50
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -2744,17 +2668,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
---- !u!114 &2788737019952013466 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 897995182167506858, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
-  m_PrefabInstance: {fileID: 3082085398300827440}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f1eea09b8a03f549b0713ca553cb47c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TarotCardHolder
 --- !u!224 &5676570360121883313 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
@@ -2768,6 +2681,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5345444798724077140}
     m_Modifications:
+    - target: {fileID: 849506088816275196, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.000030517578
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420822910142276191, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.000030517578
+      objectReference: {fileID: 0}
     - target: {fileID: 5625709339993999743, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_Name
       value: TarotCardHolder (1)
@@ -2798,11 +2719,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 100
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 100
+      value: 256
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2899,7 +2820,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.x
@@ -2907,7 +2828,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_SizeDelta.x
@@ -2947,11 +2868,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 537.5
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -50
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -2970,21 +2891,120 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
---- !u!114 &3711651475063886846 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 897995182167506858, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
-  m_PrefabInstance: {fileID: 4608377062714502228}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f1eea09b8a03f549b0713ca553cb47c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TarotCardHolder
 --- !u!224 &6626695523662760405 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
   m_PrefabInstance: {fileID: 4608377062714502228}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &4907780686917274377
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 5232264643183270280}
+    m_Modifications:
+    - target: {fileID: 5541916069974086048, guid: e0ce8a39d982f2c4d9c5f51ace807f58, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 01fc2ad0842077246900fe43a87c1c91, type: 3}
+    - target: {fileID: 6757532297471726682, guid: e0ce8a39d982f2c4d9c5f51ace807f58, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6757532297471726682, guid: e0ce8a39d982f2c4d9c5f51ace807f58, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6757532297471726682, guid: e0ce8a39d982f2c4d9c5f51ace807f58, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6757532297471726682, guid: e0ce8a39d982f2c4d9c5f51ace807f58, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6757532297471726682, guid: e0ce8a39d982f2c4d9c5f51ace807f58, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6757532297471726682, guid: e0ce8a39d982f2c4d9c5f51ace807f58, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6757532297471726682, guid: e0ce8a39d982f2c4d9c5f51ace807f58, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 6757532297471726682, guid: e0ce8a39d982f2c4d9c5f51ace807f58, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 256
+      objectReference: {fileID: 0}
+    - target: {fileID: 6757532297471726682, guid: e0ce8a39d982f2c4d9c5f51ace807f58, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6757532297471726682, guid: e0ce8a39d982f2c4d9c5f51ace807f58, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6757532297471726682, guid: e0ce8a39d982f2c4d9c5f51ace807f58, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6757532297471726682, guid: e0ce8a39d982f2c4d9c5f51ace807f58, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6757532297471726682, guid: e0ce8a39d982f2c4d9c5f51ace807f58, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6757532297471726682, guid: e0ce8a39d982f2c4d9c5f51ace807f58, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6757532297471726682, guid: e0ce8a39d982f2c4d9c5f51ace807f58, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6757532297471726682, guid: e0ce8a39d982f2c4d9c5f51ace807f58, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -765.111
+      objectReference: {fileID: 0}
+    - target: {fileID: 6757532297471726682, guid: e0ce8a39d982f2c4d9c5f51ace807f58, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 214.884
+      objectReference: {fileID: 0}
+    - target: {fileID: 6757532297471726682, guid: e0ce8a39d982f2c4d9c5f51ace807f58, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6757532297471726682, guid: e0ce8a39d982f2c4d9c5f51ace807f58, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6757532297471726682, guid: e0ce8a39d982f2c4d9c5f51ace807f58, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7274431005434920162, guid: e0ce8a39d982f2c4d9c5f51ace807f58, type: 3}
+      propertyPath: m_Name
+      value: TarotItem
+      objectReference: {fileID: 0}
+    - target: {fileID: 7274431005434920162, guid: e0ce8a39d982f2c4d9c5f51ace807f58, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e0ce8a39d982f2c4d9c5f51ace807f58, type: 3}
+--- !u!224 &1863473585804418899 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 6757532297471726682, guid: e0ce8a39d982f2c4d9c5f51ace807f58, type: 3}
+  m_PrefabInstance: {fileID: 4907780686917274377}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5100841271190775344
 PrefabInstance:
@@ -2997,6 +3017,10 @@ PrefabInstance:
     - target: {fileID: 5625709339993999743, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_Name
       value: TarotCardHolder (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5625709339993999743, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_Pivot.x
@@ -3012,7 +3036,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.x
@@ -3020,7 +3044,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_SizeDelta.x
@@ -3060,11 +3084,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 650
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -50
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -3088,17 +3112,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
   m_PrefabInstance: {fileID: 5100841271190775344}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &5386170739506370970 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 897995182167506858, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
-  m_PrefabInstance: {fileID: 5100841271190775344}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f1eea09b8a03f549b0713ca553cb47c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TarotCardHolder
 --- !u!1001 &5300179831808875246
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3137,11 +3150,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 100
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 100
+      value: 256
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3224,6 +3237,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TarotCardHolder (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 5625709339993999743, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -3238,7 +3255,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.x
@@ -3246,7 +3263,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_SizeDelta.x
@@ -3286,11 +3303,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 750
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -50
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -3314,17 +3331,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
   m_PrefabInstance: {fileID: 5574098911494343020}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4696547086497756870 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 897995182167506858, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
-  m_PrefabInstance: {fileID: 5574098911494343020}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f1eea09b8a03f549b0713ca553cb47c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TarotCardHolder
 --- !u!1001 &6256891225492212586
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3359,11 +3365,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1355123676550651203, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 100
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 1355123676550651203, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 100
+      value: 256
       objectReference: {fileID: 0}
     - target: {fileID: 1355123676550651203, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3412,6 +3418,34 @@ PrefabInstance:
     - target: {fileID: 1355123676550651203, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7877322612372872797, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7877322612372872797, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7877322612372872797, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7877322612372872797, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7877322612372872797, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7877322612372872797, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7877322612372872797, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.000045776367
       objectReference: {fileID: 0}
     - target: {fileID: 8000000925938397684, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
       propertyPath: m_Name
@@ -3464,7 +3498,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.x
@@ -3472,7 +3506,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_SizeDelta.x
@@ -3512,11 +3546,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 162.5
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -50
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -3540,17 +3574,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
   m_PrefabInstance: {fileID: 6391711024431801159}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &6108493612758047981 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 897995182167506858, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
-  m_PrefabInstance: {fileID: 6391711024431801159}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f1eea09b8a03f549b0713ca553cb47c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TarotCardHolder
 --- !u!1001 &6808521723692620556
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3577,7 +3600,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.x
@@ -3585,7 +3608,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_SizeDelta.x
@@ -3625,11 +3648,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -50
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -3653,17 +3676,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
   m_PrefabInstance: {fileID: 6808521723692620556}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &5911796614927852710 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 897995182167506858, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
-  m_PrefabInstance: {fileID: 6808521723692620556}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f1eea09b8a03f549b0713ca553cb47c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TarotCardHolder
 --- !u!1001 &7022741170777772954
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3690,7 +3702,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.x
@@ -3698,7 +3710,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_SizeDelta.x
@@ -3738,11 +3750,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 350
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -50
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -3766,17 +3778,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
   m_PrefabInstance: {fileID: 7022741170777772954}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7855289572532644912 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 897995182167506858, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
-  m_PrefabInstance: {fileID: 7022741170777772954}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f1eea09b8a03f549b0713ca553cb47c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TarotCardHolder
 --- !u!1001 &7346258300513259358
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3811,11 +3812,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1355123676550651203, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 100
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 1355123676550651203, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 100
+      value: 256
       objectReference: {fileID: 0}
     - target: {fileID: 1355123676550651203, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3864,6 +3865,34 @@ PrefabInstance:
     - target: {fileID: 1355123676550651203, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7877322612372872797, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7877322612372872797, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7877322612372872797, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7877322612372872797, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7877322612372872797, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7877322612372872797, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7877322612372872797, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.000045776367
       objectReference: {fileID: 0}
     - target: {fileID: 8000000925938397684, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
       propertyPath: m_Name
@@ -3924,11 +3953,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1355123676550651203, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 100
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 1355123676550651203, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 100
+      value: 256
       objectReference: {fileID: 0}
     - target: {fileID: 1355123676550651203, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3977,6 +4006,34 @@ PrefabInstance:
     - target: {fileID: 1355123676550651203, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7877322612372872797, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7877322612372872797, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7877322612372872797, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7877322612372872797, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7877322612372872797, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7877322612372872797, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7877322612372872797, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.000045776367
       objectReference: {fileID: 0}
     - target: {fileID: 8000000925938397684, guid: e661f133b484f034cb9efa7d22248ae3, type: 3}
       propertyPath: m_Name
@@ -4029,7 +4086,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.x
@@ -4037,7 +4094,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_SizeDelta.x
@@ -4077,11 +4134,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 350
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -50
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -4105,17 +4162,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
   m_PrefabInstance: {fileID: 8404644019452752588}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &8706895042487029094 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 897995182167506858, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
-  m_PrefabInstance: {fileID: 8404644019452752588}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f1eea09b8a03f549b0713ca553cb47c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TarotCardHolder
 --- !u!1001 &8483843479066689009
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4142,7 +4188,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.x
@@ -4150,7 +4196,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_SizeDelta.x
@@ -4190,11 +4236,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -50
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -4218,17 +4264,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
   m_PrefabInstance: {fileID: 8483843479066689009}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &8776103272153055835 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 897995182167506858, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
-  m_PrefabInstance: {fileID: 8483843479066689009}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f1eea09b8a03f549b0713ca553cb47c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TarotCardHolder
 --- !u!1001 &9220390539086339928
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4237,6 +4272,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2738774631563058763}
     m_Modifications:
+    - target: {fileID: 849506088816275196, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.000030517578
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420822910142276191, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.000030517578
+      objectReference: {fileID: 0}
     - target: {fileID: 5625709339993999743, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_Name
       value: TarotCardHolder (1)
@@ -4267,11 +4310,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 100
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 100
+      value: 256
       objectReference: {fileID: 0}
     - target: {fileID: 7206602719089452417, guid: 33adebf90e50fa74c84b81f18e2b4658, type: 3}
       propertyPath: m_LocalPosition.x

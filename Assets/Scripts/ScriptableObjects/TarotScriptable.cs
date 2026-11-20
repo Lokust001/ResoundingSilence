@@ -7,5 +7,8 @@ public class TarotScriptable : BaseScriptableObject
 
     public bool isUnlocked = false;
 
-    public Color tempColor;
+    public Sprite sprite;
+
+    public TarotCardType heldTarot;
+
 }

@@ -113,8 +113,23 @@ public class TarotCardController : MenuControllerSupportBase
     /// </summary>
     public void FinishedInTarotMenu()
     {
+        SendTarotToMidRun();
         GenericPublicEvents.StartGamePressed?.Invoke();
         UIPublicEvents.UpdateUIManagerStack?.Invoke(UiMenuType.PlayerHUD);
+    }
+
+    private void SendTarotToMidRun()
+    {
+        foreach (TarotCardHolder holder in equippedSlots)
+        {
+            if (holder.heldItem != null)
+            {
+                if (holder.heldItem is TarotItemBehavior behav)
+                {
+                    MidRunDataManager.Instance.EnableTarotCard(behav.data.heldTarot);
+                }
+            }
+        }
     }
 
     /// <summary>
