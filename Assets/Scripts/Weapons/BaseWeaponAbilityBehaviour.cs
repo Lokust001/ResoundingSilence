@@ -1,7 +1,7 @@
 /******************************************************************************
  * Author: Brad Dixon
  * Contributors:
- * Last Modified: 11/10/2026
+ * Last Modified: 11/19/2026
  * Brief: This script now controlls the ability functionality for weapons.
  * This way, abilities can have changes made to them while someone else changes weapon attacks.
  * TODO: Add ability functionality as needed.
@@ -36,8 +36,8 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     protected bool spawnAbilityOneProjectile;
     protected bool spawnAbilityTwoProjectile;
 
-    private float AbilityOneCD;
-    private float AbilityTwoCD;
+    protected float AbilityOneCD;
+    protected float AbilityTwoCD;
 
     /// <summary>
     /// stops everything when it get's switched off
@@ -130,29 +130,15 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     {
         if (aimingAbilityOne || aimingAbilityTwo)
         {
-            if (ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAnim.AnimatorUsed != null && !weaponAnimator.Equals(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAnim.AnimatorUsed))
+            //I intially put this at the start, but if you click the attack and then click and hold the attack button before it finishes, you won't attack until you hit the attack button again
+            if (!okToAnimationCancel)
             {
-                weaponAnimator = attackAnimations[comboIndex - 1].AnimatorUsed;
+                return;
             }
 
-            if(aimingAbilityOne)
-            {
-                abilityOneActive = true;
-                if (ThisWeaponData.editableAbilities[abilityOneIndex].HasProjectile)
-                {
-                    spawnAbilityOneProjectile = true;
-                }
-            }
-            else
-            {
-                abilityTwoActive = true;
-                if (ThisWeaponData.editableAbilities[abilityTwoIndex].HasProjectile)
-                {
-                    spawnAbilityTwoProjectile = true;
-                }
-            }
+            SetAnimator(true);
 
-            weaponAnimator.Play(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAnim.AnimClip.name, ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
+            PlayAbilityCastAnimation();
         }
         else
         {
@@ -161,40 +147,86 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     }
 
     /// <summary>
+    /// If the animation uses a different animator than the current one, use that animator instead
+    /// </summary>
+    override protected void SetAnimator(bool isAbility = false)
+    {
+        if(isAbility)
+        {
+            if (ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAnim.AnimatorUsed != null && !weaponAnimator.Equals(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAnim.AnimatorUsed))
+            {
+                weaponAnimator = ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAnim.AnimatorUsed;
+            }
+        }
+        else
+        {
+            base.SetAnimator();
+        }
+    }
+
+    /// <summary>
+    /// Determines which ability is being cast and plays their animation
+    /// </summary>
+    protected void PlayAbilityCastAnimation()
+    {
+        if (aimingAbilityOne)
+        {
+            abilityOneActive = true;
+            if (ThisWeaponData.editableAbilities[abilityOneIndex].HasProjectile)
+            {
+                spawnAbilityOneProjectile = true;
+            }
+        }
+        else
+        {
+            abilityTwoActive = true;
+            if (ThisWeaponData.editableAbilities[abilityTwoIndex].HasProjectile)
+            {
+                spawnAbilityTwoProjectile = true;
+            }
+        }
+
+        weaponAnimator.Play(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAnim.AnimClip.name, ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
+        okToAnimationCancel = false;
+    }
+
+    /// <summary>
     /// Allows the preview to follow the spot in the world the player aims at, if the preview should do that.
     /// </summary>
     protected override void FixedUpdate()
     {
-        if (activeWeapon)
+        if (!activeWeapon)
         {
-            base.FixedUpdate();
+            return;
+        }
 
-            if (continuouslyUpdatePreview)
+        base.FixedUpdate();
+
+        if (continuouslyUpdatePreview)
+        {
+            float staticY = activePreview.transform.position.y;
+
+            Vector3 pos = activePreview.transform.position;
+
+            if (InputManager.Instance.ControllerIsEnabled)
             {
-                float staticY = activePreview.transform.position.y;
-
-                Vector3 pos = activePreview.transform.position;
-
-                if (InputManager.Instance.ControllerIsEnabled)
+                if (playerAiming)
                 {
-                    if (playerAiming)
-                    {
-                        Vector3 currentAimVel = aimDir * StaticDataManager.Instance.playerAimSpeed;
+                    Vector3 currentAimVel = aimDir * StaticDataManager.Instance.playerAimSpeed;
 
-                        pos = transform.position + Vector3.ClampMagnitude(
-                            (activePreview.transform.position - transform.position) + currentAimVel,
-                            ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityRange);
-                    }
-
-                }
-                else
-                {
-                    pos = transform.position + Vector3.ClampMagnitude(mousePos, ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityRange);
+                    pos = transform.position + Vector3.ClampMagnitude(
+                        (activePreview.transform.position - transform.position) + currentAimVel,
+                        ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityRange);
                 }
 
-                pos.y = staticY;
-                activePreview.transform.position = pos;
             }
+            else
+            {
+                pos = transform.position + Vector3.ClampMagnitude(mousePos, ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityRange);
+            }
+
+            pos.y = staticY;
+            activePreview.transform.position = pos;
         }
     }
 
@@ -257,12 +289,12 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
             {
                 StartCoroutine(AttackDelay());
             }
-            if (spawnAbilityOneProjectile)
+            else if (spawnAbilityOneProjectile)
             {
                 spawnAbilityOneProjectile = false;
                 CastingAbility();
             }
-            if (spawnAbilityTwoProjectile)
+            else
             {
                 spawnAbilityTwoProjectile = false;
                 CastingAbility();
@@ -333,12 +365,12 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
             {
                 StartCoroutine(AttackDelay());
             }
-            if (abilityOneActive)
+            else if (abilityOneActive)
             {
                 abilityOneActive = false;
                 CastingAbility();
             }
-            if (abilityTwoActive)
+            else
             {
                 abilityTwoActive = false;
                 CastingAbility();
@@ -351,7 +383,7 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     /// </summary>
     virtual protected void AimingAbilityOne()
     {
-        if(inEndLag)
+        if(inEndLag || !okToAnimationCancel)
         {
             return;
         }
@@ -363,7 +395,14 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
             currentAbilityIndex = abilityOneIndex;
             if (ThisWeaponData.editableAbilities[abilityOneIndex].HasPreview)
             {
-                AimingAbility();
+                if (aimingAbilityOne)
+                {
+                    AimingAbility();
+                }
+                else
+                {
+                    activePreview.SetActive(false);
+                }
             }
             else
             {
@@ -378,7 +417,7 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
                     spawnAbilityOneProjectile = true;
                 }
                 weaponAnimator.Play(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAnim.AnimClip.name, ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
-                //CastingAbility();
+                okToAnimationCancel = false;
             }
         }
         else if (ThisWeaponData.editableAbilities[abilityOneIndex].CancelOnRecast && abilityOneActive)
@@ -392,7 +431,7 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     /// </summary>
     virtual protected void AimingAbilityTwo()
     {
-        if (inEndLag)
+        if (inEndLag || !okToAnimationCancel)
         {
             return;
         }
@@ -404,7 +443,14 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
             currentAbilityIndex = abilityTwoIndex;
             if (ThisWeaponData.editableAbilities[currentAbilityIndex].HasPreview)
             {
-                AimingAbility();
+                if (aimingAbilityTwo)
+                {
+                    AimingAbility();
+                }
+                else
+                {
+                    activePreview.SetActive(false);
+                }
             }
             else
             {
@@ -420,7 +466,7 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
                 }
 
                 weaponAnimator.Play(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAnim.AnimClip.name, ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
-                //CastingAbility();
+                okToAnimationCancel = false;
             }
         }
         else if (ThisWeaponData.editableAbilities[abilityTwoIndex].CancelOnRecast && abilityTwoActive)
@@ -506,6 +552,7 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     /// </summary>
     virtual public void CastingAbility()
     {
+        okToAnimationCancel = true;
         continuouslyUpdatePreview = false;
         inEndLag = true;
         aimingAbilityOne = false;
@@ -520,6 +567,14 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
         if (ThisWeaponData.editableAbilities[currentAbilityIndex].HasProjectile)
         {
             activePreview.SetActive(false);
+            if(currentAbilityIndex == abilityOneIndex)
+            {
+                abilityOneActive = false;
+            }
+            else
+            {
+                abilityTwoActive = false;
+            }
         }
         else
         {
@@ -536,6 +591,17 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     /// <returns></returns>
     protected IEnumerator AbilityDamage(int abilityIndex)
     {
+        if(!ThisWeaponData.editableAbilities[abilityIndex].CancelOnRecast)
+        {
+            if (currentAbilityIndex == abilityOneIndex)
+            {
+                abilityOneActive = false;
+            }
+            else
+            {
+                abilityTwoActive = false;
+            }
+        }
         GameObject tempAbility = Instantiate(abilityAOEs[currentAbilityIndex], activePreview.transform.position, activePreview.transform.rotation);
 
         GameObject tempAbilityVfx = new GameObject();
@@ -684,6 +750,18 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
 
         } while (elapsed < ThisWeaponData.editableAbilities[abilityIndex].AbilityDuration);
 
+        if (ThisWeaponData.editableAbilities[abilityIndex].CancelOnRecast)
+        {
+            if (currentAbilityIndex == abilityOneIndex)
+            {
+                abilityOneActive = false;
+            }
+            else
+            {
+                abilityTwoActive = false;
+            }
+        }
+
         Destroy(tempAbility);
     }
 
@@ -694,8 +772,10 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     /// <returns></returns>
     virtual protected IEnumerator AbilityEndLag(float time)
     {
+        attackReady = false;
         yield return new WaitForSeconds(time);
         inEndLag = false;
+        attackReady = true;
     }
 
     /// <summary>
