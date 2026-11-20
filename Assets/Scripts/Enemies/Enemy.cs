@@ -206,6 +206,7 @@ public class Enemy : MonoBehaviour
             return;
         }
         allowNonImmediateBehavior = true;
+        movementBeahvior.SetNormalSpeed();
         //Debug.Log("Melee: " + inMeleeRange + " Ranged: " + inRangedRange);
         if (!inRangedRange && !inMeleeRange)
         {
@@ -344,7 +345,11 @@ public class Enemy : MonoBehaviour
                     StartCoroutine(movementBeahvior.RetreatWalking());
                 }
                 break;
-            case BaseEnemyScriptable.EnemyType.Melee: case BaseEnemyScriptable.EnemyType.ChargingMelee:
+            case BaseEnemyScriptable.EnemyType.Melee:
+                movementBeahvior.SetEngagingMeleeSpeed();
+                attackBehavior.InitiateAttack();
+                break;
+            case BaseEnemyScriptable.EnemyType.ChargingMelee:
                 movementBeahvior.StopApproachingPlayer();
                 attackBehavior.InitiateAttack();
                 break;
