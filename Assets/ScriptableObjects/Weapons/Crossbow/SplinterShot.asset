@@ -30,8 +30,8 @@ MonoBehaviour:
     StatValue: 7
   AbilityDamage: 100
   BaseAbilityDamage: 100
-  AbilityDamageTicks: 8
-  BaseAbilityDamageTicks: 8
+  AbilityDamageTicks: 5
+  BaseAbilityDamageTicks: 5
   AbilityDuration: 4
   BaseAbilityDuration: 4
   AbilityAggroRange: 0
@@ -59,6 +59,7 @@ MonoBehaviour:
     TimeTillNextBurst: 0
     BaseTimeTillNextBurst: 0
     HasLifesteal: 0
+    BaseHasLifesteal: 0
     WeaponLifeSteal:
       LifestealPercent: 0
       BaseLifestealPercent: 0
@@ -99,7 +100,7 @@ MonoBehaviour:
         BaseRicochetCount: 0
         RicochetRange: 0
         BaseRicochetRange: 0
-  AbilityVFX: {fileID: 1807657269358116858, guid: 6f0c398168c924340804261b4b4f7dac, type: 3}
+  AbilityVFX: {fileID: 2300883093466152841, guid: 178ca163f3df332409fbad1879ce0ca1, type: 3}
   HasPreview: 1
   PreviewData:
     ShapeType: 1
