@@ -199,6 +199,7 @@ public class Enemy : MonoBehaviour
             return;
         }
         allowNonImmediateBehavior = true;
+        movementBeahvior.SetNormalSpeed();
         //Debug.Log("Melee: " + inMeleeRange + " Ranged: " + inRangedRange);
         if (!inRangedRange && !inMeleeRange)
         {
@@ -250,7 +251,6 @@ public class Enemy : MonoBehaviour
                 Debug.LogError("Invalid EnemyType entered Zone!");
                 break;
             case BaseEnemyScriptable.EnemyType.Melee: case BaseEnemyScriptable.EnemyType.ChargingMelee:
-                movementBeahvior.SetNormalSpeed();
                 movementBeahvior.FollowPlayer();
                 break;
             case BaseEnemyScriptable.EnemyType.SingleShooter: case BaseEnemyScriptable.EnemyType.ConeShooter:
