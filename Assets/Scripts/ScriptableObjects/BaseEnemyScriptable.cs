@@ -1,7 +1,7 @@
 /*
 * Author: Dalsten Yan
 * Contributors:
-* Last Modified: 09/18/2026
+* Last Modified: 11/20/2026
 * Summary: This is the base scriptable object for all eneny scriptable objects.
 * To Do:   Add more variables as needed.
 */
@@ -73,7 +73,9 @@ public class BaseEnemyScriptable : BaseScriptableObject
     public string enemyName;
 
     public float enemyHealth;
-    private float enemyMaxHealth;
+
+    [HideInInspector]
+    public float enemyMaxHealth;
     public int enemyATKDmg;
     public float timeBetweenAttacks;
     public float reAggroCooldown = 3f;
@@ -230,6 +232,18 @@ public class BaseEnemyScriptable : BaseScriptableObject
     public float GetDMGReductionMultiplier() 
     {
         return (float)(allyReducedDmgPercent / PERCENTAGE_DIVISOR);
+    }
+
+    /// <summary>
+    /// Calculate and apply incoming damage to the enemy based on its damage reduction factor
+    /// </summary>
+    /// <param name="dmg"></param>
+    /// <returns></returns>
+    public int ApplyIncomingDamage(float dmg) 
+    {
+        int totalDmgValue = Mathf.RoundToInt(dmg - (dmg * dmgReductionFactor));
+        enemyHealth -= totalDmgValue;
+        return totalDmgValue;
     }
 
     #endregion
