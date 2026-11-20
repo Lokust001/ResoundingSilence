@@ -1,10 +1,15 @@
+/*
+* Author: Dalsten Yan
+* Contributors: 
+* Last Modified: 11/20/2026
+* Summary: Spawner for spawning enemies in waves
+*/
 using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
-public class EnemyWaveSpawner : MonoBehaviour
+public class EnemyWaveSpawner : BaseSpawner
 {
     [SerializeField]
     private float timeBetweenWaves = 0.5f;
@@ -23,9 +28,6 @@ public class EnemyWaveSpawner : MonoBehaviour
 
     private Stack<EnemyGroup> enemyWavesStack;
 
-    [SerializeField, Header("[Debug] Detected Transforms")]
-    private List<Transform> spawnTransforms;
-
     private bool playerInInteractRange;
 
     private Coroutine endEncounterRef;
@@ -38,9 +40,6 @@ public class EnemyWaveSpawner : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        //Get all child transforms and remove the one on this parent object
-        spawnTransforms = GetComponentsInChildren<Transform>().ToList<Transform>();
-        spawnTransforms.Remove(transform);
 
         //For stack functionality
         enemyWaves.Reverse();
@@ -49,14 +48,14 @@ public class EnemyWaveSpawner : MonoBehaviour
         InputPublicEvents.InteractPressed += AttemptEndEncounterInteraction;
 
     }
-    
+
     /// <summary>
     /// Set range flag to true when player is nearby
     /// </summary>
     /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
-        if (other.GetComponent<PlayerController>()) 
+        if (other.GetComponent<PlayerController>())
         {
             playerInInteractRange = true;
         }
@@ -77,9 +76,9 @@ public class EnemyWaveSpawner : MonoBehaviour
     /// <summary>
     /// Called when the player presses the interact key, only calls end encounter under specific circumstances
     /// </summary>
-    public void AttemptEndEncounterInteraction() 
+    public void AttemptEndEncounterInteraction()
     {
-        if (playerInInteractRange && endEncounterRef == null) 
+        if (playerInInteractRange && endEncounterRef == null)
         {
             playerInInteractRange = false;
             StartFinalEncounter();
@@ -91,7 +90,7 @@ public class EnemyWaveSpawner : MonoBehaviour
     /// <summary>
     /// Method to start the final encounter
     /// </summary>
-    public void StartFinalEncounter() 
+    public void StartFinalEncounter()
     {
         if (finalEncounterWalls)
             finalEncounterWalls.SetActive(true);
@@ -102,19 +101,21 @@ public class EnemyWaveSpawner : MonoBehaviour
     /// Coroutine that repeatedly spawns enemies, ensuring to stagger them
     /// </summary>
     /// <returns></returns>
-    private IEnumerator SpawnNextWave() 
+    private IEnumerator SpawnNextWave()
     {
         var currentWaveList = enemyWavesStack.Pop().enemies;
 
         for (int i = 0; i < currentWaveList.Count; i++)
         {
-            Enemy currentEnemy = Instantiate(currentWaveList[i], spawnTransforms[i].position, Quaternion.identity).GetComponent<Enemy>();
-            currentWaveList[i] = currentEnemy.gameObject;
+            Enemy currentEnemy = Instantiate(currentWaveList[i], spawnLocations[i].position, Quaternion.identity).GetComponent<Enemy>();
+            activeEnemies.Add(currentEnemy);
+            if (debugEnemyHealth)
+                currentEnemy.debuggingBehavior.enabled = true;
             currentEnemy.ScaleEnemy(enemyScaleValue);
             currentEnemy.destroyCancellationToken.Register(() =>
             {
-                currentWaveList.Remove(currentEnemy.gameObject);
-                if (currentWaveList.Count <= 0 && this != null) 
+                activeEnemies.Remove(currentEnemy);
+                if (activeEnemies.Count <= 0 && this != null)
                 {
                     StartCoroutine(CurrentWaveFinished());
                 }
@@ -129,9 +130,9 @@ public class EnemyWaveSpawner : MonoBehaviour
     /// Handles loop logic for the enemy waves
     /// </summary>
     /// <returns></returns>
-    private IEnumerator CurrentWaveFinished() 
+    private IEnumerator CurrentWaveFinished()
     {
-        if (enemyWavesStack.Count <= 0) 
+        if (enemyWavesStack.Count <= 0)
         {
             EndGame();
             yield break;
@@ -144,7 +145,7 @@ public class EnemyWaveSpawner : MonoBehaviour
     /// <summary>
     /// End game method
     /// </summary>
-    public void EndGame() 
+    public void EndGame()
     {
         MidRunDataManager.Instance.KillPlayer();
     }

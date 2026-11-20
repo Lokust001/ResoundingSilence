@@ -70,6 +70,15 @@ public class PlayerHUDController : MenuBase
     [SerializeField]
     private TMP_Text timerText;
 
+
+    [SerializeField]
+    private GameObject tarotContainer;
+
+    [SerializeField]
+    private Image tarotPrefab;
+
+    private List<Image> tarots;
+
     /// <summary>
     /// debug command to force the ui to take one damage
     /// </summary>
@@ -124,6 +133,7 @@ public class PlayerHUDController : MenuBase
         base.InitMenu();
         mapCam = Instantiate(mapCamPrefab, MainCameraManager.Instance.transform);
         mapCam.InitMinimapCamera();
+        SetUpTarots();
     }
 
     /// <summary>
@@ -312,4 +322,34 @@ public class PlayerHUDController : MenuBase
             timerText.text = $"{GameTimerManager.Instance.GetRoundedGameTime()}";
         }
     }
+
+    #region Tarot
+
+    /// <summary>
+    /// creates the tarot cards in the player hud
+    /// </summary>
+    private void SetUpTarots()
+    {
+        List<TarotCardType> enabledCards = MidRunDataManager.Instance.GetEnabledTarotCards();
+        List<TarotScriptable> scriptables = StaticDataManager.Instance.tarotCards.Where(x => enabledCards.Contains(x.heldTarot)).ToList();
+        
+        if (tarots != null && tarots.Count > 0)
+        {
+            foreach (Image i in tarots)
+            {
+                Destroy(i.gameObject);
+            }
+        }
+
+        tarots = new();
+
+        foreach (TarotScriptable t in scriptables)
+        {
+            Image temp = Instantiate(tarotPrefab, tarotContainer.transform);
+            temp.sprite = t.sprite;
+            tarots.Add(temp);
+        }
+    }
+
+    #endregion
 }
