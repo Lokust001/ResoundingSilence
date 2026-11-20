@@ -204,30 +204,38 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
 
         if (continuouslyUpdatePreview)
         {
-            float staticY = activePreview.transform.position.y;
-
-            Vector3 pos = activePreview.transform.position;
-
-            if (InputManager.Instance.ControllerIsEnabled)
-            {
-                if (playerAiming)
-                {
-                    Vector3 currentAimVel = aimDir * StaticDataManager.Instance.playerAimSpeed;
-
-                    pos = transform.position + Vector3.ClampMagnitude(
-                        (activePreview.transform.position - transform.position) + currentAimVel,
-                        ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityRange);
-                }
-
-            }
-            else
-            {
-                pos = transform.position + Vector3.ClampMagnitude(mousePos, ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityRange);
-            }
-
-            pos.y = staticY;
-            activePreview.transform.position = pos;
+            PreviewFollowAim();
         }
+    }
+
+    /// <summary>
+    /// Has an ability preview move to where a player is aiming within a set distance
+    /// </summary>
+    protected void PreviewFollowAim()
+    {
+        float staticY = activePreview.transform.position.y;
+
+        Vector3 pos = activePreview.transform.position;
+
+        if (InputManager.Instance.ControllerIsEnabled)
+        {
+            if (playerAiming)
+            {
+                Vector3 currentAimVel = aimDir * StaticDataManager.Instance.playerAimSpeed;
+
+                pos = transform.position + Vector3.ClampMagnitude(
+                    (activePreview.transform.position - transform.position) + currentAimVel,
+                    ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityRange);
+            }
+
+        }
+        else
+        {
+            pos = transform.position + Vector3.ClampMagnitude(mousePos, ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityRange);
+        }
+
+        pos.y = staticY;
+        activePreview.transform.position = pos;
     }
 
     /// <summary>
@@ -236,25 +244,8 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     public override void SpawnProjectile()
     {
         bool hasBurst = ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks.Count > 1 ? true : false;
-        BurstData rData;
-        int damage;
-
-        //Determines if the projectile being spawned belongs to an ability or the weapon attack
-        if (spawnAbilityOneProjectile)
-        {
-            rData = ThisWeaponData.editableAbilities[abilityOneIndex].AbilityProjectile;
-            damage = ThisWeaponData.editableAbilities[abilityOneIndex].AbilityDamage;
-        }
-        else if (spawnAbilityTwoProjectile)
-        {
-            rData = ThisWeaponData.editableAbilities[abilityTwoIndex].AbilityProjectile;
-            damage = ThisWeaponData.editableAbilities[abilityTwoIndex].AbilityDamage;
-        }
-        else
-        {
-            rData = ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks[burstIndex];
-            damage = ThisWeaponData.ComboAttacks[comboIndex - 1].WeaponDamage;
-        }
+        BurstData rData = SetBurstData(spawnAbilityOneProjectile, spawnAbilityTwoProjectile);
+        int damage = SetAttackDamage(spawnAbilityOneProjectile, spawnAbilityTwoProjectile);
 
         Vector3 bulletDir = aimDir;
         bulletDir.y = 0;
@@ -303,53 +294,61 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     }
 
     /// <summary>
+    /// Returns the burst data reference for either one of the abilities or the weapon attack
+    /// </summary>
+    /// <param name="abilityOne"></param>
+    /// <param name="abilityTwo"></param>
+    /// <returns></returns>
+    protected BurstData SetBurstData(bool abilityOne, bool abilityTwo)
+    {
+        if(abilityOne)
+        {
+            return ThisWeaponData.editableAbilities[abilityOneIndex].AbilityProjectile;
+        }
+
+        if(abilityTwo)
+        {
+            return ThisWeaponData.editableAbilities[abilityTwoIndex].AbilityProjectile;
+        }
+
+        return ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks[burstIndex];
+    }
+
+    /// <summary>
+    /// Returns the amount of damage that either an ability or attack will do
+    /// </summary>
+    /// <param name="abilityOne"></param>
+    /// <param name="abilityTwo"></param>
+    /// <returns></returns>
+    protected int SetAttackDamage(bool abilityOne, bool abilityTwo)
+    {
+        if (abilityOne)
+        {
+            return ThisWeaponData.editableAbilities[abilityOneIndex].AbilityDamage;
+        }
+
+        if (abilityTwo)
+        {
+            return ThisWeaponData.editableAbilities[abilityTwoIndex].AbilityDamage;
+        }
+
+        return ThisWeaponData.ComboAttacks[comboIndex - 1].WeaponDamage;
+    }
+
+    /// <summary>
     /// Anim event that will call a melee attack of an ability or weapon
     /// </summary>
     public override void MeleeSwing()
     {
         bool hasBurst = ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks.Count > 1 ? true : false;
-        BurstData rData;
-        int damage;
-
-        //Determines if the projectile being spawned belongs to an ability or the weapon attack
-        if (abilityOneActive)
-        {
-            rData = ThisWeaponData.editableAbilities[abilityOneIndex].AbilityProjectile;
-            damage = ThisWeaponData.editableAbilities[abilityOneIndex].AbilityDamage;
-        }
-        else if (abilityTwoActive)
-        {
-            rData = ThisWeaponData.editableAbilities[abilityTwoIndex].AbilityProjectile;
-            damage = ThisWeaponData.editableAbilities[abilityTwoIndex].AbilityDamage;
-        }
-        else
-        {
-            rData = ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks[burstIndex];
-            damage = ThisWeaponData.ComboAttacks[comboIndex - 1].WeaponDamage;
-        }
+        BurstData rData = SetBurstData(abilityOneActive, abilityTwoActive);
+        int damage = SetAttackDamage(abilityOneActive, abilityTwoActive);
 
         foreach (Collider c in meleeHitboxes)
         {
             if (c.enabled)
             {
-                Collider[] targets = Physics.OverlapBox(c.bounds.center, c.bounds.extents, Quaternion.identity, ThisWeaponData.EnemyLayer);
-
-                foreach (Collider t in targets)
-                {
-                    if (t.GetComponent<Enemy>())
-                    {
-                        t.GetComponent<Enemy>().EnemyTakeDamage(damage);
-
-                        if (rData.HasLifesteal)
-                        {
-                            int healValue = Mathf.CeilToInt(damage * ConvertToPercentage(rData.WeaponLifeSteal.LifestealPercent));
-
-                            //TODO Replace with heal player
-                            FindAnyObjectByType<MidRunDataManager>().ChangePlayerHealth(healValue);
-                        }
-                    }
-                    Debug.Log(t.name + " took " + damage + " damage!");
-                }
+                DealMeleeDamage(Physics.OverlapBox(c.bounds.center, c.bounds.extents, Quaternion.identity, ThisWeaponData.EnemyLayer), rData, damage);
             }
         }
 
@@ -379,50 +378,86 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     }
 
     /// <summary>
-    /// How the player aims ability one. Also sets whether or not the player is aiming the ability
+    /// Damages every valid target in the melee attack's hitboxes
     /// </summary>
-    virtual protected void AimingAbilityOne()
+    /// <param name="targets"></param>
+    /// <param name="rData"></param>
+    /// <param name="damage"></param>
+    protected void DealMeleeDamage(Collider[] targets, BurstData rData, int damage)
     {
-        if(inEndLag || !okToAnimationCancel)
+        foreach (Collider t in targets)
+        {
+            if (t.GetComponent<Enemy>())
+            {
+                t.GetComponent<Enemy>().EnemyTakeDamage(damage);
+
+                MeleeLifesteal(rData, damage);
+            }
+        }
+    }
+
+    /// <summary>
+    /// If the melee attack has lifesteal, heal the player
+    /// </summary>
+    /// <param name="rData"></param>
+    /// <param name="damage"></param>
+    protected void MeleeLifesteal(BurstData rData, int damage)
+    {
+        if(!rData.HasLifesteal)
         {
             return;
         }
 
-        if (abilityOneReady)
+        int healValue = Mathf.CeilToInt(damage * ConvertToPercentage(rData.WeaponLifeSteal.LifestealPercent));
+
+        FindAnyObjectByType<MidRunDataManager>().ChangePlayerHealth(healValue);
+    }
+
+    /// <summary>
+    /// How the player aims ability one. Also sets whether or not the player is aiming the ability
+    /// </summary>
+    virtual protected void AimingAbilityOne()
+    {
+        //If in a state where we can't cast abilities, exit function
+        if((inEndLag || !okToAnimationCancel) || (!abilityOneActive && !abilityOneReady))
         {
-            aimingAbilityOne = !aimingAbilityOne;
-            aimingAbilityTwo = false;
-            currentAbilityIndex = abilityOneIndex;
-            if (ThisWeaponData.editableAbilities[abilityOneIndex].HasPreview)
+            return;
+        }
+
+        //If canceling an active ability, cancel ability then exit function
+        if(ThisWeaponData.editableAbilities[abilityOneIndex].CancelOnRecast && abilityOneActive)
+        {
+            weaponAnimator.SetBool("AbilityOver", true);
+            StartCoroutine(AbilityEndLag(ThisWeaponData.editableAbilities[abilityOneIndex].AbilityEndLag));
+            StartCoroutine(AbilityDelay(true, ThisWeaponData.editableAbilities[abilityOneIndex].AbilityCooldown));
+            return;
+        }
+
+        aimingAbilityOne = !aimingAbilityOne;
+        aimingAbilityTwo = false;
+        currentAbilityIndex = abilityOneIndex;
+        if (ThisWeaponData.editableAbilities[abilityOneIndex].HasPreview)
+        {
+            if (aimingAbilityOne)
             {
-                if (aimingAbilityOne)
-                {
-                    AimingAbility();
-                }
-                else
-                {
-                    activePreview.SetActive(false);
-                }
+                AimingAbility();
             }
             else
             {
-                if (ThisWeaponData.editableAbilities[abilityOneIndex].AbilityAnim.AnimatorUsed != null && !weaponAnimator.Equals(ThisWeaponData.editableAbilities[abilityOneIndex].AbilityAnim.AnimatorUsed))
-                {
-                    weaponAnimator = attackAnimations[comboIndex - 1].AnimatorUsed;
-                }
-
-                abilityOneActive = true;
-                if(ThisWeaponData.editableAbilities[abilityOneIndex].HasProjectile)
-                {
-                    spawnAbilityOneProjectile = true;
-                }
-                weaponAnimator.Play(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAnim.AnimClip.name, ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
-                okToAnimationCancel = false;
+                activePreview.SetActive(false);
             }
         }
-        else if (ThisWeaponData.editableAbilities[abilityOneIndex].CancelOnRecast && abilityOneActive)
+        else
         {
-            weaponAnimator.SetBool("AbilityOver", true);
+            SetAnimator(true);
+
+            abilityOneActive = true;
+            if(ThisWeaponData.editableAbilities[abilityOneIndex].HasProjectile)
+            {
+                spawnAbilityOneProjectile = true;
+            }
+            weaponAnimator.Play(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAnim.AnimClip.name, ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
+            okToAnimationCancel = false;
         }
     }
 
@@ -431,47 +466,47 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     /// </summary>
     virtual protected void AimingAbilityTwo()
     {
-        if (inEndLag || !okToAnimationCancel)
+        //If in a state where we can't cast abilities, exit function
+        if ((inEndLag || !okToAnimationCancel) || (!abilityTwoActive && !abilityTwoReady))
         {
             return;
         }
 
-        if (abilityTwoReady && activeWeapon)
+        //If canceling an active ability, cancel ability then exit function
+        if (ThisWeaponData.editableAbilities[abilityTwoIndex].CancelOnRecast && abilityTwoActive)
         {
-            aimingAbilityTwo = !aimingAbilityTwo;
-            aimingAbilityOne = false;
-            currentAbilityIndex = abilityTwoIndex;
-            if (ThisWeaponData.editableAbilities[currentAbilityIndex].HasPreview)
+            weaponAnimator.SetBool("AbilityOver", true);
+            StartCoroutine(AbilityEndLag(ThisWeaponData.editableAbilities[abilityTwoIndex].AbilityEndLag));
+            StartCoroutine(AbilityDelay(false, ThisWeaponData.editableAbilities[abilityTwoIndex].AbilityCooldown));
+            return;
+        }
+
+        aimingAbilityTwo = !aimingAbilityTwo;
+        aimingAbilityOne = false;
+        currentAbilityIndex = abilityTwoIndex;
+        if (ThisWeaponData.editableAbilities[currentAbilityIndex].HasPreview)
+        {
+            if (aimingAbilityTwo)
             {
-                if (aimingAbilityTwo)
-                {
-                    AimingAbility();
-                }
-                else
-                {
-                    activePreview.SetActive(false);
-                }
+                AimingAbility();
             }
             else
             {
-                if (ThisWeaponData.editableAbilities[abilityTwoIndex].AbilityAnim.AnimatorUsed != null && !weaponAnimator.Equals(ThisWeaponData.editableAbilities[abilityTwoIndex].AbilityAnim.AnimatorUsed))
-                {
-                    weaponAnimator = attackAnimations[comboIndex - 1].AnimatorUsed;
-                }
-
-                abilityTwoActive = true;
-                if (ThisWeaponData.editableAbilities[abilityTwoIndex].HasProjectile)
-                {
-                    spawnAbilityTwoProjectile = true;
-                }
-
-                weaponAnimator.Play(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAnim.AnimClip.name, ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
-                okToAnimationCancel = false;
+                activePreview.SetActive(false);
             }
         }
-        else if (ThisWeaponData.editableAbilities[abilityTwoIndex].CancelOnRecast && abilityTwoActive)
+        else
         {
-            weaponAnimator.SetBool("AbilityOver", true);
+            SetAnimator(true);
+
+            abilityTwoActive = true;
+            if (ThisWeaponData.editableAbilities[abilityTwoIndex].HasProjectile)
+            {
+                spawnAbilityTwoProjectile = true;
+            }
+
+            weaponAnimator.Play(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAnim.AnimClip.name, ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
+            okToAnimationCancel = false;
         }
     }
 
@@ -485,10 +520,9 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
 
         activePreview = abilityAOEs[currentAbilityIndex];
 
-        if (ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.AnimatorUsed != null && !weaponAnimator.Equals(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.AnimatorUsed))
-        {
-            weaponAnimator = attackAnimations[comboIndex - 1].AnimatorUsed;
-        }
+        activePreview.SetActive(true);
+
+        SetAnimator(true);
 
         weaponAnimator.Play(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.AnimClip.name, ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityReadyAnim.LayerIndex);
     }
@@ -500,33 +534,14 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     /// <param name="sizeIsRange"></param>
     public void DisplayAbilityPreview()
     {
-        continuouslyUpdatePreview = !ThisWeaponData.editableAbilities[currentAbilityIndex].PreviewData.OrbitsPlayer;
+        int abilityIndex = currentAbilityIndex; //This function gets called by an anim even, so that's why I'm not passing through a param to set abilityIndex
 
-        float sizeValue = ThisWeaponData.editableAbilities[currentAbilityIndex].PreviewData.SizeIsRange ?
-            ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityRange : ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityAOESize;
+        continuouslyUpdatePreview = !ThisWeaponData.editableAbilities[abilityIndex].PreviewData.OrbitsPlayer;
 
-        Vector3 abilitySize = ThisWeaponData.editableAbilities[currentAbilityIndex].BaseAbilitySize;
+        Vector3 abilitySize = SetAbilitySize(abilityIndex);
         Vector3 pos = Vector3.zero;
 
-        if (ThisWeaponData.editableAbilities[currentAbilityIndex].PreviewData.ScaleXOnly)
-        {
-            abilitySize.x *= sizeValue;
-        }
-        else if (ThisWeaponData.editableAbilities[currentAbilityIndex].PreviewData.ScaleZOnly)
-        {
-            abilitySize.z *= sizeValue;
-        }
-        else
-        {
-            abilitySize *= sizeValue;
-
-            if (ThisWeaponData.editableAbilities[currentAbilityIndex].PreviewData.ShapeType != PreviewShape.Shape.Cone)
-            {
-                abilitySize.y = ThisWeaponData.editableAbilities[currentAbilityIndex].BaseAbilitySize.y;
-            }
-        }
-
-        switch (ThisWeaponData.editableAbilities[currentAbilityIndex].PreviewData.ShapeType)
+        switch (ThisWeaponData.editableAbilities[abilityIndex].PreviewData.ShapeType)
         {
             case PreviewShape.Shape.Square:
             case PreviewShape.Shape.Sphere:
@@ -539,12 +554,35 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
 
         activePreview.transform.localScale = abilitySize;
 
-        if (ThisWeaponData.editableAbilities[currentAbilityIndex].PreviewData.OrbitsPlayer)
+        if (ThisWeaponData.editableAbilities[abilityIndex].PreviewData.OrbitsPlayer)
         {
             activePreview.transform.localPosition = pos;
         }
+    }
 
-        activePreview.SetActive(true);
+    /// <summary>
+    /// Returns the scale of how big the ability should be
+    /// </summary>
+    /// <param name="abilityIndex"></param>
+    /// <returns></returns>
+    protected Vector3 SetAbilitySize(int abilityIndex)
+    {
+        AbilityBaseScriptable abilityData = ThisWeaponData.editableAbilities[abilityIndex];
+
+        float sizeValue = abilityData.PreviewData.SizeIsRange ? abilityData.AbilityRange : abilityData.AbilityAOESize;
+        Vector3 abilitySize = abilityData.BaseAbilitySize;
+
+        if(!abilityData.PreviewData.ScaleXOnly && !abilityData.PreviewData.ScaleZOnly)
+        {
+            abilitySize *= sizeValue;
+            abilitySize.y = abilityData.PreviewData.ShapeType != PreviewShape.Shape.Cone ? abilityData.BaseAbilitySize.y : abilitySize.y;
+            return abilitySize;
+        }
+
+        abilitySize.x = abilityData.PreviewData.ScaleXOnly ? abilitySize.x * sizeValue : abilitySize.x;
+        abilitySize.z = abilityData.PreviewData.ScaleZOnly ? abilitySize.z * sizeValue : abilitySize.z;
+
+        return abilitySize;
     }
 
     /// <summary>

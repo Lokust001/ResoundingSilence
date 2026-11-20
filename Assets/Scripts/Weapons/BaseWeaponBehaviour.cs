@@ -52,6 +52,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
 
     public WeaponStatBuffs weaponStats;
 
+    [SerializeField]
     protected bool okToAnimationCancel;
 
     /// <summary>
