@@ -1,0 +1,435 @@
+/*
+* Author: Tyler
+* Contributors:
+* Last Modified: 11/6/2026
+* Summary: Manages which UI menus are open at any given time. 
+*          If there's anything that pertains to the UI as a whole, it's here.
+* To Do:   N/A
+*/
+
+using NaughtyAttributes;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using UnityEngine;
+
+public class UIManager : BaseManager
+{
+    #region Variables
+
+    #region InspectorFacing
+
+    [SerializeField]
+    private Canvas mainCanvasPrefab;
+
+    [SerializeField]
+    private List<MenuBase> menuPrefabs = new List<MenuBase>();
+
+    [SerializeField]
+    private bool EnableDebugConsole;
+
+    [SerializeField]
+    [ShowIf(nameof(EnableDebugConsole))]
+    private DebugConsole DebugConsolePrefab;
+
+    #endregion
+
+    #region Private
+    private Canvas mainCanvas;
+
+    private List<MenuBase> instantiatedMenus = new List<MenuBase>();
+    private List<MenuBase> unInstantiatedMenus = new List<MenuBase>();
+
+    public static UIManager Instance;
+
+
+    private Stack<UiMenuType> currentlyOpenedMenus = new Stack<UiMenuType>();
+
+    private GameObject debugConsole;
+
+    #endregion
+
+    #endregion
+
+    #region Setup
+
+    /// <summary>
+    /// Initializes the UI systems.
+    /// </summary>
+    /// <returns></returns>
+    public override async Awaitable InitManager()
+    {
+        await base.InitManager();
+
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+
+
+        await SetUpCanvas();
+        await SetUpMenus();
+        await SetupPublicEvents();
+
+
+        await Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// Creates the canvas
+    /// </summary>
+    /// <returns></returns>
+    private async Awaitable SetUpCanvas()
+    {
+        mainCanvas = Instantiate(mainCanvasPrefab, transform);
+
+        await Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// Sets up all of the lists with the menus in them to spread 
+    /// the instantiation load throughout the game
+    /// </summary>
+    /// <returns></returns>
+    private async Awaitable SetUpMenus()
+    {
+        //ensures there aren't any menus open at base (this statement should always return false)
+        if (instantiatedMenus.Count > 0)
+        {
+            foreach (MenuBase menu in instantiatedMenus)
+            {
+                Destroy(menu.gameObject);
+            }
+
+            instantiatedMenus.Clear();
+        }
+
+
+        foreach (MenuBase menuPrefab in menuPrefabs)
+        {
+            unInstantiatedMenus.Add(menuPrefab);
+        }
+
+        await Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// All public event subscriptions go here
+    /// </summary>
+    /// <returns></returns>
+    private async Awaitable SetupPublicEvents()
+    {
+        if (!AppManager.Instance.EnableTestingMode)
+        {
+            GenericPublicEvents.AllManagersInitialized += GoToMainMenu;
+        }
+
+
+        UIPublicEvents.UpdateUIManagerStack += UpdateUiManagerStack;
+        InputPublicEvents.ToggleUpgradeMenuPressed += ToggleUpgradeMenu;
+        InputPublicEvents.ToggleDebugConsole += ToggleDebugConsole;
+        UIPublicEvents.CurrentMenuClosed += CloseCurrentMenus;
+        InputPublicEvents.PausePressed += TogglePauseMenu;
+        GenericPublicEvents.ReturnToMainMenu += GoToMainMenu;
+
+        await Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// all public event unsubscriptions go here.
+    /// </summary>
+    private void OnDestroy()
+    {
+        GenericPublicEvents.AllManagersInitialized -= GoToMainMenu;
+        UIPublicEvents.UpdateUIManagerStack -= UpdateUiManagerStack;
+        InputPublicEvents.ToggleUpgradeMenuPressed -= ToggleUpgradeMenu;
+        InputPublicEvents.ToggleDebugConsole -= ToggleDebugConsole;
+        UIPublicEvents.CurrentMenuClosed -= CloseCurrentMenus;
+        InputPublicEvents.PausePressed -= TogglePauseMenu;
+        GenericPublicEvents.ReturnToMainMenu -= GoToMainMenu;
+    }
+
+    #endregion
+
+    #region Wrappers
+
+    /// <summary>
+    /// opens the main menu once all managers are initialized
+    /// </summary>
+    private void GoToMainMenu()
+    {
+
+        if (currentlyOpenedMenus.Count > 0)
+        {
+            //hide the menus that are open rn
+            UIPublicEvents.HideOpenMenus?.Invoke();
+            currentlyOpenedMenus.Clear();
+        }
+
+        UpdateUiManagerStack(UiMenuType.MainMenu);
+    }
+
+    /// <summary>
+    /// Enables and disables the pause menu
+    /// </summary>
+    private void TogglePauseMenu()
+    {
+        //can only open pause menu from in game
+        if (currentlyOpenedMenus.Peek() == UiMenuType.PlayerHUD)
+        {
+            UpdateUiManagerStack(UiMenuType.Pause);
+        }
+        else if (currentlyOpenedMenus.Peek() == UiMenuType.Pause)
+        {
+            CloseCurrentMenus();
+        }
+    }
+
+    /// <summary>
+    /// turns on and off the debug console
+    /// </summary>
+    private void ToggleDebugConsole()
+    {
+        if (!EnableDebugConsole)
+        {
+            return;
+        }
+
+        if (debugConsole == null)
+        {
+            debugConsole = Instantiate(DebugConsolePrefab, mainCanvas.transform).gameObject;
+        }
+        else
+        {
+            debugConsole.SetActive(!debugConsole.activeInHierarchy);
+        }
+
+        if (debugConsole.activeInHierarchy)
+        {
+            debugConsole.GetComponent<DebugConsole>().OpenDebugConsole();
+        }
+    }
+
+    /// <summary>
+    /// Toggles the visibility of the upgrade menu
+    /// 
+    /// TODO: add in more constraints
+    /// </summary>
+    private void ToggleUpgradeMenu()
+    {
+        //Close upgrade menu
+        if (currentlyOpenedMenus.Peek() == UiMenuType.UpgradeMenu)
+        {
+            CloseCurrentMenus();
+            return;
+        }
+
+        //can open upgrade menu from hud
+        if (currentlyOpenedMenus.Peek() == UiMenuType.PlayerHUD)
+        {
+            UIPublicEvents.UpdateUIManagerStack(UiMenuType.UpgradeMenu);
+            return;
+        }
+    }
+
+    #endregion
+
+    #region SwappingMenus
+
+    /// <summary>
+    /// Updates the currentyOpenedMenus stack
+    /// </summary>
+    /// <param name="menuType"> the new menu to open </param>
+    /// <exception cref="System.Exception"></exception>
+    private void UpdateUiManagerStack(UiMenuType menuType = UiMenuType.None)
+    {
+        //edge case exceptions
+        if (menuType == UiMenuType.None)
+        {
+            throw new System.Exception($"Tried to open a menu with type {menuType}");
+        }
+
+        //updates the stack with the newest menu type
+        currentlyOpenedMenus.Push(menuType);
+
+        //opens all of the new menus
+        OpenMenus();
+    }
+
+    /// <summary>
+    /// opens all menus that have the menu type of the top of currentlyOpenedMenus
+    /// </summary>
+    private void OpenMenus()
+    {
+        //opens all existing menus
+        foreach (MenuBase menu in instantiatedMenus)
+        {
+            if (menu.GetMenuType() == currentlyOpenedMenus.Peek())
+            {
+                menu.gameObject.SetActive(true);
+            }
+        }
+
+        //just a temporary list to move the needed menuprefabs from uninstantiatedMenus to instantiatedMenus
+        List<MenuBase> tempSwapList = new List<MenuBase>();
+
+        //grabs all menus with the right type from the menu prefabs
+        foreach (MenuBase unInstantiatedMenu in unInstantiatedMenus)
+        {
+            if (unInstantiatedMenu.GetMenuType() == currentlyOpenedMenus.Peek())
+            {
+                tempSwapList.Add(unInstantiatedMenu);
+
+            }
+        }
+
+        //removes the prefab from the list and spawns in the menu
+        foreach (MenuBase menuPrefab in tempSwapList)
+        {
+            unInstantiatedMenus.Remove(menuPrefab);
+            MenuBase instantiatedMenu = Instantiate(menuPrefab, mainCanvas.transform);
+            instantiatedMenus.Add(instantiatedMenu);
+
+            //sets up the menu
+            instantiatedMenu.InitMenu();
+        }
+
+        if (CurrentlyInFullscreenMenu() || IsCurrentMenuFullscreenPopup())
+        {
+            Time.timeScale = 0.0f;
+        }
+        else
+        {
+            Time.timeScale = 1.0f;
+        }
+
+        //tells all the menus that theyve been opened
+        UIPublicEvents.NewMenuOpened?.Invoke();
+    }
+
+    /// <summary>
+    /// Closes all menus that are open right now and opens the next menu
+    /// </summary>
+    public void CloseCurrentMenus()
+    {
+        if (currentlyOpenedMenus.Count <= 1)
+        {
+            throw new System.Exception("Tried to close the menu thats the last menu in the stack");
+        }
+
+        //hide the menus that are open rn
+        UIPublicEvents.HideOpenMenus?.Invoke();
+        currentlyOpenedMenus.Pop();
+        OpenMenus();
+    }
+
+    #endregion
+
+    #region GettersSetters
+
+    /// <summary>
+    /// Gets the reference to the mainCanvas
+    /// </summary>
+    /// <returns></returns>
+    public Canvas GetMainCanvas()
+    {
+        return mainCanvas;
+    }
+
+    /// <summary>
+    /// Gets the menuType that is currently open
+    /// </summary>
+    /// <returns></returns>
+    public UiMenuType GetCurrentMenu()
+    {
+        if (currentlyOpenedMenus == null || currentlyOpenedMenus.Count <= 0)
+        {
+            return UiMenuType.None;
+        }
+
+        return currentlyOpenedMenus.Peek();
+    }
+
+    /// <summary>
+    /// Returns whether or not the player is currently in a fullscreen menu or in the game world proper.
+    /// </summary>
+    /// <returns></returns>
+    public bool CurrentlyInFullscreenMenu()
+    {
+        if (currentlyOpenedMenus.Count <= 0)
+        {
+            if (AppManager.Instance.EnableTestingMode)
+            {
+                return false;
+            }
+
+            throw new System.Exception("No menus opened");
+        }
+
+        return (currentlyOpenedMenus.Peek() == UiMenuType.MainMenu ||
+                currentlyOpenedMenus.Peek() == UiMenuType.UpgradeMenu ||
+                currentlyOpenedMenus.Peek() == UiMenuType.Settings ||
+                currentlyOpenedMenus.Peek() == UiMenuType.Pause ||
+                currentlyOpenedMenus.Peek() == UiMenuType.Tarot);
+    }
+
+    /// <summary>
+    /// Returns if the current menu is a popup that requires another menu below it
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="System.Exception"></exception>
+    public bool IsCurrentMenuFullscreenPopup()
+    {
+        if (currentlyOpenedMenus.Count <= 0)
+        {
+            if (AppManager.Instance.EnableTestingMode)
+            {
+                return false;
+            }
+
+            throw new System.Exception("No menus opened");
+        }
+
+        return (currentlyOpenedMenus.Peek() == UiMenuType.WeaponSwapping || 
+                currentlyOpenedMenus.Peek() == UiMenuType.HuntBoard);
+    }
+
+    /// <summary>
+    /// returns if the player's movements should be blocked or not
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="System.Exception"></exception>
+    public bool IsPlayerInMenuThatBlocksMovement()
+    {
+        if (currentlyOpenedMenus.Count <= 0)
+        {
+            if (AppManager.Instance.EnableTestingMode)
+            {
+                return false;
+            }
+
+            throw new System.Exception("No menus opened");
+        }
+
+        return (currentlyOpenedMenus.Peek() == UiMenuType.PlayerHUD);
+    }
+
+    #endregion
+}
+
+public enum UiMenuType
+{
+    None,
+    MainMenu,
+    UpgradeMenu,
+    PlayerHUD,
+    Settings,
+    Pause,
+    Tarot,
+    WeaponSwapping,
+    HuntBoard,
+    FirstWeaponMenu
+}

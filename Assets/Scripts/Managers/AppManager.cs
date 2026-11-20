@@ -1,0 +1,126 @@
+/*
+* Author: Tyler
+* Contributors:
+* Last Modified: 11/19/2026
+* Summary: Starts the app and ensures all managers are initialized properly.
+* To Do:   N/A
+*/
+
+
+using NaughtyAttributes;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class AppManager : MonoBehaviour
+{
+    [SerializeField]
+    private List<BaseManager> managers = new List<BaseManager>();
+    public List<BaseManager> initializedManagers = new List<BaseManager>();
+
+    [SerializeField]
+    private List<CombinedCollisions> CollisionsToSetAtStart = new();
+    public static AppManager Instance;
+
+    public bool EnableTestingMode;
+
+    /// <summary>
+    /// try to spawn everything in
+    /// </summary>
+    /// <exception cref="System.Exception"></exception>
+    private async void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+
+        try
+        {
+            //spawns in all managers
+            await SpawnManagers();
+        }
+        catch
+        {
+            throw new System.Exception("Failed to initialize");
+        }
+
+        foreach (CombinedCollisions c in CollisionsToSetAtStart)
+        {
+            Physics.IgnoreLayerCollision(c.layer1, c.layer2, false);
+        }
+
+        Time.timeScale = 1.0f;
+
+        GenericPublicEvents.RestartGame += DeconstructManagers;
+    }
+
+    /// <summary>
+    /// unsubscribes from public events
+    /// </summary>
+    private void OnDestroy()
+    {
+        GenericPublicEvents.RestartGame -= DeconstructManagers;
+    }
+
+    /// <summary>
+    /// Spawns everything in after awake
+    /// </summary>
+    private void Start()
+    {
+        //lets everything know that everything is spawned in
+        GenericPublicEvents.AllManagersInitialized?.Invoke();
+    }
+
+    /// <summary>
+    /// spawns in all of the managers
+    /// </summary>
+    /// <returns> if the task is completed or not </returns>
+    private async Awaitable SpawnManagers()
+    {
+        foreach (BaseManager man in managers)
+        {
+            //if cancelled, stop here
+            if (destroyCancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
+
+            //spawns in the manager
+            BaseManager b = Instantiate(man, transform);
+            initializedManagers.Add(b);
+
+            //initializes the manager
+            await b.InitManager();
+        }
+    }
+
+    /// <summary>
+    /// Deconstructs every manager
+    /// </summary>
+    private async void DeconstructManagers()
+    {
+        foreach (BaseManager man in initializedManagers)
+        {
+            if (destroyCancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
+
+            await man.DeconstructManager();
+        }
+    }
+}
+
+[System.Serializable]
+public struct CombinedCollisions
+{
+    [Layer, AllowNesting]
+    public int layer1;
+
+    [Layer, AllowNesting]
+    public int layer2;
+}

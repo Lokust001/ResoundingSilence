@@ -1,0 +1,99 @@
+/*
+* Author: Tyler
+* Contributors:
+* Last Modified: 09/22/2026
+* Summary: Contains all of the button functions for the main menu.
+* To Do:   N/A
+*/
+
+using System.Collections;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class MainMenuController : MenuBase
+{
+    [SerializeField]
+    private bool SkipTarotMenu = false;
+    [SerializeField]
+    private GameObject testingMenuContainer;
+
+    #region main menu buttons
+
+    /// <summary>
+    /// starts the game
+    /// </summary>
+    public void StartGame()
+    {
+        if (SkipTarotMenu)
+        {
+            GenericPublicEvents.StartGamePressed?.Invoke();
+            UIPublicEvents.UpdateUIManagerStack?.Invoke(UiMenuType.PlayerHUD);
+        }
+        else
+        {
+            UIPublicEvents.UpdateUIManagerStack?.Invoke(UiMenuType.Tarot);
+        }
+
+    }
+
+
+    /// <summary>
+    /// quits the game
+    /// </summary>
+    public void QuitGame()
+    {
+        Debug.Log("Quitting Game");
+        Application.Quit();
+    }
+
+    /// <summary>
+    /// opens/closes the settings menu
+    /// 
+    /// DOES NOT WORK RN
+    /// </summary>
+    public void ToggleSettings()
+    {
+        Debug.Log("Toggling Settings");
+        UIPublicEvents.UpdateUIManagerStack?.Invoke(UiMenuType.Settings);
+    }
+
+    /// <summary>
+    /// opens/closes the credits menu
+    /// 
+    /// 
+    /// DOES NOT WORK RN
+    /// </summary>
+    public void ToggleCredits()
+    {
+        Debug.Log("Toggling Credits");
+    }
+
+    /// <summary>
+    /// enables and disables the testing menu
+    /// </summary>
+    public void ToggleTestMenu()
+    {
+        testingMenuContainer.SetActive(!testingMenuContainer.activeInHierarchy);
+    }
+
+    #endregion
+
+    #region testing menu buttons
+
+    /// <summary>
+    /// swaps over to the upgrade menu
+    /// </summary>
+    public void EnableUpgradeMenu()
+    {
+        UIPublicEvents.UpdateUIManagerStack?.Invoke(UiMenuType.UpgradeMenu);
+    }
+
+    /// <summary>
+    /// swaps over to the player hud
+    /// </summary>
+    public void EnablePlayerHUD()
+    {
+        UIPublicEvents.UpdateUIManagerStack?.Invoke(UiMenuType.PlayerHUD);
+    }
+    #endregion
+}

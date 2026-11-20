@@ -1,0 +1,128 @@
+/*
+* Author: Tyler
+* Contributors:
+* Last Modified: 11/18/2026
+* Summary: This is the base of all of the UI menus in the game.
+* To Do:   N/A
+*/
+
+using UnityEngine;
+
+public class MenuBase : MonoBehaviour
+{
+    [SerializeField]
+    protected UiMenuType menuType;
+
+    [SerializeField]
+    protected GameObject defaultSelectedGameobject;
+
+    /// <summary>
+    /// Initializes the menu. Can go anywhere in the overridden function.
+    /// </summary>
+    public virtual void InitMenu()
+    {
+        UIPublicEvents.HideOpenMenus += CloseMenu;
+        UIPublicEvents.NewMenuOpened += AttemptToOpenMenu;
+    }
+
+    /// <summary>
+    /// Tells the controller service that this menu opened
+    /// </summary>
+    protected virtual void MenuOpenedSucessfully()
+    {
+        ControllerUIService.Instance.SetDefaultSelectedGameobject(defaultSelectedGameobject);
+
+        if (InputManager.Instance.ControllerIsEnabled)
+        {
+            ControllerUIService.Instance.SetEventSystemSelectedObjToDefault();
+        }
+    }
+
+    /// <summary>
+    /// Tries to open the menu - if it can it triggers MenuOpenedSucessfully
+    /// </summary>
+    private void AttemptToOpenMenu()
+    {
+        if (!isActiveAndEnabled)
+        {
+            return;
+        }
+
+        if (UIManager.Instance.GetCurrentMenu() != menuType)
+        {
+            CloseMenu();
+            return;
+        }
+
+        SetUpPublicEvents();
+        MenuOpenedSucessfully();
+    }
+
+    /// <summary>
+    /// Mostly empty function that closes the current menu.
+    /// 
+    /// Designed to be at the bottom of the overridden function, not the top
+    /// </summary>
+    private void CloseMenu()
+    {
+        if (UIManager.Instance != null)
+        {
+            if (UIManager.Instance.IsCurrentMenuFullscreenPopup())
+            {
+                return;
+            }
+        }
+
+        if (gameObject.activeInHierarchy)
+        {
+            MenuClosedSucessfully();
+            gameObject.SetActive(false);
+            
+        }
+        
+    }
+
+    /// <summary>
+    /// triggers when the menu actually closes
+    /// </summary>
+    protected virtual void MenuClosedSucessfully()
+    {
+        TearDownPublicEvents();
+
+    }
+
+    /// <summary>
+    /// subscribes to all public events not related to initialization.
+    /// </summary>
+    protected virtual void SetUpPublicEvents()
+    {
+        
+    }
+
+    /// <summary>
+    /// unsubscribes form all public events not related to initialization
+    /// </summary>
+    protected virtual void TearDownPublicEvents()
+    {
+        
+    }
+
+    /// <summary>
+    /// unsubscribes from all public events.
+    /// </summary>
+    protected virtual void OnDestroy()
+    {
+        UIPublicEvents.HideOpenMenus -= CloseMenu;
+        UIPublicEvents.NewMenuOpened -= AttemptToOpenMenu;
+        TearDownPublicEvents();
+    }
+
+    /// <summary>
+    /// Gets the menu type of this menu.
+    /// </summary>
+    /// <returns>This menu's specific menu type </returns>
+    public UiMenuType GetMenuType()
+    {
+        return menuType;
+    }
+}

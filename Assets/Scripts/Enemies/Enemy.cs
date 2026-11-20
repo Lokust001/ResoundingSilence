@@ -1,0 +1,475 @@
+/* Author: Dalsten Yan
+ * Contributors: Brad Dixon
+ * Last Modified: 11/17/26
+ * Summary: Supervising enemy script that decides non-physics behaviors & shares enemyData among other scripts
+ * TODO: More as needed
+ */
+
+using NaughtyAttributes;
+using System;
+using System.Collections;
+using UnityEngine;
+
+public class Enemy : MonoBehaviour
+{
+    [SerializeField]
+    private TriggerObjects aggroTrigger;
+
+    [SerializeField]
+    private bool testWithoutSpawner;
+
+    [SerializeField]
+    private BaseEnemyScriptable enemyData;
+
+    private EnemyAttack attackBehavior;
+    private EnemyWalk movementBeahvior;
+    private EnemyBuff buffBehavior;
+
+    public GameObject EnemyModel;
+    public Animator EnemyAnimator;
+
+    [SerializeField, Header("Debug Variables")]
+    private int dmgToTake;
+
+    public Action aggroEnemyGroup;
+
+    private bool isAggro;
+    [HideInInspector] public bool IsDead;
+
+    private bool inMeleeRange;
+    private bool inRangedRange;
+    public bool canAttack;
+
+    private bool allowNonImmediateBehavior;
+
+    private YieldInstruction actionInterval;
+    private WaitForSeconds deAggroInterval;
+
+    /// <summary>
+    /// Creates a copy of the scriptable object not tied to the inspector, then propagates it other scripts
+    /// </summary>
+    void Awake()
+    {
+        canAttack = true;
+        actionInterval = new WaitForSeconds(enemyData.timeBetweenRangeChecks);
+        deAggroInterval = new WaitForSeconds(enemyData.reAggroCooldown);
+        attackBehavior = GetComponentInChildren<EnemyAttack>();
+        movementBeahvior = GetComponentInChildren<EnemyWalk>();
+        buffBehavior = GetComponentInChildren<EnemyBuff>(true);
+        enemyData = enemyData.CreateNonRefCopy<BaseEnemyScriptable>();
+        PropagateEnemyData();
+        if (testWithoutSpawner) 
+        {
+            EnableEnemy();
+            attackBehavior.EnableAggroChecking();
+        }
+
+        if (EnemyModel != null)
+        {
+            EnemyAnimator = EnemyModel.GetComponent<Animator>();
+        }
+    }
+
+    /// <summary>
+    /// Sends the enemyData variable to every script that has the IEntityDataReceiver interface
+    /// </summary>
+    void PropagateEnemyData()
+    {
+        foreach (ISharedEnemyBehaviors entity in GetComponentsInChildren<ISharedEnemyBehaviors>(true))
+        {
+            entity.ReceiveEnemyData(enemyData);
+        }
+    }
+
+    /// <summary>
+    /// Calls the EnableEntity method on all enemy scripts with ICustomEnabler
+    /// </summary>
+    public void EnableEnemy()
+    {
+        aggroTrigger.EnemyTriggerActivated += AggroEnemy;
+        foreach (ICustomEnabler entity in GetComponentsInChildren<ICustomEnabler>(true))
+        {
+            entity.EnableEntity();
+        }
+    }
+
+    /// <summary>
+    /// Calls the DisableEntity method on all enemy scripts with ICustomDisabler
+    /// </summary>
+    public void DisableEnemy()
+    {
+        aggroTrigger.EnemyTriggerActivated -= AggroEnemy;
+        isAggro = false;
+        foreach (ICustomDisabler entity in GetComponentsInChildren<ICustomDisabler>(true))
+        {
+            entity.DisableEntity();
+        }
+        SetInMeleeArea(false);
+        SetInRangedArea(false);
+        StopAllCoroutines();
+    }
+
+    /// <summary>
+    /// Aggro's the enemy and then disables this behavior for the rest of its runtime
+    /// </summary>
+    /// <param name="obj"></param>
+    public void AggroEnemy(PlayerController obj = null)
+    {
+        _ = obj;
+
+        if (isAggro)
+            return;
+
+        isAggro = true;
+        //Remove Aggro Trigger
+        aggroTrigger.EnemyTriggerActivated -= AggroEnemy;
+        //Call other enemies to be aggro'd
+        aggroEnemyGroup?.Invoke();
+        FirstEnemyAction();
+
+    }
+    /// <summary>
+    /// Tells attackBehavior to enable the aggro trigger
+    /// </summary>
+    public IEnumerator DelayedAggroReEnable() 
+    {
+        yield return deAggroInterval;
+        attackBehavior.EnableAggroChecking();
+        aggroTrigger.EnemyTriggerActivated += AggroEnemy;
+    }
+
+    /// <summary>
+    /// De-Aggro's the enemy and stops all coroutines on other behaviors
+    /// </summary>
+    public void EnemyDeAggro() 
+    {
+        //Don't call if player just went in the spawner and didn't aggro
+        if (!isAggro)
+            return;
+
+        isAggro = false;
+        foreach (var behavior in GetComponentsInChildren<ISharedEnemyBehaviors>(true))
+        {
+            behavior.DeAggroEnemy();
+        }
+        attackBehavior.ResetIndicatorParent();
+        StartCoroutine(DelayedAggroReEnable());
+    }
+
+    /// <summary>
+    /// The first decision that the enemy takes after becoming aggro'd, on whether it follows 
+    /// one temporal-based loop or two
+    /// </summary>
+    private void FirstEnemyAction() 
+    {
+        switch (enemyData.enemyType)
+        {
+            case BaseEnemyScriptable.EnemyType.None:
+                break;
+            case BaseEnemyScriptable.EnemyType.SingleShooter: case BaseEnemyScriptable.EnemyType.ConeShooter:
+                attackBehavior.InitiateAttack();
+                StartCoroutine(RepeatedlyCheckShooterRange());
+                break;
+            case BaseEnemyScriptable.EnemyType.Melee: case BaseEnemyScriptable.EnemyType.ChargingMelee:
+                movementBeahvior.FollowPlayer();
+                break;
+            case BaseEnemyScriptable.EnemyType.BuffEnemy:
+                buffBehavior.AttemptBuffingAllies();
+                break;
+            default:
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Disables trigger behavior on MonoBehavior disable
+    /// </summary>
+    private void OnDisable()
+    {
+        aggroTrigger.EnemyTriggerActivated -= AggroEnemy;
+    }
+
+    /// <summary>
+    /// The nth decision that the enemy takes, dictated by which range it is currently present in
+    /// </summary>
+    public void NextEnemyAction() 
+    {
+        if(IsDead)
+        {
+            return;
+        }
+        allowNonImmediateBehavior = true;
+        //Debug.Log("Melee: " + inMeleeRange + " Ranged: " + inRangedRange);
+        if (!inRangedRange && !inMeleeRange)
+        {
+            NotInPlayerZones();
+        }
+        else if (inRangedRange)
+        {
+            RangedZoneEntryBehaviors();
+        }
+        else if (inMeleeRange)
+        {
+            MeleeZoneEntryBehaviors();
+        }
+        allowNonImmediateBehavior = false;
+    }
+
+    /// <summary>
+    /// Infinite loop that suspends actions for either user-specified intervals or priority actions
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator RepeatedlyCheckShooterRange() 
+    {
+        if (!IsDead && canAttack)
+        {
+            int i = 0;
+            while (isAggro)
+            {
+                //[Uncomment for debug]
+                //Debug.Log("Behavior Loop # [" + i +"]\t inRanged : " + inRangedRange + " Melee area: " + inMeleeRange);
+                NextEnemyAction();
+                yield return actionInterval;
+                i++;
+            }
+        }
+    }
+
+    /// <summary>
+    /// The decision to track the player (for all but one enemy) when they are not in range
+    /// </summary>
+    private void NotInPlayerZones() 
+    {
+        if (IsDead)
+        {
+            return;
+        }
+        switch (enemyData.enemyType)
+        {
+            case BaseEnemyScriptable.EnemyType.None:
+                Debug.LogError("Invalid EnemyType entered Zone!");
+                break;
+            case BaseEnemyScriptable.EnemyType.Melee: case BaseEnemyScriptable.EnemyType.ChargingMelee:
+                movementBeahvior.FollowPlayer();
+                break;
+            case BaseEnemyScriptable.EnemyType.SingleShooter: case BaseEnemyScriptable.EnemyType.ConeShooter:
+                movementBeahvior.StrafeTowardsPlayer();
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Public setter and trigger catcher for the entering and exiting of the player's ranged area
+    /// </summary>
+    /// <param name="value"></param>
+    public void SetInRangedArea(bool value) 
+    {
+        inRangedRange = value;
+        //If the player entered
+        if(inRangedRange)
+            RangedZoneEntryBehaviors();
+    }
+
+    /// <summary>
+    /// Method that decides what behaviors each enemy takes after ONLY entering the ranged zone
+    /// </summary>
+    private void RangedZoneEntryBehaviors() 
+    {
+        if (IsDead)
+        {
+            return;
+        }
+        switch (enemyData.enemyType)
+        {
+            case BaseEnemyScriptable.EnemyType.None:
+                Debug.LogError("Invalid EnemyType entered Zone!");
+                break;
+            case BaseEnemyScriptable.EnemyType.SingleShooter: case BaseEnemyScriptable.EnemyType.ConeShooter:
+                movementBeahvior.StopApproachingPlayer();
+                break;
+            case BaseEnemyScriptable.EnemyType.Melee: case BaseEnemyScriptable.EnemyType.ChargingMelee:
+                if (allowNonImmediateBehavior) 
+                {
+                    allowNonImmediateBehavior = false;
+                    movementBeahvior.FollowPlayer();
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Public setter and trigger catcher for the entering and exiting of the player's melee area
+    /// ; enemy will cease to be in ranged area if they are in melee area
+    /// </summary>
+    /// <param name="value"></param>
+    public void SetInMeleeArea(bool value) 
+    {
+        inRangedRange = !value;
+        inMeleeRange = value;
+        //If the player entered
+        if (inMeleeRange)
+            MeleeZoneEntryBehaviors();
+    }
+
+    /// <summary>
+    /// Method that decides what behaviors each enemy takes after ONLY entering the melee range
+    /// </summary>
+    /// <param name="activateNotImmediateActions"></param>
+    private void MeleeZoneEntryBehaviors() 
+    {
+        if (IsDead)
+        {
+            return;
+        }
+        switch (enemyData.enemyType)
+        {
+            case BaseEnemyScriptable.EnemyType.None:
+                Debug.LogError("Invalid EnemyType entered Zone!");
+                break;
+            case BaseEnemyScriptable.EnemyType.SingleShooter: case BaseEnemyScriptable.EnemyType.ConeShooter:
+                movementBeahvior.StopApproachingPlayer();
+                //Only do this if a time-based check has passed via RepeatedlyCheckShooterRange
+                if (allowNonImmediateBehavior) 
+                {
+                    allowNonImmediateBehavior = false;
+                    StartCoroutine(movementBeahvior.RetreatWalking());
+                }
+                break;
+            case BaseEnemyScriptable.EnemyType.Melee: case BaseEnemyScriptable.EnemyType.ChargingMelee:
+                movementBeahvior.StopApproachingPlayer();
+                attackBehavior.InitiateAttack();
+                break;
+            default:
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Increases two of enemyData's variables that control the output of damage and input of received damage
+    /// by setting them to their specified values
+    /// </summary>
+    /// <param name="atkModifier"></param>
+    /// <param name="dmgModifier"></param>
+    public void ReceiveBuff(float atkModifier, float dmgModifier) 
+    {
+        enemyData.atkBoostFactor = atkModifier;
+        enemyData.dmgReductionFactor = dmgModifier;
+
+        //Debug.Log("I've been buffed! My attacks now deal: " + EnemyDealDamage() + "dmg, and if an attack hits me that is " + dmgToTake + " dmg, I only take " + EnemyTakeDamage(dmgToTake));
+    }
+
+    /// <summary>
+    /// Reduces two of enemyData's variables that control the output of damage and input of received damage
+    /// by reducing them to 0, so they have no effect
+    /// </summary>
+    public void LoseBuff() 
+    {
+        enemyData.atkBoostFactor = enemyData.dmgReductionFactor = 0;
+
+        //Debug.Log("I've lost my buff! My attacks now deal: " + EnemyDealDamage() + "dmg, and if an attack hits me that is " + dmgToTake + " dmg, I only take " + EnemyTakeDamage(dmgToTake));
+    }
+    /// <summary>
+    /// Scales the enemy's HP and Damage values
+    /// </summary>
+    /// <param name="newLevel"></param>
+    public void ScaleEnemy(int scaleValue) 
+    {
+        enemyData.ScaleDMG(scaleValue);
+        enemyData.ScaleHP(scaleValue);
+    }
+
+
+    /// <summary>
+    /// Method that calculates enemy damage taken while simultaenously updating enemyData with those values
+    /// </summary>
+    /// <param name="damageToTake"></param>
+    /// <returns></returns>
+    public int EnemyTakeDamage(float damageToTake)
+    {
+        int finalDmgTaken = Mathf.RoundToInt(damageToTake - (damageToTake * enemyData.dmgReductionFactor));
+        enemyData.enemyHealth -= finalDmgTaken;
+        if (enemyData.enemyHealth <= 0)
+        {
+            IsDead = true;
+            GetComponent<CapsuleCollider>().enabled = false;
+            movementBeahvior.LookAtPlayer = false;
+            if (EnemyAnimator != null)
+            {
+                EnemyAnimator.SetTrigger("Dead");
+                if (GetComponent<EnemyWalk>())
+                {
+                    GetComponent<EnemyWalk>().StopApproachingPlayer();
+                }
+            }
+            else
+            {
+                EnemyDeath();
+            }
+        }
+        else
+        {
+            if (EnemyAnimator != null)
+                EnemyAnimator.SetTrigger("Hit");
+        }
+
+        if (!isAggro)
+            AggroEnemy();
+        return finalDmgTaken;
+    }
+
+    /// <summary>
+    /// Method that calculates the amount of damage the enemy does
+    /// </summary>
+    /// <returns></returns>
+    public int EnemyDealDamage() 
+    {
+        return Mathf.RoundToInt(enemyData.enemyATKDmg + (enemyData.enemyATKDmg * enemyData.atkBoostFactor));
+    }
+
+
+
+    /// <summary>
+    /// Debug Attack enemy while attacking doesn't exist yet
+    /// </summary>
+    [Button("Dmg to Enemy")]
+    public void DebugDealDamage() 
+    {
+        EnemyTakeDamage(dmgToTake);
+        
+    }
+    /// <summary>
+    /// Simulates an enemydeath, and fulfills objectives if they're active
+    /// </summary>
+
+    [Button("EnemyDeath")]
+    public void EnemyDeath() 
+    {
+        GenericPublicEvents.EnemyDies?.Invoke(enemyData);
+        GetComponent<RewardGiver>().StartGivingRewards();
+        Destroy(gameObject);
+    }
+
+    /// <summary>
+    /// Public call for the anim event controller to have the enemy have a chance to move when the attack anim is over.
+    /// </summary>
+    public void WaitToAttack()
+    {
+        canAttack = false;
+        NotInPlayerZones();
+        StartCoroutine(SwitchToAttackDelay());
+    }
+
+    /// <summary>
+    /// Calls the attack function after the attack delay is over
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator SwitchToAttackDelay()
+    {
+        yield return new WaitForSeconds(enemyData.timeBetweenAttacks);
+        canAttack = true;
+        attackBehavior.InitiateAttack();
+    }
+}
+

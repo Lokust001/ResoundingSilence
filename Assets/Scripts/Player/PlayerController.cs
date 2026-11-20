@@ -1,0 +1,703 @@
+/*
+* Author: Dalsten Yan
+* Contributors: Brad Dixon, Brenden Burtz
+* Last Modified: 11/19/2026
+* Summary: Player input, stats, and damage are handled here
+* To Do:   Add more variables as needed.
+*/
+using System.Collections;
+using UnityEngine;
+public class PlayerController : MonoBehaviour
+{
+    public float defaultSpeed;
+
+    [HideInInspector] public float moveSpeed;
+
+    [SerializeField]
+    float playerHealth;
+
+    [SerializeField]
+    float invincibilityDuration;
+
+    [Header("Dash")]
+    [SerializeField] float BasedashRange;
+    float dashRange;
+    [SerializeField] float dashDuration;
+    [SerializeField] float dashCooldown;
+    [SerializeField] int totalDashes;
+    [SerializeField] float chainDashWindow;
+
+    [Header("Regen")]
+    [SerializeField] float TimeToStartRegen;
+    [SerializeField] float RegenTickRate;
+    [SerializeField, Tooltip("this is in % of max health")] float BaseRegenAmount;
+    float regenAmount;
+
+    [Header("LayerMasks")]
+    [Tooltip("What layers the player shouldn't collide with while they are invinvible.")]
+    [SerializeField] LayerMask ignoreWhileInvincible;
+    [Tooltip("What layers the player shouldn't collide with while they are invinvible.")]
+    [SerializeField] LayerMask DashLayersIgnore;
+
+    [SerializeField] LayerMask stopKnockbackLayers;
+
+    private const float WALL_COLLISION_CAST_OFFSET = 0.25f;
+
+    private Vector3 wallOffset;
+
+    [SerializeField] bool chariotBool;
+
+    public TriggerObjects HermitTrigger;
+
+    #region Debug Console Variables
+
+    public bool InGodMode;
+
+    public bool MoveActive = true;
+    #endregion
+
+    #region Private Variables
+    Rigidbody rigidbody;
+    CapsuleCollider playerModelCollider;
+    Vector3 playerVelocity;
+
+    Coroutine dmgCoroutine;
+    Coroutine knockbackCoroutine;
+    Coroutine dashingCoroutine;
+    Coroutine dashWindowCoroutine;
+    Coroutine dashingCooldownCoroutine;
+    Coroutine regenCoroutine;
+
+    Coroutine playerMovementCoroutine;
+
+    Vector3 dashDir;
+
+    //Serialized so you can test more easily right now. Once the game has feedback for when a dash is ready, these shouldn't be serialized
+    [SerializeField] bool canDash;
+    [SerializeField] bool chainDashing;
+
+    int currentDash;
+
+    [SerializeField]
+    private TriggerObjects meleeRangeTrigger;
+    [SerializeField]
+    private TriggerObjects rangedRangeTrigger;
+
+    float healingPotency = 1.0f;
+    float damageResistance = 1.0f;
+    float KnockbackAmount = 1.0f;
+
+    private Vector3 topColliderLocalPos;
+    private Vector3 bottomColliderLocalPos;
+
+    ForceMode dashForceMode;
+    #endregion
+
+    #region Unity Methods
+
+    /// <summary>
+    /// Allows the script to listen for player input
+    /// </summary>
+    private void OnEnable()
+    {
+        InputPublicEvents.MovePressed += PlayerInputStarted;
+        InputPublicEvents.MoveReleased += PlayerInputEnded;
+        InputPublicEvents.DashPressed += PlayerDashPressed;
+
+        meleeRangeTrigger.PlayerTriggerActivated += MeleeZoneHandler;
+        rangedRangeTrigger.PlayerTriggerActivated += RangedZoneHandler;
+    }
+
+    /// <summary>
+    /// Stops listening when the object is destroyed. 
+    /// </summary>
+    private void OnDisable()
+    {
+        InputPublicEvents.MovePressed -= PlayerInputStarted;
+        InputPublicEvents.MoveReleased -= PlayerInputEnded;
+        InputPublicEvents.DashPressed -= PlayerDashPressed;
+
+        meleeRangeTrigger.PlayerTriggerActivated -= MeleeZoneHandler;
+        rangedRangeTrigger.PlayerTriggerActivated -= RangedZoneHandler;
+
+    }
+
+    /// <summary>
+    /// Sets components
+    /// </summary>
+    void Start()
+    {
+        dashForceMode = ForceMode.VelocityChange;
+        rigidbody = GetComponent<Rigidbody>();
+        playerModelCollider = GetComponent<CapsuleCollider>();
+
+        float modelThickness = playerModelCollider.height / 2 - playerModelCollider.radius;
+        topColliderLocalPos = playerModelCollider.center - Vector3.up * modelThickness;
+        bottomColliderLocalPos = playerModelCollider.center + Vector3.up * modelThickness;
+
+        if (chariotBool)
+            totalDashes = 2;
+
+        moveSpeed = defaultSpeed;
+        dashRange = BasedashRange;
+        regenAmount = BaseRegenAmount;
+
+        //Defaults to right in case player dashes before ever moving
+        dashDir = Vector3.forward;
+        currentDash = totalDashes;
+        canDash = true;
+
+        wallOffset = new(0, 0, WALL_COLLISION_CAST_OFFSET);
+
+        //Original movement speed is zero + start move coroutine
+        PlayerInputEnded();
+        RestartPlayerMovementAndInput();
+    }
+    #endregion
+
+    #region Pinfunctions
+    /// <summary>
+    /// Increases the dash range
+    /// </summary>
+    /// <param name="dashIncrease"></param>
+    public void DashDistance(float dashIncrease)
+    {
+        dashRange = dashIncrease * BasedashRange;
+    }
+
+    /// <summary>
+    /// increases the movement speed
+    /// </summary>
+    /// <param name="moveBuff"></param>
+    public void MoveSpeedIncrease(float moveBuff)
+    {
+        moveSpeed = moveBuff * defaultSpeed;
+    }
+
+    /// <summary>
+    /// changes the damage resistance
+    /// </summary>
+    /// <param name="Modifier"></param>
+    public void DamageResistanceChange(float Modifier)
+    {
+        damageResistance = Modifier;
+    }
+
+    /// <summary>
+    /// changes the healing potency
+    /// </summary>
+    /// <param name="Modifier"></param>
+    public void healingPotencyChange(float Modifier)
+    {
+        healingPotency = Modifier;
+    }
+
+    /// <summary>
+    /// adds knockback resistance
+    /// </summary>
+    /// <param name="Modifier"></param>
+    public void KnockbackResistance(float Modifier)
+    {
+        KnockbackAmount = Modifier;
+    }
+
+    /// <summary>
+    /// adds regen boost
+    /// </summary>
+    /// <param name="Modifier"></param>
+    public void RegenBoost(float Modifier)
+    {
+        regenAmount = BaseRegenAmount + ((Modifier - 1) * 100);
+    }
+
+    #endregion
+
+    /// <summary>
+    /// Helper method to update PlayerVelocity based on user input
+    /// </summary>
+    /// <param name="moveDirection"></param>
+    void PlayerInputStarted(Vector2 moveDirection)
+    {
+        playerVelocity.x = moveDirection.x;
+        playerVelocity.z = moveDirection.y;
+
+        dashDir = new Vector3(moveDirection.x, 0, moveDirection.y);
+    }
+
+    /// <summary>
+    /// Helper method to completely stop velocity when no more input is captured.
+    /// First it stops the player's active velocity, then recorded velocity PlayerVelocity
+    /// </summary>
+    void PlayerInputEnded()
+    {
+        playerVelocity.x = 0;
+        playerVelocity.z = 0;
+    }
+
+    /// <summary>
+    /// Sets the linearVelocity to 0 to stop physics from affecting the player without setting isKinematic to true
+    /// </summary>
+    private void NegateAllForces()
+    {
+        rigidbody.linearVelocity = Vector3.zero;
+    }
+
+    /// <summary>
+    /// Checks that the player is able to dash
+    /// </summary>
+    private void PlayerDashPressed()
+    {
+        if (currentDash > 0)
+        {
+            dashingCoroutine ??= StartCoroutine(RigidBodyPlayerDash());
+        }
+    }
+    /// <summary>
+    /// Opens up a window to chaindash, otherwise it takes away your extra dashes and forces you to go on cooldown
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator ChainDashWindow()
+    {
+
+        //Kept as countdown timer for future UI-related tasks
+        float currentDashWindowTime = chainDashWindow;
+
+        while (currentDashWindowTime > 0)
+        {
+            yield return new WaitForFixedUpdate();
+            currentDashWindowTime -= Time.fixedDeltaTime;
+        }
+
+        currentDash = 0;
+        dashingCooldownCoroutine = StartCoroutine(DashingRecharge(dashCooldown));
+    }
+
+    /// <summary>
+    /// Adds a dash to the player by adding a force to the rigidbody
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator RigidBodyPlayerDash()
+    {
+        //Decrement the number of dashes before anything else
+        currentDash--;
+
+        //Calculate and cache local variables
+        Vector3 maximumDashForce = dashDir * dashRange;
+
+        //Setup a timer
+        float currentDashTime = 0;
+
+        //Become intangible to dash-avoidant layers
+        rigidbody.excludeLayers += ignoreWhileInvincible;
+
+        while (currentDashTime < dashDuration)
+        {
+            //Lerp the velocity of the player so that it starts out very high and then goes completely to zero
+            Vector3 currentDashVelocity = Vector3.Lerp(maximumDashForce, Vector3.zero, currentDashTime / dashDuration);
+
+            //Add the lerped velocity to the player so that they receive those forces
+            rigidbody.AddForce(currentDashVelocity, dashForceMode);
+
+
+            yield return new WaitForFixedUpdate();
+
+            currentDashTime += Time.fixedDeltaTime;
+        }
+
+        //Stop being intangible to dash-avoidant layers
+        rigidbody.excludeLayers -= ignoreWhileInvincible;
+
+        //This coroutine will be active if a window for chaindash is active
+        if (dashingCooldownCoroutine != null) 
+        {
+            //Cancel the window since player dashed
+            StopCoroutine(dashingCooldownCoroutine);
+        }
+
+        //Coroutine will be chaindash if player still has dashes available,
+        //otherwise, call recharge coroutine
+        dashingCooldownCoroutine = StartCoroutine(currentDash > 0 ? ChainDashWindow() : DashingRecharge(dashCooldown));
+
+        dashingCoroutine = null;
+    }
+
+    /// <summary>
+    /// Recharges the dash after a set amount of time
+    /// </summary>
+    /// <param name="rechargeTime"></param>
+    /// <returns></returns>
+    private IEnumerator DashingRecharge(float rechargeTime)
+    {
+        //Coundown timer instead of WaitForSeconds for future UI work
+        float dashRechargeCountdown = dashCooldown;
+
+        while (dashRechargeCountdown > 0)
+        {
+            yield return null;
+            dashRechargeCountdown -= Time.deltaTime;
+        }
+        currentDash = totalDashes;
+        dashingCooldownCoroutine = null;
+    }
+
+    /// <summary>
+    /// Dashes the player in the last direction they were moving
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator PlayerDash()
+    {
+        canDash = false;
+        chainDashing = false;
+
+        rigidbody.excludeLayers += ignoreWhileInvincible;
+
+        ++currentDash;
+
+        if (currentDash > 1)
+        {
+            StopCoroutine(dashWindowCoroutine);
+        }
+
+        Vector3 dashPoint = Physics.Raycast(transform.position, dashDir.normalized, out RaycastHit hit, dashRange, ~DashLayersIgnore) ? hit.point : transform.position + (dashDir.normalized * dashRange);
+        if (hit.collider != null)
+            Debug.Log(hit.collider.name);
+        StopCoroutine(playerMovementCoroutine);
+
+        Vector3 maximumDashForce = dashDir * dashRange;
+        Vector3 currentDashVelocity = maximumDashForce;
+
+        float currentDashTime = 0;
+
+
+        while (currentDashTime < dashDuration)
+        {
+
+            currentDashVelocity = Vector3.Lerp(maximumDashForce, Vector3.zero, currentDashTime / dashDuration);
+
+            rigidbody.AddForce(currentDashVelocity, dashForceMode);
+
+            //Debug.Log("DashForce: " + currentDashVelocity + " Actual Force: " + velocityDifference + " Current Velocity: " + rigidbody.linearVelocity);
+
+            yield return new WaitForFixedUpdate();
+
+            currentDashTime += Time.fixedDeltaTime;
+        }
+
+        rigidbody.excludeLayers -= ignoreWhileInvincible;
+
+        if (currentDash < totalDashes)
+        {
+            dashWindowCoroutine = StartCoroutine(TimeToChainDash());
+        }
+        else
+        {
+            currentDash = 0;
+            chainDashing = false;
+            StartCoroutine(ResetDash(dashCooldown));
+        }
+        RestartPlayerMovementAndInput();
+
+        yield return null;
+    }
+
+    /// <summary>
+    /// After x amount of time, dash comes off of cooldown
+    /// </summary>
+    /// <param name="cooldownTime"></param> How long the dash cooldown is. Using a param so that if you don't chain dash, 
+    /// the time it waits for gets removed from cooldown time
+    /// <returns></returns>
+    IEnumerator ResetDash(float cooldownTime)
+    {
+        yield return new WaitForSeconds(cooldownTime);
+        canDash = true;
+    }
+
+    /// <summary>
+    /// How long the player has to chain dash before dashing goes on cooldown
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator TimeToChainDash()
+    {
+        chainDashing = true;
+        yield return new WaitForSeconds(chainDashWindow);
+        currentDash = 0;
+        chainDashing = false;
+
+        StartCoroutine(ResetDash(dashCooldown - chainDashWindow));
+    }
+
+    /// <summary>
+    /// Coroutine that continuously runs and moves the player unless disabled by external factors.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator MovePlayerCoroutine()
+    {
+        while (MoveActive)
+        {
+            //Propagate calculated velocity to rigidbody & make player move
+            rigidbody.linearVelocity = new Vector3(playerVelocity.x * moveSpeed, rigidbody.linearVelocity.y, playerVelocity.z * moveSpeed);
+
+            //Tick Coroutine as if it were in FixedUpdate
+            yield return new WaitForFixedUpdate();
+        }
+    }
+
+    /// <summary>
+    /// Public method to halt all player movement
+    /// </summary>
+    public void StopPlayerMovementAndInput()
+    {
+        StopCoroutine(playerMovementCoroutine);
+        PlayerInputEnded();
+    }
+
+    /// <summary>
+    /// Public method to start moving the player once again
+    /// </summary>
+    public void RestartPlayerMovementAndInput()
+    {
+        playerMovementCoroutine = StartCoroutine(MovePlayerCoroutine());
+    }
+
+    /// <summary>
+    /// Lets the player take damage, with optional/nullable knockbackInfo
+    /// </summary>
+    /// <param name="knockbackInfo"></param>
+    public void TakeDamage(int damage, (Vector3 knockbackDistance, float kbDuration)? knockbackInfo = null)
+    {
+        if (regenCoroutine != null)
+        {
+            StopCoroutine(regenCoroutine);
+        }
+        if (InGodMode)
+            return;
+
+        //If the player is already damaged/invicible at the moment
+        if (dmgCoroutine != null)
+            return;
+
+        //Start a damage/invincibility couroutine
+        dmgCoroutine ??= StartCoroutine(PlayerInvincibilityFrames());
+
+            MidRunDataManager.Instance.ChangePlayerHealth((int)(-damage * damageResistance));
+
+        //If there is knockback data and there is no knockback coroutine active 
+        if (knockbackInfo.HasValue)
+            knockbackCoroutine ??= StartCoroutine(TakePlayerKnockback(knockbackInfo.Value));
+
+        regenCoroutine = StartCoroutine(HealthRegen());
+    }
+
+    /// <summary>
+    /// Provides information about whether or not the player is invincible
+    /// </summary>
+    /// <returns></returns>
+    public bool PlayerIsInvincible()
+    {
+        return dmgCoroutine != null;
+    }
+
+    /// <summary>
+    /// Simulate the player not being able to take any damage visually
+    /// or collide with any enemies for a short time
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator PlayerInvincibilityFrames()
+    {
+        //Make the player intangible to collisions from specified layers
+        SetPlayerInvincibility(true);
+
+        Renderer playerRenderer = GetComponent<Renderer>();
+        Color original = playerRenderer.material.color;
+        playerRenderer.material.color = Color.red;
+        float timer = 0;
+
+        while (timer < invincibilityDuration)
+        {
+            timer += Time.deltaTime;
+
+            yield return null;
+        }
+        SetPlayerInvincibility(false);
+        ResetRangeTriggers();
+
+        playerRenderer.material.color = original;
+        dmgCoroutine = null;
+    }
+
+    /// <summary>
+    /// Resets the Trigger when enemies become too close
+    /// </summary>
+    private void ResetRangeTriggers()
+    {
+        meleeRangeTrigger.SetColliderComponentEnabled(false);
+        meleeRangeTrigger.SetColliderComponentEnabled(true);
+        rangedRangeTrigger.SetColliderComponentEnabled(false);
+        rangedRangeTrigger.SetColliderComponentEnabled(true);
+    }
+
+    /// <summary>
+    /// Helper method that takes the layer name specified in invincibilityLayerNamesToIgnore 
+    /// and either toggles the collision on or off for those layers all at once
+    /// </summary>
+    /// <param name="value"></param>
+    private void SetPlayerInvincibility(bool value)
+    {
+        if (value)
+            rigidbody.excludeLayers += ignoreWhileInvincible;
+        else
+            rigidbody.excludeLayers -= ignoreWhileInvincible;
+
+        rigidbody.WakeUp();
+    }
+
+    /// <summary>
+    /// Physics-based Coroutine to find the distance 
+    /// </summary>
+    /// <param name="knockbackInfo"></param>
+    /// <returns></returns>
+    public IEnumerator TakePlayerKnockback((Vector3 knockbackDistance, float knockbackDuration) knockbackInfo)
+    {
+        //Nullify the insane force that would've otherwise been applied by the enemy
+        NegateAllForces();
+
+        //Stop player input
+        StopPlayerMovementAndInput();
+
+        //Retrieve a local copy of the player's transform
+        Transform playerTransform = transform;
+
+
+        //Calculate the knockback destination, which is the player's current position plus its calculated offset after knockback
+        Vector3 knockbackDestination = playerTransform.position + (knockbackInfo.knockbackDistance * KnockbackAmount);
+
+        Vector3 knockbackDirection = (knockbackDestination - playerTransform.position).normalized;
+
+        //Total distance between the player and the destination of the knockback
+        float maxDistance = Vector3.Distance(playerTransform.position, knockbackDestination);
+
+        Vector3 physicsCastWallOffset = WALL_COLLISION_CAST_OFFSET * knockbackDirection;
+
+        //Calculate new world transforms for the top and bottom half of the player collider during this moment in time
+        Vector3 point1 = transform.TransformPoint(topColliderLocalPos) - physicsCastWallOffset;
+        Vector3 point2 = transform.TransformPoint(bottomColliderLocalPos) - physicsCastWallOffset;
+
+        //CapsuleCast to see if there is enough space to be knocked back towards the destination
+        //(Kept in a variable instead of if statement to ease future debugging)
+        bool insufficientKnockbackSpace = Physics.CapsuleCast(point1, point2, playerModelCollider.radius, knockbackDirection,
+            out RaycastHit hit, maxDistance + WALL_COLLISION_CAST_OFFSET, stopKnockbackLayers, QueryTriggerInteraction.Ignore);
+
+        //If there is not enough space for the player knockback to travel all the way to the destination,
+        //Use the farthest point instead
+        if (insufficientKnockbackSpace)
+        {
+            knockbackDestination = hit.point;
+            maxDistance = Vector3.Distance(playerTransform.position, knockbackDestination);
+        }
+
+        //Tracker for remaining distance between player and knockback position
+        float distance = maxDistance;
+
+        //Count-up timer
+        float timer = 0;
+        //Timer goal and while loop break condition
+        float timeLimit = knockbackInfo.knockbackDuration;
+
+        /*                  - Physics Note -
+         * Speed is calculated through Distance divided by Time
+         *      We already possess Distance (maxDistance)
+         *      We also possess Time (timeLimit)
+         *      
+         *  As a result, we can calculate both the linearUniformKnockbackSpeed
+         *  & also the dynamicKnockbackSpeed
+         */
+
+
+        //The constant speed that would allow the player to move to knockbackDestination linearly
+        float linearUniformKnockbackSpeed = maxDistance / timeLimit;
+
+        //Cached fixedUpdate interval
+        float fixedUpdateTick = Time.fixedDeltaTime;
+
+        //The minimum speed to LERP to over time T
+        float minimumKnockbackSpeed = linearUniformKnockbackSpeed * fixedUpdateTick;
+
+        //The maximum speed the will initially be applied to the player
+        float maximumKnockbackSpeed = 2 * linearUniformKnockbackSpeed;
+
+
+        //For the duration of knockback,
+        //Incrementally move the player towards the destination distance while dynamically calculating its speed on every FixedUpdate tick
+        //The dynamic speed allows for the player to be initially fast, then slow down
+        while (timer < timeLimit)
+        {
+            //Tick FixedUpdate while we haven't reached duration yet
+            //On the initial start of this loop, the time would be 0, so the player wouldn't move anywhere
+            //To maintain as much precision as possible, wait first, and then move the player
+            yield return new WaitForFixedUpdate();
+
+            timer += fixedUpdateTick;
+            //0 to 1
+            float timerT = timer / timeLimit;
+
+            //Calculate new distance and time-dependent knockback force
+            distance = Vector3.Distance(playerTransform.position, knockbackDestination);
+
+            //Its just this line that needs work
+            float dynamicDeltaSpeed = Mathf.Lerp(maximumKnockbackSpeed, minimumKnockbackSpeed, timerT);
+
+            //Calculate and move towards the knockback position
+            Vector3 knockbackDelta = Vector3.MoveTowards(playerTransform.position, knockbackDestination, dynamicDeltaSpeed * fixedUpdateTick);
+            rigidbody.MovePosition(knockbackDelta);
+
+            //Debug.Log("\tDistance: " + distance + " \tSpeed: " + dynamicDeltaSpeed + " \tTime: " + timer);
+
+        }
+        //Nullify once more the insane force that would've otherwise been applied by the enemy
+        NegateAllForces();
+
+        //The final move for 100% accuracy, only move if there's enough space,
+        //otherwise don't clip into the wall
+        if (!insufficientKnockbackSpace)
+            rigidbody.MovePosition(knockbackDestination);
+
+        //Let player move again
+        RestartPlayerMovementAndInput();
+        knockbackCoroutine = null;
+    }
+
+    /// <summary>
+    /// starts the player health regen if they have it
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerator HealthRegen()
+    {
+        yield return new WaitForSecondsRealtime(TimeToStartRegen);
+        while (true)
+        {
+            MidRunDataManager.Instance.ChangePlayerHealth((Mathf.CeilToInt(MidRunDataManager.Instance.MaxPlayerHealth * (regenAmount / 100f))));
+            yield return new WaitForSecondsRealtime(RegenTickRate);
+        }
+    }
+
+    /// <summary>
+    /// Handles logic when an enemy enters their designated melee zone
+    /// </summary>
+    /// <param name="enemy"></param>
+    /// <param name="enteredTrigger"></param>
+    private void MeleeZoneHandler(Enemy enemy, bool enteredTrigger)
+    {
+        _ = enemy;
+        enemy.SetInMeleeArea(enteredTrigger);
+    }
+    /// <summary>
+    /// Handles logic when an enemy enters their designated ranged zone
+    /// </summary>
+    /// <param name="enemy"></param>
+    /// <param name="enteredTrigger"></param>
+    private void RangedZoneHandler(Enemy enemy, bool enteredTrigger)
+    {
+        _ = enemy;
+        enemy.SetInRangedArea(enteredTrigger);
+    }
+}

@@ -1,0 +1,228 @@
+/*
+* Author: Tyler
+* Contributors:
+* Last Modified: 10/2/2026
+* Summary: Utility script. Is just for math functoins to save space and time
+* To Do:   N/A
+*/
+
+using System;
+using System.Collections.Generic;
+using UnityEditor;
+using UnityEngine;
+
+public static class UtilityFunctions
+{
+    #region Adjacency
+
+    /// <summary>
+    /// Returns a list of all adjacent tiles of a given coordinate in a given list
+    /// </summary>
+    /// <typeparam name="T"> The type to return. </typeparam>
+    /// <param name="coords"> The coordinates of the center tile. </param>
+    /// <param name="collection"> The list of objects to grab adjacency from. </param>
+    /// <param name="height"> How tall the grid is. </param>
+    /// <param name="width"> How wide the grid is. </param>
+    /// <param name="countDiagonals"> If you want the returned list to include diagonals, this should be true. True by default.</param>
+    /// <returns></returns>
+    public static List<T> GetAdjacentTiles<T>(Vector2Int coords,
+                                              List<T> collection,
+                                              int height, int width,
+                                              bool AnchoredTopLeft = true,
+                                              bool countDiagonals = true)
+    {
+        List<T> temp = new();
+
+        int count = countDiagonals ? 8 : 4;
+
+        for (int i = 0; i < count; i++)
+        {
+            Vector2Int dir = GetDirectionGivenInt(countDiagonals ? i : i * 2);
+
+            if (AnchoredTopLeft)
+            {
+                dir.y = -dir.y;
+            }
+
+            temp.Add(GetTile(coords + dir, collection, height, width));
+        }
+        return temp;
+    }
+
+    /// <summary>
+    /// gets adjacent tiles given the index, not the coords
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="index"> the index of the item in the list </param>
+    /// <param name="collection"> The list of objects to grab adjacency from. </param>
+    /// <param name="height"> How tall the grid is. </param>
+    /// <param name="width"> How wide the grid is. </param>
+    /// <param name="countDiagonals"> If you want the returned list to include diagonals, this should be true. True by default.</param>
+    /// <returns></returns>
+    public static List<T> GetAdjacentTiles<T>(int index,
+                                              List<T> collection,
+                                              int height, int width,
+                                              bool countDiagonals = true)
+    {
+        Vector2Int coords = new Vector2Int(index % width, index / width);
+
+        return GetAdjacentTiles<T>(coords, collection, height, width, countDiagonals);
+    }
+
+    /// <summary>
+    /// helper function - returns the vector 2 direction when given a number.
+    /// </summary>
+    /// <param name="i">0 = north, then moving clockwise with 7 = northwest. </param>
+    /// <returns></returns>
+    /// <exception cref="System.Exception"></exception>
+    private static Vector2Int GetDirectionGivenInt(int i = -1)
+    {
+        if (i < 0 || i >= 8)
+        {
+            throw new System.Exception($"Tried to get a direction that is out of bounds: tried for direction {i}");
+        }
+
+        switch (i)
+        {
+            case 0:
+                return new Vector2Int(0, 1);
+            case 1:
+                return new Vector2Int(1, 1);
+            case 2:
+                return new Vector2Int(1, 0);
+            case 3:
+                return new Vector2Int(1, -1);
+            case 4:
+                return new Vector2Int(0, -1);
+            case 5:
+                return new Vector2Int(-1, -1);
+            case 6:
+                return new Vector2Int(-1, 0);
+            case 7:
+                return new Vector2Int(-1, 1);
+            default:
+                throw new System.Exception($"Tried to get a direction that is out of bounds in the " +
+                    $"switch statement: tried for direction {i}");
+        }
+    }
+
+    /// <summary>
+    /// converts a vec2int into the directional int. 0 = north, then moving clockwise with 7 = northwest.
+    /// </summary>
+    /// <param name="dir"></param>
+    /// <returns></returns>
+    public static int ConvertVecIntToIntDirection(Vector2Int dir)
+    {
+        if (dir.x == 0 && dir.y == 1)
+        {
+            return 0;
+        }
+        if (dir.x == 1 && dir.y == 1)
+        {
+            return 1;
+        }
+        if (dir.x == 1 && dir.y == 0)
+        {
+            return 2;
+        }
+        if (dir.x == 1 && dir.y == -1)
+        {
+            return 3;
+        }
+        if (dir.x == 0 && dir.y == -1)
+        {
+            return 4;
+        }
+        if (dir.x == -1 && dir.y == -1)
+        {
+            return 5;
+        }
+
+        //has to be in this order or else it skips over to -1. idk why
+        if (dir.x == -1 && dir.y == 1)
+        {
+            return 7;
+        }
+        if (dir.x == -1 && dir.y == 0)
+        {
+            return 6;
+        }
+        
+
+
+        return -1;
+    }
+
+    /// <summary>
+    /// grabs a tile given the index in the given list
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
+    private static T GetTile<T>(int index, List<T> collection)
+    {
+        if (index < 0 || index >= collection.Count)
+        {
+            return default(T);
+        }
+        else
+        {
+            return collection[index];
+        }
+    }
+
+    /// <summary>
+    /// grabs the tile given the coordinates in the given list. width and height are for out of bounds testing
+    /// </summary>
+    /// <param name="coords"></param>
+    /// <returns></returns>
+    private static T GetTile<T>(Vector2Int coords, List<T> collection, int height, int width)
+    {
+        if (coords.x < 0 || coords.x >= width ||
+            coords.y < 0 || coords.y >= height)
+        {
+            return default(T);
+        }
+
+        return GetTile(coords.x + (coords.y * width), collection);
+    }
+
+    #endregion
+
+    #region Scroll Rect Stuff
+
+    /// <summary>
+    /// Returns a position in world space based on the relation of the selected object and the pos of the scrollrect and content rect
+    /// </summary>
+    /// <param name="ScrollRect"></param>
+    /// <param name="SelectedObject"></param>
+    /// <param name="ContentObject"></param>
+    /// <returns></returns>
+    /// <exception cref="System.Exception"></exception>
+    public static Vector2 GetNewScrollRectAnchoredPos(RectTransform ScrollRect, RectTransform SelectedObject, RectTransform ContentObject)
+    {
+        if (ScrollRect == null)
+        {
+            throw new System.Exception("Scroll rect doesnt have a rect transform");
+        }
+        float SelYPos = Mathf.Abs(SelectedObject.anchoredPosition.y) + SelectedObject.rect.height;
+        float scrollViewMinY = ContentObject.anchoredPosition.y;
+        float scrollViewMaxY = ContentObject.anchoredPosition.y + ScrollRect.rect.height;
+
+        //move scroll rect to fit with the selected object. 
+        if (SelYPos > scrollViewMaxY)
+        {
+            float newY = SelYPos - ScrollRect.rect.height;
+            return new Vector2(ContentObject.anchoredPosition.x, newY);
+        }
+        else if (Mathf.Abs(SelectedObject.anchoredPosition.y) < scrollViewMinY)
+        {
+            return new Vector2(ContentObject.anchoredPosition.x, Mathf.Abs(SelectedObject.anchoredPosition.y) - 100);
+        }
+
+        
+        return ContentObject.anchoredPosition;
+    }
+
+    #endregion
+}
+
