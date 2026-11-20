@@ -152,6 +152,9 @@ public class MidRunDataManager : BaseManager
         GainXP(GiveXpAmount);
     }
 
+    /// <summary>
+    /// Debug statement so i can see the contents of the enabledtarotcards dictionary
+    /// </summary>
     [Button]
     void LogDict()
     {
