@@ -298,6 +298,7 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
         //Setting the z scale to 0 makes the indicator invisible, and increasing the z scale
         //over time makes the actual indicator "grow" over time.
         ResetIndicatorParent();
+        enemyMovement.StopApproachingPlayer();
 
         //Pass the Charging behavior towards enemyMovement to handle the sudden burst of movement
         enemyCharging = StartCoroutine(queuedMeleeAttack);
