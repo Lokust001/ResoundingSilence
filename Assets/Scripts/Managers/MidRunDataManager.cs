@@ -8,6 +8,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using NaughtyAttributes;
 using UnityEngine;
@@ -679,7 +680,14 @@ public class MidRunDataManager : BaseManager
         }
     }
 
-    
+    /// <summary>
+    /// returns the list of enabled tarot cards
+    /// </summary>
+    /// <returns></returns>
+    public List<TarotCardType> GetEnabledTarotCards()
+    {
+        return EnabledTarotCards.Where(x => x.Value == true).Select(x => x.Key).ToList();
+    }
 }
 
 public enum TarotCardType
