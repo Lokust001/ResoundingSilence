@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors: Brenden, Brad Dixon
-* Last Modified: 11/17/2026
+* Last Modified: 11/19/2026
 * Summary: This is a database that will hold all of the data needed mid run.
 * To Do:   N/A
 */
@@ -229,6 +229,9 @@ public class MidRunDataManager : BaseManager
         await Task.CompletedTask;
     }
 
+    /// <summary>
+    /// sets up all the values in the tarot dictionary
+    /// </summary>
     public void SetUpTarotDict()
     {
         EnabledTarotCards = new();
@@ -628,6 +631,11 @@ public class MidRunDataManager : BaseManager
         }
     }
 
+    /// <summary>
+    /// returns if the player has the tarot card enabled or not
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
     public bool IsTarotEnabled(TarotCardType type)
     {
         if (EnabledTarotCards == null || EnabledTarotCards.Count <= 0)
@@ -644,19 +652,10 @@ public class MidRunDataManager : BaseManager
         return EnabledTarotCards[type];
     }
 
-    public void EnableTarotCard(List<TarotCardType> types = null)
-    {
-        if (types == null)
-        {
-            return;
-        }
-
-        foreach (TarotCardType type in types)
-        {
-            EnableTarotCard(type);
-        }
-    }
-
+    /// <summary>
+    /// enables a tarot card
+    /// </summary>
+    /// <param name="type"></param>
     public void EnableTarotCard(TarotCardType type = TarotCardType.None)
     {
         if (type == TarotCardType.None)
