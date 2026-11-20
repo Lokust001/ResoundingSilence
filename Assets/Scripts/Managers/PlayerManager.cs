@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors: Brenden
-* Last Modified: 11/19/2026
+* Last Modified: 11/20/2026
 * Summary: This service stores all the player's data. May be merged with the midrundatamanager if we feel its redundant
 * To Do:   N/A
 */
@@ -10,6 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using static UnityEngine.CullingGroup;
 
 public class PlayerManager : BaseManager
 {
@@ -48,27 +49,76 @@ public class PlayerManager : BaseManager
                 break;
             case BuffObject.PermStatBuff.Damage:
                 DamageBuff += value;
+                foreach (BaseWeaponAbilityBehaviour i in WeaponsGameObjects)
+                {
+                    if (i != null)
+                    {
+                        i.weaponStats.GetBIchange(DamageBuff, StatChange);
+                    }
+                }
                 break;
             case BuffObject.PermStatBuff.FireRate:
                 Firerate += value;
+                foreach(BaseWeaponAbilityBehaviour i in WeaponsGameObjects)
+                {
+                    if(i != null)
+                    {
+                        i.weaponStats.GetBIchange(Firerate, StatChange);
+                    }
+                }
                 break;
             case BuffObject.PermStatBuff.ProjectileSpeed:
                 ProjectileSpeed += value;
+                foreach (BaseWeaponAbilityBehaviour i in WeaponsGameObjects)
+                {
+                    if (i != null)
+                    {
+                        i.weaponStats.GetBIchange(ProjectileSpeed, StatChange);
+                    }
+                }
                 break;
             case BuffObject.PermStatBuff.MaxHealth:
-                MaxHealth += value;
+                MidRunDataManager.Instance.MaxPlayerHealth += value;
+                MidRunDataManager.Instance.ChangePlayerHealth(value);
                 break;
             case BuffObject.PermStatBuff.MovementSpeed:
                 MoveSpeed += value;
+                foreach (BaseWeaponAbilityBehaviour i in WeaponsGameObjects)
+                {
+                    if (i != null)
+                    {
+                        i.weaponStats.GetBIchange(MoveSpeed, StatChange);
+                    }
+                }
                 break;
             case BuffObject.PermStatBuff.DashDistance:
                 DashDistance += value;
+                foreach (BaseWeaponAbilityBehaviour i in WeaponsGameObjects)
+                {
+                    if (i != null)
+                    {
+                        i.weaponStats.GetBIchange(DashDistance, StatChange);
+                    }
+                }
                 break;
             case BuffObject.PermStatBuff.AttackSize:
                 AttackSize += value;
+                foreach (BaseWeaponAbilityBehaviour i in WeaponsGameObjects)
+                {
+                    if (i != null)
+                    {
+                        i.weaponStats.GetBIchange(AttackSize, StatChange);
+                    }
+                }
                 break;
             case BuffObject.PermStatBuff.AbilityCooldown:
-                AbilityCooldown = Mathf.FloorToInt(AbilityCooldown * value);
+                AbilityCooldown = Mathf.CeilToInt(AbilityCooldown * ((100 - value) / 100f)); foreach (BaseWeaponAbilityBehaviour i in WeaponsGameObjects)
+                {
+                    if (i != null)
+                    {
+                        i.weaponStats.GetBIchange(AbilityCooldown, StatChange);
+                    }
+                }
                 break;
             default:
                 break;
@@ -164,6 +214,13 @@ public class PlayerManager : BaseManager
         GameObject weapon = Instantiate(scriptable.weaponBehavPrefab, new Vector3(player.transform.position.x, player.transform.position.y + 0.5f, player.transform.position.z)/*<-temp*/, player.transform.rotation, player.transform);
         weapon.GetComponent<BaseWeaponBehaviour>().ThisWeaponData = scriptable;
         WeaponsGameObjects[index] = weapon.GetComponent<BaseWeaponAbilityBehaviour>();
+        WeaponsGameObjects[index].weaponStats.GetBIchange(AbilityCooldown, BuffObject.PermStatBuff.AbilityCooldown); 
+        WeaponsGameObjects[index].weaponStats.GetBIchange(AttackSize, BuffObject.PermStatBuff.AttackSize); 
+        WeaponsGameObjects[index].weaponStats.GetBIchange(DashDistance, BuffObject.PermStatBuff.DashDistance); 
+        WeaponsGameObjects[index].weaponStats.GetBIchange(MoveSpeed, BuffObject.PermStatBuff.MovementSpeed); 
+        WeaponsGameObjects[index].weaponStats.GetBIchange(ProjectileSpeed, BuffObject.PermStatBuff.ProjectileSpeed); 
+        WeaponsGameObjects[index].weaponStats.GetBIchange(DamageBuff, BuffObject.PermStatBuff.Damage);
+        WeaponsGameObjects[index].weaponStats.GetBIchange(Firerate, BuffObject.PermStatBuff.FireRate);
         if (index == 0 && !weaponOnePulledOut)
         {
             WeaponsGameObjects[0].DisableWeapon();

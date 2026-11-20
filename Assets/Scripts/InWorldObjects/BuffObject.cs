@@ -1,8 +1,8 @@
 /*
 * Author: Brenden
 * Contributors:
-* Last Modified: 11/19/2026
-* Summary: Chest Objects around the world that the player can interact with
+* Last Modified: 11/20/2026
+* Summary: Buff Objects around the world that the player can interact with
 * To Do:   N/A
 */
 using NUnit.Framework.Constraints;
@@ -25,8 +25,7 @@ public class BuffObject : MonoBehaviour
 
     private bool inRange;
     private PlayerController Player;
-    public PermStatBuff Stat;
-    public int AmountBuffPercent;
+    public BuffObjectScriptable Data;
 
     /// <summary>
     /// makes the chest listen to the public events for interaction
@@ -77,7 +76,7 @@ public class BuffObject : MonoBehaviour
     {
         if (inRange)
         {
-            PlayerManager.Instance.GetBuffObject(AmountBuffPercent, Stat);
+            PlayerManager.Instance.GetBuffObject(Data.Value, Data.StatBuffed);
             Destroy(this.gameObject);
         }
     }

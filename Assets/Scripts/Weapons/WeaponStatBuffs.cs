@@ -1,7 +1,7 @@
 /*
 * Author: Brenden
 * Contributors: 
-* Last Modified: 11/19/2026
+* Last Modified: 11/20/2026
 * Summary: holds the stat buffs per weapon, and sends them out as needed
 * To Do: make it work with terot cards and buff objects
 */
@@ -157,6 +157,46 @@ public class WeaponStatBuffs : MonoBehaviour
         playerController.KnockbackResistance(knockbackAmount);
         playerController.RegenBoost(regenAmount);
     }
+
+    public void GetBIchange(int value, BuffObject.PermStatBuff stat)
+    {
+        switch (stat)
+        {
+            case BuffObject.PermStatBuff.none:
+                break;
+            case BuffObject.PermStatBuff.Damage:
+                DamageBuff += value / 100f;
+                break;
+            case BuffObject.PermStatBuff.FireRate:
+                BIFirerate += value / 100f;
+                break;
+            case BuffObject.PermStatBuff.ProjectileSpeed:
+                BIProjectileSpeed += value / 100f;
+                break;
+            case BuffObject.PermStatBuff.MovementSpeed:
+                BIMovementSpeed += value / 100f;
+                break;
+            case BuffObject.PermStatBuff.DashDistance:
+                BIDashDistance += value / 100f;
+                break;
+            case BuffObject.PermStatBuff.AttackSize:
+                BIAttacksize += value / 100f;
+                break;
+            case BuffObject.PermStatBuff.AbilityCooldown:
+                BIAbilityCooldown = value / 100f;
+                break;
+            default:
+                break;
+        }
+        if (PlayerManager.Instance.weaponOnePulledOut)
+        {
+            setStatBuffs(PlayerManager.Instance.WeaponsGameObjects[0]);
+        }
+        else
+        {
+            setStatBuffs(PlayerManager.Instance.WeaponsGameObjects[1]);
+        }
+    }
     #endregion
 
     #region Weapon Functions
@@ -212,11 +252,11 @@ public class WeaponStatBuffs : MonoBehaviour
     /// </summary>
     public void UpdateWeaponSpeed()
     {
-        weaponScriptable.AttackSpeed = weaponScriptable.AttackSpeed / AttackSpeedBoost;
+        weaponScriptable.AttackSpeed = weaponScriptable.AttackSpeed / AttackSpeedBoost * BIFirerate;
 
         foreach (AttackData i in weaponScriptable.ComboAttacks)
         {
-            i.AttackCooldown = i.BaseAttackCooldown * AttackSpeedBoost;
+            i.AttackCooldown = i.BaseAttackCooldown * AttackSpeedBoost * BIFirerate;
         }
     }
 
