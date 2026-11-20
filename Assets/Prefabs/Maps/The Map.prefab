@@ -294125,7 +294125,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1379807528356795392, guid: 5be883725a8b5a14584b2955563f6758, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.02726
+      value: 0.341
       objectReference: {fileID: 0}
     - target: {fileID: 1379807528356795392, guid: 5be883725a8b5a14584b2955563f6758, type: 3}
       propertyPath: m_LocalPosition.z
@@ -294192,6 +294192,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1761537230283899850}
     - target: {fileID: 7289520182303933512, guid: 5be883725a8b5a14584b2955563f6758, type: 3}
+      propertyPath: enemyWaves.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7289520182303933512, guid: 5be883725a8b5a14584b2955563f6758, type: 3}
+      propertyPath: timeBetweenEnemySpawns
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 7289520182303933512, guid: 5be883725a8b5a14584b2955563f6758, type: 3}
       propertyPath: spawnTransforms.Array.size
       value: 3
       objectReference: {fileID: 0}
@@ -294207,6 +294215,18 @@ PrefabInstance:
       propertyPath: 'spawnTransforms.Array.data[2]'
       value: 
       objectReference: {fileID: 8444032192348192756}
+    - target: {fileID: 7289520182303933512, guid: 5be883725a8b5a14584b2955563f6758, type: 3}
+      propertyPath: enemyWaves.Array.data[0].enemies.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7289520182303933512, guid: 5be883725a8b5a14584b2955563f6758, type: 3}
+      propertyPath: enemyWaves.Array.data[1].enemies.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7289520182303933512, guid: 5be883725a8b5a14584b2955563f6758, type: 3}
+      propertyPath: enemyWaves.Array.data[2].enemies.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7999105615903324033, guid: 5be883725a8b5a14584b2955563f6758, type: 3}
       propertyPath: m_LocalPosition.z
       value: -15.57
