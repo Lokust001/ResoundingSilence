@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
-* Contributors: Brad Dixon
-* Last Modified: 11/9/2026
+* Contributors: Brad Dixon, Brenden
+* Last Modified: 11/20/2026
 * Summary: Scriptable object for the abilities. Will havbe specific abilities derive from this as needed, but these 
 *          vars are on every ability scriptable
 * To Do:   N/A
@@ -61,6 +61,7 @@ public class AbilityBaseScriptable : BaseScriptableObject
     [HideInInspector] public float BaseAbilityPlayerKnockback = 0;
 
     public float AbilityCooldown;
+    [HideInInspector] public float BaseAbilityCooldown;
     public float AbilityEndLag;
     public float AbilityRange;
 
@@ -92,6 +93,7 @@ public class AbilityBaseScriptable : BaseScriptableObject
     {
         SetAbilityStats(PrimaryStats);
         SetAbilityStats(SecondaryStats);
+        BaseAbilityCooldown = AbilityCooldown;
 
         if (AbilityProjectile.BurstRangedAttack.AttackProjectiles != null)
         {
