@@ -103,6 +103,8 @@ public class TrappedChests : MonoBehaviour
         CheckQuest(null);
         if (inChestRange && encounterFinished && !chestOpened)
         {
+            chestParticleVFX.SetActive(false);
+
             MRM.Money += Random.Range(Goldmin, Goldmax + 1);
             int PinSpawn = Random.Range(PinMin, PinMax + 1);
             for (int i = 0; i < PinSpawn; i++)
