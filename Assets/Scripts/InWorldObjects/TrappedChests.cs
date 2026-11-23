@@ -23,6 +23,9 @@ public class TrappedChests : MonoBehaviour
     private bool encounterFinished;
     private MidRunDataManager MRM;
 
+    [SerializeField]
+    private GameObject chestParticleVFX;
+
     /// <summary>
     /// makes the chest listen to the public events for interaction
     /// </summary>
