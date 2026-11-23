@@ -15,6 +15,8 @@ public class AudioManager : BaseManager
 
     public static AudioManager Instance;
 
+    public FMODEvents FmodPrefab;
+
     protected virtual void Awake()
     {
         if (Instance == null)
@@ -30,14 +32,14 @@ public class AudioManager : BaseManager
     //Sets AudioManager Instance in the scene
     protected void Start()
     {
-        masterBus = RuntimeManager.GetBus("bus:/");
-        validateBus(masterBus);
-        musicBus = RuntimeManager.GetBus("bus:/Music");
-        validateBus(musicBus);
-        sfxBus = RuntimeManager.GetBus("bus:/SoundEffects");
-        validateBus(sfxBus);
-        vocalsBus = RuntimeManager.GetBus("bus:/Vocals");
-        validateBus(vocalsBus);
+        //masterBus = RuntimeManager.GetBus("bus:/");
+        //validateBus(masterBus);
+        //musicBus = RuntimeManager.GetBus("bus:/Music");
+        //validateBus(musicBus);
+        //sfxBus = RuntimeManager.GetBus("bus:/SoundEffects");
+        //validateBus(sfxBus);
+        //vocalsBus = RuntimeManager.GetBus("bus:/Vocals");
+        //validateBus(vocalsBus);
 
         if (SceneManager.GetActiveScene().name == "Main Menu")
         {
@@ -49,6 +51,8 @@ public class AudioManager : BaseManager
     public async override Awaitable InitManager()
     {
         await base.InitManager();
+
+        Instantiate(FmodPrefab, this.transform);
 
         UpdateAllVolumes();
 

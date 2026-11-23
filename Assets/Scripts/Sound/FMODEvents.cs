@@ -44,6 +44,7 @@ public class FMODEvents : MonoBehaviour
     [field: Header("Player SFX")]
     [field: SerializeField] public EventReference Walk { get; private set; }
     [field: SerializeField] public EventReference Dash { get; private set; }
+    [field: SerializeField] public EventReference TakeDamage { get; private set; }
     [field: SerializeField] public EventReference Heal { get; private set; }
     [field: SerializeField] public EventReference Interact { get; private set; }
     [field: SerializeField] public EventReference Levelup { get; private set; }

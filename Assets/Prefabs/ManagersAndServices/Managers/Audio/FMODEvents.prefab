@@ -44,14 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0edcf87873379564aaf0de930eed7e44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FMODEvents
-  <CombatBGM>k__BackingField:
-    Guid:
-      Data1: 2085216922
-      Data2: 1211431207
-      Data3: 2097033881
-      Data4: -275174553
-    Path: event:/BGM/demomusic
-  <RoamBGM>k__BackingField:
+  <BGM>k__BackingField:
     Guid:
       Data1: 2085216922
       Data2: 1211431207
@@ -149,6 +142,13 @@ MonoBehaviour:
       Data3: -397367396
       Data4: -244141462
     Path: event:/Player/World/playerdash
+  <TakeDamage>k__BackingField:
+    Guid:
+      Data1: -1816849557
+      Data2: 1181095032
+      Data3: -590225230
+      Data4: -1316080384
+    Path: event:/Player/World/playerhurt
   <Heal>k__BackingField:
     Guid:
       Data1: -776525271

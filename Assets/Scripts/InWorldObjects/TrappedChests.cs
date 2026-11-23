@@ -93,6 +93,7 @@ public class TrappedChests : MonoBehaviour
         }
         if (inChestRange && !encounterStarted)
         {
+            AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Interact);
             EnemySpawner.SpawnEnemies();
             encounterStarted = true;
         }
@@ -100,6 +101,7 @@ public class TrappedChests : MonoBehaviour
         CheckQuest(null);
         if (inChestRange && encounterFinished && !chestOpened)
         {
+            AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Interact);
             MRM.Money += Random.Range(Goldmin, Goldmax + 1);
             int PinSpawn = Random.Range(PinMin, PinMax + 1);
             for (int i = 0; i < PinSpawn; i++)

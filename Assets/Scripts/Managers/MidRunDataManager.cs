@@ -417,8 +417,10 @@ public class MidRunDataManager : BaseManager
             return;
         }
 
-        if (amountToChange < 0 && IsTarotEnabled(TarotCardType.Magician))
+        if (amountToChange < 0)
         {
+            AudioManager.Instance.PlayOneShot(FMODEvents.Instance.TakeDamage);
+            if (IsTarotEnabled(TarotCardType.Magician))
             MagicianDamageBuff = (float)MagicianMinDamageBuff / 100;
             foreach (var i in WeaponStats)
             {
@@ -435,6 +437,7 @@ public class MidRunDataManager : BaseManager
         {
             //ceil cus we are healing the player
             amountToChange = Mathf.CeilToInt(HealingPotency * amountToChange);
+            AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Heal);
         }
 
         CurrentPlayerHealth += amountToChange;
@@ -519,6 +522,7 @@ public class MidRunDataManager : BaseManager
             if (playerLvl < playerLvls.Count)
             {
                 ++playerLvl;
+                AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Levelup);
             }
 
             ExpNeededToLevelUp = XpNeededIncrease == ValueChange.ExactValue ? playerLvls[playerLvl - 1].ExpToLevelUp : ExpNeededToLevelUp + Mathf.FloorToInt(ExpNeededToLevelUp * ConvertToPercentage(playerLvls[playerLvl - 1].ExpToLevelUp));
