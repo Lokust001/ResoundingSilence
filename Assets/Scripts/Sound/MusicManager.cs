@@ -6,8 +6,7 @@ public class MusicManager : BaseManager
 {
     public static MusicManager Instance;
 
-    private EventInstance combatBGM;
-    private EventInstance roamBGM;
+    private EventInstance BGM;
 
     protected virtual void Awake()
     {
@@ -25,8 +24,7 @@ public class MusicManager : BaseManager
     {
         await base.InitManager();
 
-        combatBGM = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.CombatBGM);
-        roamBGM = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.RoamBGM);
+        BGM = AudioManager.Instance.CreateEventInstance(FMODEvents.Instance.BGM);
 
         //the following if-else block could be changed to a Switch statement -Josh
         StopAll();
@@ -38,7 +36,6 @@ public class MusicManager : BaseManager
     void StopAll()
     {
         //levelBGM.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
-        combatBGM.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
-        roamBGM.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        BGM.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
     }
 }
