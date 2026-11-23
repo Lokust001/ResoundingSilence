@@ -161,6 +161,10 @@ public class BaseProjectileBehaviour : MonoBehaviour
             {
                 SpawnAOE(other.ClosestPoint(transform.position));
             }
+            else if(attackRef.StatusEffects.Count > 0)
+            {
+                ApplyStatusEffect(other);
+            }
 
             if(!attackRef.BurstRangedAttack.HasPierce && !attackRef.BurstRangedAttack.HasRicochet)
             {
@@ -171,6 +175,20 @@ public class BaseProjectileBehaviour : MonoBehaviour
         {
             Debug.Log(other.gameObject.name);
             DestroyProjectile();
+        }
+    }
+
+    /// <summary>
+    /// Applies the appropriate status effects to the thing hit
+    /// </summary>
+    protected void ApplyStatusEffect(Collider targetHit)
+    {
+        foreach (BurstData.EffectType i in attackRef.StatusEffects)
+        {
+            if(i == BurstData.EffectType.Decay)
+            {
+                targetHit.GetComponent<StatusBehaviour>().InflictDecay(attackRef.AttackDecayEffect);
+            }
         }
     }
 
