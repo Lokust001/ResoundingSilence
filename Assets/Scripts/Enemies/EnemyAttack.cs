@@ -23,6 +23,9 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
     [SerializeField]
     private GameObject attackIndicatorArea;
 
+    [SerializeField]
+    private bool scaleBothIndicatorAxes;
+
     private SphereCollider sphereTrigger;
     private CapsuleCollider chargingCapCollider;
     private EnemyWalk enemyMovement;
@@ -286,7 +289,7 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
             //Transition between two colors/mats
             indicatorRenderer.material.Lerp(startMat, endMat, tValue);
             //Extend the visual attack indicator through the parent as it is the pivot point
-            indicatorParentScaler.localScale = new Vector3(1, 1, tValue);
+            indicatorParentScaler.localScale = new Vector3(scaleBothIndicatorAxes ? tValue : 1, 1, tValue);
 
             yield return new WaitForFixedUpdate();
         }
@@ -295,6 +298,7 @@ public class EnemyAttack : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler,
         //Setting the z scale to 0 makes the indicator invisible, and increasing the z scale
         //over time makes the actual indicator "grow" over time.
         ResetIndicatorParent();
+        enemyMovement.StopApproachingPlayer();
 
         //Pass the Charging behavior towards enemyMovement to handle the sudden burst of movement
         enemyCharging = StartCoroutine(queuedMeleeAttack);
