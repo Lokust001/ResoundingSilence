@@ -304,6 +304,11 @@ public class PlayerHUDController : MenuBase
     /// <param name="obj"></param>
     private void RemoveHuntObjective(SideObjective obj)
     {
+        if (!huntTexts.ContainsKey(obj))
+        {
+            return;
+        }
+
         GameObject temp = huntTexts[obj];
         huntTexts.Remove(obj);
         Destroy(temp);
