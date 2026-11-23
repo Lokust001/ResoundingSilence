@@ -13,6 +13,7 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
     private readonly WaitForFixedUpdate cachedPhysicsStepTime = new();
 
     private NavMeshAgent navMeshAgent;
+    private float normalSpeed;
     private PlayerController playerReference;
 
     private Coroutine walkingCoroutine;
@@ -56,6 +57,7 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
         }
         rigidbody = GetComponent<Rigidbody>();
         enemyTransform = transform;
+        normalSpeed = navMeshAgent.speed;
 
         float modelThickness = capsuleCollider.height / 2 - capsuleCollider.radius;
         topColliderLocalPos = capsuleCollider.center - Vector3.up * modelThickness;
@@ -103,6 +105,22 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
             StopCoroutine(walkingCoroutine);
             walkingCoroutine = null;
         }
+    }
+
+    /// <summary>
+    /// Sets the navmesh agent speed to the melee range speed
+    /// </summary>
+    public void SetEngagingMeleeSpeed() 
+    {
+        navMeshAgent.speed = enemyData.meleeRangeSpeed;
+    }
+
+    /// <summary>
+    /// Reverts the navmesh agent speed back to normal
+    /// </summary>
+    public void SetNormalSpeed() 
+    {
+        navMeshAgent.speed = normalSpeed;
     }
 
     /// <summary>
@@ -390,6 +408,7 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
     public void DeAggroEnemy() 
     {
         StopApproachingPlayer();
+        SetNormalSpeed();
         StopAllCoroutines();
     }
 
