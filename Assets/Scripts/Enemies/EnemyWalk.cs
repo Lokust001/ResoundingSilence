@@ -107,11 +107,17 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
         }
     }
 
+    /// <summary>
+    /// Sets the navmesh agent speed to the melee range speed
+    /// </summary>
     public void SetEngagingMeleeSpeed() 
     {
         navMeshAgent.speed = enemyData.meleeRangeSpeed;
     }
 
+    /// <summary>
+    /// Reverts the navmesh agent speed back to normal
+    /// </summary>
     public void SetNormalSpeed() 
     {
         navMeshAgent.speed = normalSpeed;
