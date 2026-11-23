@@ -1,7 +1,7 @@
 /*
 * Author: Brenden
 * Contributors: 
-* Last Modified: 11/19/2026
+* Last Modified: 11/20/2026
 * Summary: holds the stat buffs per weapon, and sends them out as needed
 * To Do: make it work with terot cards and buff objects
 */
@@ -13,11 +13,23 @@ public class WeaponStatBuffs : MonoBehaviour
     public BaseWeaponScriptable weaponScriptable;
 
     #region Player Stat Buffs
+    #region Tarot Buffs
     [HideInInspector] public float MagicianDamageBuff = 1;
     [HideInInspector] public float DevilDamageBuff = 1;
     [HideInInspector] public float TowerDamageBuff = 1;
     [HideInInspector] public float TowerDamageResistance = 1;
     [HideInInspector] public float HermitDamageBuff = 1;
+    #endregion
+
+    #region Buff Object Buffs
+    [HideInInspector] public float BIDamage;
+    [HideInInspector] public float BIFirerate;
+    [HideInInspector] public float BIProjectileSpeed;
+    [HideInInspector] public float BIMovementSpeed;
+    [HideInInspector] public float BIDashDistance;
+    [HideInInspector] public float BIAttacksize;
+    [HideInInspector] public float BIAbilityCooldown;
+    #endregion
     #endregion
 
     #region Pin Stat buffs
@@ -68,6 +80,13 @@ public class WeaponStatBuffs : MonoBehaviour
         AbilityCooldownReduction = 1;
         BurstDamage = 1;
         ProjectileSpeedBuff = 1;
+        BIAbilityCooldown = 1;
+        BIFirerate = 1;
+        BIDamage = 1;
+        BIAttacksize = 1;
+        BIMovementSpeed = 1;
+        BIDashDistance = 1;
+        BIProjectileSpeed = 1;
 
     }
 
@@ -132,12 +151,57 @@ public class WeaponStatBuffs : MonoBehaviour
     public void sendPlayerModifiers()
     {
         playerController = PlayerManager.Instance.player;
-        playerController.DashDistance(DashBuff);
+        playerController.DashDistance(DashBuff * BIDashDistance);
         playerController.DamageResistanceChange(DamageResistance * TowerDamageResistance);
-        playerController.MoveSpeedIncrease(MoveSpeedBuff);
+        playerController.MoveSpeedIncrease(MoveSpeedBuff * BIMovementSpeed);
         playerController.healingPotencyChange(HealingPotency);
         playerController.KnockbackResistance(knockbackAmount);
         playerController.RegenBoost(regenAmount);
+    }
+
+    /// <summary>
+    /// updates values that the player has from buff objects
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="stat"></param>
+    public void GetBIchange(int value, BuffObject.PermStatBuff stat)
+    {
+        switch (stat)
+        {
+            case BuffObject.PermStatBuff.none:
+                break;
+            case BuffObject.PermStatBuff.Damage:
+                DamageBuff = value / 100f;
+                break;
+            case BuffObject.PermStatBuff.FireRate:
+                BIFirerate = value / 100f;
+                break;
+            case BuffObject.PermStatBuff.ProjectileSpeed:
+                BIProjectileSpeed = value / 100f;
+                break;
+            case BuffObject.PermStatBuff.MovementSpeed:
+                BIMovementSpeed = value / 100f;
+                break;
+            case BuffObject.PermStatBuff.DashDistance:
+                BIDashDistance = value / 100f;
+                break;
+            case BuffObject.PermStatBuff.AttackSize:
+                BIAttacksize =  value / 100f;
+                break;
+            case BuffObject.PermStatBuff.AbilityCooldown:
+                BIAbilityCooldown = value / 100f;
+                break;
+            default:
+                break;
+        }
+        if (PlayerManager.Instance.weaponOnePulledOut)
+        {
+            setStatBuffs(PlayerManager.Instance.WeaponsGameObjects[0]);
+        }
+        else
+        {
+            setStatBuffs(PlayerManager.Instance.WeaponsGameObjects[1]);
+        }
     }
     #endregion
 
@@ -185,7 +249,7 @@ public class WeaponStatBuffs : MonoBehaviour
     {
         foreach (AttackData i in weaponScriptable.ComboAttacks)
         {
-            i.WeaponDamage = Mathf.CeilToInt(i.BaseWeaponDamage * DamageBuff * MagicianDamageBuff * DevilDamageBuff * TowerDamageBuff * HermitDamageBuff);
+            i.WeaponDamage = Mathf.CeilToInt(i.BaseWeaponDamage * DamageBuff * MagicianDamageBuff * DevilDamageBuff * TowerDamageBuff * HermitDamageBuff * BIDamage);
         }
     }
 
@@ -194,11 +258,11 @@ public class WeaponStatBuffs : MonoBehaviour
     /// </summary>
     public void UpdateWeaponSpeed()
     {
-        weaponScriptable.AttackSpeed = 1 / (1/AttackSpeedBoost);
+        weaponScriptable.AttackSpeed = 1 / (1 / (AttackSpeedBoost * BIFirerate));
 
         foreach (AttackData i in weaponScriptable.ComboAttacks)
         {
-            i.AttackCooldown = i.BaseAttackCooldown * (1/AttackSpeedBoost);
+            i.AttackCooldown = i.BaseAttackCooldown * (1 / (AttackSpeedBoost * BIFirerate));
         }
     }
 
@@ -207,7 +271,7 @@ public class WeaponStatBuffs : MonoBehaviour
     /// </summary>
     public void UpdateLifestealPercent()
     {
-        if(lifestealPercent > 1.01)
+        if (lifestealPercent > 1.01)
         {
             foreach (AttackData i in weaponScriptable.ComboAttacks)
             {
@@ -261,8 +325,10 @@ public class WeaponStatBuffs : MonoBehaviour
     /// <param name="DamageBuff2"></param>
     public void UpdateAbilityCooldown()
     {
-        //editableAbilities[0].Cooldown = editableAbilities[0].baseCooldown * AbilityCooldownReduction;
-        //editableAbilities[1].Cooldown = editableAbilities[1].baseCooldown * AbilityCooldownReduction;
+        foreach(AbilityBaseScriptable i in weaponScriptable.editableAbilities)
+        {
+            i.AbilityCooldown = i.BaseAbilityCooldown * AbilityCooldownReduction * BIAbilityCooldown;
+        }
     }
 
     /// <summary>
@@ -303,7 +369,7 @@ public class WeaponStatBuffs : MonoBehaviour
             {
                 foreach (ProjectileData k in j.BurstRangedAttack.AttackProjectiles)
                 {
-                    k.ProjectileSpeed = k.BaseProjectileSpeed * ProjectileSpeedBuff;
+                    k.ProjectileSpeed = k.BaseProjectileSpeed * ProjectileSpeedBuff * BIProjectileSpeed;
                 }
             }
         }
