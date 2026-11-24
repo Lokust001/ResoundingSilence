@@ -32,6 +32,7 @@ public class Interactable : MonoBehaviour
     {
         if (inRange && UIManager.Instance.GetCurrentMenu() == UiMenuType.PlayerHUD)
         {
+            AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Interact);
             Debug.Log("Interact");
             interactionAction?.Invoke();
         }
