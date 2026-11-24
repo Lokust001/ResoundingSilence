@@ -67,7 +67,6 @@ Transform:
   m_LocalScale: {x: 0.82528, y: 0.81674, z: 0.82528}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 6840699441752713292}
   - {fileID: 4536795594365591932}
   - {fileID: 6477140550018961112}
   - {fileID: 2948226860709975085}
@@ -162,7 +161,7 @@ MonoBehaviour:
     m_Bits: 7296
   DashLayersIgnore:
     serializedVersion: 2
-    m_Bits: 23680
+    m_Bits: 7296
   stopKnockbackLayers:
     serializedVersion: 2
     m_Bits: 1
@@ -389,73 +388,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2480801942194616687}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &9071100767457554633
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6840699441752713292}
-  - component: {fileID: 1023429072148922387}
-  - component: {fileID: 8788501428374508173}
-  m_Layer: 14
-  m_Name: Spawn&DespawnZone
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6840699441752713292
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9071100767457554633}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2480801942194616687}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &1023429072148922387
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9071100767457554633}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 2
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8788501428374508173
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9071100767457554633}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b6725d744f418194b805c2aba199566f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TriggerObjects
-  triggerShapeColor: {r: 1, g: 0.853353, b: 0, a: 1}
 --- !u!1 &9173212755683868299
 GameObject:
   m_ObjectHideFlags: 0
