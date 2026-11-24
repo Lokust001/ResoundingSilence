@@ -25,6 +25,8 @@ public class Enemy : MonoBehaviour
     private EnemyWalk movementBeahvior;
     private EnemyBuff buffBehavior;
 
+    public EnemyDebug debuggingBehavior;
+
     public GameObject EnemyModel;
     public Animator EnemyAnimator;
 
@@ -32,6 +34,8 @@ public class Enemy : MonoBehaviour
     private int dmgToTake;
 
     public Action aggroEnemyGroup;
+
+    public Action<float, float> healthChanged;
 
     private bool isAggro;
     [HideInInspector] public bool IsDead;
@@ -57,6 +61,7 @@ public class Enemy : MonoBehaviour
         movementBeahvior = GetComponentInChildren<EnemyWalk>();
         buffBehavior = GetComponentInChildren<EnemyBuff>(true);
         enemyData = enemyData.CreateNonRefCopy<BaseEnemyScriptable>();
+
         PropagateEnemyData();
         if (testWithoutSpawner) 
         {
@@ -86,12 +91,14 @@ public class Enemy : MonoBehaviour
     /// </summary>
     public void EnableEnemy()
     {
+        InvokeHealthChanged();
         aggroTrigger.EnemyTriggerActivated += AggroEnemy;
         foreach (ICustomEnabler entity in GetComponentsInChildren<ICustomEnabler>(true))
         {
             entity.EnableEntity();
         }
     }
+
 
     /// <summary>
     /// Calls the DisableEntity method on all enemy scripts with ICustomDisabler
@@ -199,6 +206,7 @@ public class Enemy : MonoBehaviour
             return;
         }
         allowNonImmediateBehavior = true;
+        movementBeahvior.SetNormalSpeed();
         //Debug.Log("Melee: " + inMeleeRange + " Ranged: " + inRangedRange);
         if (!inRangedRange && !inMeleeRange)
         {
@@ -337,7 +345,11 @@ public class Enemy : MonoBehaviour
                     StartCoroutine(movementBeahvior.RetreatWalking());
                 }
                 break;
-            case BaseEnemyScriptable.EnemyType.Melee: case BaseEnemyScriptable.EnemyType.ChargingMelee:
+            case BaseEnemyScriptable.EnemyType.Melee:
+                movementBeahvior.SetEngagingMeleeSpeed();
+                attackBehavior.InitiateAttack();
+                break;
+            case BaseEnemyScriptable.EnemyType.ChargingMelee:
                 movementBeahvior.StopApproachingPlayer();
                 attackBehavior.InitiateAttack();
                 break;
@@ -380,6 +392,14 @@ public class Enemy : MonoBehaviour
         enemyData.ScaleHP(scaleValue);
     }
 
+    /// <summary>
+    /// Shorthand to write out this action invocation
+    /// </summary>
+    public void InvokeHealthChanged() 
+    {
+        healthChanged?.Invoke(enemyData.enemyHealth, enemyData.enemyMaxHealth);
+    }
+
 
     /// <summary>
     /// Method that calculates enemy damage taken while simultaenously updating enemyData with those values
@@ -388,8 +408,8 @@ public class Enemy : MonoBehaviour
     /// <returns></returns>
     public int EnemyTakeDamage(float damageToTake)
     {
-        int finalDmgTaken = Mathf.RoundToInt(damageToTake - (damageToTake * enemyData.dmgReductionFactor));
-        enemyData.enemyHealth -= finalDmgTaken;
+        int finalDmgTaken = enemyData.ApplyIncomingDamage(damageToTake);
+        InvokeHealthChanged();
         if (enemyData.enemyHealth <= 0)
         {
             IsDead = true;

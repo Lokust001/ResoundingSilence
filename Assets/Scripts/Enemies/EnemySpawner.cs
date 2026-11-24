@@ -1,7 +1,7 @@
 /*
 * Author: Dalsten Yan
 * Contributors:
-* Last Modified: 09/30/2026
+* Last Modified: 11/20/2026
 * Summary: Spawns and caches enemies when player is nearby
 * To Do:   
 */
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class EnemySpawner : MonoBehaviour
+public class EnemySpawner : BaseSpawner
 {
 
     private int dangerPoints;
@@ -22,8 +22,6 @@ public class EnemySpawner : MonoBehaviour
 
     [SerializeField]
     private float enemyGenerationTime;
-    [SerializeField]
-    private GameObject enemySpawnsParent;
 
     [SerializeField]
     private int timeBetweenScalingEnemies = 60;
@@ -38,31 +36,18 @@ public class EnemySpawner : MonoBehaviour
 
     private bool generationReadyFlag;
 
-    
-
     [SerializeField]
     SpawnTier[] enemyGroupTiers;
 
 
-    [Header("[Debug] Don't edit these fields"), SerializeField]
-    public List<Enemy> generatedEnemies;
-
-    [SerializeField]
-    List<Transform> spawnLocations;
-
     /// <summary>
     /// Instantiates generatedEnemies so that it isn't null and allows the first generation to happen
     /// </summary>
-    private void Awake()
+    private void Start()
     {
-        generatedEnemies = new List<Enemy>();
         generationReadyFlag = true;
-
-        //Retrieves all spawn transforms and removes the one on the parent gameobject
-        spawnLocations = enemySpawnsParent.GetComponentsInChildren<Transform>().ToList<Transform>();
-        spawnLocations.Remove(enemySpawnsParent.transform);
-
     }
+
     /// <summary>
     /// Add listener for Player enter or exiting the spawn & de-aggro trigger
     /// </summary>
@@ -102,7 +87,7 @@ public class EnemySpawner : MonoBehaviour
     /// </summary>
     public void AggroAllEnemies() 
     {
-        foreach (var enemy in generatedEnemies) 
+        foreach (var enemy in activeEnemies) 
         {
             enemy.AggroEnemy();
         }
@@ -117,7 +102,7 @@ public class EnemySpawner : MonoBehaviour
         //If player is leaving De-Aggro Trigger
         if (!playerEnters)
         {
-            foreach (var enemy in generatedEnemies)
+            foreach (var enemy in activeEnemies)
             {
                 enemy.EnemyDeAggro();
             }
@@ -131,7 +116,7 @@ public class EnemySpawner : MonoBehaviour
     public void SpawnEnemies()
     {
         //If there is no chosen enemy picked, generate some
-        if (generatedEnemies.Count == 0 && generationReadyFlag)
+        if (activeEnemies.Count == 0 && generationReadyFlag)
         {
             generationReadyFlag = false;
             GenerateEnemyGroup();
@@ -147,14 +132,14 @@ public class EnemySpawner : MonoBehaviour
     {
         List<Transform> transformCopy = spawnLocations.ToList<Transform>();
 
-        if (transformCopy.Count < generatedEnemies.Count)
+        if (transformCopy.Count < activeEnemies.Count)
         {
             Debug.LogWarning("An enemy spawner has less transforms than the amount of enemies it needs to spawn, re-using some transforms");
         }
 
         bool scaleThisTime = EnemyNeedsScaling();
 
-        foreach (var enemy in generatedEnemies)
+        foreach (var enemy in activeEnemies)
         {
             //Find a random Vector3 location and then remove that from being re-used
             int randomIndex = Random.Range(0, transformCopy.Count);
@@ -177,10 +162,10 @@ public class EnemySpawner : MonoBehaviour
     private void DespawnEnemies()
     {
         //If they've finished off all enemies, don't run this method
-        if (generatedEnemies.Count < 1)
+        if (activeEnemies.Count < 1)
             return;
 
-        foreach (var enemy in generatedEnemies)
+        foreach (var enemy in activeEnemies)
         {
             enemy.DisableEnemy();
         }
@@ -230,6 +215,9 @@ public class EnemySpawner : MonoBehaviour
         {
             //Create the enemy
             Enemy createdEnemy = Instantiate(enemy, transform.position, Quaternion.identity).GetComponent<Enemy>();
+
+            if (debugEnemyHealth)
+                createdEnemy.debuggingBehavior.enabled = true;
             
             //Scale the enemy's stats based on the calculated level or scale value
             createdEnemy.ScaleEnemy(spawnerEnemyScale);
@@ -239,12 +227,12 @@ public class EnemySpawner : MonoBehaviour
             //then starts a timer for the next generation interval
             {
                 createdEnemy.aggroEnemyGroup -= AggroAllEnemies;
-                generatedEnemies.Remove(createdEnemy);
-                if (generatedEnemies.Count <= 0 && this != null)
+                activeEnemies.Remove(createdEnemy);
+                if (activeEnemies.Count <= 0 && this != null)
                     StartCoroutine(NextGenerationCooldown());
             });
 
-            generatedEnemies.Add(createdEnemy);
+            activeEnemies.Add(createdEnemy);
         }
     }
 

@@ -1,4 +1,10 @@
-using NUnit.Framework;
+/*
+* Author: Brenden Burtz
+* Contributors: 
+* Last Modified: 11/20/2026
+* Summary: Brenden can you fill this out?
+*/
+
 using UnityEngine;
 
 public class TrappedChests : MonoBehaviour
@@ -16,6 +22,9 @@ public class TrappedChests : MonoBehaviour
     private bool encounterStarted;
     private bool encounterFinished;
     private MidRunDataManager MRM;
+
+    [SerializeField]
+    private GameObject chestParticleVFX;
 
     /// <summary>
     /// makes the chest listen to the public events for interaction
@@ -65,10 +74,10 @@ public class TrappedChests : MonoBehaviour
 
     private void CheckQuest(BaseEnemyScriptable enemy)
     {
-        if(EnemySpawner.generatedEnemies.Count == 0)
+        if (EnemySpawner.activeEnemies.Count == 0)
         {
             //probably a ui popup will go here
-            encounterFinished=true;
+            encounterFinished = true;
         }
         else
         {
@@ -94,6 +103,8 @@ public class TrappedChests : MonoBehaviour
         CheckQuest(null);
         if (inChestRange && encounterFinished && !chestOpened)
         {
+            chestParticleVFX.SetActive(false);
+
             MRM.Money += Random.Range(Goldmin, Goldmax + 1);
             int PinSpawn = Random.Range(PinMin, PinMax + 1);
             for (int i = 0; i < PinSpawn; i++)
@@ -102,7 +113,7 @@ public class TrappedChests : MonoBehaviour
                 temp.GetComponent<PinWorldObject>().pin = MRM.PickDroppedPin();
             }
             //GameObject emptyWeapon = Instantiate(emptyWeaponGameObject, transform.position + new Vector3(1, 0, 1), transform.rotation, transform);
-            chestOpened=true;
+            chestOpened = true;
         }
     }
 }

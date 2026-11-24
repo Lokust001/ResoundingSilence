@@ -1,7 +1,7 @@
 /*
 * Author: Brenden
-* Contributors:
-* Last Modified: 10/26/2026
+* Contributors: Dalsten Yan
+* Last Modified: 11/20/2026
 * Summary: The debug console and all the code that comes with it
 * To Do:   The Debug console SpreadSheet
 */
@@ -459,6 +459,19 @@ public class DebugConsole : MonoBehaviour
             MidRunDataManager.Instance.AddPinToInventory(pin.CreateNonRefCopy<PinScriptable>());
             AppendConsoleLine(Command, inputColor);
             AppendConsoleLine($"The Pin {pin.PinName} has been added to your inventory", commandCompletedColor);
+            FinishCommand();
+            return;
+        }
+
+        if (Command.StartsWith("enemyhealthbars") || Command.StartsWith("ehp"))
+        {
+            var spawners = FindObjectsByType<BaseSpawner>(FindObjectsInactive.Include);
+            foreach (var spawner in spawners) 
+            {
+                spawner.EnableEnemyHealthDebugging();
+            }
+            AppendConsoleLine(Command, inputColor);
+            AppendConsoleLine($"Enemy health bars are now enabled", commandCompletedColor);
             FinishCommand();
             return;
         }
