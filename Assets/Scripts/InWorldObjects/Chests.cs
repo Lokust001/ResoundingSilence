@@ -21,6 +21,9 @@ public class Chests : MonoBehaviour
     private MidRunDataManager MRM;
     private bool chestOpened;
 
+    [SerializeField]
+    private GameObject chestParticleVFX;
+
     /// <summary>
     /// makes the chest listen to the public events for interaction
     /// </summary>
@@ -74,8 +77,11 @@ public class Chests : MonoBehaviour
         }
         if (inChestRange && !chestOpened)
         {
+            chestParticleVFX.SetActive(false);
+
             MRM.Money += Random.Range(Goldmin, Goldmax + 1);
             int PinSpawn = Random.Range(PinMin, PinMax + 1);
+
             for (int i = 0; i < PinSpawn; i++)
             {
                 GameObject temp = Instantiate(emptyPinGameObject, transform.position + new Vector3(1, 0, 1), transform.rotation, transform);
