@@ -7,6 +7,7 @@
 using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class EnemyWaveSpawner : BaseSpawner
@@ -27,6 +28,12 @@ public class EnemyWaveSpawner : BaseSpawner
     private List<EnemyGroup> enemyWaves;
 
     private Stack<EnemyGroup> enemyWavesStack;
+
+    [SerializeField]
+    private Canvas displayCanvas;
+
+    [SerializeField]
+    private TMP_Text enemiesLeftText;
 
     private bool playerInInteractRange;
 
@@ -94,6 +101,7 @@ public class EnemyWaveSpawner : BaseSpawner
     {
         if (finalEncounterWalls)
             finalEncounterWalls.SetActive(true);
+        displayCanvas.enabled = true;
         endEncounterRef = StartCoroutine(SpawnNextWave());
     }
 
@@ -105,6 +113,8 @@ public class EnemyWaveSpawner : BaseSpawner
     {
         var currentWaveList = enemyWavesStack.Pop().enemies;
 
+        enemiesLeftText.text = "Enemies Left:\n" + currentWaveList.Count;
+
         for (int i = 0; i < currentWaveList.Count; i++)
         {
             Enemy currentEnemy = Instantiate(currentWaveList[i], spawnLocations[i].position, Quaternion.identity).GetComponent<Enemy>();
@@ -115,6 +125,8 @@ public class EnemyWaveSpawner : BaseSpawner
             currentEnemy.destroyCancellationToken.Register(() =>
             {
                 activeEnemies.Remove(currentEnemy);
+                enemiesLeftText.text = "Enemies Left:\n" + activeEnemies.Count;
+
                 if (activeEnemies.Count <= 0 && this != null)
                 {
                     StartCoroutine(CurrentWaveFinished());

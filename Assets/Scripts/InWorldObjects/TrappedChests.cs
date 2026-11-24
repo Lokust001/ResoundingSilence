@@ -23,6 +23,9 @@ public class TrappedChests : MonoBehaviour
     private bool encounterFinished;
     private MidRunDataManager MRM;
 
+    [SerializeField]
+    private GameObject chestParticleVFX;
+
     /// <summary>
     /// makes the chest listen to the public events for interaction
     /// </summary>
@@ -93,6 +96,7 @@ public class TrappedChests : MonoBehaviour
         }
         if (inChestRange && !encounterStarted)
         {
+            AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Interact);
             EnemySpawner.SpawnEnemies();
             encounterStarted = true;
         }
@@ -100,6 +104,8 @@ public class TrappedChests : MonoBehaviour
         CheckQuest(null);
         if (inChestRange && encounterFinished && !chestOpened)
         {
+            chestParticleVFX.SetActive(false);
+            AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Interact);
             MRM.Money += Random.Range(Goldmin, Goldmax + 1);
             int PinSpawn = Random.Range(PinMin, PinMax + 1);
             for (int i = 0; i < PinSpawn; i++)

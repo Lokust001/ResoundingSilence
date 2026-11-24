@@ -247,8 +247,9 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void PlayerDashPressed()
     {
-        if (currentDash > 0)
+        if (currentDash > 0 && knockbackCoroutine == null)
         {
+            AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Dash);
             dashingCoroutine ??= StartCoroutine(RigidBodyPlayerDash());
         }
     }
@@ -432,10 +433,18 @@ public class PlayerController : MonoBehaviour
     /// <returns></returns>
     private IEnumerator MovePlayerCoroutine()
     {
+        float timer = 0;
         while (MoveActive)
         {
+            timer += Time.deltaTime;
             //Propagate calculated velocity to rigidbody & make player move
             rigidbody.linearVelocity = new Vector3(playerVelocity.x * moveSpeed, rigidbody.linearVelocity.y, playerVelocity.z * moveSpeed);
+
+            if(rigidbody.linearVelocity.magnitude > 3 && timer > .5)
+            {
+                timer = 0;
+                AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Walk);
+            }
 
             //Tick Coroutine as if it were in FixedUpdate
             yield return new WaitForFixedUpdate();
