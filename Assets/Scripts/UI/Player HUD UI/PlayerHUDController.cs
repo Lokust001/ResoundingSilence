@@ -269,15 +269,13 @@ public class PlayerHUDController : MenuBase
             return;
         }
 
-        GameObject textToUpdate = huntTexts.Count > 0 ? huntTexts[obj] : null;
-
-
-        if (textToUpdate == null)
+        if (!huntTexts.ContainsKey(obj))
         {
             CreateNewHuntObjective(obj);
-            textToUpdate = huntTexts[obj];
             return;
         }
+       
+        GameObject textToUpdate = huntTexts.Count > 0 ? huntTexts[obj] : null;
 
         TMP_Text tempHuntText = textToUpdate.GetComponentInChildren<TMP_Text>();
 
