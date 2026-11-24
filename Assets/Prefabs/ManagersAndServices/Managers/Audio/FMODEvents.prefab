@@ -1,0 +1,172 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6648563044715660382
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8453880757401497993}
+  - component: {fileID: 7048247774541292433}
+  m_Layer: 0
+  m_Name: FMODEvents
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8453880757401497993
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6648563044715660382}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -146.01016, y: -6.868, z: -71.36926}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7048247774541292433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6648563044715660382}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0edcf87873379564aaf0de930eed7e44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FMODEvents
+  <BGM>k__BackingField:
+    Guid:
+      Data1: 2085216922
+      Data2: 1211431207
+      Data3: 2097033881
+      Data4: -275174553
+    Path: event:/BGM/demomusic
+  <step>k__BackingField:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  <abilityRecharged>k__BackingField:
+    Guid:
+      Data1: -1425113328
+      Data2: 1107822114
+      Data3: -1756859741
+      Data4: 1337154363
+    Path: event:/Player/UI/abilityrechargecomplete
+  <abilitySelect>k__BackingField:
+    Guid:
+      Data1: -739508295
+      Data2: 1148842212
+      Data3: -765101936
+      Data4: 1024528261
+    Path: event:/Player/UI/abilityselect
+  <crossbowFire>k__BackingField:
+    Guid:
+      Data1: 1466883762
+      Data2: 1111936510
+      Data3: 1520733858
+      Data4: 1057275901
+    Path: event:/Weapons/Crossbow/crossbowshot
+  <crossbowHit>k__BackingField:
+    Guid:
+      Data1: 1096302069
+      Data2: 1332479046
+      Data3: 2023935935
+      Data4: -185834378
+    Path: event:/Weapons/Crossbow/crossbowhitsenemy
+  <crossbowReload>k__BackingField:
+    Guid:
+      Data1: 340649787
+      Data2: 1112468629
+      Data3: -603185488
+      Data4: -391687735
+    Path: event:/Weapons/Crossbow/crossbowreload
+  <LifeSteal>k__BackingField:
+    Guid:
+      Data1: 464190778
+      Data2: 1188410716
+      Data3: -1047908168
+      Data4: -1643879781
+    Path: event:/Player/World/playerlifesteal
+  <ScytheSlash1>k__BackingField:
+    Guid:
+      Data1: -1548597970
+      Data2: 1196782896
+      Data3: 317577387
+      Data4: -1427849514
+    Path: event:/Weapons/Scythe/scythesmallslash
+  <ScytheSlash2>k__BackingField:
+    Guid:
+      Data1: 282599589
+      Data2: 1246129029
+      Data3: -243248766
+      Data4: 281164549
+    Path: event:/Weapons/Scythe/scythebigslash
+  <SwapWeapons>k__BackingField:
+    Guid:
+      Data1: -1281866553
+      Data2: 1230200872
+      Data3: -567435128
+      Data4: -1710647840
+    Path: event:/Player/UI/playerweaponswap
+  <Coin>k__BackingField:
+    Guid:
+      Data1: -1353435905
+      Data2: 1321684256
+      Data3: 1020043706
+      Data4: 1655569017
+    Path: event:/Player/UI/playercoins
+  <Walk>k__BackingField:
+    Guid:
+      Data1: -2033687658
+      Data2: 1116643858
+      Data3: 1843239867
+      Data4: -1804597443
+    Path: event:/Player/World/playerwalk
+  <Dash>k__BackingField:
+    Guid:
+      Data1: -2038470293
+      Data2: 1269068466
+      Data3: -397367396
+      Data4: -244141462
+    Path: event:/Player/World/playerdash
+  <TakeDamage>k__BackingField:
+    Guid:
+      Data1: -1816849557
+      Data2: 1181095032
+      Data3: -590225230
+      Data4: -1316080384
+    Path: event:/Player/World/playerhurt
+  <Heal>k__BackingField:
+    Guid:
+      Data1: -776525271
+      Data2: 1298188833
+      Data3: 939068288
+      Data4: 2122376204
+    Path: event:/Player/World/playerheal
+  <Interact>k__BackingField:
+    Guid:
+      Data1: -1016357727
+      Data2: 1118644917
+      Data3: -639851334
+      Data4: 882729258
+    Path: event:/Player/World/playerinteract
+  <Levelup>k__BackingField:
+    Guid:
+      Data1: 220116383
+      Data2: 1088900627
+      Data3: -1589181764
+      Data4: -590849690
+    Path: event:/Player/UI/playerlevelup

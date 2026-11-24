@@ -78,7 +78,7 @@ public class Chests : MonoBehaviour
         if (inChestRange && !chestOpened)
         {
             chestParticleVFX.SetActive(false);
-
+            AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Interact);
             MRM.Money += Random.Range(Goldmin, Goldmax + 1);
             int PinSpawn = Random.Range(PinMin, PinMax + 1);
 
