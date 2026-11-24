@@ -247,7 +247,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void PlayerDashPressed()
     {
-        if (currentDash > 0)
+        if (currentDash > 0 && knockbackCoroutine == null)
         {
             dashingCoroutine ??= StartCoroutine(RigidBodyPlayerDash());
         }
