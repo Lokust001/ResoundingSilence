@@ -6,6 +6,8 @@
 * To Do:   Add more variables as needed.
 */
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
@@ -48,6 +50,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] bool chariotBool;
 
     public TriggerObjects HermitTrigger;
+
+    [SerializeField]
+    private Renderer playerRenderer;
+
+    private MaterialPropertyBlock propertyBlock;
+
+    private List<SkinnedMeshRenderer> inkMeshRenderers;
+
+    private readonly int pbLerpOpacityName = Shader.PropertyToID("_TransitionOpacity");
 
     #region Debug Console Variables
 
@@ -95,6 +106,13 @@ public class PlayerController : MonoBehaviour
 
     #region Unity Methods
 
+    private void Awake()
+    {
+        propertyBlock = new MaterialPropertyBlock();
+        inkMeshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>().ToList();
+    }
+
+
     /// <summary>
     /// Allows the script to listen for player input
     /// </summary>
@@ -127,6 +145,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     void Start()
     {
+
         dashForceMode = ForceMode.VelocityChange;
         rigidbody = GetComponent<Rigidbody>();
         playerModelCollider = GetComponent<CapsuleCollider>();
@@ -515,22 +534,22 @@ public class PlayerController : MonoBehaviour
     {
         //Make the player intangible to collisions from specified layers
         SetPlayerInvincibility(true);
-
-        Renderer playerRenderer = GetComponent<Renderer>();
-        Color original = playerRenderer.material.color;
-        playerRenderer.material.color = Color.red;
         float timer = 0;
 
         while (timer < invincibilityDuration)
         {
+            float timerT = 1f - Mathf.Clamp01(timer / invincibilityDuration);
+            SetPlayerOverlayColor(Color.red, timerT);
+
             timer += Time.deltaTime;
 
             yield return null;
         }
+        ClearPlayerOverlay();
         SetPlayerInvincibility(false);
         ResetRangeTriggers();
 
-        playerRenderer.material.color = original;
+
         dmgCoroutine = null;
     }
 
@@ -708,5 +727,33 @@ public class PlayerController : MonoBehaviour
     {
         _ = enemy;
         enemy.SetInRangedArea(enteredTrigger);
+    }
+
+    /// <summary>
+    /// Sets the overlay color for each of Ink's body parts
+    /// </summary>
+    /// <param name="colorToSet"></param>
+    /// <param name="colorOpacity"></param>
+    private void SetPlayerOverlayColor(Color colorToSet, float colorOpacity = 1.0f) 
+    {
+        foreach (var skinnedMeshRenderer in inkMeshRenderers)
+        {
+            skinnedMeshRenderer.GetPropertyBlock(propertyBlock);
+
+            propertyBlock.SetFloat(pbLerpOpacityName, colorOpacity);
+
+            skinnedMeshRenderer.SetPropertyBlock(propertyBlock);
+        }
+    }
+
+    /// <summary>
+    /// Clears the property block from each skinned mesh renderer on Ink for no color overlay
+    /// </summary>
+    private void ClearPlayerOverlay() 
+    {
+        foreach (var skinnedMeshRenderer in inkMeshRenderers)
+        {
+            skinnedMeshRenderer.SetPropertyBlock(null);
+        }
     }
 }

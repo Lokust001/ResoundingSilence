@@ -18,6 +18,8 @@ public class TriggerObjects : MonoBehaviour
     public event Action<Enemy, bool> PlayerTriggerActivated;
     public event Action<bool> PlayerEnterOrExit;
 
+    public event Action<bool> SpawningSphereEnterOrExit;
+
     private void Awake()
     {
         triggerCollider = GetComponent<Collider>();
@@ -32,6 +34,7 @@ public class TriggerObjects : MonoBehaviour
         if (!enabled)
             return;
 
+        
         if (other.TryGetComponent<PlayerController>(out var player))
         {
             EnemyTriggerActivated?.Invoke(player);
@@ -40,6 +43,10 @@ public class TriggerObjects : MonoBehaviour
         else if (other.TryGetComponent<Enemy>(out var enemy))
         {
             PlayerTriggerActivated?.Invoke(enemy, true);
+        }
+        else if (other.TryGetComponent<SphereCollider>(out _) && GetComponentInParent<EnemySpawner>())
+        {
+            SpawningSphereEnterOrExit?.Invoke(true);
         }
     }
 
@@ -60,6 +67,11 @@ public class TriggerObjects : MonoBehaviour
         else if (other.TryGetComponent<Enemy>(out var enemy))
         {
             PlayerTriggerActivated?.Invoke(enemy, false);
+        }
+        else if (other.TryGetComponent<SphereCollider>(out _) && GetComponentInParent<EnemySpawner>())
+        {
+            Debug.Log(other.name + " entered: ", gameObject);
+            SpawningSphereEnterOrExit?.Invoke(false);
         }
     }
 

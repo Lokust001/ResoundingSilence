@@ -1604,13 +1604,13 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b7eeb5bceb3cd1b4e8219d77eec4669b, type: 3}
---- !u!43 &1652104087
+--- !u!43 &1588982368
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh568105589206270086
+  m_Name: pb_Mesh568105589212103264
   serializedVersion: 12
   m_SubMeshes:
   - serializedVersion: 2
@@ -1793,7 +1793,7 @@ PrefabInstance:
     - target: {fileID: 41673316540231864, guid: b57876c786fb44e4e87718b98dcf4f9b, type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 1652104087}
+      objectReference: {fileID: 1588982368}
     - target: {fileID: 2480801942194616687, guid: b57876c786fb44e4e87718b98dcf4f9b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.65
@@ -1842,6 +1842,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerCharacter
       objectReference: {fileID: 0}
+    - target: {fileID: 4030770156988136202, guid: b57876c786fb44e4e87718b98dcf4f9b, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5064756254410111760, guid: b57876c786fb44e4e87718b98dcf4f9b, type: 3}
       propertyPath: forceMode
       value: 1
@@ -1862,6 +1866,10 @@ PrefabInstance:
       propertyPath: BasedashRange
       value: 40
       objectReference: {fileID: 0}
+    - target: {fileID: 5064756254410111760, guid: b57876c786fb44e4e87718b98dcf4f9b, type: 3}
+      propertyPath: playerRenderer
+      value: 
+      objectReference: {fileID: 1445737652}
     - target: {fileID: 5064756254410111760, guid: b57876c786fb44e4e87718b98dcf4f9b, type: 3}
       propertyPath: chainDashWindow
       value: 0.7
@@ -1889,9 +1897,10 @@ PrefabInstance:
     - target: {fileID: 8537662691647330315, guid: b57876c786fb44e4e87718b98dcf4f9b, type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 1652104087}
+      objectReference: {fileID: 1588982368}
     m_RemovedComponents:
     - {fileID: 6648204096828564205, guid: b57876c786fb44e4e87718b98dcf4f9b, type: 3}
+    - {fileID: 4030770156988136202, guid: b57876c786fb44e4e87718b98dcf4f9b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
