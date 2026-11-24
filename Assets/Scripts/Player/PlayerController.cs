@@ -6,6 +6,8 @@
 * To Do:   Add more variables as needed.
 */
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
@@ -53,7 +55,10 @@ public class PlayerController : MonoBehaviour
     private Renderer playerRenderer;
 
     private MaterialPropertyBlock propertyBlock;
-    private readonly int pbColorNameID = Shader.PropertyToID("_BaseColor");
+
+    private List<SkinnedMeshRenderer> inkMeshRenderers;
+
+    private readonly int pbLerpOpacityName = Shader.PropertyToID("_TransitionOpacity");
 
     #region Debug Console Variables
 
@@ -104,7 +109,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         propertyBlock = new MaterialPropertyBlock();
-
+        inkMeshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>().ToList();
     }
 
 
@@ -525,7 +530,6 @@ public class PlayerController : MonoBehaviour
         while (timer < invincibilityDuration)
         {
             float timerT = 1f - Mathf.Clamp01(timer / invincibilityDuration);
-            Debug.Log(timerT);
             SetPlayerOverlayColor(Color.red, timerT);
 
             timer += Time.deltaTime;
@@ -716,20 +720,31 @@ public class PlayerController : MonoBehaviour
         enemy.SetInRangedArea(enteredTrigger);
     }
 
+    /// <summary>
+    /// Sets the overlay color for each of Ink's body parts
+    /// </summary>
+    /// <param name="colorToSet"></param>
+    /// <param name="colorOpacity"></param>
     private void SetPlayerOverlayColor(Color colorToSet, float colorOpacity = 1.0f) 
     {
-        playerRenderer.GetPropertyBlock(propertyBlock);
-        colorToSet.a = colorOpacity;
-        Debug.Log(colorToSet);
-        propertyBlock.SetColor(pbColorNameID, colorToSet);
-        playerRenderer.SetPropertyBlock(propertyBlock);
+        foreach (var skinnedMeshRenderer in inkMeshRenderers)
+        {
+            skinnedMeshRenderer.GetPropertyBlock(propertyBlock);
+
+            propertyBlock.SetFloat(pbLerpOpacityName, colorOpacity);
+
+            skinnedMeshRenderer.SetPropertyBlock(propertyBlock);
+        }
     }
 
+    /// <summary>
+    /// Clears the property block from each skinned mesh renderer on Ink for no color overlay
+    /// </summary>
     private void ClearPlayerOverlay() 
     {
-        playerRenderer.SetPropertyBlock(null);
-        //playerRenderer.GetPropertyBlock(propertyBlock);
-        //propertyBlock.Clear();
-        //playerRenderer.SetPropertyBlock(propertyBlock);
+        foreach (var skinnedMeshRenderer in inkMeshRenderers)
+        {
+            skinnedMeshRenderer.SetPropertyBlock(null);
+        }
     }
 }
