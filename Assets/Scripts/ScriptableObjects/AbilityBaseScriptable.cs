@@ -65,9 +65,7 @@ public class AbilityBaseScriptable : BaseScriptableObject
     public float AbilityEndLag;
     public float AbilityRange;
 
-    public bool HasProjectile;
-    [ShowIf(nameof(HasProjectile))]
-    public BurstData AbilityProjectile;
+    public BurstData AbilityBurst;
 
     public GameObject AbilityVFX;
 
@@ -95,9 +93,9 @@ public class AbilityBaseScriptable : BaseScriptableObject
         SetAbilityStats(SecondaryStats);
         BaseAbilityCooldown = AbilityCooldown;
 
-        if (AbilityProjectile.BurstRangedAttack.AttackProjectiles != null)
+        if (AbilityBurst.BurstRangedAttack.AttackProjectiles != null)
         {
-            foreach (ProjectileData i in AbilityProjectile.BurstRangedAttack.AttackProjectiles)
+            foreach (ProjectileData i in AbilityBurst.BurstRangedAttack.AttackProjectiles)
             {
                 if (i.LifetimeIsRange)
                 {

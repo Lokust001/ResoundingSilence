@@ -1,8 +1,8 @@
 /* Author: Dalsten Yan
- * Contributors:
- * Last Modified: 11/18/26
+ * Contributors: Brad Dixon
+ * Last Modified: 11/24/26
  * Summary: Script that simulates enemy movement, seeking, charing down, and retreating
- * TODO: More as needed
+ * TODO: Dalsten is going to add functionality for the enemy getting knocked back
  */
 using System.Collections;
 using UnityEngine;
@@ -287,6 +287,16 @@ public class EnemyWalk : MonoBehaviour, ISharedEnemyBehaviors, ICustomEnabler, I
         }
 
         return finalGoal;
+    }
+
+    /// <summary>
+    /// Knocks the enemy back in a given direction
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerator KnockbackEnemy(Vector3 knockbackDir, float knockbackForce)
+    {
+        Debug.Log("Dalsten will add the enemy knockback functionality.");
+        yield return null;
     }
 
     /// <summary>

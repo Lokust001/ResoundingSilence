@@ -172,7 +172,7 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
         if (aimingAbilityOne)
         {
             abilityOneActive = true;
-            if (ThisWeaponData.editableAbilities[abilityOneIndex].HasProjectile)
+            if (ThisWeaponData.editableAbilities[abilityOneIndex].AbilityBurst.HasRangeAttack)
             {
                 spawnAbilityOneProjectile = true;
             }
@@ -180,7 +180,7 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
         else
         {
             abilityTwoActive = true;
-            if (ThisWeaponData.editableAbilities[abilityTwoIndex].HasProjectile)
+            if (ThisWeaponData.editableAbilities[abilityTwoIndex].AbilityBurst.HasRangeAttack)
             {
                 spawnAbilityTwoProjectile = true;
             }
@@ -246,7 +246,7 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
         bool hasBurst;
         if(spawnAbilityOneProjectile || spawnAbilityTwoProjectile)
         {
-            hasBurst = ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityProjectile.BurstRangedAttack.AttackProjectiles.Count > 1 ? true : false;
+            hasBurst = ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityBurst.BurstRangedAttack.AttackProjectiles.Count > 1 ? true : false;
         }
         else
         {
@@ -311,12 +311,12 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
     {
         if(abilityOne)
         {
-            return ThisWeaponData.editableAbilities[abilityOneIndex].AbilityProjectile;
+            return ThisWeaponData.editableAbilities[abilityOneIndex].AbilityBurst;
         }
 
         if(abilityTwo)
         {
-            return ThisWeaponData.editableAbilities[abilityTwoIndex].AbilityProjectile;
+            return ThisWeaponData.editableAbilities[abilityTwoIndex].AbilityBurst;
         }
 
         return ThisWeaponData.ComboAttacks[comboIndex - 1].BurstAttacks[burstIndex];
@@ -460,7 +460,7 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
             SetAnimator(true);
 
             abilityOneActive = true;
-            if(ThisWeaponData.editableAbilities[abilityOneIndex].HasProjectile)
+            if(ThisWeaponData.editableAbilities[abilityOneIndex].AbilityBurst.HasRangeAttack)
             {
                 spawnAbilityOneProjectile = true;
             }
@@ -508,7 +508,7 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
             SetAnimator(true);
 
             abilityTwoActive = true;
-            if (ThisWeaponData.editableAbilities[abilityTwoIndex].HasProjectile)
+            if (ThisWeaponData.editableAbilities[abilityTwoIndex].AbilityBurst.HasRangeAttack)
             {
                 spawnAbilityTwoProjectile = true;
             }
@@ -610,7 +610,7 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
             Instantiate(ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityVFX, transform.position, transform.rotation);
         }
 
-        if (ThisWeaponData.editableAbilities[currentAbilityIndex].HasProjectile)
+        if (ThisWeaponData.editableAbilities[currentAbilityIndex].AbilityBurst.HasRangeAttack)
         {
             activePreview.SetActive(false);
             if(currentAbilityIndex == abilityOneIndex)
@@ -730,11 +730,13 @@ public class BaseWeaponAbilityBehaviour : BaseWeaponBehaviour
                     Vector3 forceDir = new Vector3(t.transform.position.x - originPosition.x, 0,
                     t.transform.position.z - originPosition.z).normalized;
 
-                    if (t.GetComponent<Enemy>())
+                    if (t.TryGetComponent<Enemy>(out Enemy enemyHit))
                     {
                         //replace with the enemy taking damage
-                        t.GetComponent<Rigidbody>().AddForce(ThisWeaponData.editableAbilities[abilityIndex].AbilityEnemyKnockback * forceDir, ForceMode.Impulse);
-                        t.GetComponent<Enemy>().EnemyTakeDamage(damage);
+                        StartCoroutine(t.GetComponent<EnemyWalk>().KnockbackEnemy(forceDir, ThisWeaponData.editableAbilities[abilityIndex].AbilityEnemyKnockback));
+                        //t.GetComponent<Rigidbody>().AddForce(ThisWeaponData.editableAbilities[abilityIndex].AbilityEnemyKnockback * forceDir, ForceMode.Impulse);
+                        enemyHit.EnemyTakeDamage(damage);
+                        enemyHit.InflictDecay(ThisWeaponData.editableAbilities[abilityIndex].AbilityBurst.AttackDecayEffect);
 
                         if (ThisWeaponData.editableAbilities[abilityIndex].AbilityLifeSteal > 0)
                         {
