@@ -53,8 +53,8 @@ public class EnemySpawner : BaseSpawner
     /// </summary>
     private void OnEnable()
     {
-        spawnDespawnTrigger.PlayerEnterOrExit += SpawnOrDespawnHandler;
-        deAggroTrigger.PlayerEnterOrExit += DeAggroHandler;
+        spawnDespawnTrigger.SpawningSphereEnterOrExit += SpawnOrDespawnHandler;
+        deAggroTrigger.SpawningSphereEnterOrExit += DeAggroHandler;
     }
 
     /// <summary>
@@ -62,8 +62,8 @@ public class EnemySpawner : BaseSpawner
     /// </summary>
     private void OnDisable()
     {
-        spawnDespawnTrigger.PlayerEnterOrExit -= SpawnOrDespawnHandler;
-        deAggroTrigger.PlayerEnterOrExit-= DeAggroHandler;
+        spawnDespawnTrigger.SpawningSphereEnterOrExit -= SpawnOrDespawnHandler;
+        deAggroTrigger.SpawningSphereEnterOrExit-= DeAggroHandler;
     }
 
     /// <summary>
