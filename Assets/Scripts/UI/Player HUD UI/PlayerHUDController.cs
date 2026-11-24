@@ -65,7 +65,7 @@ public class PlayerHUDController : MenuBase
 
     [SerializeField, ShowIf(nameof(settings), Settings.HuntBoard)]
     private GameObject huntBoardContainer;
-    private List<(SideObjective, GameObject)> huntTexts = new();
+    private Dictionary<SideObjective, GameObject> huntTexts = new();
 
     [SerializeField]
     private TMP_Text timerText;
@@ -250,7 +250,7 @@ public class PlayerHUDController : MenuBase
         }
 
         GameObject NewHuntText = Instantiate(prefabHuntText, huntBoardContainer.transform);
-        huntTexts.Add(new(obj, NewHuntText));
+        huntTexts.Add(obj, NewHuntText);
 
         NewHuntText.GetComponentInChildren<TMP_Text>().text = $"{obj.GetSideObjectiveTooltipText()}: 0/{obj.huntedEnemiesGoal}";
 
@@ -269,14 +269,15 @@ public class PlayerHUDController : MenuBase
             return;
         }
 
-        GameObject textToUpdate = huntTexts.Count > 0 ? huntTexts.FirstOrDefault(x => x.Item1 == obj).Item2 : null;
-        TMP_Text tempHuntText = textToUpdate.GetComponentInChildren<TMP_Text>();    
-
-        if (textToUpdate == null)
+        if (!huntTexts.ContainsKey(obj))
         {
             CreateNewHuntObjective(obj);
             return;
         }
+       
+        GameObject textToUpdate = huntTexts.Count > 0 ? huntTexts[obj] : null;
+
+        TMP_Text tempHuntText = textToUpdate.GetComponentInChildren<TMP_Text>();
 
         string huntProgress = $"{obj.huntEnemiesProgress}/{obj.huntedEnemiesGoal}";
 
@@ -301,15 +302,14 @@ public class PlayerHUDController : MenuBase
     /// <param name="obj"></param>
     private void RemoveHuntObjective(SideObjective obj)
     {
-        (SideObjective, GameObject) temp = huntTexts.FirstOrDefault(x => x.Item1 == obj);
-
-        if (temp.Item1 == null)
+        if (!huntTexts.ContainsKey(obj))
         {
             return;
         }
 
-        huntTexts.Remove(temp);
-        Destroy(temp.Item2);
+        GameObject temp = huntTexts[obj];
+        huntTexts.Remove(obj);
+        Destroy(temp);
     }
 
     /// <summary>

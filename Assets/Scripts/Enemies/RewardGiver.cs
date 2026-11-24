@@ -95,6 +95,7 @@ public class RewardGiver : MonoBehaviour
             {
                 case Reward.RewardType.Gold:
                     MidRunDataManager.Instance.Money += rewardedQuantity;
+                    AudioManager.Instance.PlayOneShot(FMODEvents.Instance.Coin);
                     break;
                 case Reward.RewardType.XP:
                     MidRunDataManager.Instance.GainXP(rewardedQuantity);
