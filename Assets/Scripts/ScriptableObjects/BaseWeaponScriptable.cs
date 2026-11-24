@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors: Brad Dixon, Brenden
-* Last Modified: 11/19/2026
+* Last Modified: 11/24/2026
 * Summary: This is the base scriptable object for all weapon scriptable objects.
 *          Handles the data for the weapons. Acts as a tool to make any kind of weapon.
 * To Do:   Add more variables as needed. Change status effects as needed. 
@@ -17,15 +17,6 @@ using System.Linq;
 public class BaseWeaponScriptable : BaseScriptableObject
 {
     #region GeneralData
-
-    //private enum EffectType
-    //{
-    //    Decay,
-    //    Slow,
-    //    Weak,
-    //    Shock,
-    //    Burn
-    //}
 
     private enum ShownSettings
     {
@@ -44,12 +35,6 @@ public class BaseWeaponScriptable : BaseScriptableObject
 
     [Tooltip("The layers of things this weapon can hit.")]
     public LayerMask EnemyLayer;
-
-    //[ShowIf(nameof(shownSettings), ShownSettings.StatusEffects)]
-    //[SerializeField]
-    //[Tooltip("Changing this variable has no impact on gameplay.\n\nIt is purely a navigational tool." +
-    //    "Use to select what type of status effects this weapon will inflict.")]
-    //private EffectType effectType;
 
     [ShowIf(nameof(shownSettings), ShownSettings.UpgradeGrid)]
     [Tooltip("This is the grid that will be attached to this kind of weapon when it is made")]
@@ -247,98 +232,6 @@ public class BaseWeaponScriptable : BaseScriptableObject
 
     #endregion
 
-    #region StatusEffects
-
-    //[ShowIf(nameof(ViewingDecayEffect))]
-    //[Tooltip("How much damage the decay does each time it ticks.")]
-    //public int DecayDamage;
-
-    //[ShowIf(nameof(ViewingDecayEffect))]
-    //[Tooltip("The max amount of decay stacks an enemy can have.")]
-    //public int MaxDecayStacks;
-
-    //[ShowIf(nameof(ViewingDecayEffect))]
-    //[Tooltip("How much time must pass before the next tick of decay damage occurs.")]
-    //public float DecayDelay;
-
-    //[ShowIf(nameof(ViewingDecayEffect))]
-    //[Tooltip("How long the effect lasts for.")]
-    //public float DecayDuration;
-
-    //[ShowIf(nameof(ViewingSlowEffect))]
-    //[Tooltip("How much the enemy is slowed by.")]
-    //public float SlowStrength;
-
-    //[ShowIf(nameof(ViewingSlowEffect))]
-    //[Tooltip("How long the effect lasts for.")]
-    //public float SlowDuration;
-
-    //[ShowIf(nameof(ViewingWeakEffect))]
-    //[Tooltip("How much the enemy's attack is reduced by.")]
-    //public float WeakStrength;
-
-    //[ShowIf(nameof(ViewingWeakEffect))]
-    //[Tooltip("How long the effect lasts for.")]
-    //public float WeakDuration;
-
-    //[ShowIf(nameof(ViewingShockEffect))]
-    //[Tooltip("How much damage the shock does each time it ticks.")]
-    //public int ShockDamage;
-
-    //[ShowIf(nameof(ViewingShockEffect))]
-    //[Tooltip("The max amount of shock stacks an enemy can have.")]
-    //public int MaxShockStacks;
-
-    //[ShowIf(nameof(ViewingShockEffect))]
-    //[Tooltip("How much time must pass before the next tick of shock damage occurs.")]
-    //public float ShockDelay;
-
-    //[ShowIf(nameof(ViewingShockEffect))]
-    //[Tooltip("How long the effect lasts for.")]
-    //public float ShockDuration;
-
-    //[ShowIf(nameof(ViewingShockEffect))]
-    //[Tooltip("How much time must pass before the effect chains damage to nearby enemies.")]
-    //public float ChainDelay;
-
-    //[ShowIf(nameof(ViewingShockEffect))]
-    //[Tooltip("How close enemies have to be to each other for the chain to connect.")]
-    //public float ChainRange;
-
-    //[ShowIf(nameof(ViewingShockEffect))]
-    //[Tooltip("The max amount of enemies that can be hit by one chain.")]
-    //public int MaxChainCount;
-
-    //[ShowIf(nameof(ViewingBurnEffect))]
-    //[Tooltip("How much damage the shock does each time it ticks.")]
-    //public int BurnDamage;
-
-    //[ShowIf(nameof(ViewingBurnEffect))]
-    //[Tooltip("The max amount of shock stacks an enemy can have.")]
-    //public int MaxBurnStacks;
-
-    //[ShowIf(nameof(ViewingBurnEffect))]
-    //[Tooltip("How much time must pass before the next tick of shock damage occurs.")]
-    //public float BurnDelay;
-
-    //[ShowIf(nameof(ViewingBurnEffect))]
-    //[Tooltip("How long the effect lasts for.")]
-    //public float BurnDuration;
-
-    //[ShowIf(nameof(ViewingBurnEffect))]
-    //[Tooltip("How much time must pass before the effect tries to ignite the ground.")]
-    //public float IgniteDelay;
-
-    //[ShowIf(nameof(ViewingBurnEffect))]
-    //[Tooltip("How big the AOE of the burning ground is.")]
-    //public float IgniteSize;
-
-    //[ShowIf(nameof(ViewingBurnEffect))]
-    //[Tooltip("How much the ignite chance increase by per stack.")]
-    //public int IgniteChancePerStack;
-
-    #endregion
-
     #region Abilities
 
     [ShowIf(nameof(shownSettings), ShownSettings.Abilities)]
@@ -365,72 +258,6 @@ public class BaseWeaponScriptable : BaseScriptableObject
 
         return editableAbilities;
     }
-    #endregion
-
-    #region CustomBools
-
-    /// <summary>
-    /// Custom bool for naughty attribute show if
-    /// </summary>
-    /// <returns></returns>
-    //private bool WeaponLifeSteal()
-    //{
-    //    return shownSettings == ShownSettings.BaseWeaponData && HasLifesteal;
-    //}
-
-    ///// <summary>
-    ///// Custom bool to show if AOE attack is selected
-    ///// </summary>
-    ///// <returns></returns>
-    //private bool WeaponAOE()
-    //{
-    //    return shownSettings == ShownSettings.BaseWeaponData && HasAOEAttack;
-    //}
-
-    /// <summary>
-    /// Custom bool for show if
-    /// </summary>
-    /// <returns></returns>
-    //private bool ViewingDecayEffect()
-    //{
-    //    return shownSettings == ShownSettings.StatusEffects && effectType == EffectType.Decay;
-    //}
-
-    ///// <summary>
-    ///// Custom bool for show if
-    ///// </summary>
-    ///// <returns></returns>
-    //private bool ViewingSlowEffect()
-    //{
-    //    return shownSettings == ShownSettings.StatusEffects && effectType == EffectType.Slow;
-    //}
-
-    ///// <summary>
-    ///// Custom bool for show if
-    ///// </summary>
-    ///// <returns></returns>
-    //private bool ViewingWeakEffect()
-    //{
-    //    return shownSettings == ShownSettings.StatusEffects && effectType == EffectType.Weak;
-    //}
-
-    ///// <summary>
-    ///// Custom bool for show if
-    ///// </summary>
-    ///// <returns></returns>
-    //private bool ViewingShockEffect()
-    //{
-    //    return shownSettings == ShownSettings.StatusEffects && effectType == EffectType.Shock;
-    //}
-
-    ///// <summary>
-    ///// Custom bool for show if
-    ///// </summary>
-    ///// <returns></returns>
-    //private bool ViewingBurnEffect()
-    //{
-    //    return shownSettings == ShownSettings.StatusEffects && effectType == EffectType.Burn;
-    //}
     #endregion
 
     /// <summary>

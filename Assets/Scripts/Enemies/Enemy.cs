@@ -1,6 +1,6 @@
 /* Author: Dalsten Yan
  * Contributors: Brad Dixon
- * Last Modified: 11/17/26
+ * Last Modified: 11/24/26
  * Summary: Supervising enemy script that decides non-physics behaviors & shares enemyData among other scripts
  * TODO: More as needed
  */

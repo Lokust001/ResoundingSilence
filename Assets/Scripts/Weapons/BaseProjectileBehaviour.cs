@@ -1,7 +1,7 @@
 /******************************************************************************
  * Author: Brad Dixon
  * Contributors:
- * Last Modified: 11/13/2026
+ * Last Modified: 11/24/2026
  * Brief: Handles projectile collision and lifetime
  * TODO:
  * ***************************************************************************/
