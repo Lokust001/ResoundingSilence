@@ -1,7 +1,7 @@
 /******************************************************************************
  * Author: Brad Dixon
  * Contributors: Tyler Hayes
- * Last Modified: 11/19/2026
+ * Last Modified: 11/20/2026
  * Brief: Calls the specific weapon attack
  * TODO:
  * ***************************************************************************/
@@ -21,17 +21,18 @@ public class BaseWeaponBehaviour : MonoBehaviour
     //Public so the upgrade manager can find the reference
     //[HideInInspector]
     [Expandable]
+    [HideInInspector]
     public BaseWeaponScriptable ThisWeaponData;
     [SerializeField] protected int weaponDataID;
-    [SerializeField] protected LayerMask groundLayerMask;
 
     [SerializeField] protected Animator weaponAnimator;
     [SerializeField] protected List<AnimationPath> attackAnimations = new List<AnimationPath>();
-    [SerializeField] protected int comboIndex;
+    protected int comboIndex;
 
     [SerializeField] protected List<Collider> meleeHitboxes = new List<Collider>();
 
     public GameObject weaponModel;
+    [HideInInspector]
     public bool activeWeapon;
 
     protected Vector3 mousePos = Vector3.forward;
@@ -301,7 +302,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// <summary>
     /// Called by animation event to spawn projectile during attack animation
     /// </summary>
-    virtual public void SpawnProjectile(int cIndex)
+    virtual public void SpawnProjectile()
     {
 
     }
@@ -309,7 +310,7 @@ public class BaseWeaponBehaviour : MonoBehaviour
     /// <summary>
     /// Called by an animation event to see if a melee swing hit anything
     /// </summary>
-    virtual public void MeleeSwing(int cIndex)
+    virtual public void MeleeSwing()
     {
 
     }

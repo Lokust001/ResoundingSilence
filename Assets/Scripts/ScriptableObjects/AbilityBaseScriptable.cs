@@ -1,7 +1,7 @@
 /*
 * Author: Tyler
 * Contributors: Brad Dixon, Brenden
-* Last Modified: 11/20/2026
+* Last Modified: 11/24/2026
 * Summary: Scriptable object for the abilities. Will havbe specific abilities derive from this as needed, but these 
 *          vars are on every ability scriptable
 * To Do:   N/A
@@ -65,9 +65,7 @@ public class AbilityBaseScriptable : BaseScriptableObject
     public float AbilityEndLag;
     public float AbilityRange;
 
-    public bool HasProjectile;
-    [ShowIf(nameof(HasProjectile))]
-    public BurstData AbilityProjectile;
+    public BurstData AbilityBurst;
 
     public GameObject AbilityVFX;
 
@@ -95,9 +93,9 @@ public class AbilityBaseScriptable : BaseScriptableObject
         SetAbilityStats(SecondaryStats);
         BaseAbilityCooldown = AbilityCooldown;
 
-        if (AbilityProjectile.BurstRangedAttack.AttackProjectiles != null)
+        if (AbilityBurst.BurstRangedAttack.AttackProjectiles != null)
         {
-            foreach (ProjectileData i in AbilityProjectile.BurstRangedAttack.AttackProjectiles)
+            foreach (ProjectileData i in AbilityBurst.BurstRangedAttack.AttackProjectiles)
             {
                 if (i.LifetimeIsRange)
                 {

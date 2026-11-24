@@ -375,6 +375,7 @@ Transform:
   m_Children:
   - {fileID: 1957352026932356398}
   - {fileID: 5789254500503602146}
+  - {fileID: 1239071990604253592}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &322023529393206234
@@ -413,9 +414,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BaseWeaponAbilityBehaviour
   ThisWeaponData: {fileID: 0}
   weaponDataID: 1
-  groundLayerMask:
-    serializedVersion: 2
-    m_Bits: 512
   weaponAnimator: {fileID: 322023529393206234}
   attackAnimations:
   - AnimClip: {fileID: 7400000, guid: a7b6660d3dbfd684687c95b3f38171c0, type: 2}
@@ -427,7 +425,6 @@ MonoBehaviour:
   - AnimClip: {fileID: 7400000, guid: fe794f60a5674be4080a765984aa0d7b, type: 2}
     LayerIndex: 0
     AnimatorUsed: {fileID: 0}
-  comboIndex: 0
   meleeHitboxes:
   - {fileID: 430306415606310012}
   - {fileID: 8326145414121803055}
@@ -437,9 +434,7 @@ MonoBehaviour:
   weaponStats: {fileID: -2920052222548196769}
   abilityAOEs:
   - {fileID: 3530598901094387889}
-  - {fileID: 3530598901094387889}
-  activePreview: {fileID: 0}
-  currentAbilityIndex: 0
+  - {fileID: 5719603710306363114}
   abilityOneIndex: 0
   abilityTwoIndex: 1
   abilityOneReady: 1
@@ -462,6 +457,13 @@ MonoBehaviour:
   TowerDamageBuff: 1
   TowerDamageResistance: 1
   HermitDamageBuff: 1
+  BIDamage: 0
+  BIFirerate: 0
+  BIProjectileSpeed: 0
+  BIMovementSpeed: 0
+  BIDashDistance: 0
+  BIAttacksize: 0
+  BIAbilityCooldown: 0
 --- !u!1 &6994610825736500814
 GameObject:
   m_ObjectHideFlags: 0
@@ -795,6 +797,73 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 462218ec90bccd94fa0220b1f010c041, type: 3}
   m_PrefabInstance: {fileID: 2063581226573021893}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &3268712890117063819
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 3543986769538994403}
+    m_Modifications:
+    - target: {fileID: 4354660225646677267, guid: 6c49ee599b65f5d4f8d0ff5eb9a4eaf5, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.609
+      objectReference: {fileID: 0}
+    - target: {fileID: 4354660225646677267, guid: 6c49ee599b65f5d4f8d0ff5eb9a4eaf5, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.282
+      objectReference: {fileID: 0}
+    - target: {fileID: 4354660225646677267, guid: 6c49ee599b65f5d4f8d0ff5eb9a4eaf5, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.89116997
+      objectReference: {fileID: 0}
+    - target: {fileID: 4354660225646677267, guid: 6c49ee599b65f5d4f8d0ff5eb9a4eaf5, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4354660225646677267, guid: 6c49ee599b65f5d4f8d0ff5eb9a4eaf5, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4354660225646677267, guid: 6c49ee599b65f5d4f8d0ff5eb9a4eaf5, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4354660225646677267, guid: 6c49ee599b65f5d4f8d0ff5eb9a4eaf5, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4354660225646677267, guid: 6c49ee599b65f5d4f8d0ff5eb9a4eaf5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4354660225646677267, guid: 6c49ee599b65f5d4f8d0ff5eb9a4eaf5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4354660225646677267, guid: 6c49ee599b65f5d4f8d0ff5eb9a4eaf5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7078761736756142689, guid: 6c49ee599b65f5d4f8d0ff5eb9a4eaf5, type: 3}
+      propertyPath: m_Name
+      value: BombBlastPreview
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6c49ee599b65f5d4f8d0ff5eb9a4eaf5, type: 3}
+--- !u!4 &1239071990604253592 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4354660225646677267, guid: 6c49ee599b65f5d4f8d0ff5eb9a4eaf5, type: 3}
+  m_PrefabInstance: {fileID: 3268712890117063819}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &5719603710306363114 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7078761736756142689, guid: 6c49ee599b65f5d4f8d0ff5eb9a4eaf5, type: 3}
+  m_PrefabInstance: {fileID: 3268712890117063819}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6191715241147459692
 PrefabInstance:

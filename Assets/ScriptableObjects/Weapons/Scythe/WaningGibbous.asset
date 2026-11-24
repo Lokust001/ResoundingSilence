@@ -18,10 +18,12 @@ MonoBehaviour:
   AbilityName: Waning Gibbous
   AbilityImage: {fileID: 0}
   BackgroundImage: {fileID: 0}
-  PrimaryStats: []
+  PrimaryStats:
+  - StatType: 0
+    StatValue: 35
   SecondaryStats: []
-  AbilityDamage: 0
-  BaseAbilityDamage: 0
+  AbilityDamage: 35
+  BaseAbilityDamage: 35
   AbilityDamageTicks: 0
   BaseAbilityDamageTicks: 0
   AbilityDuration: 0
@@ -43,10 +45,10 @@ MonoBehaviour:
   AbilityPlayerKnockback: 0
   BaseAbilityPlayerKnockback: 0
   AbilityCooldown: 2
+  BaseAbilityCooldown: 2
   AbilityEndLag: 1
   AbilityRange: 6
-  HasProjectile: 1
-  AbilityProjectile:
+  AbilityBurst:
     BurstDamagePercent: 0
     TimeTillNextBurst: 0
     BaseTimeTillNextBurst: 0
@@ -78,8 +80,8 @@ MonoBehaviour:
         ProjectileSpeed: 5
         BaseProjectileSpeed: 0
         LifetimeIsRange: 1
-        ProjectileRange: 5
-        BaseProjectileRange: 5
+        ProjectileRange: 6
+        BaseProjectileRange: 6
         ProjectileLifetime: 0
         BaseProjectileLifetime: 0
         ProjectileDeviation: 0
@@ -106,15 +108,15 @@ MonoBehaviour:
           MaxSize: 0
       ProjectileIndex: 0
       RandomizeProjectile: 0
-      HasPierce: 0
+      HasPierce: 1
       BurstPierce:
         PierceAmount: 0
         BasePierceAmount: 0
-        PierceDamageFalloffPercent: 
+        PierceDamageFalloffPercent: 00000000
         BasePierceDamageFalloffPercent: 
         MinPierceDamagePercent: 0
         BaseMinPierceDamagePercent: 0
-        PierceLifetimeFalloffPercent: 
+        PierceLifetimeFalloffPercent: 00000000
         BasePierceLifetimeFalloffPercent: 
       HasRicochet: 0
       BurstRicochet:
@@ -122,6 +124,12 @@ MonoBehaviour:
         BaseRicochetCount: 0
         RicochetRange: 0
         BaseRicochetRange: 0
+    StatusEffects: 
+    AttackDecayEffect:
+      DecayDamagePerStack: 0
+      DecayDuration: 0
+      DecayTicks: 0
+      MaxDecayStacks: 0
   AbilityVFX: {fileID: 0}
   HasPreview: 1
   PreviewData:

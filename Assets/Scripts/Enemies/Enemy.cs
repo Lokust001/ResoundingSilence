@@ -1,6 +1,6 @@
 /* Author: Dalsten Yan
  * Contributors: Brad Dixon
- * Last Modified: 11/17/26
+ * Last Modified: 11/24/26
  * Summary: Supervising enemy script that decides non-physics behaviors & shares enemyData among other scripts
  * TODO: More as needed
  */
@@ -10,7 +10,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Enemy : StatusBehaviour
 {
     [SerializeField]
     private TriggerObjects aggroTrigger;
